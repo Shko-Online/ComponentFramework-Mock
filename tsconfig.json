@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+      "target": "es5",
+      "lib": ["es5", "es6", "dom"],
+      "module": "commonjs",
+      "moduleResolution": "node",
+      "noEmit": false,
+      "outDir": "dist",
+      "declaration": true,
+      "sourceMap": true,    
+      "baseUrl": ".",
+      "paths": {
+        "@albanian-xrm/componentframework-mock*": ["./src*"],
+        "@albanian-xrm/test-components*": ["./__test-components__*"]
+      },
+      "typeRoots": [
+          "./node_modules/@types"
+      ]
+  },
+  "exclude": [
+      "node_modules",
+      "wwwroot",
+  ],
+  "include": [
+      "src",
+      "__tests__",
+      "__test-components__"
+  ]
+}
