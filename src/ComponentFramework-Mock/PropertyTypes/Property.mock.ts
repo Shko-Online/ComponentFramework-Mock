@@ -1,4 +1,7 @@
-export class PropertyMock implements ComponentFramework.PropertyTypes.Property{
+
+
+
+export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
     error: boolean;
     errorMessage: string;
     formatted?: string;

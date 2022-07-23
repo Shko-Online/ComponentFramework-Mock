@@ -1,7 +1,7 @@
 import { ReactElement, JSXElementConstructor } from "react";
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 
-export class TestComponent implements ComponentFramework.ReactControl<IInputs, IOutputs> {
+export class TestComponentBoolean implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     updateView(context: ComponentFramework.Context<IInputs>): ReactElement<any, string | JSXElementConstructor<any>> {
         throw new Error("Method not implemented.");
     }
