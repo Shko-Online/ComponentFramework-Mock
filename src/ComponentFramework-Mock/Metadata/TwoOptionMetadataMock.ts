@@ -2,10 +2,7 @@ import { OptionMetadataMock } from "./OptionMetadataMock";
 import sinon, { SinonStubbedInstance } from 'sinon';
 
 export class TwoOptionMetadataMock implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.TwoOptionMetadata {
-    Options: [
-        SinonStubbedInstance<ComponentFramework.PropertyHelper.OptionMetadata>,
-        SinonStubbedInstance<ComponentFramework.PropertyHelper.OptionMetadata>
-    ];
+    Options: [ComponentFramework.PropertyHelper.OptionMetadata, ComponentFramework.PropertyHelper.OptionMetadata];
     DefaultValue: boolean;
     DisplayName: string;
     LogicalName: string;
@@ -15,8 +12,8 @@ export class TwoOptionMetadataMock implements ComponentFramework.PropertyHelper.
     Description: string;
     constructor(defaultValue?: boolean) {
         this.DefaultValue = defaultValue || false;
-        const FalseOption = sinon.createStubInstance(OptionMetadataMock, { Value: 0, Label: 'No' });
-        const TrueOption = sinon.createStubInstance(OptionMetadataMock, { Value: 1, Label: 'Yes' });
+        const FalseOption = new OptionMetadataMock(0, 'No');
+        const TrueOption = new OptionMetadataMock(1, 'Yes');
         this.Options = [FalseOption, TrueOption];
     }
 }

@@ -1,27 +1,26 @@
-import sinon, { SinonStubbedInstance } from "sinon";
-import { PropertyMap } from "./PropertyTypes/PropertyTypes";
+import * as sinon from "sinon";
+import { SinonStubbedInstance } from "sinon";
+import { ClientMock } from "./Client.mock";
+import { PropertyMap } from "./PropertyTypes/PropertyMap";
 
 export class ContextMock<IInputs extends ComponentFramework.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs> {
-    private _parameters: IInputs;
-    client: ComponentFramework.Client;
+    client: ClientMock;
     device: ComponentFramework.Device;
     factory: ComponentFramework.Factory;
     formatting: ComponentFramework.Formatting;
     mode: ComponentFramework.Mode;
     navigation: ComponentFramework.Navigation;
+    parameters: IInputs;
     resources: ComponentFramework.Resources;
     userSettings: ComponentFramework.UserSettings;
     utils: ComponentFramework.Utility;
     webAPI: ComponentFramework.WebApi;
-    get parameters(): IInputs {
-        return this._parameters;
-    };
     updatedProperties: string[];
     constructor(inputs: PropertyMap<IInputs>) {
-        this._parameters = {} as IInputs;
-        for (let k in inputs) {
-            this.parameters[k] = sinon.createStubInstance(inputs[k])();
-        }
+        this.parameters = {} as IInputs;
+        Object.getOwnPropertyNames(inputs).forEach(k=>{
+            this.parameters[k] = new inputs[k]() ;
+        });
     }
 }

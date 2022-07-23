@@ -6,7 +6,8 @@ export class TestComponentBoolean implements ComponentFramework.ReactControl<IIn
         throw new Error("Method not implemented.");
     }
     init(context: ComponentFramework.Context<IInputs>, notifyOutputChanged?: () => void, state?: ComponentFramework.Dictionary, container?: HTMLDivElement): void {
-        throw new Error("Method not implemented.");
+      console.log(context);
+      notifyOutputChanged();
     }
     destroy(): void {
         throw new Error("Method not implemented.");
