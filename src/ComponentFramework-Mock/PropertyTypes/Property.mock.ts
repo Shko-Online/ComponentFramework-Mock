@@ -1,6 +1,3 @@
-
-
-
 export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
     error: boolean;
     errorMessage: string;

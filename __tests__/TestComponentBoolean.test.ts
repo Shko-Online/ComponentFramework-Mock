@@ -8,6 +8,7 @@ describe("dumb test", () => {
         const mockGenerator = new ComponentFrameworkMockGenerator(TestComponentBoolean, {
             turnedOn: TwoOptionsPropertyMock
         });
+        console.log( mockGenerator.context.parameters.turnedOn.raw)
         mockGenerator.ExecuteInit();
         sinon.assert.calledOnce(mockGenerator.control.init);
         sinon.assert.called(mockGenerator.notifyOutputChanged);
