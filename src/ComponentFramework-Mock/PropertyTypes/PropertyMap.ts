@@ -1,6 +1,13 @@
-import { DateTimePropertyMock } from "./DateTimeProperty.mock";
-import { StringPropertyMock } from "./StringProperty.mock";
-import { TwoOptionsPropertyMock } from "./TwoOptionsProperty.mock";
+import { DateTimePropertyMock }
+    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DateTimeProperty.mock";
+import { DecimalNumberPropertyMock }
+    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DecimalNumberProperty.mock";
+import { StringPropertyMock }
+    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/StringProperty.mock";
+import { TwoOptionsPropertyMock }
+    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/TwoOptionsProperty.mock";
+import { LookupPropertyMock }
+    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/LookupProperty.mock";
 
 export type PropertyMap<T extends ComponentFramework.PropertyTypes<T>> =
     {
@@ -8,15 +15,15 @@ export type PropertyMap<T extends ComponentFramework.PropertyTypes<T>> =
         T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty ?
         new () => DateTimePropertyMock :
         T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty ?
-        never :
+        new () => DecimalNumberPropertyMock :
         T[P] extends ComponentFramework.PropertyTypes.LookupProperty ?
-        never : 
+        new () => LookupPropertyMock :
         T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty ?
-        never : 
+        never :
         T[P] extends ComponentFramework.PropertyTypes.OptionSetProperty ?
-        never : 
+        never :
         T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty ?
-        never : 
+        never :
         T[P] extends ComponentFramework.PropertyTypes.StringProperty ?
         new () => StringPropertyMock :
         T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty ?

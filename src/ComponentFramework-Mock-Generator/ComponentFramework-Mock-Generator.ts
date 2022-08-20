@@ -1,6 +1,6 @@
-import {spy, fake, SinonSpy, SinonSpiedInstance} from "sinon";
-import { ContextMock } from "../ComponentFramework-Mock/Context.mock";
-import { PropertyMap } from "../ComponentFramework-Mock/PropertyTypes/PropertyMap";
+import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
+import { ContextMock } from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Context.mock";
+import { PropertyMap } from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
 
 export class ComponentFrameworkMockGenerator<TInputs extends ComponentFramework.PropertyTypes<TInputs>, TOutputs> {
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
@@ -13,8 +13,11 @@ export class ComponentFrameworkMockGenerator<TInputs extends ComponentFramework.
         inputs: PropertyMap<TInputs>) {
         this.control = spy(new control());
         this.context = new ContextMock(inputs);
-        this.notifyOutputChanged = fake(() => { console.log('notifyOutputChanged') });
-      
+        this.notifyOutputChanged = fake(() => {             
+            console.log('notifyOutputChanged')
+            console.log(this.control.getOutputs?.());
+         });
+
         this.container = document.createElement("div");
     }
 
