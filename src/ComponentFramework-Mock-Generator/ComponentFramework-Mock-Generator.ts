@@ -14,6 +14,7 @@ export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkM
         container?: HTMLDivElement) {
         this.control = spy(new control());
         this.context = new ContextMock(inputs);
+        this.state = {};
         this.notifyOutputChanged = fake(() => {
             console.log('notifyOutputChanged')
             console.log(this.control.getOutputs?.());
@@ -24,5 +25,9 @@ export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkM
 
     ExecuteInit() {
         this.control.init(this.context, this.notifyOutputChanged, this.state, this.container);
+    }
+
+    ExecuteUpdateView() {
+        this.control.updateView(this.context);
     }
 }
