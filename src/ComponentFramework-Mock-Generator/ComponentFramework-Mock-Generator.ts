@@ -10,15 +10,16 @@ export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkM
     private container: HTMLDivElement;
 
     constructor(control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
-        inputs: PropertyMap<TInputs>) {
+        inputs: PropertyMap<TInputs>,
+        container?: HTMLDivElement) {
         this.control = spy(new control());
         this.context = new ContextMock(inputs);
-        this.notifyOutputChanged = fake(() => {             
+        this.notifyOutputChanged = fake(() => {
             console.log('notifyOutputChanged')
             console.log(this.control.getOutputs?.());
-         });
+        });
 
-        this.container = document.createElement("div");
+        this.container = container ?? document.createElement("div");
     }
 
     ExecuteInit() {
