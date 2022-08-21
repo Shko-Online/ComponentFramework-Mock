@@ -9,7 +9,7 @@ import { TwoOptionsPropertyMock }
 import { LookupPropertyMock }
     from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/LookupProperty.mock";
 
-export type PropertyMap<T extends ComponentFramework.PropertyTypes<T>> =
+export type PropertyMap<T extends ComponentFrameworkMock.PropertyTypes<T>> =
     {
         [P in keyof T]:
         T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty ?

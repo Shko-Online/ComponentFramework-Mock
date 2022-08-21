@@ -10,7 +10,7 @@ import { UserSettingsMock } from "./UserSettings.mock";
 import { UtilityMock } from "./Utility.mock";
 import { WebApiMock } from "./WebApi.mock";
 
-export class ContextMock<IInputs extends ComponentFramework.PropertyTypes<IInputs>>
+export class ContextMock<IInputs extends ComponentFrameworkMock.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs> {
     client: ClientMock;
     device: DeviceMock;

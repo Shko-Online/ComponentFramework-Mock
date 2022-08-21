@@ -2,7 +2,7 @@ import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
 import { ContextMock } from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Context.mock";
 import { PropertyMap } from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
 
-export class ComponentFrameworkMockGenerator<TInputs extends ComponentFramework.PropertyTypes<TInputs>, TOutputs> {
+export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>, TOutputs> {
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
     context: ComponentFramework.Context<TInputs>;
     notifyOutputChanged: SinonSpy<[], void>;
