@@ -4,17 +4,21 @@ import { PropertyMap } from "@albanian-xrm/componentframework-mock/ComponentFram
 
 export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>, TOutputs> {
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
-    context: ComponentFramework.Context<TInputs>;
+    context: ContextMock<TInputs>;
     notifyOutputChanged: SinonSpy<[], void>;
-    private state: ComponentFramework.Dictionary;
+    state: ComponentFramework.Dictionary;
+    private setControlState: SinonSpy<[ComponentFramework.Dictionary], boolean>;
     private container: HTMLDivElement;
 
     constructor(control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
         container?: HTMLDivElement) {
+        this.setControlState = fake((state: ComponentFramework.Dictionary) => {
+            this.state = { ...state, ...this.state };
+            return true;
+        });
         this.control = spy(new control());
-        this.context = new ContextMock(inputs);
-        this.state = {};
+        this.context = new ContextMock(inputs, this.setControlState);
         this.notifyOutputChanged = fake(() => {
             console.log('notifyOutputChanged')
             console.log(this.control.getOutputs?.());
@@ -24,7 +28,8 @@ export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkM
     }
 
     ExecuteInit() {
-        this.control.init(this.context, this.notifyOutputChanged, this.state, this.container);
+        const state = this.state === undefined ? this.state : { ...this.state };
+        this.control.init(this.context, this.notifyOutputChanged, state, this.container);
     }
 
     ExecuteUpdateView() {

@@ -1,3 +1,4 @@
+import { SinonSpy } from "sinon";
 import { ClientMock } from "./Client.mock";
 import { DeviceMock } from "./Device.mock";
 import { FactoryMock } from "./Factory.mocks";
@@ -24,12 +25,13 @@ export class ContextMock<IInputs extends ComponentFrameworkMock.PropertyTypes<II
     utils: UtilityMock;
     webAPI: WebApiMock;
     updatedProperties: string[];
-    constructor(inputs: PropertyMap<IInputs>) {
+
+    constructor(inputs: PropertyMap<IInputs>, setControlState:SinonSpy<[ComponentFramework.Dictionary], boolean>) {
         this.client = new ClientMock();
         this.device = new DeviceMock();
         this.factory = new FactoryMock();
         this.formatting = new FormattingMock();
-        this.mode = new ModeMock();
+        this.mode = new ModeMock(setControlState);
         this.navigation = new NavigationMock();
         this.parameters = {} as IInputs;
         Object.getOwnPropertyNames(inputs).forEach(k => {
