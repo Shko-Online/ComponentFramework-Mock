@@ -1,5 +1,5 @@
 import { MetadataMock }
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock";
 
 export class StringMetadataMock
     extends MetadataMock

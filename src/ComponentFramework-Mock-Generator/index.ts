@@ -1,3 +1,3 @@
 export { ComponentFrameworkMockGenerator }
-    from '@albanian-xrm/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator';
+    from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator';
     

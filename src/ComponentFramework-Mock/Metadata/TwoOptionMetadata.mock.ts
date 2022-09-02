@@ -1,7 +1,7 @@
 import { MetadataMock } 
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock";
 import { OptionMetadataMock } 
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock";
 
 export class TwoOptionMetadataMock 
     extends MetadataMock

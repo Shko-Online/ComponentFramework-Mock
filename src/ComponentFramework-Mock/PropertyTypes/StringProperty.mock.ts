@@ -1,7 +1,7 @@
 import { PropertyMock } from
-    '@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+    '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 import { StringMetadataMock } from
-    '@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
+    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
 
 export class StringPropertyMock
     extends PropertyMock

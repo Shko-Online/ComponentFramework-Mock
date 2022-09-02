@@ -1,13 +1,13 @@
 import { DateTimePropertyMock }
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DateTimeProperty.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DateTimeProperty.mock";
 import { DecimalNumberPropertyMock }
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DecimalNumberProperty.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DecimalNumberProperty.mock";
 import { StringPropertyMock }
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/StringProperty.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/StringProperty.mock";
 import { TwoOptionsPropertyMock }
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/TwoOptionsProperty.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/TwoOptionsProperty.mock";
 import { LookupPropertyMock }
-    from "@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/LookupProperty.mock";
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/LookupProperty.mock";
 
 export type PropertyMap<T extends ComponentFrameworkMock.PropertyTypes<T>> =
     {

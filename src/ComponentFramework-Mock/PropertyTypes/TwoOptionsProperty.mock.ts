@@ -1,8 +1,8 @@
 import sinon, { SinonStubbedInstance } from "sinon";
 import { PropertyMock } from
-    '@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+    '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 import { TwoOptionMetadataMock } from
-    '@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
+    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
 
 export class TwoOptionsPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.TwoOptionsProperty {
     raw: boolean;

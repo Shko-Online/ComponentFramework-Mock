@@ -1,7 +1,7 @@
 import { PropertyMock } from
-    '@albanian-xrm/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+    '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 import { DecimalNumberMetadataMock } from
-    '@albanian-xrm/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
+    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
 
 export class DecimalNumberPropertyMock 
     extends PropertyMock 
