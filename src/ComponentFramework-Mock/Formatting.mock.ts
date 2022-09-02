@@ -1,4 +1,4 @@
-import  { fake, SinonSpy } from "sinon";
+import { fake, SinonSpy } from "sinon";
 
 export class FormattingMock implements ComponentFramework.Formatting {
     formatCurrency: SinonSpy<[value: number, precision?: number, symbol?: string], string>;
@@ -36,13 +36,21 @@ export class FormattingMock implements ComponentFramework.Formatting {
             throw new Error("Method not implemented.");
         });
         this.formatDateLongAbbreviated = fake((value: Date) => {
-            throw new Error("Method not implemented.");
+            return value !== null ? value.toLocaleString(this.locale, {
+                day: '2-digit',
+                weekday: 'short',
+                year: 'numeric',
+                month: 'long',
+            }) : null;
         });
         this.formatDateShort = fake((value: Date, includeTime?: boolean) => {
             throw new Error("Method not implemented.");
         });
         this.formatDateYearMonth = fake((value: Date) => {
-            return `${value}`;
+            return value !== null ? value.toLocaleString(this.locale, {
+                year: 'numeric',
+                month: 'long',
+            }) : null;
         });
         this.formatInteger = fake((value: number) => {
             return `${value}`;
