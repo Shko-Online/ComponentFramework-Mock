@@ -1,4 +1,4 @@
-import Sinon, { fake, SinonSpy } from "sinon";
+import  { fake, SinonSpy } from "sinon";
 
 export class FormattingMock implements ComponentFramework.Formatting {
     formatCurrency: SinonSpy<[value: number, precision?: number, symbol?: string], string>;
@@ -12,13 +12,22 @@ export class FormattingMock implements ComponentFramework.Formatting {
     formatLanguage: SinonSpy<[value: number], string>;
     formatTime: SinonSpy<[value: Date, behavior: ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior], string>;
     getWeekOfYear: SinonSpy<[value: Date], number>;
-
+    locale: 'en-US' | 'it-IT'
     constructor() {
+        this.locale = 'en-US';
         this.formatCurrency = fake((value: number, precision?: number, symbol?: string) => {
-            return `${value}`;
+            return value.toLocaleString(this.locale, {
+                maximumSignificantDigits: precision,
+                currencySign: symbol
+            });
         })
         this.formatDecimal = fake((value: number, precision?: number) => {
-            return `${value}`;
+            return value.toLocaleString(
+                this.locale,
+                {
+                    maximumSignificantDigits: precision
+                }
+            );
         });
         this.formatDateAsFilterStringInUTC = fake((value: Date, includeTime?: boolean) => {
             throw new Error("Method not implemented.");
@@ -48,11 +57,11 @@ export class FormattingMock implements ComponentFramework.Formatting {
             const leapYear = value.getFullYear() % 4 === 0;
             const monthDays = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
             let dayOfYear = 0;
-            for(let i=0;i<value.getMonth();i++){
+            for (let i = 0; i < value.getMonth(); i++) {
                 dayOfYear += monthDays[i];
             }
             dayOfYear += value.getDate();
-            return Math.ceil(dayOfYear/7);
+            return Math.ceil(dayOfYear / 7);
         });
     }
 }
