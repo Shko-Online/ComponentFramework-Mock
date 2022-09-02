@@ -7,6 +7,14 @@ declare namespace ComponentFrameworkMock {
             ComponentFramework.PropertyTypes.TwoOptionsProperty :
             T[P] extends ComponentFramework.PropertyTypes.StringProperty ?
             ComponentFramework.PropertyTypes.StringProperty :
+            T[P] extends ComponentFramework.PropertyTypes.NumberProperty ?
+            ComponentFramework.PropertyTypes.NumberProperty :
+            T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty ?
+            ComponentFramework.PropertyTypes.DateTimeProperty :
+            T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty ?
+            ComponentFramework.PropertyTypes.DecimalNumberProperty :
+            T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty ?
+            ComponentFramework.PropertyTypes.WholeNumberProperty :
             never
         }
 
