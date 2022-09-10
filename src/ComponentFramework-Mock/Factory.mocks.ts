@@ -1,15 +1,11 @@
-import { stub, SinonStubbedMember } from "sinon";
+import { stub, SinonStub } from "sinon";
 import { PopupServiceMock } from "./FactoryApi/PopupService.mock";
 export class FactoryMock implements ComponentFramework.Factory {
     popupService = new PopupServiceMock();
-    getPopupService(): SinonStubbedMember<PopupServiceMock> {
-        throw new Error("Method not implemented.");
-    }
-    requestRender(): void {
-        throw new Error("Method not implemented.");
-    }
+    getPopupService: SinonStub<[void], PopupServiceMock>;
+    requestRender: SinonStub<[void], void>;
     constructor() {
-        stub(this, "getPopupService").returns(this.popupService);
-        stub(this, "requestRender");
+        this.getPopupService = stub<[void], PopupServiceMock>().returns(this.popupService);
+        this.requestRender = stub<[void], void>();
     }
 }

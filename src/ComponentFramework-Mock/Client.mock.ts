@@ -1,20 +1,14 @@
-import { stub, SinonStubbedMember } from "sinon";
+import { stub, SinonStub } from "sinon";
 
 export class ClientMock implements ComponentFramework.Client {
     disableScroll: boolean;
-    getClient(): SinonStubbedMember<string> {
-        throw new Error("Method not implemented.");
-    }
-    getFormFactor(): SinonStubbedMember<number> {
-        throw new Error("Method not implemented.");
-    }
-    isOffline(): SinonStubbedMember<boolean> {
-        throw new Error("Method not implemented.");
-    }
+    getClient: SinonStub<[void], string>;
+    getFormFactor: SinonStub<[void], number>;
+    isOffline: SinonStub<[void], boolean>;
     constructor() {
         this.disableScroll = false;
-        stub(this, "getClient").returns("Web");
-        stub(this, "getFormFactor").returns(1);
-        stub(this, "isOffline").returns(false);
+        this.getClient = stub<[void], string>().returns("Web");
+        this.getFormFactor = stub<[void], number>().returns(1);
+        this.isOffline = stub<[void], boolean>().returns(false);
     }
 }
