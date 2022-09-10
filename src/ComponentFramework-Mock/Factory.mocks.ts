@@ -5,7 +5,8 @@ export class FactoryMock implements ComponentFramework.Factory {
     getPopupService: SinonStub<[void], PopupServiceMock>;
     requestRender: SinonStub<[void], void>;
     constructor() {
-        this.getPopupService = stub<[void], PopupServiceMock>().returns(this.popupService);
+        this.getPopupService = stub<[void], PopupServiceMock>();
+        this.getPopupService.returns(this.popupService);
         this.requestRender = stub<[void], void>();
     }
 }

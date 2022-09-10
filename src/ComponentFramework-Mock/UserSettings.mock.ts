@@ -1,3 +1,5 @@
+import { SinonStub, stub } from "sinon";
+
 export class UserSettingsMock implements ComponentFramework.UserSettings{
     dateFormattingInfo: ComponentFramework.UserSettingApi.DateFormattingInfo;
     isRTL: boolean;
@@ -6,7 +8,8 @@ export class UserSettingsMock implements ComponentFramework.UserSettings{
     securityRoles: string[];
     userId: string;
     userName: string;
-    getTimeZoneOffsetMinutes(date?: Date): number {
-        throw new Error("Method not implemented.");
+    getTimeZoneOffsetMinutes:SinonStub<[date?: Date], number>;
+    constructor() {
+        //to-do
     }
 }
