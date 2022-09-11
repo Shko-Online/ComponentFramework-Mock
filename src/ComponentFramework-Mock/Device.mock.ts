@@ -8,15 +8,15 @@ export class DeviceMock implements ComponentFramework.Device {
     getCurrentPosition: SinonStub<[], Promise<ComponentFramework.DeviceApi.Position>>;
     pickFile: SinonStub<[options?: ComponentFramework.DeviceApi.PickFileOptions], Promise<ComponentFramework.FileObject[]>>;
     constructor() {
-        this.captureAudio = stub<[], Promise<ComponentFramework.FileObject>>();
+        this.captureAudio = stub();
 
-        this.captureImage = stub<[options?: ComponentFramework.DeviceApi.CaptureImageOptions], Promise<ComponentFramework.FileObject>>();
+        this.captureImage = stub();
 
-        this.captureVideo = stub<[], Promise<ComponentFramework.FileObject>>();
+        this.captureVideo = stub();
 
-        this.getBarcodeValue = stub<[], Promise<string>>();
+        this.getBarcodeValue = stub();
 
-        this.getCurrentPosition = stub<[], Promise<ComponentFramework.DeviceApi.Position>>();
+        this.getCurrentPosition = stub();
         const currentPositionPromise = new Promise<ComponentFramework.DeviceApi.Position>((resolve) => {
             resolve({
                 coords: {
@@ -32,7 +32,7 @@ export class DeviceMock implements ComponentFramework.Device {
             })
         });
         this.getCurrentPosition.returns(currentPositionPromise);
-        this.pickFile = stub<[options?: ComponentFramework.DeviceApi.PickFileOptions], Promise<ComponentFramework.FileObject[]>>();
+        this.pickFile = stub();
 
     }
 }

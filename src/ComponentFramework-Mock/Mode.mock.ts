@@ -10,8 +10,10 @@ export class ModeMock implements ComponentFramework.Mode {
     setFullScreen: SinonStub<[value: boolean],void>;
     trackContainerResize: SinonStub<[value: boolean],void>;
     constructor() {
-        this.setControlState = stub<[ComponentFramework.Dictionary], boolean>();
-        this.setFullScreen = stub<[value: boolean],void>();
-        this.trackContainerResize = stub<[value: boolean],void>();
+        this.setControlState = stub(); // this is mocked in ComponentFrameworkMockGenerator
+        this.setFullScreen = stub();
+
+        this.trackContainerResize = stub();
+        
     }
 }

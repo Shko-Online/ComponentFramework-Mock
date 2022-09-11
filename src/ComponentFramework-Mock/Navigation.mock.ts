@@ -9,6 +9,18 @@ export class NavigationMock implements ComponentFramework.Navigation {
     openUrl: SinonStub<[url: string, options?: ComponentFramework.NavigationApi.OpenUrlOptions], void>;
     openWebResource: SinonStub<[name: string, options?: ComponentFramework.NavigationApi.OpenWebResourceOptions, data?: string], void>;
     constructor(){
-        //to-do
+        this.openAlertDialog = stub();
+
+        this.openConfirmDialog = stub();
+
+        this.openErrorDialog = stub();
+
+        this.openFile = stub();
+
+        this.openForm = stub();
+
+        this.openUrl = stub();
+
+        this.openWebResource = stub();
     }
 }

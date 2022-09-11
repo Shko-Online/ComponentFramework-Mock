@@ -1,4 +1,3 @@
-import Sinon, { stub, SinonSpy, SinonStub, SinonMock} from "sinon";
 import { ClientMock } from "./Client.mock";
 import { DeviceMock } from "./Device.mock";
 import { FactoryMock } from "./Factory.mocks";

@@ -7,11 +7,11 @@ export class ClientMock implements ComponentFramework.Client {
     isOffline: SinonStub<[], boolean>;
     constructor() {
         this.disableScroll = false;
-        this.getClient = stub<[], string>();
+        this.getClient = stub();
         this.getClient.returns("Web");
-        this.getFormFactor = stub<[], number>();
+        this.getFormFactor = stub();
         this.getFormFactor.returns(1);
-        this.isOffline = stub<[], boolean>();
+        this.isOffline = stub();
         this.isOffline.returns(false);
     }
 }

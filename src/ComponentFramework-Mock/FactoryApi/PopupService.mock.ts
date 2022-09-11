@@ -9,6 +9,18 @@ export class PopupServiceMock implements ComponentFramework.FactoryApi.Popup.Pop
     setPopupsId: SinonStub<[id: string], void>;
     getPopupsId: SinonStub<[], string>;
     constructor(){
-        //to-do
+       this.createPopup = stub();
+
+       this.openPopup = stub();
+
+       this.closePopup = stub();
+
+       this.updatePopup = stub();
+
+       this.deletePopup = stub();
+
+       this.setPopupsId = stub();
+
+       this.getPopupsId = stub();
     }
 }

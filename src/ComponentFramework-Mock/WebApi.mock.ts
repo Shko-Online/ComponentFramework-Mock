@@ -7,15 +7,15 @@ export class WebApiMock implements ComponentFramework.WebApi {
     retrieveMultipleRecords: SinonStub<[entityType: string, options?: string, maxPageSize?: number], Promise<ComponentFramework.WebApi.RetrieveMultipleResponse>>;
     retrieveRecord: SinonStub<[entityType: string, id: string, options?: string], Promise<ComponentFramework.WebApi.Entity>>;
     constructor() {
-        this.createRecord = stub<[entityType: string, data: ComponentFramework.WebApi.Entity], Promise<ComponentFramework.LookupValue>>();
+        this.createRecord = stub();
 
-        this.deleteRecord = stub<[entityType: string, id: string], Promise<ComponentFramework.LookupValue>>();
+        this.deleteRecord = stub();
 
-        this.updateRecord = stub<[entityType: string, id: string, data: ComponentFramework.WebApi.Entity], Promise<ComponentFramework.LookupValue>>();
+        this.updateRecord = stub();
 
-        this.retrieveMultipleRecords = stub<[entityType: string, options?: string, maxPageSize?: number], Promise<ComponentFramework.WebApi.RetrieveMultipleResponse>>();
+        this.retrieveMultipleRecords = stub();
 
-        this.retrieveRecord = stub<[entityType: string, id: string, options?: string], Promise<ComponentFramework.WebApi.Entity>>();
+        this.retrieveRecord = stub();
 
     }
 }

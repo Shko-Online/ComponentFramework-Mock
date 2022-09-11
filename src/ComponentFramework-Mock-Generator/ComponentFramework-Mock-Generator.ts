@@ -7,7 +7,7 @@ export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkM
     context: ContextMock<TInputs>;
     notifyOutputChanged: SinonSpy<[], void>;
     state: ComponentFramework.Dictionary;
-    private container: HTMLDivElement;
+    container: HTMLDivElement;
 
     constructor(control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,

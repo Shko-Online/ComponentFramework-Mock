@@ -1,6 +1,6 @@
 import { SinonStub, stub } from "sinon";
 
-export class UserSettingsMock implements ComponentFramework.UserSettings{
+export class UserSettingsMock implements ComponentFramework.UserSettings {
     dateFormattingInfo: ComponentFramework.UserSettingApi.DateFormattingInfo;
     isRTL: boolean;
     languageId: number;
@@ -8,8 +8,8 @@ export class UserSettingsMock implements ComponentFramework.UserSettings{
     securityRoles: string[];
     userId: string;
     userName: string;
-    getTimeZoneOffsetMinutes:SinonStub<[date?: Date], number>;
+    getTimeZoneOffsetMinutes: SinonStub<[date?: Date], number>;
     constructor() {
-        //to-do
+        this.getTimeZoneOffsetMinutes = stub();
     }
 }

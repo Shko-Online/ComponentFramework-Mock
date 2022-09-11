@@ -4,6 +4,8 @@ export class ResourcesMock implements ComponentFramework.Resources {
     getResource: SinonStub<[id: string, success: (data: string) => void, failure: () => void], void>;
     getString: SinonStub<[id: string], string>;
     constructor() {
-        //to-do
+        this.getResource = stub();
+
+        this.getString = stub();
     }
 }

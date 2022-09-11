@@ -15,14 +15,14 @@ export class FormattingMock implements ComponentFramework.Formatting {
     locale: 'en-US' | 'it-IT'
     constructor() {
         this.locale = 'en-US';
-        this.formatCurrency = stub<[value: number, precision?: number, symbol?: string], string>();
+        this.formatCurrency = stub();
         this.formatCurrency.callsFake((value: number, precision?: number, symbol?: string) => {
             return value.toLocaleString(this.locale, {
                 maximumSignificantDigits: precision,
                 currencySign: symbol
             });
         })
-        this.formatDecimal = stub<[value: number, precision?: number], string>();
+        this.formatDecimal = stub();
         this.formatDecimal.callsFake((value: number, precision?: number) => {
             return value.toLocaleString(
                 this.locale,
@@ -31,15 +31,15 @@ export class FormattingMock implements ComponentFramework.Formatting {
                 }
             );
         });
-        this.formatDateAsFilterStringInUTC = stub<[value: Date, includeTime?: boolean], string>();
+        this.formatDateAsFilterStringInUTC = stub();
         this.formatDateAsFilterStringInUTC.callsFake((value: Date, includeTime?: boolean) => {
             throw new Error("Method not implemented.");
         });
-        this.formatDateLong = stub<[value: Date], string>();
+        this.formatDateLong = stub();
         this.formatDateLong.callsFake((value: Date) => {
             throw new Error("Method not implemented.");
         });
-        this.formatDateLongAbbreviated = stub<[value: Date], string>();
+        this.formatDateLongAbbreviated = stub();
         this.formatDateLongAbbreviated.callsFake((value: Date) => {
             return value !== null ? value.toLocaleString(this.locale, {
                 day: '2-digit',
@@ -48,30 +48,30 @@ export class FormattingMock implements ComponentFramework.Formatting {
                 month: 'long',
             }) : null;
         });
-        this.formatDateShort = stub<[value: Date, includeTime?: boolean], string>();
+        this.formatDateShort = stub();
         this.formatDateShort.callsFake((value: Date, includeTime?: boolean) => {
             throw new Error("Method not implemented.");
         });
-        this.formatDateYearMonth = stub<[value: Date], string>();
+        this.formatDateYearMonth = stub();
         this.formatDateYearMonth.callsFake((value: Date) => {
             return value !== null ? value.toLocaleString(this.locale, {
                 year: 'numeric',
                 month: 'long',
             }) : null;
         });
-        this.formatInteger = stub<[value: number], string>();
+        this.formatInteger = stub();
         this.formatInteger.callsFake((value: number) => {
             return `${value}`;
         });
-        this.formatLanguage = stub<[value: number], string>();
+        this.formatLanguage = stub();
         this.formatLanguage.callsFake((value: number) => {
             return `${value}`
         });
-        this.formatTime = stub<[value: Date, behavior: ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior], string>();
+        this.formatTime = stub();
         this.formatTime.callsFake((value: Date, behavior: ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior) => {
             throw new Error("Method not implemented.");
         });
-        this.getWeekOfYear = stub<[value: Date], number>();
+        this.getWeekOfYear = stub();
         this.getWeekOfYear.callsFake((value: Date) => {
             const leapYear = value.getFullYear() % 4 === 0;
             const monthDays = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];

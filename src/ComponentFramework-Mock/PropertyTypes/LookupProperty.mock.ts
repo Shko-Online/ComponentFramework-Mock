@@ -4,6 +4,7 @@ import { PropertyMock } from "./Property.mock";
 export class LookupPropertyMock
     extends PropertyMock
     implements ComponentFramework.PropertyTypes.LookupProperty {
+    raw: ComponentFramework.LookupValue[];
     getTargetEntityType: SinonStub<[], string>;
     getViewId: SinonStub<[], string>;
     constructor() {
