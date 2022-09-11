@@ -13,6 +13,8 @@ declare namespace ComponentFrameworkMock {
             ComponentFramework.PropertyTypes.DateTimeProperty :
             T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty ?
             ComponentFramework.PropertyTypes.DecimalNumberProperty :
+            T[P] extends ComponentFramework.PropertyTypes.LookupProperty ?
+            ComponentFramework.PropertyTypes.LookupProperty :
             T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty ?
             ComponentFramework.PropertyTypes.WholeNumberProperty :
             never
