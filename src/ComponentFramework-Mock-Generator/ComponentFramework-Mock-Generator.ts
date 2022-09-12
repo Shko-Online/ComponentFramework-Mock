@@ -22,6 +22,14 @@ export class ComponentFrameworkMockGenerator<TInputs extends ComponentFrameworkM
         this.notifyOutputChanged = fake(() => {
             console.log('notifyOutputChanged')
             console.log(this.control.getOutputs?.());
+            const updates = this.control.getOutputs?.();
+            for(let k in updates){
+                if(k in this.context.parameters){
+                    // @ts-ignore
+                 this.context.parameters[k].raw =   updates[k]; 
+                }
+
+            }
         });
 
         this.container = container ?? document.createElement("div");
