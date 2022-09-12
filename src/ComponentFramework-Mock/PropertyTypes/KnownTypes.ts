@@ -13,13 +13,17 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { MetadataMock }
-    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock";
-
-export class StringMetadataMock
-    extends MetadataMock
-    implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.StringMetadata {
-    Format: string;
-    ImeMode: ComponentFramework.PropertyHelper.Types.ImeMode;
-    MaxLength: number;
+export type KnownTypes<T> = {
+    [P in keyof T]:
+        T[P] extends string ?
+            string :
+            T[P] extends number ?
+            number :
+            T[P] extends Date ?
+            Date :
+            T[P] extends boolean ?
+            boolean :
+            T[P] extends ComponentFramework.LookupValue[] ?
+            ComponentFramework.LookupValue[] :
+           never 
 }
