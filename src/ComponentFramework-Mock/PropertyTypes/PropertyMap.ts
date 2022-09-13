@@ -25,6 +25,7 @@ import { LookupPropertyMock }
     from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/LookupProperty.mock";
 import { NumberPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock";
 import { WholeNumberPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/WholeNumberProperty.mock";
+import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
 
 export type PropertyMap<T extends ComponentFrameworkMock.PropertyTypes<T>> =
     {
@@ -36,7 +37,7 @@ export type PropertyMap<T extends ComponentFrameworkMock.PropertyTypes<T>> =
         T[P] extends ComponentFramework.PropertyTypes.LookupProperty ?
         new () => LookupPropertyMock :
         T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty ?
-        never :
+        new() => MultiSelectOptionSetPropertyMock :
         T[P] extends ComponentFramework.PropertyTypes.OptionSetProperty ?
         never :
         T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty ?

@@ -25,5 +25,7 @@ export type KnownTypes<T> = {
             boolean :
             T[P] extends ComponentFramework.LookupValue[] ?
             ComponentFramework.LookupValue[] :
+            T[P] extends number[] ?
+            number[] :
            never 
 }

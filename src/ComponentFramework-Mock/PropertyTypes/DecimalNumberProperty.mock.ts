@@ -13,17 +13,22 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { DecimalNumberMetadataMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
+import { NumberPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock";
+import { DecimalNumberMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock";
+import { SinonStub, stub } from "sinon";
 
-export class DecimalNumberPropertyMock 
-    extends PropertyMock 
-    implements ComponentFramework.PropertyTypes.DecimalNumberProperty {
-    attributes?: DecimalNumberMetadataMock
-    constructor(defaultValue?: Date) {
-        super();
-        this.raw = defaultValue;     
-    }
+export class DecimalNumberPropertyMock
+  extends NumberPropertyMock
+  implements ComponentFramework.PropertyTypes.DecimalNumberProperty
+{
+  attributes?: DecimalNumberMetadataMock;
+  setValue: SinonStub<[value: number | null], void>;
+  constructor(defaultValue?: number) {
+    super();
+    this.setValue = stub();
+    this.setValue.callsFake((value) => {
+      this.raw = value;
+      this.formatted = "" + value;
+    });
+  }
 }

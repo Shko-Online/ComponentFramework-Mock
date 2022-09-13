@@ -17,15 +17,22 @@ import { PropertyMock } from
     '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 import { StringMetadataMock } from
     '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
+import { SinonStub, stub } from 'sinon';
 
 export class StringPropertyMock
     extends PropertyMock
     implements ComponentFramework.PropertyTypes.StringProperty {
-    raw: string;
-    attributes: StringMetadataMock
+    raw: string | null;
+    attributes: StringMetadataMock;
+    setValue: SinonStub<[value: string|null],void>;
     constructor(defaultValue?: string) {
         super();
         this.raw = defaultValue;
         this.attributes = new StringMetadataMock();
+        this.setValue = stub();
+        this.setValue.callsFake((value)=>{
+            this.raw = value;
+            this.formatted = value;
+        })
     }
 }

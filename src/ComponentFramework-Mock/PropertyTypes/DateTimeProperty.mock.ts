@@ -13,19 +13,24 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { DateTimeMetadataMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock';
+import { PropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock";
+import { DateTimeMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock";
+import { SinonStub } from "sinon";
 
 export class DateTimePropertyMock
-    extends PropertyMock
-    implements ComponentFramework.PropertyTypes.DateTimeProperty {
-    raw: Date;
-    attributes: DateTimeMetadataMock
-    constructor(defaultValue?: Date) {
-        super();
-        this.raw = defaultValue;
-        this.attributes = new DateTimeMetadataMock();
-    }
+  extends PropertyMock
+  implements ComponentFramework.PropertyTypes.DateTimeProperty
+{
+  raw: Date;
+  attributes: DateTimeMetadataMock;
+  setValue: SinonStub<[value: Date|null], void>;
+  constructor(defaultValue?: Date) {
+    super();
+    this.raw = defaultValue;
+    this.attributes = new DateTimeMetadataMock();
+    this.setValue.callsFake((value) => {
+      this.raw = value;
+      this.formatted = value?.toLocaleTimeString();
+    });
+  }
 }

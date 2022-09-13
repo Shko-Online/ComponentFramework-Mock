@@ -32,6 +32,8 @@ declare namespace ComponentFrameworkMock {
             ComponentFramework.PropertyTypes.LookupProperty :
             T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty ?
             ComponentFramework.PropertyTypes.WholeNumberProperty :
+            T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty ?
+            ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty :
             never
         }
 

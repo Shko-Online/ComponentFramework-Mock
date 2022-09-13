@@ -13,16 +13,19 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { WholeNumberMetadataMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
-import { NumberPropertyMock } from './NumberProperty.mock';
+import { MetadataMock } 
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock";
+import { OptionMetadataMock } 
+    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock";
 
-export class WholeNumberPropertyMock
-    extends NumberPropertyMock
-    implements ComponentFramework.PropertyTypes.WholeNumberProperty {
-    attributes?: WholeNumberMetadataMock
+export class OptionSetMetadataMock 
+    extends MetadataMock
+    implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.OptionSetMetadata {
+        Options: OptionMetadataMock[];
+        DefaultValue: number;
     constructor(defaultValue?: number) {
-        super();
-        this.raw = defaultValue;
+        super();              
+        this.Options = [];
+        this.DefaultValue = defaultValue;
     }
 }
