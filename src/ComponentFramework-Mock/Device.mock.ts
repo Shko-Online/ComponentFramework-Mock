@@ -33,12 +33,47 @@ export class DeviceMock implements ComponentFramework.Device {
   >;
   constructor() {
     this.captureAudio = stub();
+    this.captureAudio.callsFake(()=>{
+      return new Promise<ComponentFramework.FileObject>((resolve) => {
+        resolve({
+          fileContent: "demo",
+              fileName: "fakeFile.wav",
+              fileSize: 200,
+              mimeType: "audio/wav",
+        })
+      })
+    })
 
     this.captureImage = stub();
+    this.captureImage.callsFake((options?: ComponentFramework.DeviceApi.CaptureImageOptions) =>{
+      return new Promise<ComponentFramework.FileObject>((resolve) =>{
+        resolve({
+          fileContent: "demo",
+          fileName: "fakeFile.png",
+          fileSize: 200,
+          mimeType: "image/png",
+        })
+      })
+    })
 
     this.captureVideo = stub();
+    this.captureVideo.callsFake(()=>{
+      return new Promise<ComponentFramework.FileObject>((resolve) =>{
+        resolve({
+          fileContent: "demo",
+          fileName: "fakeFile.mp4",
+          fileSize: 2000,
+          mimeType: "video/mp4",
+        })
+      })
+    })
 
     this.getBarcodeValue = stub();
+    this.getBarcodeValue.callsFake(() => {
+      return new Promise<string>((resolve) =>{
+        resolve ("SHKO-ONLINE");
+      })
+    })
 
     this.getCurrentPosition = stub();
     const currentPositionPromise =

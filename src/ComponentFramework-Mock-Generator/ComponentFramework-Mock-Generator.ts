@@ -30,7 +30,6 @@ export class ComponentFrameworkMockGenerator<
     constructor(control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
         container?: HTMLDivElement) {
-
         this.control = spy(new control());
         this.context = new ContextMock(inputs);
         this.context.mode.setControlState.callsFake((state: ComponentFramework.Dictionary) => {
@@ -41,8 +40,12 @@ export class ComponentFrameworkMockGenerator<
             console.log('notifyOutputChanged')
             console.log(this.control.getOutputs?.());
             const updates = this.control.getOutputs?.();
+            this.context.updatedProperties = []
             for (let k in updates) {
                 if (k in this.context.parameters) {
+                    if(this.context.parameters[k].raw!=updates[k]){
+                        this.context.updatedProperties.push(k);
+                    }
                     this.context.parameters[k].raw = updates[k];
                 }
             }
