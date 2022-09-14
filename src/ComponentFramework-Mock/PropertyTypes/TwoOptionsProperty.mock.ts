@@ -14,16 +14,27 @@
 */
 
 import { PropertyMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+	'@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 import { TwoOptionMetadataMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
+	'@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
+import { SinonStub, stub } from 'sinon';
 
 export class TwoOptionsPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.TwoOptionsProperty {
-    raw: boolean;
-    attributes?: TwoOptionMetadataMock;
-    constructor(defaultValue?: boolean) {
-        super();
-        this.raw = defaultValue;
-        this.attributes = new TwoOptionMetadataMock();
-    }
+	raw: boolean;
+	attributes?: TwoOptionMetadataMock;
+	setValue: SinonStub<[value: boolean], void>;
+	constructor(defaultValue?: boolean) {
+		super();
+		this.raw = defaultValue;
+		this.attributes = new TwoOptionMetadataMock();
+		this.setValue = stub();
+		this.setValue.callsFake((value) => {
+			this.raw = value;
+			if (this.attributes) {
+				this.formatted = this.attributes.Options[value ? 1 : 0].Label;
+			} else {
+				this.formatted = '' + value;
+			}
+		})
+	}
 }

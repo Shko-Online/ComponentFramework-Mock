@@ -30,6 +30,7 @@ export class LookupPropertyMock
     this.getTargetEntityType.returns("mocked_entity");
     this.getViewId = stub();
     this.getViewId.returns("00000000-0000-0000-0000-000000000000");
+    this.setValue = stub();
     this.setValue.callsFake((value) => {
       this.raw = value;
       this.formatted = value.map((lookup) => lookup.name).join(",");

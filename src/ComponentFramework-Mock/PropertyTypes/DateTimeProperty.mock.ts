@@ -15,7 +15,7 @@
 
 import { PropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock";
 import { DateTimeMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock";
-import { SinonStub } from "sinon";
+import { SinonStub, stub } from "sinon";
 
 export class DateTimePropertyMock
   extends PropertyMock
@@ -28,6 +28,7 @@ export class DateTimePropertyMock
     super();
     this.raw = defaultValue;
     this.attributes = new DateTimeMetadataMock();
+    this.setValue = stub();
     this.setValue.callsFake((value) => {
       this.raw = value;
       this.formatted = value?.toLocaleTimeString();

@@ -15,6 +15,7 @@
 
 import { PropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock";
 import { NumberMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/NumberMetadata.mock";
+import { SinonStub, stub } from "sinon";
 
 export class NumberPropertyMock
   extends PropertyMock
@@ -22,8 +23,14 @@ export class NumberPropertyMock
 {
   attributes?: NumberMetadataMock;
   raw: number | null;
+  setValue: SinonStub<[value:number|null],void>;
   constructor(defaultValue?: number) {
     super();
     this.raw = defaultValue;
+	this.setValue = stub();
+	this.setValue.callsFake((value)=>{
+		this.raw = value;
+		this.formatted = ''+value;
+	})
   }
 }

@@ -14,15 +14,22 @@
 */
 
 import { WholeNumberMetadataMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
+	'@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
+import { SinonStub, stub } from 'sinon';
 import { NumberPropertyMock } from './NumberProperty.mock';
 
 export class WholeNumberPropertyMock
-    extends NumberPropertyMock
-    implements ComponentFramework.PropertyTypes.WholeNumberProperty {
-    attributes?: WholeNumberMetadataMock
-    constructor(defaultValue?: number) {
-        super();
-        this.raw = defaultValue;
-    }
+	extends NumberPropertyMock
+	implements ComponentFramework.PropertyTypes.WholeNumberProperty {
+	attributes?: WholeNumberMetadataMock
+	setValue: SinonStub<[value: number | null], void>;
+	constructor(defaultValue?: number) {
+		super();
+		this.raw = defaultValue;
+		this.setValue = stub();
+		this.setValue.callsFake((value) => {
+			this.raw = value;
+			this.formatted = '' + value;
+		})
+	}
 }
