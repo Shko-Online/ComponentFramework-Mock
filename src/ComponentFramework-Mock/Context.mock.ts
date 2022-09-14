@@ -41,6 +41,7 @@ export class ContextMock<IInputs extends ComponentFrameworkMock.PropertyTypes<II
     updatedProperties: string[];
 
     constructor(inputs: PropertyMap<IInputs>) {
+        this.updatedProperties = [];
         this.client = new ClientMock();
         this.device = new DeviceMock();
         this.factory = new FactoryMock();
