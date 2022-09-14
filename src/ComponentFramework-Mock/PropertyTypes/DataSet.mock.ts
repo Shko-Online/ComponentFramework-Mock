@@ -20,7 +20,7 @@ import { LinkingMock } from "./DataSetApi/Linking.mock";
 import { EntityRecord } from "./DataSetApi/EntityRecord.mock";
 
 export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
-  addColumn?: (name: string, entityAlias?: string) => void;
+  addColumn?: SinonStub<[name: string, entityAlias?: string], void>;
   columns: ComponentFramework.PropertyHelper.DataSetApi.Column[];
   error: boolean;
   errorMessage: string;
@@ -45,6 +45,13 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
   refresh: SinonStub<[], void>;
   setSelectedRecordIds: SinonStub<[ids: string[]], void>;
   constructor() {
+    this.loading = false;
+    this.sortedRecordIds = [];
+    this.sorting = [];
+    this.columns = [];
+    this.paging = new PagingMock();
+    this.filtering = new FilteringMock();
+    this.records = {};
     this.clearSelectedRecordIds = stub();
     this.getSelectedRecordIds = stub();
     this.addColumn = stub();
@@ -55,6 +62,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     this.openDatasetItem = stub();
     this.refresh = stub();
     this.setSelectedRecordIds = stub();
+    this.addColumn= stub();
   }
 
 }

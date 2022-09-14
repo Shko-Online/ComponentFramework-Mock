@@ -43,9 +43,11 @@ export class ComponentFrameworkMockGenerator<
             this.context.updatedProperties = []
             for (let k in updates) {
                 if (k in this.context.parameters) {
+                    // @ts-ignore
                     if(this.context.parameters[k].raw!=updates[k]){
                         this.context.updatedProperties.push(k);
                     }
+                    // @ts-ignore
                     this.context.parameters[k].raw = updates[k];
                 }
             }
