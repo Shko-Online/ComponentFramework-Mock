@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import Sinon, { SinonStub, stub } from "sinon";
+import { SinonStub, stub } from "sinon";
 
 export class EntityRecord
   implements
