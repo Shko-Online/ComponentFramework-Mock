@@ -16,8 +16,21 @@
 import Sinon, { SinonStub, stub } from "sinon";
 
 export class EntityRecord
-  implements ComponentFramework.PropertyHelper.DataSetApi.EntityRecord
+  implements
+    ComponentFramework.PropertyHelper.DataSetApi.EntityRecord,
+    ComponentFramework.EntityReference
 {
+  id: { guid: string };
+
+  /**
+   * The entity logical name. Read-only.
+   */
+  etn?: string | undefined;
+
+  /**
+   * The name of the entity reference. Read-only.
+   */
+  name: string;
   getFormattedValue: SinonStub<[columnName: string], string>;
   getRecordId: SinonStub<[], string>;
   getValue: SinonStub<
@@ -37,7 +50,13 @@ export class EntityRecord
   constructor() {
     this.getFormattedValue = stub();
     this.getNamedReference = stub();
+    this.getNamedReference.callsFake(() => ({
+      id: this.id,
+      etn: this.etn,
+      name: this.name,
+    }));
     this.getRecordId = stub();
+    this.getRecordId.callsFake(() => this.id.guid);
     this.getValue = stub();
   }
 }
