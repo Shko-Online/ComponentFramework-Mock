@@ -24,7 +24,37 @@ export class UserSettingsMock implements ComponentFramework.UserSettings {
     userId: string;
     userName: string;
     getTimeZoneOffsetMinutes: SinonStub<[date?: Date], number>;
+
     constructor() {
         this.getTimeZoneOffsetMinutes = stub();
+        this.numberFormattingInfo = {
+              currencyDecimalDigits: 5,              
+              currencyDecimalSeparator: ".",
+              currencyGroupSeparator: ",",
+              currencyGroupSizes: [3],
+              currencyNegativePattern: 0,
+              currencyPositivePattern: 0,
+              currencySymbol: undefined,
+              nanSymbol: "NaN",
+              nativeDigits: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+              negativeInfinitySymbol: "-Infinity",
+              negativeSign: "-",
+              numberDecimalDigits: 2,
+              numberDecimalSeparator: ".",
+              numberGroupSeparator: ",",
+              numberGroupSizes: [3],
+              numberNegativePattern: 1,
+              perMilleSymbol: "",
+              percentDecimalDigits: 2,
+              percentDecimalSeparator: ".",
+              percentGroupSeparator: ",",
+              percentGroupSizes: [3],
+              percentNegativePattern: 0,
+              percentPositivePattern: 0,
+              percentSymbol: "%",
+              positiveInfinitySymbol: "Infinity",
+              positiveSign: "+",
+        } 
+        
     }
 }

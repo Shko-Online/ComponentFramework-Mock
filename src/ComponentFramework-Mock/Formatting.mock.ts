@@ -33,6 +33,8 @@ export class FormattingMock implements ComponentFramework.Formatting {
         this.formatCurrency = stub();
         this.formatCurrency.callsFake((value: number, precision?: number, symbol?: string) => {
             return value.toLocaleString(this.locale, {
+                style : "currency",
+                currency: "USD",
                 maximumSignificantDigits: precision,
                 currencySign: symbol
             });
@@ -52,7 +54,14 @@ export class FormattingMock implements ComponentFramework.Formatting {
         });
         this.formatDateLong = stub();
         this.formatDateLong.callsFake((value: Date) => {
-            throw new Error("Method not implemented.");
+            return value.toLocaleString( 
+                this.locale,{
+                day: '2-digit',
+                weekday: 'short',
+                year: 'numeric',
+                month: 'long',
+                }) ;
+            
         });
         this.formatDateLongAbbreviated = stub();
         this.formatDateLongAbbreviated.callsFake((value: Date) => {

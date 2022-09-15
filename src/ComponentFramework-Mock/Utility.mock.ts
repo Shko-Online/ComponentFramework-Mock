@@ -20,6 +20,14 @@ export class UtilityMock implements ComponentFramework.Utility {
     lookupObjects: SinonStub<[lookupOptions: ComponentFramework.UtilityApi.LookupOptions], Promise<ComponentFramework.LookupValue[]>>;
     constructor() {
         this.getEntityMetadata = stub();
+        this.getEntityMetadata.callsFake((entityName: string, attributes?: string[]) =>{
+            return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>((resolve)=>{
+
+                resolve({
+                    [""] :  []
+                })
+            })
+        })
         
         this.hasEntityPrivilege = stub();
 
