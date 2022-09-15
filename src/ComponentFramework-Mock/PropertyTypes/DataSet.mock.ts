@@ -52,7 +52,6 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     this.paging = new PagingMock();
     this.filtering = new FilteringMock();
     this.records = {};
-    this.sortedRecordIds = [] ;
     this.clearSelectedRecordIds = stub();
     this.getSelectedRecordIds = stub();
     this.addColumn = stub();
