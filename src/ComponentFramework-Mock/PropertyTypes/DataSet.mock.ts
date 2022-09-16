@@ -19,7 +19,10 @@ import { FilteringMock } from "./DataSetApi/Filtering.mock";
 import { LinkingMock } from "./DataSetApi/Linking.mock";
 import { EntityRecord } from "./DataSetApi/EntityRecord.mock";
 import { SortStatus } from "./DataSetApi/SortStatus.mock";
-import { Column } from "./DataSetApi/Column.mock";
+
+// import { Column } from "./DataSetApi/Column.mock";
+
+type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;
 
 export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
   addColumn?: SinonStub<[name: string, entityAlias?: string], void>;
@@ -33,6 +36,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
   records: {
     [id: string]: EntityRecord;
   };
+  initRecords: SinonStub<[records: EntityRecord[]], void>;
   sortedRecordIds: string[];
   sorting: SortStatus[];
   clearSelectedRecordIds: SinonStub<[], void>;
@@ -60,12 +64,37 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     this.getTargetEntityType = stub();
     this.getTitle = stub();
     this.getViewId = stub();
-    this.getViewId = stub();
     this.openDatasetItem = stub();
     this.refresh = stub();
     this.setSelectedRecordIds = stub();
-    this.addColumn= stub();
+    this.initRecords = stub();
+    this.initRecords.callsFake((records) => {
+      this.records = {};
+      records.forEach((record) => {
+        this.records[record.getRecordId()] = record;
+      });
+      if (this.sorting.length > 0) {
+        const sort = this.sorting[0];
+        this.sortedRecordIds = records
+          .sort((record1, record2) =>
+            sort.sortDirection == 0
+              ? record1
+                  .getFormattedValue(sort.name)
+                  .localeCompare(record2.getFormattedValue(sort.name))
+              : record2
+                  .getFormattedValue(sort.name)
+                  .localeCompare(record1.getFormattedValue(sort.name))
+          )
+          .map((record) => record.getRecordId());
+      } else {
+        this.sortedRecordIds = records
+          .sort((record1, record2) =>
+            record1
+              .getNamedReference()
+              ?.name.localeCompare(record2.getNamedReference()?.name)
+          )
+          .map((record) => record.getRecordId());
+      }
+    });
   }
-
 }
-

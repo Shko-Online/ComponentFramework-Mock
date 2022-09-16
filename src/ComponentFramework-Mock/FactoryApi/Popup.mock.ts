@@ -14,8 +14,6 @@
 */
 
 
-import { stub, SinonStub } from "sinon";
-
 
 export class Popup implements ComponentFramework.FactoryApi.Popup.Popup{
     id?: string;
@@ -25,9 +23,6 @@ export class Popup implements ComponentFramework.FactoryApi.Popup.Popup{
     type: ComponentFramework.FactoryApi.Popup.Types.PopupType;
     PopupType = 1 | 2;
     content: HTMLElement;
-
-    constructor(){
-    }
 
 }
     

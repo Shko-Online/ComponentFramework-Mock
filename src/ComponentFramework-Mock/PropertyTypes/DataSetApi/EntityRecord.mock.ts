@@ -15,6 +15,17 @@
 
 import { SinonStub, stub } from "sinon";
 
+type ColumnReturnValue =
+  | string
+  | number
+  | boolean
+  | number[]
+  | ComponentFramework.EntityReference
+  | ComponentFramework.EntityReference[]
+  | Date
+  | ComponentFramework.LookupValue
+  | ComponentFramework.LookupValue[];
+
 export class EntityRecord
   implements
     ComponentFramework.PropertyHelper.DataSetApi.EntityRecord,
@@ -33,21 +44,15 @@ export class EntityRecord
   name: string;
   getFormattedValue: SinonStub<[columnName: string], string>;
   getRecordId: SinonStub<[], string>;
-  getValue: SinonStub<
-    [columnName: string],
-    | string
-    | number
-    | boolean
-    | number[]
-    | ComponentFramework.EntityReference
-    | ComponentFramework.EntityReference[]
-    | Date
-    | ComponentFramework.LookupValue
-    | ComponentFramework.LookupValue[]
-  >;
+  getValue: SinonStub<[columnName: string], ColumnReturnValue>;
   getNamedReference: SinonStub<[], ComponentFramework.EntityReference>;
-
-  constructor() {
+  columns: {
+    [columnName: string]: ColumnReturnValue;
+  };
+  constructor(etn: string|undefined, id: string, name?: string) {
+    this.etn = etn;
+    this.id = {guid: id};
+    this.name = name;
     this.getFormattedValue = stub();
     this.getNamedReference = stub();
     this.getNamedReference.callsFake(() => ({
@@ -58,5 +63,6 @@ export class EntityRecord
     this.getRecordId = stub();
     this.getRecordId.callsFake(() => this.id.guid);
     this.getValue = stub();
+    this.getValue.callsFake((columnName)=> this.columns[columnName]);
   }
 }
