@@ -13,25 +13,15 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from "sinon";
-import { FilterExpression } from "./FilterExpression.mock";
+export class Column implements ComponentFramework.PropertyHelper.DataSetApi.Column{
+    name: string;
+    displayName: string;
+    dataType: string;
+    alias: string;
+    order: number;
+    visualSizeFactor: number;
+    isHidden?: boolean;
+    isPrimary?: boolean;
+    disableSorting?: boolean;
 
-export class FilteringMock
-  implements ComponentFramework.PropertyHelper.DataSetApi.Filtering
-{
-  getFilter: SinonStub<
-    [],
-    FilterExpression
-  >;
-  setFilter: SinonStub<
-    [FilterExpression],
-    void
-  >;
-  clearFilter: SinonStub<[], void>;
-
-  constructor() {
-    this.clearFilter = stub();
-    this.getFilter = stub();
-    this.setFilter = stub();
-  }
 }

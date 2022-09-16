@@ -18,10 +18,12 @@ import { PagingMock } from "@shko-online/componentframework-mock/ComponentFramew
 import { FilteringMock } from "./DataSetApi/Filtering.mock";
 import { LinkingMock } from "./DataSetApi/Linking.mock";
 import { EntityRecord } from "./DataSetApi/EntityRecord.mock";
+import { SortStatus } from "./DataSetApi/SortStatus.mock";
+import { Column } from "./DataSetApi/Column.mock";
 
 export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
   addColumn?: SinonStub<[name: string, entityAlias?: string], void>;
-  columns: ComponentFramework.PropertyHelper.DataSetApi.Column[];
+  columns: Column[];
   error: boolean;
   errorMessage: string;
   filtering: FilteringMock;
@@ -32,7 +34,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     [id: string]: EntityRecord;
   };
   sortedRecordIds: string[];
-  sorting: ComponentFramework.PropertyHelper.DataSetApi.SortStatus[];
+  sorting: SortStatus[];
   clearSelectedRecordIds: SinonStub<[], void>;
   getSelectedRecordIds: SinonStub<[], string[]>;
   getTargetEntityType: SinonStub<[], string>;

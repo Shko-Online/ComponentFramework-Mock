@@ -26,13 +26,18 @@ export class PagingMock
   hasPreviousPage: boolean;
   loadNextPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
   loadPreviousPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
+  loadOnlyNewPage: boolean;
   reset: SinonStub<[], void>;
   setPageSize: SinonStub<[pageSize: number], void>;
   loadExactPage: SinonStub<[pageNumber: number], void>;
+  
 
   constructor() {
+    this.loadOnlyNewPage=true;
     this.loadNextPage = stub();
+    this.loadNextPage.callsFake(()=> this.loadOnlyNewPage)
     this.loadPreviousPage = stub();
+    this.loadPreviousPage.callsFake(() => this.loadOnlyNewPage)
     this.setPageSize = stub();
     this.reset = stub();
     this.loadExactPage = stub();
