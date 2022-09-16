@@ -30,6 +30,9 @@ export class UtilityMock implements ComponentFramework.Utility {
         })
         
         this.hasEntityPrivilege = stub();
+        this.hasEntityPrivilege.callsFake((entityTypeName: string, privilegeType: ComponentFramework.PropertyHelper.Types.PrivilegeType, privilegeDepth: ComponentFramework.PropertyHelper.Types.PrivilegeDepth)=>{
+            return true;
+        })
 
         this.lookupObjects = stub();
         this.lookupObjects.callsFake((lookupOptions: ComponentFramework.UtilityApi.LookupOptions) => {

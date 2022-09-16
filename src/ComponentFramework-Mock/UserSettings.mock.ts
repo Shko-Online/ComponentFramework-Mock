@@ -55,6 +55,38 @@ export class UserSettingsMock implements ComponentFramework.UserSettings {
               positiveInfinitySymbol: "Infinity",
               positiveSign: "+",
         } 
+
+        this.dateFormattingInfo = {
+            amDesignator: "AM",
+            abbreviatedDayNames: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            abbreviatedMonthGenitiveNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""],
+            abbreviatedMonthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""],
+            calendarWeekRule: 0,
+            calendar: { 
+                minSupportedDateTime: undefined,
+                maxSupportedDateTime: undefined,
+                algorithmType: 1,
+                calendarType: 1,
+                twoDigitYearMax: 2029,
+            },
+            dateSeparator: "/",
+            dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            firstDayOfWeek: 0,
+            fullDateTimePattern: "dddd, MMMM d, yyyy h:mm:ss tt",
+            longDatePattern: "dddd, MMMM d, yyyy",
+            longTimePattern: "hh:mm:ss tt",
+            monthDayPattern: "MMMM dd",
+            monthGenitiveNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", ""],
+            monthNames: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", ""],
+            pmDesignator: "PM",
+            shortDatePattern: "M/d/yyyy",
+            shortTimePattern: "h:mm tt",
+            shortestDayNames: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
+            sortableDateTimePattern: "yyyy'-'MM'-'dd'T'HH':'mm':'ss",
+            timeSeparator: ":",
+            universalSortableDateTimePattern: "yyyy'-'MM'-'dd HH':'mm':'ss'Z'",
+            yearMonthPattern: "MMMM yyyy",
+        }
         
     }
 }

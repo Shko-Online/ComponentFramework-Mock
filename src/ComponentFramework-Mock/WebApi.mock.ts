@@ -43,6 +43,15 @@ export class WebApiMock implements ComponentFramework.WebApi {
             })
         })
         this.updateRecord = stub();
+        this.updateRecord.callsFake((entityType: string, id: string, data: ComponentFramework.WebApi.Entity) =>{
+            return new Promise<ComponentFramework.LookupValue>((resolve) =>{
+                resolve({
+                    id: "00000000-0000-0000-0000-000000000000",
+                    name: "Any",
+                    entityType: "any"
+                })
+            })
+        })
 
         this.retrieveMultipleRecords = stub();
         this.retrieveMultipleRecords.callsFake((entityType: string, options?: string, maxPageSize?: number) =>{
@@ -54,6 +63,13 @@ export class WebApiMock implements ComponentFramework.WebApi {
             })
         })
         this.retrieveRecord = stub();
+        this.retrieveRecord.callsFake((entityType: string, id: string, options?: string) =>{
+            return new Promise<ComponentFramework.WebApi.Entity>((resolve)=>{
+                resolve({
+                    [""] :  []
+                })
+            })
+        })
 
     }
 }
