@@ -58,8 +58,6 @@ export class ComponentFrameworkMockGenerator<
             return true;
         });
         this.notifyOutputChanged = fake(() => {
-            console.log('notifyOutputChanged')
-            console.log(this.control.getOutputs?.());
             const updates = this.control.getOutputs?.();
             this.context.updatedProperties = []
             for (let k in updates) {
