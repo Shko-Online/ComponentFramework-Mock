@@ -16,7 +16,7 @@
 import { stub, SinonStub } from "sinon";
 
 export class FormattingMock implements ComponentFramework.Formatting {
-    formatCurrency: SinonStub<[value: number, precision?: number, symbol?: string], string>;
+    formatCurrency: SinonStub<[value: number, precision?: number, currencySymbol?: string], string>;
     formatDecimal: SinonStub<[value: number, precision?: number], string>;
     formatDateAsFilterStringInUTC: SinonStub<[value: Date, includeTime?: boolean], string>;
     formatDateLong: SinonStub<[value: Date], string>;
@@ -31,12 +31,12 @@ export class FormattingMock implements ComponentFramework.Formatting {
     constructor() {
         this.locale = 'en-US';
         this.formatCurrency = stub();
-        this.formatCurrency.callsFake((value: number, precision?: number, symbol?: string) => {
+        this.formatCurrency.callsFake((value: number, precision?: number, currencySymbol?: string) => {
             return value.toLocaleString(this.locale, {
                 style : "currency",
                 currency: "USD",
                 maximumSignificantDigits: precision,
-                currencySign: symbol
+                currencySign: currencySymbol
             });
         })
         this.formatDecimal = stub();

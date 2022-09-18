@@ -17,6 +17,27 @@ import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
 import { ContextMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock";
 import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
+import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
+import { LookupPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/LookupProperty.mock";
+
+const arrayEqual = <T>(source: T[], target: T[]) => {
+    return Array.isArray(source) &&
+        Array.isArray(target) &&
+        source.length == target.length &&
+        source.every(s => target.some(t => itemEqual(s, t)))
+}
+
+const itemEqual = (source, target) => {
+    if (source === null && target === null) {
+        return true;
+    }
+    if (typeof source === 'object' || typeof target === 'object') {
+        const sourceO = source as ComponentFramework.LookupValue;
+        const targetO = target as ComponentFramework.LookupValue;
+        return sourceO !== null && targetO !== null && sourceO.entityType === targetO.entityType && sourceO.id === targetO.id;
+    }
+    return source === target;
+}
 
 export class ComponentFrameworkMockGenerator<
     TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>,
@@ -43,13 +64,28 @@ export class ComponentFrameworkMockGenerator<
             this.context.updatedProperties = []
             for (let k in updates) {
                 if (k in this.context.parameters) {
-                    // @ts-ignore
-                    if(this.context.parameters[k].raw!=updates[k]){
-                        this.context.updatedProperties.push(k);
+                    if (Array.isArray(updates[k])) {
+                        const arrayUpdate = updates[k] as number[];
+                        const property = this.context.parameters[k] as MultiSelectOptionSetPropertyMock;
+                        if (!arrayEqual(arrayUpdate, property.raw)) {
+                            this.context.updatedProperties.push(k);
+                        }
                     }
+                    else if (typeof updates[k] === 'object') {
+
+                    } else {
+                        // @ts-ignore
+                        if (this.context.parameters[k].raw != updates[k]) {
+                            this.context.updatedProperties.push(k);
+                        }
+                    }
+
                     // @ts-ignore
-                    this.context.parameters[k].raw = updates[k];
+                    this.context.parameters[k].setValue(updates[k]);
                 }
+            }
+            if (this.context.updatedProperties.length > 0) {
+                this.ExecuteUpdateView();
             }
         });
 
