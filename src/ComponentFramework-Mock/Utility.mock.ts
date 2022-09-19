@@ -24,7 +24,7 @@ export class UtilityMock implements ComponentFramework.Utility {
             return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>((resolve)=>{
 
                 resolve({
-                    [""] :  []
+                    
                 })
             })
         })
