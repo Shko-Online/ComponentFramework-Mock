@@ -53,6 +53,7 @@ export class EntityRecord
     this.etn = etn;
     this.id = {guid: id};
     this.name = name;
+    this.columns = {};
     this.getFormattedValue = stub();
     this.getFormattedValue.callsFake((columnName)=> ''+this.columns[columnName])
     this.getNamedReference = stub();
