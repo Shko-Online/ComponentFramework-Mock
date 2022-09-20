@@ -33,7 +33,7 @@ export class LookupPropertyMock
     this.setValue = stub();
     this.setValue.callsFake((value) => {
       this.raw = value;
-      this.formatted = value.map((lookup) => lookup.name).join(",");
+      this.formatted = value?.map((lookup) => lookup.name).join(",");
     });
   }
 }
