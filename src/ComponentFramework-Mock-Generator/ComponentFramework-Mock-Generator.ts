@@ -19,6 +19,7 @@ import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFrame
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
 import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
 import { LookupPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/LookupProperty.mock";
+import { EntityRecord } from "../ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
 
 const arrayEqual = <T>(source: T[], target: T[]) => {
     return Array.isArray(source) &&
@@ -48,6 +49,14 @@ export class ComponentFrameworkMockGenerator<
     state: ComponentFramework.Dictionary;
     container: HTMLDivElement;
 
+    data: {
+        [entityName: string]:{
+            [entityId: string]: EntityRecord
+        }
+    }
+
+    myUserId: string;
+
     constructor(control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
         container?: HTMLDivElement) {
@@ -57,6 +66,15 @@ export class ComponentFrameworkMockGenerator<
             this.state = { ...state, ...this.state };
             return true;
         });
+
+        this.data = {};
+        this.data["systemuser"] ={};
+        this.data["systemuser"][this.myUserId] = new EntityRecord("systemuser", this.myUserId, "Betim Beja");
+
+        this.context.userSettings.userId = this.myUserId;
+        this.context.userSettings.userName =  this.data["systemuser"][this.myUserId].name;
+
+
         this.notifyOutputChanged = fake(() => {
             const updates = this.control.getOutputs?.();
             this.context.updatedProperties = []
@@ -88,6 +106,13 @@ export class ComponentFrameworkMockGenerator<
         });
 
         this.container = container ?? document.createElement("div");
+        this.context.mode.trackContainerResize.callsFake((value)=>{
+            this.container.addEventListener("resize", evt=>{
+                this.context.mode.allocatedHeight= this.container.clientHeight;
+                this.context.mode.allocatedWidth = this.container.clientWidth;
+                this.ExecuteUpdateView();
+            })
+        })
     }
 
     SetControlResource(resource: string) {
