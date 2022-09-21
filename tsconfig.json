@@ -11,6 +11,7 @@
         "moduleResolution": "node",
         "noEmit": false,
         "outDir": "dist",
+        "resolveJsonModule": true,
         "declaration": true,
         "sourceMap": true,
         "baseUrl": ".",
