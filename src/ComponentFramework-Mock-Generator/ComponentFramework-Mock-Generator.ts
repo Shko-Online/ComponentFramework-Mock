@@ -107,11 +107,20 @@ export class ComponentFrameworkMockGenerator<
 
         this.container = container ?? document.createElement("div");
         this.context.mode.trackContainerResize.callsFake((value)=>{
-            this.container.addEventListener("resize", evt=>{
-                this.context.mode.allocatedHeight= this.container.clientHeight;
-                this.context.mode.allocatedWidth = this.container.clientWidth;
+            const observer = new ResizeObserver((entries) => {
+    
+              
+                const size = entries[0];
+                this.context.mode.allocatedHeight = size.contentRect.height;
+                this.context.mode.allocatedWidth = size.contentRect.width;
+                console.log('width', size.contentRect.width);
+                console.log('height', size.contentRect.height);
                 this.ExecuteUpdateView();
-            })
+               })
+            if(value)  observer.observe(container);
+            else observer.unobserve(container);
+
+            
         })
     }
 
