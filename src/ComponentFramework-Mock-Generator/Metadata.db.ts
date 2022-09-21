@@ -12,8 +12,8 @@
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
 */
-import loki from "lokijs";
-import userMetadata from "./systemUser.json";
+import * as loki from "lokijs";
+import * as userMetadata from "./systemUser.json";
 
 export class MetadataDB {
   attributes: {
@@ -23,8 +23,8 @@ export class MetadataDB {
   db: loki;
   constructor() {
     this.db = new loki("metadata.db");
-
-    this.initMetadata([userMetadata]);
+this.attributes = {};
+    this.initMetadata([JSON.parse(JSON.stringify(userMetadata))]);
   }
 
   initMetadata(metadatas: any[]) {
