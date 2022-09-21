@@ -16,18 +16,38 @@ import loki from "lokijs";
 import userMetadata from "./systemUser.json";
 
 export class MetadataDB {
+  attributes: {
+    [key: string]: Collection<any>;
+  };
+  metadata: Collection<any>;
+  db: loki;
   constructor() {
-    const db = new loki("metadata.db");
-    const metadata = db.addCollection("metadata");
-    metadata.insert({ userMetadata });
-    const attributes = userMetadata.Attributes;
-    const userAttributes = db.addCollection("systemuser#attributes");
-    attributes.forEach((attribute) => {
-      userAttributes.insert({
-        LogicalName: attribute.LogicalName,
-        SchemaName: attribute.SchemaName,
-        AttributeType: attribute.AttributeType,
-        MetadataId: attribute.MetadataId,
+    this.db = new loki("metadata.db");
+
+    this.initMetadata([userMetadata]);
+  }
+
+  initMetadata(metadatas: any[]) {
+    metadatas.forEach((metadata1) => {
+      if (!this.metadata) {
+        this.metadata = this.db.addCollection("metadata");
+      }
+
+      this.metadata.insert(metadata1);
+
+      const userAttributes = this.db.addCollection(
+        `${metadata1.logicalName}#attributes`
+      );
+      this.attributes[metadata1.logicalName] = userAttributes;
+      const attributes = metadata1.Attributes;
+
+      attributes.forEach((attribute) => {
+        userAttributes.insert({
+          LogicalName: attribute.LogicalName,
+          SchemaName: attribute.SchemaName,
+          AttributeType: attribute.AttributeType,
+          MetadataId: attribute.MetadataId,
+        });
       });
     });
   }
