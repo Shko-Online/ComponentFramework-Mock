@@ -12,14 +12,14 @@
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
 */
-
 import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
-import { ContextMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock";
-import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
-import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
-import { EntityRecord } from "../ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
+import { PropertyMap } from "../ComponentFramework-Mock/PropertyTypes/PropertyMap";
 import { MetadataDB } from "./Metadata.db";
+import { ContextMock } from "../ComponentFramework-Mock/Context.mock";
+import { EntityRecord } from "../ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
+import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
+
 const arrayEqual = <T>(source: T[], target: T[]) => {
   return (
     Array.isArray(source) &&
@@ -46,18 +46,17 @@ const itemEqual = (source, target) => {
   return source === target;
 };
 
-export class ComponentFrameworkMockGenerator<
+export class ComponentFrameworkMockGeneratorReact<
   TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>,
   TOutputs extends KnownTypes<TOutputs>
 > {
   control: SinonSpiedInstance<
-    ComponentFramework.StandardControl<TInputs, TOutputs>
+    ComponentFramework.ReactControl<TInputs, TOutputs>
   >;
   context: ContextMock<TInputs>;
   notifyOutputChanged: SinonSpy<[], void>;
   state: ComponentFramework.Dictionary;
-  container: HTMLDivElement;
-
+  container: undefined;
   data: {
     [entityName: string]: {
       [entityId: string]: EntityRecord;
@@ -68,19 +67,23 @@ export class ComponentFrameworkMockGenerator<
   metadata: MetadataDB;
 
   constructor(
-    control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
+    control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>,
     inputs: PropertyMap<TInputs>,
-    container?: HTMLDivElement
   ) {
     this.control = spy(new control());
     this.context = new ContextMock(inputs);
     this.metadata = new MetadataDB();
-    this.context.utils.getEntityMetadata.callsFake((entityName: string, attributes?: string[]) =>{
-        return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>((resolve)=>{
-
-            const result = this.metadata.metadata.find({'LogicalName': 'systemuser'});
-        })
-    })
+    this.context.utils.getEntityMetadata.callsFake(
+      (entityName: string, attributes?: string[]) => {
+        return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>(
+          (resolve) => {
+            const result = this.metadata.metadata.find({
+              LogicalName: "systemuser",
+            });
+          }
+        );
+      }
+    );
 
     this.context.mode.setControlState.callsFake(
       (state: ComponentFramework.Dictionary) => {
@@ -130,25 +133,7 @@ export class ComponentFrameworkMockGenerator<
         this.ExecuteUpdateView();
       }
     });
-
-        this.container = container ?? document.createElement("div");
-        this.context.mode.trackContainerResize.callsFake((value)=>{
-            const observer = new ResizeObserver((entries) => {
-    
-              
-                const size = entries[0];
-                this.context.mode.allocatedHeight = size.contentRect.height;
-                this.context.mode.allocatedWidth = size.contentRect.width;
-                console.log('width', size.contentRect.width);
-                console.log('height', size.contentRect.height);
-                this.ExecuteUpdateView();
-               })
-            if(value)  observer.observe(container);
-            else observer.unobserve(container);
-
-            
-        })
-    }
+  }
 
   SetControlResource(resource: string) {
     const xmlResource = new DOMParser().parseFromString(resource, "text/xml");
@@ -161,19 +146,17 @@ export class ComponentFrameworkMockGenerator<
       }
     });
   }
-
   ExecuteInit() {
     const state = this.state === undefined ? this.state : { ...this.state };
     this.control.init(
       this.context,
       this.notifyOutputChanged,
       state,
-      this.container
+      (this.container = undefined)
     );
   }
 
   ExecuteUpdateView() {
-    this.control.updateView(this.context);
+    return this.control.updateView(this.context);
   }
- 
 }
