@@ -56,7 +56,7 @@ export class ComponentFrameworkMockGeneratorReact<
   context: ContextMock<TInputs>;
   notifyOutputChanged: SinonSpy<[], void>;
   state: ComponentFramework.Dictionary;
-  container: undefined;
+ 
   data: {
     [entityName: string]: {
       [entityId: string]: EntityRecord;
@@ -152,7 +152,7 @@ export class ComponentFrameworkMockGeneratorReact<
       this.context,
       this.notifyOutputChanged,
       state,
-      (this.container = undefined)
+      
     );
   }
 
