@@ -66,7 +66,7 @@
 
 "@types/powerapps-component-framework@^1.3.4":
   version "1.3.4"
-  resolved "https://registry.npmjs.org/@types/powerapps-component-framework/-/powerapps-component-framework-1.3.4.tgz"
+  resolved "https://registry.yarnpkg.com/@types/powerapps-component-framework/-/powerapps-component-framework-1.3.4.tgz#c4ebf58510c119a5628a97139c9e9ffff2b83d94"
   integrity sha512-6WSljwSP69hS3PTpdJnfnn1yuxzFiR/00UivmEZHAdROdm5r0BEWAmiltcNtClRn1407CMP4nCFMjJbTXRRVDQ==
   dependencies:
     "@types/react" "*"
