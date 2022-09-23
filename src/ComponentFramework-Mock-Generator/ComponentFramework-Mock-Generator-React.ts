@@ -14,11 +14,11 @@
 */
 import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
-import { PropertyMap } from "../ComponentFramework-Mock/PropertyTypes/PropertyMap";
-import { MetadataDB } from "./Metadata.db";
-import { ContextMock } from "../ComponentFramework-Mock/Context.mock";
-import { EntityRecord } from "../ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
-import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
+import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
+import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db";
+import { ContextMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock";
+import { EntityRecord } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
+import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
 
 const arrayEqual = <T>(source: T[], target: T[]) => {
   return (
@@ -156,7 +156,7 @@ export class ComponentFrameworkMockGeneratorReact<
     );
   }
 
-  ExecuteUpdateView() {
+  ExecuteUpdateView() : React.ReactElement {
     return this.control.updateView(this.context);
   }
 }
