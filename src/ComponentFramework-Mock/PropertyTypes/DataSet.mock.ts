@@ -73,6 +73,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
       records.forEach((record) => {
         this.records[record.getRecordId()] = record;
       });
+      this.paging.totalResultCount = records.length;
       if (this.sorting.length > 0) {
         const sort = this.sorting[0];
         this.sortedRecordIds = records
