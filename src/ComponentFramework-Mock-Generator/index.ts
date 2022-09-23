@@ -15,4 +15,6 @@
 
 export { ComponentFrameworkMockGenerator }
     from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator';
+	export { ComponentFrameworkMockGeneratorReact }
+    from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator-React';	
     
