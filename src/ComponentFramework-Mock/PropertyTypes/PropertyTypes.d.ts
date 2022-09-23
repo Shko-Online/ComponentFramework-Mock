@@ -15,7 +15,7 @@
 
 declare namespace ComponentFrameworkMock {
     type PropertyTypes<T extends {
-        [P in keyof T]: ComponentFramework.PropertyTypes.Property | ComponentFramework.PropertyTypes.DataSet }
+        [P in keyof T]: ComponentFramework.PropertyTypes.Property | ComponentFramework.PropertyTypes.DataSet | ComponentFramework.PropertyTypes.EnumProperty<string> }
         > = {
             [P in keyof T]:
             T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty ?
@@ -34,6 +34,8 @@ declare namespace ComponentFrameworkMock {
             ComponentFramework.PropertyTypes.LookupProperty :
             T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty ?
             ComponentFramework.PropertyTypes.WholeNumberProperty :
+            T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string> ?
+            ComponentFramework.PropertyTypes.EnumProperty<string> :
             T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty ?
             ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty :
             never
