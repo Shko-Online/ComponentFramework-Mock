@@ -158,7 +158,7 @@ export class ComponentFrameworkMockGeneratorReact<
     );
   }
  
-  ExecuteUpdateView() : React.ReactElement {
+  ExecuteUpdateView() : string | React.ReactElement {
     // div element react
     // ref html
     // observer
