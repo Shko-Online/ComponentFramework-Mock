@@ -19,6 +19,8 @@ import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramew
 import { ContextMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock";
 import { EntityRecord } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
 import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
+import React from "react";
+import ReactResizeObserver from "./ReactResizeObserver";
 
 const arrayEqual = <T>(source: T[], target: T[]) => {
   return (
@@ -155,8 +157,13 @@ export class ComponentFrameworkMockGeneratorReact<
       
     );
   }
-
+ 
   ExecuteUpdateView() : React.ReactElement {
-    return this.control.updateView(this.context);
+    // div element react
+    // ref html
+    // observer
+
+  return React.createElement(ReactResizeObserver, {updateView: ()=> this.control.updateView(this.context), trackContainer: true});
+   
   }
 }
