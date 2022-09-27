@@ -29,6 +29,9 @@ export class ModeMock implements ComponentFramework.Mode {
         this.setFullScreen = stub();
 
         this.trackContainerResize = stub();
+        this.trackContainerResize.callsFake((value: boolean)=>{
+            
+        })
         
     }
 }

@@ -39,6 +39,9 @@ export class PagingMock
     this.loadPreviousPage = stub();
     this.loadPreviousPage.callsFake(() => this.loadOnlyNewPage)
     this.setPageSize = stub();
+    this.setPageSize.callsFake((pageSize: number) =>{
+      this.pageSize=pageSize;
+    })
     this.reset = stub();
     this.loadExactPage = stub();
   }

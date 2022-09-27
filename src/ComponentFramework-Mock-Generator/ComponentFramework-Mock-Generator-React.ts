@@ -158,12 +158,12 @@ export class ComponentFrameworkMockGeneratorReact<
     );
   }
  
-  ExecuteUpdateView() : string | React.ReactElement {
+  ExecuteUpdateView()  : string | React.ReactElement{
     // div element react
     // ref html
     // observer
 
   return React.createElement(ReactResizeObserver, {updateView: ()=> this.control.updateView(this.context), trackContainer: true});
-   
+   //return this.control.updateView(this.context);
   }
 }
