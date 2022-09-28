@@ -60,6 +60,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     this.records = {};
     this.clearSelectedRecordIds = stub();
     this.getSelectedRecordIds = stub();
+    this.getSelectedRecordIds.callsFake(() => [])
     this.addColumn = stub();
     this.getTargetEntityType = stub();
     this.getTitle = stub();

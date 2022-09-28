@@ -20,7 +20,7 @@ import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramew
 import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
 import { EntityRecord } from "../ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
 import { MetadataDB } from "./Metadata.db";
-import { arrayEqual} from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual"
+import { arrayEqual } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual";
 
 export class ComponentFrameworkMockGenerator<
   TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>,
@@ -51,12 +51,22 @@ export class ComponentFrameworkMockGenerator<
     this.control = spy(new control());
     this.context = new ContextMock(inputs);
     this.metadata = new MetadataDB();
-    this.context.utils.getEntityMetadata.callsFake((entityName: string, attributes?: string[]) =>{
-        return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>((resolve)=>{
-
-            const result = this.metadata.metadata.find({'LogicalName': 'systemuser'});
-        })
-    })
+    this.context.utils.getEntityMetadata.callsFake(
+      (entityName: string, attributes?: string[]) => {
+        return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>(
+          (resolve) => {
+            const result = this.metadata.metadata.findOne({
+              $and: { $eq: entityName },
+            });
+            resolve({
+              LogicalName: result.LogicalName,
+              ActivityTypeMask: result.ActivityTypeMask,
+              PrimaryNameAttribute: result.PrimaryNameAttribute,
+            } as ComponentFramework.EntityMetadata);
+          }
+        );
+      }
+    );
 
     this.context.mode.setControlState.callsFake(
       (state: ComponentFramework.Dictionary) => {
@@ -107,24 +117,20 @@ export class ComponentFrameworkMockGenerator<
       }
     });
 
-        this.container = container ?? document.createElement("div");
-        this.context.mode.trackContainerResize.callsFake((value)=>{
-            const observer = new ResizeObserver((entries) => {
-    
-              
-                const size = entries[0];
-                this.context.mode.allocatedHeight = size.contentRect.height;
-                this.context.mode.allocatedWidth = size.contentRect.width;
-                console.log('width', size.contentRect.width);
-                console.log('height', size.contentRect.height);
-                this.ExecuteUpdateView();
-               })
-            if(value)  observer.observe(container);
-            else observer.unobserve(container);
-
-            
-        })
-    }
+    this.container = container ?? document.createElement("div");
+    this.context.mode.trackContainerResize.callsFake((value) => {
+      const observer = new ResizeObserver((entries) => {
+        const size = entries[0];
+        this.context.mode.allocatedHeight = size.contentRect.height;
+        this.context.mode.allocatedWidth = size.contentRect.width;
+        console.log("width", size.contentRect.width);
+        console.log("height", size.contentRect.height);
+        this.ExecuteUpdateView();
+      });
+      if (value) observer.observe(container);
+      else observer.unobserve(container);
+    });
+  }
 
   SetControlResource(resource: string) {
     const xmlResource = new DOMParser().parseFromString(resource, "text/xml");
@@ -151,5 +157,4 @@ export class ComponentFrameworkMockGenerator<
   ExecuteUpdateView() {
     this.control.updateView(this.context);
   }
- 
 }
