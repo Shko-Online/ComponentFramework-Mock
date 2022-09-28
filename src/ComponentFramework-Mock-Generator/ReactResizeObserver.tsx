@@ -6,7 +6,8 @@ const ReactResizeObserver = (props: {
 }) => {
   const containerRef = useRef();
   const Component = props.updateView();
-  return <div ref={containerRef}>{Component}</div>;
+  console.log('Update View');
+  return <div style={{width: '100%', height: '100%'}} ref={containerRef}>{Component}</div>;
 };
 
 export default ReactResizeObserver;

@@ -12,6 +12,7 @@
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
 */
+import React from "react";
 import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
 import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
@@ -19,34 +20,8 @@ import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramew
 import { ContextMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock";
 import { EntityRecord } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
 import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
-import React from "react";
-import ReactResizeObserver from "./ReactResizeObserver";
-
-const arrayEqual = <T>(source: T[], target: T[]) => {
-  return (
-    Array.isArray(source) &&
-    Array.isArray(target) &&
-    source.length == target.length &&
-    source.every((s) => target.some((t) => itemEqual(s, t)))
-  );
-};
-
-const itemEqual = (source, target) => {
-  if (source === null && target === null) {
-    return true;
-  }
-  if (typeof source === "object" || typeof target === "object") {
-    const sourceO = source as ComponentFramework.LookupValue;
-    const targetO = target as ComponentFramework.LookupValue;
-    return (
-      sourceO !== null &&
-      targetO !== null &&
-      sourceO.entityType === targetO.entityType &&
-      sourceO.id === targetO.id
-    );
-  }
-  return source === target;
-};
+import ReactResizeObserver from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver";
+import arrayEqual from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual";
 
 export class ComponentFrameworkMockGeneratorReact<
   TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>,
@@ -58,12 +33,13 @@ export class ComponentFrameworkMockGeneratorReact<
   context: ContextMock<TInputs>;
   notifyOutputChanged: SinonSpy<[], void>;
   state: ComponentFramework.Dictionary;
- 
+
   data: {
     [entityName: string]: {
       [entityId: string]: EntityRecord;
     };
   };
+
 
   myUserId: string;
   metadata: MetadataDB;
@@ -154,16 +130,20 @@ export class ComponentFrameworkMockGeneratorReact<
       this.context,
       this.notifyOutputChanged,
       state,
-      
+
     );
   }
- 
-  ExecuteUpdateView()  : string | React.ReactElement{
+
+  UpdateView() {
+    return this.control.updateView(this.context);
+  }
+
+  ExecuteUpdateView(): string | React.ReactElement {
     // div element react
     // ref html
     // observer
 
-  return React.createElement(ReactResizeObserver, {updateView: ()=> this.control.updateView(this.context), trackContainer: true});
-   //return this.control.updateView(this.context);
+    return React.createElement(ReactResizeObserver, { updateView: this.UpdateView.bind(this), trackContainer: true });
+    //return this.control.updateView(this.context);
   }
 }
