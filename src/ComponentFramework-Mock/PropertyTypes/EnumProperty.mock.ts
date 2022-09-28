@@ -13,8 +13,18 @@
     language governing rights and limitations under the RPL. 
 */
 
-export class EnumPropertyMock<EnumType extends string> implements ComponentFramework.PropertyTypes.EnumProperty<EnumType> {
+import { SinonStub, stub } from "sinon";
+
+export class EnumPropertyMock<EnumType extends string> 
+implements ComponentFramework.PropertyTypes.EnumProperty<EnumType> {
     type: string;
     raw: EnumType;
-
+    setValue: SinonStub<[value: EnumType | null], void>;
+  constructor(defaultValue?: number) {  
+    this.setValue = stub();
+    this.setValue.callsFake((value) => {
+      this.raw = value;
+      this.type = "" + value;
+    });
+  }
 }

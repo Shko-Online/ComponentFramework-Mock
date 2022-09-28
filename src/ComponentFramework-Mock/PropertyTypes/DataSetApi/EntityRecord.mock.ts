@@ -55,7 +55,12 @@ export class EntityRecord
     this.name = name;
     this.columns = {};
     this.getFormattedValue = stub();
-    this.getFormattedValue.callsFake((columnName)=> ''+this.columns[columnName])
+    this.getFormattedValue.callsFake((columnName)=> {
+      if(!(columnName in this.columns)){
+        return undefined;
+      }
+     return ''+this.columns[columnName];
+    } )
     this.getNamedReference = stub();
     this.getNamedReference.callsFake(() => ({
       id: this.id,
@@ -65,6 +70,6 @@ export class EntityRecord
     this.getRecordId = stub();
     this.getRecordId.callsFake(() => this.id.guid);
     this.getValue = stub();
-    this.getValue.callsFake((columnName)=> this.columns[columnName]);
+    this.getValue.callsFake((columnName)=>this.columns[columnName] );
   }
 }
