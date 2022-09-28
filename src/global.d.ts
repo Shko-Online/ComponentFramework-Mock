@@ -36,76 +36,109 @@ declare namespace ComponentFramework {
     EnforceStateTransitions: boolean;
     /**The hexadecimal code to represent the color to be used for this table in the application.*/
     EntityColor: string;
-	/**Indicates whether activities are associated with this table.*/
-	HasActivities:boolean;
-	/**Indicates whether the table is an activity.*/
-	IsActivity:boolean
-	/**Indicates whether the email messages can be sent to an email address stored in a record of this type.*/
-	IsActivityParty:boolean;
-	/**Indicates whether the table is enabled for business process flows.*/
-	IsBusinessProcessEnabled:boolean;
-	/**Indicates whether the table is a business process flow table.*/
-	IsBPFEntity:boolean;
-	/**Indicates whether the table is a child table.*/
+    /**Indicates whether activities are associated with this table.*/
+	  HasActivities:boolean;
+	  /**Indicates whether the table is an activity.*/
+	  IsActivity:boolean
+	  /**Indicates whether the email messages can be sent to an email address stored in a record of this type.*/
+	  IsActivityParty:boolean;
+	  /**Indicates whether the table is enabled for business process flows.*/
+	  IsBusinessProcessEnabled:boolean;
+	  /**Indicates whether the table is a business process flow table.*/
+	  IsBPFEntity:boolean;
+	  /**Indicates whether the table is a child table.*/
     IsChildEntity: boolean;
-	/**Indicates whether connections are enabled for this table.*/
-	IsConnectionsEnabled:boolean
-	/**Indicates whether the table is a custom table.*/
+	  /**Indicates whether connections are enabled for this table.*/
+	  IsConnectionsEnabled:boolean
+	  /**Indicates whether the table is a custom table.*/
     IsCustomEntity: boolean;
-	/**Indicates whether the table is customizable.*/
+	  /**Indicates whether the table is customizable.*/
     IsCustomizable: boolean;
-	/**Indicates whether document management is enabled.*/
-	IsDocumentManagementEnabled:boolean;
-	/** Indicates whether the document recommendations is enabled.*/
-	IsDocumentRecommendationsEnabled: boolean;
-	/** Indicates whether duplicate detection is enabled.*/
-	IsDuplicateDetectionEnabled:boolean;
-	/**Indicates whether charts are enabled.*/
-	IsEnabledForCharts:boolean;
-	/**Indicates whether the table can be imported using the Import Wizard.*/
-	IsImportable:boolean;
-	/**Indicates the table is enabled for interactive experience.*/
-	IsInteractionCentricEnabled:boolean;
-	/**Indicates whether knowledge management is enabled for the table.*/
-	IsKnowledgeManagementEnabled:boolean;
-	/**Indicates whether mail merge is enabled for this table.*/
-	IsMailMergeEnabled:boolean;
-	/**Indicates whether the table is part of a managed solution.*/
+	  /**Indicates whether document management is enabled.*/
+	  IsDocumentManagementEnabled:boolean;
+	  /** Indicates whether the document recommendations is enabled.*/
+	  IsDocumentRecommendationsEnabled: boolean;
+	  /** Indicates whether duplicate detection is enabled.*/
+	  IsDuplicateDetectionEnabled:boolean;
+	  /**Indicates whether charts are enabled.*/
+	  IsEnabledForCharts:boolean;
+	  /**Indicates whether the table can be imported using the Import Wizard.*/
+	  IsImportable:boolean;
+	  /**Indicates the table is enabled for interactive experience.*/
+	  IsInteractionCentricEnabled:boolean;
+	  /**Indicates whether knowledge management is enabled for the table.*/
+	  IsKnowledgeManagementEnabled:boolean;
+	  /**Indicates whether mail merge is enabled for this table.*/
+	  IsMailMergeEnabled:boolean;
+	  /**Indicates whether the table is part of a managed solution.*/
     IsManaged: boolean;
-	/**Indicates whether OneNote integration is enabled for the table.*/
-	IsOneNoteIntegrationEnabled:boolean;
-	/**Indicates whether optimistic concurrency is enabled for the table.*/
-	IsOptimisticConcurrencyEnabled:boolean;
-	/**Indicates whether the table is enabled for quick create forms.*/
-	IsQuickCreateEnabled:boolean;
-	/**Indicates whether the table supports setting custom state transitions.*/
-	IsStateModelAware:boolean;
-	/**Indicates whether the table is will be shown in Advanced Find.*/
-	IsValidForAdvancedFind:boolean;
-	/**Indicates whether Microsoft Dynamics 365 for tablets users can see data for this table.*/
-	IsVisibleInMobileClient	:boolean;
-	/**Indicates whether the table is enabled for Unified Interface.*/
-	IsEnabledInUnifiedInterface:boolean;
-	/**The logical collection name.*/
-	LogicalCollectionName:string;
-	/**The table type code.*/
+	  /**Indicates whether OneNote integration is enabled for the table.*/
+	  IsOneNoteIntegrationEnabled:boolean;
+	  /**Indicates whether optimistic concurrency is enabled for the table.*/
+	  IsOptimisticConcurrencyEnabled:boolean;
+	  /**Indicates whether the table is enabled for quick create forms.*/
+	  IsQuickCreateEnabled:boolean;
+	  /**Indicates whether the table supports setting custom state transitions.*/
+	  IsStateModelAware:boolean;
+	  /**Indicates whether the table is will be shown in Advanced Find.*/
+	  IsValidForAdvancedFind:boolean;
+	  /**Indicates whether Microsoft Dynamics 365 for tablets users can see data for this table.*/
+	  IsVisibleInMobileClient	:boolean;
+	  /**Indicates whether the table is enabled for Unified Interface.*/
+	  IsEnabledInUnifiedInterface:boolean;
+	  /**The logical collection name.*/
+	  LogicalCollectionName:string;
+	  /**The table type code.*/
     ObjectTypeCode: number;
-	/**The ownership type for the table: "UserOwned" or "OrganizationOwned".*/
+	  /**The ownership type for the table: "UserOwned" or "OrganizationOwned".*/
     OwnershipType: string;
     /** The name of the Web API table set for this table. */
     EntitySetName: string;
     /** The logical name for the table. */
     LogicalName: string;
-	/**The name of the column that is the primary id for the table.*/
-	PrimaryIdAttribute:string;
-	/**The name of the primary image column for a table.*/
-	PrimaryImageAttribute:string;
+	  /**The name of the column that is the primary id for the table.*/
+	  PrimaryIdAttribute:string;
+	  /**The name of the primary image column for a table.*/
+	  PrimaryImageAttribute:string;
     /** The name of the primary column for a table. */
     PrimaryNameAttribute: string;
+    /**The privilege definitions for the table where *each* object contains the following values to define the security privilege for access to a table*/ 
+    Privileges: ComponentFramework.Privileges[];
     /** A collection of column definitions objects. The object returned depends on the type of column definitions. */
     Attributes: ComponentFramework.AttributeMetadata[];
   }
 
+  export interface Privileges{
+     //Whether the privilege can be basic access level.
+     CanBeBasic: boolean;
+     //Whether the privilege can be deep access level
+     CanBeDeep:boolean;
+     //Whether the privilege for an external party can be basic access level.
+     CanBeEntityReference:boolean;
+     //Whether the privilege can be global access level.
+     CanBeGlobal:boolean;
+     //Whether the privilege can be local access level
+     CanBeLocal:boolean;
+     //Whether the privilege for an external party can be parent access level.
+     CanBeParentEntityReference:boolean;
+     //The name of the privilege
+     Name:string;
+     //The ID of the privilege.
+     PrivilegeId:string;
+     /**
+      The type of privilege, which is one of the following:
+        0: None
+        1: Create
+        2: Read
+        3: Write
+        4: Delete
+        5: Assign
+        6: Share
+        7: Append
+        8: AppendTo
+     */
+     PrivilegeType:number
+  }
   export interface AttributeMetadata {
     /** Type of a column. */
     AttributeType: ComponentFramework.AttributeType;
