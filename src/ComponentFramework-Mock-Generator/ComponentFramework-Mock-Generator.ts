@@ -21,7 +21,7 @@ import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/Pro
 import { EntityRecord } from "../ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
 import { MetadataDB } from "./Metadata.db";
 import { arrayEqual } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual";
-
+import {ShkoOnline} from "./shkoOnline_metadata";
 export class ComponentFrameworkMockGenerator<
   TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>,
   TOutputs extends KnownTypes<TOutputs>
@@ -62,7 +62,7 @@ export class ComponentFrameworkMockGenerator<
               LogicalName: result.LogicalName,
               ActivityTypeMask: result.ActivityTypeMask,
               PrimaryNameAttribute: result.PrimaryNameAttribute,
-            } as ComponentFramework.EntityMetadata);
+            } as ShkoOnline.EntityMetadata);
           }
         );
       }

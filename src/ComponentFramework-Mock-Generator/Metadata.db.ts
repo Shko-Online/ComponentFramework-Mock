@@ -13,7 +13,7 @@
     language governing rights and limitations under the RPL. 
 */
 import * as loki from "lokijs";
-import userMetadata from "./systemUser.json";
+import * as userMetadata from "./systemUser.json";
 
 export class MetadataDB {
   attributes: {

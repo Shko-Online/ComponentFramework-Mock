@@ -13,9 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-/// <reference types="powerapps-component-framework" />
-
-declare namespace ComponentFramework {
+export namespace ShkoOnline {
   /** https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-utility/getentitymetadata */
   export interface EntityMetadata {
     /** Whether a custom activity should appear in the activity menus in the Web application. 0 indicates that the custom activity doesn't appear; 1 indicates that it does appear. */
@@ -36,7 +34,7 @@ declare namespace ComponentFramework {
     EnforceStateTransitions: boolean;
     /**The hexadecimal code to represent the color to be used for this table in the application.*/
     EntityColor: string;
-    /**Indicates whether activities are associated with this table.*/
+	  /**Indicates whether activities are associated with this table.*/
 	  HasActivities:boolean;
 	  /**Indicates whether the table is an activity.*/
 	  IsActivity:boolean
@@ -103,104 +101,109 @@ declare namespace ComponentFramework {
     /** The name of the primary column for a table. */
     PrimaryNameAttribute: string;
     /**The privilege definitions for the table where *each* object contains the following values to define the security privilege for access to a table*/ 
-    Privileges: ComponentFramework.Privileges[];
+    Privileges: ShkoOnline.Privileges[];
     /** A collection of column definitions objects. The object returned depends on the type of column definitions. */
-    Attributes: ComponentFramework.AttributeMetadata[];
+    Attributes: ShkoOnline.AttributeMetadata[];
   }
 
   export interface Privileges{
-     //Whether the privilege can be basic access level.
-     CanBeBasic: boolean;
-     //Whether the privilege can be deep access level
-     CanBeDeep:boolean;
-     //Whether the privilege for an external party can be basic access level.
-     CanBeEntityReference:boolean;
-     //Whether the privilege can be global access level.
-     CanBeGlobal:boolean;
-     //Whether the privilege can be local access level
-     CanBeLocal:boolean;
-     //Whether the privilege for an external party can be parent access level.
-     CanBeParentEntityReference:boolean;
-     //The name of the privilege
-     Name:string;
-     //The ID of the privilege.
-     PrivilegeId:string;
-     /**
-      The type of privilege, which is one of the following:
-        0: None
-        1: Create
-        2: Read
-        3: Write
-        4: Delete
-        5: Assign
-        6: Share
-        7: Append
-        8: AppendTo
-     */
-     PrivilegeType:number
-  }
+    /**Whether the privilege can be basic access level.*/
+    CanBeBasic: boolean;
+    /**Whether the privilege can be deep access level*/
+    CanBeDeep:boolean;
+    /**Whether the privilege for an external party can be basic access level.*/
+    CanBeEntityReference:boolean;
+    /**Whether the privilege can be global access level.*/
+    CanBeGlobal:boolean;
+    /**Whether the privilege can be local access level*/
+    CanBeLocal:boolean;
+    /**Whether the privilege for an external party can be parent access level.*/
+    CanBeParentEntityReference:boolean;
+    /**The name of the privilege*/
+    Name:string;
+    /**The ID of the privilege.*/
+    PrivilegeId:string;
+    /**
+     The type of privilege, which is one of the following:
+       0: None
+       1: Create
+       2: Read
+       3: Write
+       4: Delete
+       5: Assign
+       6: Share
+       7: Append
+       8: AppendTo
+    */
+    PrivilegeType:number
+ }
+
   export interface AttributeMetadata {
     /** Type of a column. */
-    AttributeType: ComponentFramework.AttributeType;
+    AttributeType: ShkoOnline.AttributeType;
     /** Display name for the column. */
     DisplayName: string;
     /** Logical name of the table that contains the column. */
     EntityLogicalName: string;
     /** Logical name for the column. */
     LogicalName: string;
-	/**  Schema name for the column.  */
+	  /**  Schema name for the column.  */
     SchemaName: string;
   }
 
   export interface BooleanAttributeMetadata
-    extends ComponentFramework.AttributeMetadata {
+    extends ShkoOnline.AttributeMetadata {
     /** Type of a column. */
-    AttributeType: ComponentFramework.AttributeType.Boolean;
-    /**Default value for a Yes/No column.*/    
+    AttributeType: ShkoOnline.AttributeType.Boolean;
+    /**Default value for a Yes/No column.*/
     DefaultFormValue: boolean;
     /**Options for the boolean column where each option is a key:value pair.*/
     OptionSet: {
       [key: string]: string;
     };
   }
+
   export interface EnumTypeAttributeMetadata
-    extends ComponentFramework.AttributeMetadata {
+    extends ShkoOnline.AttributeMetadata {
     /** Type of a column. */
-    AttributeType: ComponentFramework.AttributeType;
-    /**Options for the column where each option is a key:value pair*/    
-    OptionSet: {
-      [key: string]: string;
-    };
-  }
-  export interface ChoicesAttributeMetadata
-    extends ComponentFramework.AttributeMetadata {
-    /** Type of a column. */     
-    AttributeType: ComponentFramework.AttributeType.Picklist;
-    /**Default form value for the column.*/    
-    DefaultFormValue: number;
-    /**Options for the column where each option is a key:value pair.*/    
-    OptionSet: {
-      [key: string]: string;
-    };
-  }
-  export interface StateAttributeMetadata
-    extends ComponentFramework.AttributeMetadata {
-    /** Type of a column. */      
-    AttributeType: ComponentFramework.AttributeType.State;
+    AttributeType: ShkoOnline.AttributeType;
     /**Options for the column where each option is a key:value pair*/
     OptionSet: {
       [key: string]: string;
     };
-        /**Returns the default status (number) based on the passed in state value for a table*/
+  }
+
+  export interface ChoicesAttributeMetadata
+    extends ShkoOnline.AttributeMetadata {
+    /** Type of a column. */
+    AttributeType: ShkoOnline.AttributeType.Picklist;
+    /**Default form value for the column.*/
+    DefaultFormValue: number;
+    /**Options for the column where each option is a key:value pair.*/
+    OptionSet: {
+      [key: string]: string;
+    };
+  }
+
+  export interface StateAttributeMetadata
+    extends ShkoOnline.AttributeMetadata {
+    /** Type of a column. */
+    AttributeType: ShkoOnline.AttributeType.State;
+    /**Options for the column where each option is a key:value pair*/
+    OptionSet: {
+      [key: string]: string;
+    };
+    /**Returns the default status (number) based on the passed in state value for a table*/
     getDefaultStatus(state: number): number;
     /**Returns possible status values (array of numbers) for a specified state value.*/
     getStatusValuesForState(state: number): number[];
   }
+
   export interface StatusAttributeMetadata
-    extends ComponentFramework.AttributeMetadata {
+    extends ShkoOnline.AttributeMetadata {
     /** Type of a column. */
-    AttributeType: ComponentFramework.AttributeType.Status;
-    /**Options for the column where each option is a key:value pair.*/ 
+    AttributeType: ShkoOnline.AttributeType.Status;
+    /**Options for the column where each option is a key:value pair.*/
     OptionSet: {
       [key: string]: string;
     };
@@ -256,8 +259,7 @@ declare namespace ComponentFramework {
     /** An owner attribute. Value = 9. */
     Owner = 9,
 
-    /** A partylist attribute. Value = 10.
-     */
+    /** A partylist attribute. Value = 10.*/
     PartyList = 10,
 
     /** A picklist attribute. Value = 11. */
