@@ -36,6 +36,7 @@ export class DateTimePropertyMock
       const metadata = {};
       this.formatted = value?.toLocaleTimeString();
     });
+    this.refresh = stub();
     this.refresh.callsFake(()=>{
       const record = {value: undefined};
       this.setValue(record.value);
