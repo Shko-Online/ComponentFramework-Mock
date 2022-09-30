@@ -149,6 +149,8 @@ export namespace ShkoOnline {
     LogicalName: string;
 	  /**  Schema name for the column.  */
     SchemaName: string;
+    /** MetadataId */
+    MetadataId: string;
   }
 
   export interface BooleanAttributeMetadata
