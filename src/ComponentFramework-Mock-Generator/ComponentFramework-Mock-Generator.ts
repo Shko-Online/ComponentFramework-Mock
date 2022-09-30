@@ -56,8 +56,9 @@ export class ComponentFrameworkMockGenerator<
         return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>(
           (resolve) => {
             const result = this.metadata.metadata.findOne({
-              $and: { $eq: entityName },
+              LogicalName: { $eq: entityName },
             });
+            result.Attributes
             resolve({
               LogicalName: result.LogicalName,
               ActivityTypeMask: result.ActivityTypeMask,
@@ -155,6 +156,9 @@ export class ComponentFrameworkMockGenerator<
   }
 
   ExecuteUpdateView() {
+    // for(let k in this.context.parameters ){
+    //   this.context.parameters[k].refresh();
+    // } 
     this.control.updateView(this.context);
   }
 }

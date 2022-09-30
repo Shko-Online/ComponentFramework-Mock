@@ -24,6 +24,8 @@ export class DateTimePropertyMock
   raw: Date;
   attributes: DateTimeMetadataMock;
   setValue: SinonStub<[value: Date|null], void>;
+  refresh: SinonStub<[], void>;
+  db: Collection<any>;
   constructor(defaultValue?: Date) {
     super();
     this.raw = defaultValue;
@@ -31,7 +33,12 @@ export class DateTimePropertyMock
     this.setValue = stub();
     this.setValue.callsFake((value) => {
       this.raw = value;
+      const metadata = {};
       this.formatted = value?.toLocaleTimeString();
+    });
+    this.refresh.callsFake(()=>{
+      const record = {value: undefined};
+      this.setValue(record.value);
     });
   }
 }

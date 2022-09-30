@@ -12,43 +12,78 @@
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
 */
-import * as loki from "lokijs";
-import * as userMetadata from "./systemUser.json";
+import * as loki from 'lokijs';
+import { ShkoOnline } from './shkoOnline_metadata';
 
 export class MetadataDB {
-  attributes: {
-    [key: string]: Collection<any>;
-  };
-  metadata: Collection<any>;
-  db: loki;
-  constructor() {
-    this.db = new loki("metadata.db");
-this.attributes = {};
-    this.initMetadata([JSON.parse(JSON.stringify(userMetadata))]);
-  }
+    attributes: {
+        [key: string]: Collection<ShkoOnline.AttributeMetadata>;
+    };
+    metadata: Collection<ShkoOnline.EntityMetadata>;
+    data: {
+        [key: string]: Collection<any>;
+    };
+    db: loki;
+    constructor() {
+        this.db = new loki('metadata.db');
+        this.attributes = {};
+        this.data = {};
+    }
 
-  initMetadata(metadatas: any[]) {
-    metadatas.forEach((metadata1) => {
-      if (!this.metadata) {
-        this.metadata = this.db.addCollection("metadata");
-      }
+    initMetadata(metadatas: ShkoOnline.EntityMetadata[]) {
+        metadatas.forEach((metadata1) => {
+            if (!this.metadata) {
+                this.metadata = this.db.addCollection('metadata');
+            }
 
-      this.metadata.insert(metadata1);
+            this.metadata.insert(metadata1);
 
-      const userAttributes = this.db.addCollection(
-        `${metadata1.logicalName}#attributes`
-      );
-      this.attributes[metadata1.logicalName] = userAttributes;
-      const attributes = metadata1.Attributes;
+            const userAttributes = this.db.addCollection(`${metadata1.LogicalName}#attributes`);
+            this.attributes[metadata1.LogicalName] = userAttributes;
+            const attributes = metadata1.Attributes;
 
-      attributes.forEach((attribute) => {
-        userAttributes.insert({
-          LogicalName: attribute.LogicalName,
-          SchemaName: attribute.SchemaName,
-          AttributeType: attribute.AttributeType,
-          MetadataId: attribute.MetadataId,
+            attributes.forEach((attribute) => {
+                userAttributes.insert({
+                    LogicalName: attribute.LogicalName,
+                    SchemaName: attribute.SchemaName,
+                    AttributeType: attribute.AttributeType,
+                    MetadataId: attribute.MetadataId,
+                    DisplayName: attribute.DisplayName,
+                });
+            });
         });
-      });
-    });
-  }
+    }
+    initItems(items: { '@odata.context': string; value: any[] }) {
+        const entitySetName = items['@odata.context'].substring(items['@odata.context'].indexOf('#') + 1);
+        var tableMetadata = this.metadata.findOne({ EntitySetName: { $eq: entitySetName } });
+
+        const tableData = this.db.addCollection(`${tableMetadata.LogicalName}#data`);
+        this.data[tableMetadata.LogicalName] = tableData;
+        items.value.forEach((item) => {
+            const row = {};
+            tableMetadata.Attributes.forEach((attribute) => {
+                const key = attribute.LogicalName;
+                if (key in item) {
+                    row[key] = item[key];
+                }
+            });
+            tableData.insert(row);
+        });
+    }
+
+    GetRow(entity: string, id: string) {
+        const entityMetadata = this.metadata.findOne({ LogicalName: entity });
+        const search = {};
+        search[entityMetadata.PrimaryIdAttribute] = { $eq: id };
+        return this.data[entity].findOne(search);
+    }
+
+    GetAllColumn(entity: string, attribute: string) {
+        const tab = [];
+        var data = this.data[entity].chain().data();
+        data.forEach((at) => {
+            tab.push(at[attribute]);
+        });
+        return tab;
+    }
 }
