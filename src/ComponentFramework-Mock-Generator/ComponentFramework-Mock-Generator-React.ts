@@ -13,7 +13,7 @@
     language governing rights and limitations under the RPL. 
 */
 import React from "react";
-import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
+import { spy, fake, stub, SinonSpiedInstance, SinonStub } from "sinon";
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
 import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
 import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db";
@@ -31,7 +31,7 @@ export class ComponentFrameworkMockGeneratorReact<
     ComponentFramework.ReactControl<TInputs, TOutputs>
   >;
   context: ContextMock<TInputs>;
-  notifyOutputChanged: SinonSpy<[], void>;
+  notifyOutputChanged: SinonStub<[], void>;
   state: ComponentFramework.Dictionary;
 
   data: {
@@ -82,7 +82,8 @@ export class ComponentFrameworkMockGeneratorReact<
     this.context.userSettings.userName =
       this.data["systemuser"][this.myUserId].name;
 
-    this.notifyOutputChanged = fake(() => {
+    this.notifyOutputChanged = stub();
+    this.notifyOutputChanged.callsFake(() => {
       const updates = this.control.getOutputs?.();
       this.context.updatedProperties = [];
       for (let k in updates) {
