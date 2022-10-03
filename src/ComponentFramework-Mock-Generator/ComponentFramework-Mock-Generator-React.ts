@@ -13,7 +13,7 @@
     language governing rights and limitations under the RPL. 
 */
 import React from "react";
-import { spy, fake, stub, SinonSpiedInstance, SinonStub } from "sinon";
+import { spy, stub, SinonSpiedInstance, SinonStub } from "sinon";
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
 import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
 import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db";
@@ -22,9 +22,10 @@ import { EntityRecord } from "@shko-online/componentframework-mock/ComponentFram
 import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
 import ReactResizeObserver from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver";
 import arrayEqual from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual";
+import { ShkoOnline } from  "@shko-online/componentframework-mock/ShkoOnline";
 
 export class ComponentFrameworkMockGeneratorReact<
-  TInputs extends ComponentFrameworkMock.PropertyTypes<TInputs>,
+  TInputs extends ShkoOnline.PropertyTypes<TInputs>,
   TOutputs extends KnownTypes<TOutputs>
 > {
   control: SinonSpiedInstance<
@@ -135,16 +136,12 @@ export class ComponentFrameworkMockGeneratorReact<
     );
   }
 
-  UpdateView() {
-    return this.control.updateView(this.context);
-  }
-
   ExecuteUpdateView(): string | React.ReactElement {
     // div element react
     // ref html
     // observer
 
-    return React.createElement(ReactResizeObserver, { updateView: this.UpdateView.bind(this), trackContainer: true });
+    return React.createElement(ReactResizeObserver<TInputs,TOutputs>, { componentFrameworkMockGeneratorReact: this });
     //return this.control.updateView(this.context);
   }
 }

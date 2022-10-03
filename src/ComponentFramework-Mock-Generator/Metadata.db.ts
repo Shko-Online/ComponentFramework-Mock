@@ -12,8 +12,8 @@
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
 */
-import * as loki from 'lokijs';
-import { ShkoOnline } from './shkoOnline_metadata';
+import  loki from 'lokijs';
+import { ShkoOnline } from "@shko-online/componentframework-mock/ShkoOnline";
 
 export class MetadataDB {
     attributes: {

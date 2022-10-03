@@ -13,19 +13,20 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { ClientMock } from "./Client.mock";
+import { ClientMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Client.mock";
 import { DeviceMock } from "./Device.mock";
 import { FactoryMock } from "./Factory.mocks";
 import { FormattingMock } from "./Formatting.mock";
 import { ModeMock } from "./Mode.mock";
 import { NavigationMock } from "./Navigation.mock";
 import { PropertyMap } from "./PropertyTypes/PropertyMap";
+import { ShkoOnline } from  "@shko-online/componentframework-mock/ShkoOnline";
 import { ResourcesMock } from "./Resources.mock";
 import { UserSettingsMock } from "./UserSettings.mock";
 import { UtilityMock } from "./Utility.mock";
 import { WebApiMock } from "./WebApi.mock";
 
-export class ContextMock<IInputs extends ComponentFrameworkMock.PropertyTypes<IInputs>>
+export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs> {
     client:  ClientMock;   
     device: DeviceMock;

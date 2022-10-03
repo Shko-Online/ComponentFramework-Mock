@@ -34,6 +34,12 @@ export class PagingMock
 
   constructor() {
     this.loadOnlyNewPage=true;
+    this.totalResultCount = -1;
+    this.firstPageNumber = 1;
+    this.lastPageNumber = 1;
+    this.hasNextPage = false;
+    this.hasPreviousPage = false;
+    this.pageSize = 10;
     this.loadNextPage = stub();
     this.loadNextPage.callsFake(()=> this.loadOnlyNewPage)
     this.loadPreviousPage = stub();
