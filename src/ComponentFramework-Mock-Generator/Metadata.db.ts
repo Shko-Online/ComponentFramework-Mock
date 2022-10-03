@@ -75,7 +75,7 @@ export class MetadataDB {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
         const search = {};
         search[entityMetadata.PrimaryIdAttribute] = { $eq: id };
-        return this.data[entity].findOne(search);
+        return {row: this.data[entity].findOne(search), entityMetadata};
     }
 
     GetAllColumn(entity: string, attribute: string) {
@@ -85,5 +85,21 @@ export class MetadataDB {
             tab.push(at[attribute]);
         });
         return tab;
+    }
+    RefreshValue(entity: string, rowid: string, attributeName: string)
+    {
+        const result = this.GetRow(entity,rowid);
+        const attributeMetadata = result.entityMetadata.Attributes.find((attribute=> attribute.LogicalName===attributeName));
+        const value = result.row[attributeName];
+        return { value, attributeMetadata};
+    }
+    GetRows(entity: string){
+        const entityMetadata = this.metadata.findOne({ LogicalName: entity });
+        const attributeMetadata = entityMetadata.Attributes;
+        const rows = this.data[entity].chain().data();
+        return { rows, entityMetadata }
+       
+
+        
     }
 }

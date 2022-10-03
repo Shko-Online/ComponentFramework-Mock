@@ -93,7 +93,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
           .sort((record1, record2) =>
             record1
               .getNamedReference()
-              ?.name.localeCompare(record2.getNamedReference()?.name)
+              ?.name?.localeCompare(record2.getNamedReference()?.name)
           )
           .map((record) => record.getRecordId());
       }

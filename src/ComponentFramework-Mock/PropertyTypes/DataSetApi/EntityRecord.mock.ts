@@ -13,63 +13,75 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from "sinon";
+import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
+import { SinonStub, stub } from 'sinon';
 
 type ColumnReturnValue =
-  | string
-  | number
-  | boolean
-  | number[]
-  | ComponentFramework.EntityReference
-  | ComponentFramework.EntityReference[]
-  | Date
-  | ComponentFramework.LookupValue
-  | ComponentFramework.LookupValue[];
+    | string
+    | number
+    | boolean
+    | number[]
+    | ComponentFramework.EntityReference
+    | ComponentFramework.EntityReference[]
+    | Date
+    | ComponentFramework.LookupValue
+    | ComponentFramework.LookupValue[];
 
 export class EntityRecord
-  implements
-    ComponentFramework.PropertyHelper.DataSetApi.EntityRecord,
-    ComponentFramework.EntityReference
+    implements ComponentFramework.PropertyHelper.DataSetApi.EntityRecord, ComponentFramework.EntityReference
 {
-  id: { guid: string };
+    id: { guid: string };
 
-  /**
-   * The entity logical name. Read-only.
-   */
-  etn?: string | undefined;
+    /**
+     * The entity logical name. Read-only.
+     */
+    etn?: string | undefined;
 
-  /**
-   * The name of the entity reference. Read-only.
-   */
-  name: string;
-  getFormattedValue: SinonStub<[columnName: string], string>;
-  getRecordId: SinonStub<[], string>;
-  getValue: SinonStub<[columnName: string], ColumnReturnValue>;
-  getNamedReference: SinonStub<[], ComponentFramework.EntityReference>;
-  columns: {
-    [columnName: string]: ColumnReturnValue;
-  };
-  constructor(etn: string|undefined, id: string, name?: string) {
-    this.etn = etn;
-    this.id = {guid: id};
-    this.name = name;
-    this.columns = {};
-    this.getFormattedValue = stub();
-    this.getFormattedValue.callsFake((columnName)=> {
-      if(!(columnName in this.columns)){
-        return undefined;
-      }
-     return ''+this.columns[columnName];
-    } )
-    this.getNamedReference = stub();
-    this.getNamedReference.callsFake(() => ({
-      id: this.id,
-      etn: this.etn,
-      name: this.name,
-    }));
-    this.getRecordId = stub();
-    this.getRecordId.callsFake(() => this.id.guid);
-    this.getValue = stub();
-    this.getValue.callsFake((columnName)=>this.columns[columnName] );
-  }
+    /**
+     * The name of the entity reference. Read-only.
+     */
+    name: string;
+    getFormattedValue: SinonStub<[columnName: string], string>;
+    getRecordId: SinonStub<[], string>;
+    getValue: SinonStub<[columnName: string], ColumnReturnValue>;
+    getNamedReference: SinonStub<[], ComponentFramework.EntityReference>;
+    columns: {
+        [columnName: string]: ColumnReturnValue;
+    };
+
+    metadata: ShkoOnline.EntityMetadata;
+
+    constructor(etn: string | undefined, id: string, name?: string) {
+      this.metadata = {
+        LogicalName: etn,
+        PrimaryIdAttribute: etn+'id',
+        PrimaryNameAttribute: 'name'
+      }  as ShkoOnline.EntityMetadata;
+      this.columns = {
+        [etn+'id']: id,
+        ['name']: name
+      };
+      this.etn = etn;
+        this.id = { guid: id };
+        this.name = name;
+        this.columns = {};
+        this.getFormattedValue = stub();
+        this.getFormattedValue.callsFake((columnName) => {
+            if (!(columnName in this.columns)) {
+                return undefined;
+            }
+            return '' + this.columns[columnName];
+        });
+        this.getNamedReference = stub();
+        this.getNamedReference.callsFake(() => {
+            const id = { guid: this.columns[this.metadata.PrimaryIdAttribute] as string };
+            const etn = this.metadata.LogicalName;
+            const name = this.columns[this.metadata.PrimaryNameAttribute] as string;
+            return { id, etn, name };
+        });
+        this.getRecordId = stub();
+        this.getRecordId.callsFake(() => this.id.guid);
+        this.getValue = stub();
+        this.getValue.callsFake((columnName) => this.columns[columnName]);
+    }
 }
