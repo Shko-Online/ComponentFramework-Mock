@@ -13,35 +13,60 @@
   language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock";
-import { OptionSetMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock";
-import { SinonStub, stub } from "sinon";
+import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { OptionSetMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock';
+import { SinonStub, stub } from 'sinon';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
+import { OptionMetadataMock } from '../Metadata/OptionMetadata.mock';
 
 export class MultiSelectOptionSetPropertyMock
-  extends PropertyMock
-  implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty {
-  raw: number[] | null;
-  originalRaw: number[] | null;
-  attributes?: OptionSetMetadataMock;
-  setValue: SinonStub<[value: number[] | null], void>;
-  constructor(defaultValue?: number[]) {
-    super();
-    this.setValue = stub();
-    this.setValue.callsFake((value) => {
-      this.raw = value != null ? [...value] : null;
-      this.originalRaw = value != null ? [...value] : null;
-      if (this.attributes && value != null) {
-        this.formatted = this.attributes.Options.filter((option) =>
-          value.some((selectedOption) => selectedOption === option.Value)
-        )
-          .map((option) => option.Label)
-          .join(",");
-      } else {
-        this.formatted = "";
-      }
-    });
-    this.raw = defaultValue;
-    this.attributes = new OptionSetMetadataMock();
-    this.setValue(defaultValue);
-  }
+    extends PropertyMock
+    implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+{
+    boundTableName: string;
+    boundRowId: string;
+    boundColumn: string;
+    db: MetadataDB;
+
+    raw: number[] | null;
+    originalRaw: number[] | null;
+    attributes?: OptionSetMetadataMock;
+    setValue: SinonStub<[value: number[] | null], void>;
+    constructor(defaultValue?: number[]) {
+        super();
+        this.setValue = stub();
+        this.setValue.callsFake((value) => {
+            this.raw = value != null ? [...value] : null;
+            this.originalRaw = value != null ? [...value] : null;
+            if (this.attributes && value != null) {
+                this.formatted = this.attributes.Options.filter((option) =>
+                    value.some((selectedOption) => selectedOption === option.Value),
+                )
+                    .map((option) => option.Label)
+                    .join(',');
+            } else {
+                this.formatted = '';
+            }
+        });
+        this.raw = defaultValue;
+        this.attributes = new OptionSetMetadataMock();
+        this.setValue(defaultValue);
+    }
+    Bind(columnName) {
+        this.boundColumn = columnName;
+        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.PickListAttributeMetadata>(
+            this.boundTableName,
+            this.boundRowId,
+            columnName,
+        );
+        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Picklist) {
+            throw new Error('Type Error');
+        }
+        this.attributes.LogicalName = attributeMetadata.LogicalName;
+        this.attributes.Options = attributeMetadata.OptionSet.Options.map((metadata) => {
+            return new OptionMetadataMock(metadata.Value, metadata.Label.UserLocalizedLabel.Label, metadata.Color);
+        });
+        
+    }
 }

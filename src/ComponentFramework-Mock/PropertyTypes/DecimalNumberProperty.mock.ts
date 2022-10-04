@@ -13,22 +13,46 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { NumberPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock";
-import { DecimalNumberMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock";
-import { SinonStub, stub } from "sinon";
+import { NumberPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
+import { DecimalNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
+import { SinonStub, stub } from 'sinon';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 
 export class DecimalNumberPropertyMock
-  extends NumberPropertyMock
-  implements ComponentFramework.PropertyTypes.DecimalNumberProperty
+    extends NumberPropertyMock
+    implements ComponentFramework.PropertyTypes.DecimalNumberProperty
 {
-  attributes?: DecimalNumberMetadataMock;
-  setValue: SinonStub<[value: number | null], void>;
-  constructor(defaultValue?: number) {
-    super();
-    this.setValue = stub();
-    this.setValue.callsFake((value) => {
-      this.raw = value;
-      this.formatted = "" + value;
-    });
-  }
+    boundTableName: string;
+    boundRowId: string;
+    boundColumn: string;
+    db: MetadataDB;
+
+    attributes?: DecimalNumberMetadataMock;
+    setValue: SinonStub<[value: number | null], void>;
+    constructor(defaultValue?: number) {
+        super();
+        this.setValue = stub();
+        this.setValue.callsFake((value) => {
+            this.raw = value;
+            this.formatted = '' + value;
+        });
+    }
+    Bind(columnName: string) {
+        this.boundColumn = columnName;
+        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.DecimalNumberAttributeMetadata>(
+            this.boundTableName,
+            this.boundRowId,
+            columnName,
+        );
+        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Decimal) {
+            throw new Error('Type Error');
+        }
+        this.attributes.LogicalName= attributeMetadata.LogicalName;
+        this.attributes.Precision = attributeMetadata.Precision;
+        this.attributes.MaxValue = attributeMetadata.MaxValue;
+        this.attributes.MinValue = attributeMetadata.MinValue;
+        this.attributes.ImeMode= attributeMetadata.ImeMode;
+        this.raw = value;
+    }
 }

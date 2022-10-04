@@ -18,10 +18,17 @@ import { PropertyMock } from
 import { StringMetadataMock } from
     '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
 import { SinonStub, stub } from 'sinon';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 
 export class StringPropertyMock
     extends PropertyMock
     implements ComponentFramework.PropertyTypes.StringProperty {
+    boundTableName : string;
+    boundRowId : string;
+    boundColumn: string;
+    db : MetadataDB;
+
     raw: string | null;
     attributes: StringMetadataMock;
     setValue: SinonStub<[value: string|null],void>;
@@ -34,5 +41,19 @@ export class StringPropertyMock
             this.raw = value;
             this.formatted = value;
         })
+    }
+    Bind(columnName: string){
+        this.boundColumn = columnName;
+        const {value,attributeMetadata} = this.db.RefreshValue<ShkoOnline.StringAttributeMetadata>(this.boundTableName, this.boundRowId, columnName);
+        if(attributeMetadata.AttributeType != ShkoOnline.AttributeType.String)
+		{
+			throw new Error("Type Error");
+		}
+        this.attributes.LogicalName = attributeMetadata.LogicalName;
+        this.attributes.DisplayName = attributeMetadata.DisplayName;
+        this.attributes.MaxLength = attributeMetadata.MaxLength;
+        this.attributes.Format = attributeMetadata.Format;
+        this.attributes.ImeMode= attributeMetadata.ImeMode;
+        this.raw = value;   
     }
 }

@@ -13,153 +13,157 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { TwoOptionsPropertyMock } from "./ComponentFramework-Mock/PropertyTypes/TwoOptionsProperty.mock";
+import { TwoOptionsPropertyMock } from './ComponentFramework-Mock/PropertyTypes/TwoOptionsProperty.mock';
 
 export namespace ShkoOnline {
-    export type PropertyTypes<T extends {
-        [P in keyof T]: ComponentFramework.PropertyTypes.Property | ComponentFramework.PropertyTypes.DataSet | ComponentFramework.PropertyTypes.EnumProperty<string> }
-    > = {
+    export type PropertyTypes<
+        T extends {
             [P in keyof T]:
-            T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty ?
-            ComponentFramework.PropertyTypes.TwoOptionsProperty :
-            T[P] extends ComponentFramework.PropertyTypes.DataSet ?
-            ComponentFramework.PropertyTypes.DataSet :
-            T[P] extends ComponentFramework.PropertyTypes.StringProperty ?
-            ComponentFramework.PropertyTypes.StringProperty :
-            T[P] extends ComponentFramework.PropertyTypes.NumberProperty ?
-            ComponentFramework.PropertyTypes.NumberProperty :
-            T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty ?
-            ComponentFramework.PropertyTypes.DateTimeProperty :
-            T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty ?
-            ComponentFramework.PropertyTypes.DecimalNumberProperty :
-            T[P] extends ComponentFramework.PropertyTypes.LookupProperty ?
-            ComponentFramework.PropertyTypes.LookupProperty :
-            T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty ?
-            ComponentFramework.PropertyTypes.WholeNumberProperty :
-            T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string> ?
-            ComponentFramework.PropertyTypes.EnumProperty<string> :
-            T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty ?
-            ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty :
-            never
-        }
+                | ComponentFramework.PropertyTypes.Property
+                | ComponentFramework.PropertyTypes.DataSet
+                | ComponentFramework.PropertyTypes.EnumProperty<string>;
+        },
+    > = {
+        [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+            ? ComponentFramework.PropertyTypes.TwoOptionsProperty
+            : T[P] extends ComponentFramework.PropertyTypes.DataSet
+            ? ComponentFramework.PropertyTypes.DataSet
+            : T[P] extends ComponentFramework.PropertyTypes.StringProperty
+            ? ComponentFramework.PropertyTypes.StringProperty
+            : T[P] extends ComponentFramework.PropertyTypes.NumberProperty
+            ? ComponentFramework.PropertyTypes.NumberProperty
+            : T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty
+            ? ComponentFramework.PropertyTypes.DateTimeProperty
+            : T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty
+            ? ComponentFramework.PropertyTypes.DecimalNumberProperty
+            : T[P] extends ComponentFramework.PropertyTypes.LookupProperty
+            ? ComponentFramework.PropertyTypes.LookupProperty
+            : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
+            ? ComponentFramework.PropertyTypes.WholeNumberProperty
+            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
+            ? ComponentFramework.PropertyTypes.EnumProperty<string>
+            : T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+            ? ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+            : never;
+    };
 
     /**
-       * The entire property bag interface available to control via Context Object
-       */
+     * The entire property bag interface available to control via Context Object
+     */
     export interface Context<TInputs extends PropertyTypes<TInputs>> {
         parameters: TInputs;
     }
 
     /** https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-utility/getentitymetadata */
     export interface EntityMetadata {
-      /** Whether a custom activity should appear in the activity menus in the Web application. 0 indicates that the custom activity doesn't appear; 1 indicates that it does appear. */
-      ActivityTypeMask: number;
-      /**Indicates whether to automatically move records to the owner’s default queue when a record of this type is created or assigned.*/
-      AutoRouteToOwnerQueue: boolean;
-      /**For internal use only. */
-      CanEnableSyncToExternalSearchIndex: boolean;
-      /**Indicates whether the table can trigger a workflow process.*/
-      CanTriggerWorkflow: boolean;
-      /**Description for the table.*/
-      Description: string;
-      /**Plural display name for the table.*/
-      DisplayCollectionName: string;
-      /**Display name for the table.*/
-      DisplayName: string;
-      /**Indicates whether the table will enforce custom state transitions.*/
-      EnforceStateTransitions: boolean;
-      /**The hexadecimal code to represent the color to be used for this table in the application.*/
-      EntityColor: string;
+        /** Whether a custom activity should appear in the activity menus in the Web application. 0 indicates that the custom activity doesn't appear; 1 indicates that it does appear. */
+        ActivityTypeMask: number;
+        /**Indicates whether to automatically move records to the owner’s default queue when a record of this type is created or assigned.*/
+        AutoRouteToOwnerQueue: boolean;
+        /**For internal use only. */
+        CanEnableSyncToExternalSearchIndex: boolean;
+        /**Indicates whether the table can trigger a workflow process.*/
+        CanTriggerWorkflow: boolean;
+        /**Description for the table.*/
+        Description: string;
+        /**Plural display name for the table.*/
+        DisplayCollectionName: string;
+        /**Display name for the table.*/
+        DisplayName: string;
+        /**Indicates whether the table will enforce custom state transitions.*/
+        EnforceStateTransitions: boolean;
+        /**The hexadecimal code to represent the color to be used for this table in the application.*/
+        EntityColor: string;
         /**Indicates whether activities are associated with this table.*/
-        HasActivities:boolean;
+        HasActivities: boolean;
         /**Indicates whether the table is an activity.*/
-        IsActivity:boolean
+        IsActivity: boolean;
         /**Indicates whether the email messages can be sent to an email address stored in a record of this type.*/
-        IsActivityParty:boolean;
+        IsActivityParty: boolean;
         /**Indicates whether the table is enabled for business process flows.*/
-        IsBusinessProcessEnabled:boolean;
+        IsBusinessProcessEnabled: boolean;
         /**Indicates whether the table is a business process flow table.*/
-        IsBPFEntity:boolean;
+        IsBPFEntity: boolean;
         /**Indicates whether the table is a child table.*/
-      IsChildEntity: boolean;
+        IsChildEntity: boolean;
         /**Indicates whether connections are enabled for this table.*/
-        IsConnectionsEnabled:boolean
+        IsConnectionsEnabled: boolean;
         /**Indicates whether the table is a custom table.*/
-      IsCustomEntity: boolean;
+        IsCustomEntity: boolean;
         /**Indicates whether the table is customizable.*/
-      IsCustomizable: boolean;
+        IsCustomizable: boolean;
         /**Indicates whether document management is enabled.*/
-        IsDocumentManagementEnabled:boolean;
+        IsDocumentManagementEnabled: boolean;
         /** Indicates whether the document recommendations is enabled.*/
         IsDocumentRecommendationsEnabled: boolean;
         /** Indicates whether duplicate detection is enabled.*/
-        IsDuplicateDetectionEnabled:boolean;
+        IsDuplicateDetectionEnabled: boolean;
         /**Indicates whether charts are enabled.*/
-        IsEnabledForCharts:boolean;
+        IsEnabledForCharts: boolean;
         /**Indicates whether the table can be imported using the Import Wizard.*/
-        IsImportable:boolean;
+        IsImportable: boolean;
         /**Indicates the table is enabled for interactive experience.*/
-        IsInteractionCentricEnabled:boolean;
+        IsInteractionCentricEnabled: boolean;
         /**Indicates whether knowledge management is enabled for the table.*/
-        IsKnowledgeManagementEnabled:boolean;
+        IsKnowledgeManagementEnabled: boolean;
         /**Indicates whether mail merge is enabled for this table.*/
-        IsMailMergeEnabled:boolean;
+        IsMailMergeEnabled: boolean;
         /**Indicates whether the table is part of a managed solution.*/
-      IsManaged: boolean;
+        IsManaged: boolean;
         /**Indicates whether OneNote integration is enabled for the table.*/
-        IsOneNoteIntegrationEnabled:boolean;
+        IsOneNoteIntegrationEnabled: boolean;
         /**Indicates whether optimistic concurrency is enabled for the table.*/
-        IsOptimisticConcurrencyEnabled:boolean;
+        IsOptimisticConcurrencyEnabled: boolean;
         /**Indicates whether the table is enabled for quick create forms.*/
-        IsQuickCreateEnabled:boolean;
+        IsQuickCreateEnabled: boolean;
         /**Indicates whether the table supports setting custom state transitions.*/
-        IsStateModelAware:boolean;
+        IsStateModelAware: boolean;
         /**Indicates whether the table is will be shown in Advanced Find.*/
-        IsValidForAdvancedFind:boolean;
+        IsValidForAdvancedFind: boolean;
         /**Indicates whether Microsoft Dynamics 365 for tablets users can see data for this table.*/
-        IsVisibleInMobileClient	:boolean;
+        IsVisibleInMobileClient: boolean;
         /**Indicates whether the table is enabled for Unified Interface.*/
-        IsEnabledInUnifiedInterface:boolean;
+        IsEnabledInUnifiedInterface: boolean;
         /**The logical collection name.*/
-        LogicalCollectionName:string;
+        LogicalCollectionName: string;
         /**The table type code.*/
-      ObjectTypeCode: number;
+        ObjectTypeCode: number;
         /**The ownership type for the table: "UserOwned" or "OrganizationOwned".*/
-      OwnershipType: string;
-      /** The name of the Web API table set for this table. */
-      EntitySetName: string;
-      /** The logical name for the table. */
-      LogicalName: string;
+        OwnershipType: string;
+        /** The name of the Web API table set for this table. */
+        EntitySetName: string;
+        /** The logical name for the table. */
+        LogicalName: string;
         /**The name of the column that is the primary id for the table.*/
-        PrimaryIdAttribute:string;
+        PrimaryIdAttribute: string;
         /**The name of the primary image column for a table.*/
-        PrimaryImageAttribute:string;
-      /** The name of the primary column for a table. */
-      PrimaryNameAttribute: string;
-      /**The privilege definitions for the table where *each* object contains the following values to define the security privilege for access to a table*/ 
-      Privileges: ShkoOnline.Privileges[];
-      /** A collection of column definitions objects. The object returned depends on the type of column definitions. */
-      Attributes: ShkoOnline.AttributeMetadata[];
+        PrimaryImageAttribute: string;
+        /** The name of the primary column for a table. */
+        PrimaryNameAttribute: string;
+        /**The privilege definitions for the table where *each* object contains the following values to define the security privilege for access to a table*/
+        Privileges: ShkoOnline.Privileges[];
+        /** A collection of column definitions objects. The object returned depends on the type of column definitions. */
+        Attributes: ShkoOnline.AttributeMetadata[];
     }
-  
-    export interface Privileges{
-      /**Whether the privilege can be basic access level.*/
-      CanBeBasic: boolean;
-      /**Whether the privilege can be deep access level*/
-      CanBeDeep:boolean;
-      /**Whether the privilege for an external party can be basic access level.*/
-      CanBeEntityReference:boolean;
-      /**Whether the privilege can be global access level.*/
-      CanBeGlobal:boolean;
-      /**Whether the privilege can be local access level*/
-      CanBeLocal:boolean;
-      /**Whether the privilege for an external party can be parent access level.*/
-      CanBeParentEntityReference:boolean;
-      /**The name of the privilege*/
-      Name:string;
-      /**The ID of the privilege.*/
-      PrivilegeId:string;
-      /**
+
+    export interface Privileges {
+        /**Whether the privilege can be basic access level.*/
+        CanBeBasic: boolean;
+        /**Whether the privilege can be deep access level*/
+        CanBeDeep: boolean;
+        /**Whether the privilege for an external party can be basic access level.*/
+        CanBeEntityReference: boolean;
+        /**Whether the privilege can be global access level.*/
+        CanBeGlobal: boolean;
+        /**Whether the privilege can be local access level*/
+        CanBeLocal: boolean;
+        /**Whether the privilege for an external party can be parent access level.*/
+        CanBeParentEntityReference: boolean;
+        /**The name of the privilege*/
+        Name: string;
+        /**The ID of the privilege.*/
+        PrivilegeId: string;
+        /**
        The type of privilege, which is one of the following:
          0: None
          1: Create
@@ -171,152 +175,232 @@ export namespace ShkoOnline {
          7: Append
          8: AppendTo
       */
-      PrivilegeType:number
-   }
-  
+        PrivilegeType: ShkoOnline.PrivilegeType;
+    }
+
     export interface AttributeMetadata {
-      /** Type of a column. */
-      AttributeType: ShkoOnline.AttributeType;
-      /** Display name for the column. */
-      DisplayName: string;
-      /** Logical name of the table that contains the column. */
-      EntityLogicalName: string;
-      /** Logical name for the column. */
-      LogicalName: string;
+        /** Type of a column. */
+        AttributeType: ShkoOnline.AttributeType;
+        /** Display name for the column. */
+        DisplayName: string;
+        /** Logical name of the table that contains the column. */
+        EntityLogicalName: string;
+        /** Logical name for the column. */
+        LogicalName: string;
         /**  Schema name for the column.  */
-      SchemaName: string;
-      /** MetadataId */
-      MetadataId: string;
+        SchemaName: string;
+        /** MetadataId */
+        MetadataId: string;
     }
-  
-    export interface BooleanAttributeMetadata
-      extends ShkoOnline.AttributeMetadata {
-      /** Type of a column. */
-      AttributeType: ShkoOnline.AttributeType.Boolean;
-      /**Default value for a Yes/No column.*/
-      DefaultFormValue: boolean;
-      /**Options for the boolean column where each option is a key:value pair.*/
-      OptionSet: {
-        [key: string]: string;
-      };
+
+    export interface BooleanAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        /** Type of a column. */
+        AttributeType: ShkoOnline.AttributeType.Boolean;
+        /**Default value for a Yes/No column.*/
+        DefaultFormValue: boolean;
+        /**Options for the boolean column where each option is a key:value pair.*/
+        OptionSet: ShkoOnline.BooleanOptionSet;
     }
-  
-    export interface EnumTypeAttributeMetadata
-      extends ShkoOnline.AttributeMetadata {
-      /** Type of a column. */
-      AttributeType: ShkoOnline.AttributeType;
-      /**Options for the column where each option is a key:value pair*/
-      OptionSet: {
-        [key: string]: string;
-      };
+    export interface BooleanOptionSet {
+        MetadataId: string;
+        IsCustomOptionSet: boolean;
+        Name: string;
+        OptionSetType: ShkoOnline.AttributeType.Boolean;
+        DisplayName: {
+            UserLocalizedLabel: {
+                Label: string;
+            };
+        };
+        TrueOption: {
+            Value: number;
+            Label: {
+                UserLocalizedLabel: {
+                    Label: string;
+                };
+            };
+            Color: string | null;
+        };
+        FalseOption: {
+            Value: number;
+            Label: {
+                UserLocalizedLabel: {
+                    Label: string;
+                };
+            };
+            Color: string | null;
+        };
     }
-  
-    export interface ChoicesAttributeMetadata
-      extends ShkoOnline.AttributeMetadata {
-      /** Type of a column. */
-      AttributeType: ShkoOnline.AttributeType.Picklist;
-      /**Default form value for the column.*/
-      DefaultFormValue: number;
-      /**Options for the column where each option is a key:value pair.*/
-      OptionSet: {
-        [key: string]: string;
-      };
+
+    export interface StringAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        AttributeType: ShkoOnline.AttributeType.String;
+        Format: string;
+        MaxLength: number;
+        ImeMode: ShkoOnline.ImeMode;
     }
-  
-    export interface StateAttributeMetadata
-      extends ShkoOnline.AttributeMetadata {
-      /** Type of a column. */
-      AttributeType: ShkoOnline.AttributeType.State;
-      /**Options for the column where each option is a key:value pair*/
-      OptionSet: {
-        [key: string]: string;
-      };
-      /**Returns the default status (number) based on the passed in state value for a table*/
-      getDefaultStatus(state: number): number;
-      /**Returns possible status values (array of numbers) for a specified state value.*/
-      getStatusValuesForState(state: number): number[];
+
+    export interface NumberAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        AttributeType:
+            | ShkoOnline.AttributeType.Integer
+            | ShkoOnline.AttributeType.BigInt
+            | ShkoOnline.AttributeType.Decimal
+            | ShkoOnline.AttributeType.Double;
+        ImeMode: ShkoOnline.ImeMode;
+        MaxValue: number;
+        MinValue: number;
     }
-  
-    export interface StatusAttributeMetadata
-      extends ShkoOnline.AttributeMetadata {
-      /** Type of a column. */
-      AttributeType: ShkoOnline.AttributeType.Status;
-      /**Options for the column where each option is a key:value pair.*/
-      OptionSet: {
-        [key: string]: string;
-      };
-      /**Returns the state value (number) for the specified status value (number).*/
-      getState(status: number): number;
+
+    export interface DecimalNumberAttributeMetadata extends ShkoOnline.NumberAttributeMetadata {
+        AttributeType: ShkoOnline.AttributeType.Decimal;
+        Precision: number;
     }
-  
+
+    export interface IntegerNumberAttributeMetadata extends ShkoOnline.NumberAttributeMetadata {
+        AttributeType: ShkoOnline.AttributeType.Integer;
+        Format: string;
+    }
+
+    export interface DateTimeAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        AttributeType: ShkoOnline.AttributeType.DateTime;
+        Format: string;
+        ImeMode: ShkoOnline.ImeMode;
+        Behaviour: ShkoOnline.DateTimeFieldBehavior;
+    }
+
+    export interface LookupAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        AttributeType: ShkoOnline.AttributeType.Lookup;
+        Targets: [];
+    }
+
+    export interface EnumTypeAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        /** Type of a column. */
+        AttributeType: ShkoOnline.AttributeType;
+        /**Options for the column where each option is a key:value pair*/
+        OptionSet: {
+            [key: string]: string;
+        };
+    }
+
+    export interface PickListAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        /** Type of a column. */
+        AttributeType: ShkoOnline.AttributeType.Picklist;
+        /**Default form value for the column.*/
+        DefaultFormValue: number;
+        /**Options for the column where each option is a key:value pair.*/
+        OptionSet: ShkoOnline.OptionSet;
+    }
+    export interface OptionSet {
+        MetadataId: string;
+        IsCustomOptionSet: boolean;
+        Name: string;
+        OptionSetType: ShkoOnline.AttributeType.Picklist;
+        Options: [
+            {
+                Value: number;
+                Label: {
+                    UserLocalizedLabel: {
+                        Label: string;
+                    };
+                };
+                Color: string;
+            },
+        ];
+    }
+
+    export interface StateAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        /** Type of a column. */
+        AttributeType: ShkoOnline.AttributeType.State;
+        /**Options for the column where each option is a key:value pair*/
+        OptionSet: {
+            [key: string]: string;
+        };
+        /**Returns the default status (number) based on the passed in state value for a table*/
+        getDefaultStatus(state: number): number;
+        /**Returns possible status values (array of numbers) for a specified state value.*/
+        getStatusValuesForState(state: number): number[];
+    }
+
+    export interface StatusAttributeMetadata extends ShkoOnline.AttributeMetadata {
+        /** Type of a column. */
+        AttributeType: ShkoOnline.AttributeType.Status;
+        /**Options for the column where each option is a key:value pair.*/
+        OptionSet: {
+            [key: string]: string;
+        };
+        /**Returns the state value (number) for the specified status value (number).*/
+        getState(status: number): number;
+    }
+
     /**
      * Describes the type of an attribute.
      * For the Web API use the AttributeTypeCode EnumType.
      */
     export const enum AttributeType {
-      /** A big integer attribute */
-      BigInt = 18,
-      /** A Boolean attribute. Value = 0. */
-      Boolean = 0,
-  
-      /** An attribute that contains calendar rules. Value = 0x10. */
-      CalendarRules = 16,
-  
-      /** An attribute that represents a customer. Value = 1.*/
-      Customer = 1,
-  
-      /** A date/time attribute. Value = 2. */
-      DateTime = 2,
-  
-      /** A decimal attribute. Value = 3. */
-      Decimal = 3,
-  
-      /** A double attribute. Value = 4. */
-      Double = 4,
-  
-      /** An entity name attribute. Value = 20. */
-      EntityName = 20,
-  
-      /**
-       * An integer attribute. Value = 5.
-       */
-      Integer = 5,
-  
-      /**A lookup attribute. Value = 6. */
-      Lookup = 6,
-  
-      /** A managed property attribute. Value = 0x13. */
-      ManagedProperty = 19,
-  
-      /** A memo attribute. Value = 7. */
-      Memo = 7,
-  
-      /** A money attribute. Value = 8. */
-      Money = 8,
-  
-      /** An owner attribute. Value = 9. */
-      Owner = 9,
-  
-      /** A partylist attribute. Value = 10.*/
-      PartyList = 10,
-  
-      /** A picklist attribute. Value = 11. */
-      Picklist = 11,
-  
-      /** A state attribute. Value = 12. */
-      State = 12,
-  
-      /** A status attribute. Value = 13. */
-      Status = 13,
-  
-      /** A string attribute. Value = 14.*/
-      String = 14,
-  
-      /** An attribute that is an ID. Value = 15. */
-      Uniqueidentifier = 15,
-  
-      /** An attribute that is created by the system at run time. Value = 0x11. */
-      Virtual = 17,
+        /** A big integer attribute */
+        BigInt = 18,
+        /** A Boolean attribute. Value = 0. */
+        Boolean = 0,
+
+        /** An attribute that contains calendar rules. Value = 0x10. */
+        CalendarRules = 16,
+
+        /** An attribute that represents a customer. Value = 1.*/
+        Customer = 1,
+
+        /** A date/time attribute. Value = 2. */
+        DateTime = 2,
+
+        /** A decimal attribute. Value = 3. */
+        Decimal = 3,
+
+        /** A double attribute. Value = 4. */
+        Double = 4,
+
+        /** An entity name attribute. Value = 20. */
+        EntityName = 20,
+
+        /**
+         * An integer attribute. Value = 5.
+         */
+        Integer = 5,
+
+        /**A lookup attribute. Value = 6. */
+        Lookup = 6,
+
+        /** A managed property attribute. Value = 0x13. */
+        ManagedProperty = 19,
+
+        /** A memo attribute. Value = 7. */
+        Memo = 7,
+
+        /** A money attribute. Value = 8. */
+        Money = 8,
+
+        /** An owner attribute. Value = 9. */
+        Owner = 9,
+
+        /** A partylist attribute. Value = 10.*/
+        PartyList = 10,
+
+        /** A picklist attribute. Value = 11. */
+        Picklist = 11,
+
+        /** A state attribute. Value = 12. */
+        State = 12,
+
+        /** A status attribute. Value = 13. */
+        Status = 13,
+
+        /** A string attribute. Value = 14.*/
+        String = 14,
+
+        /** An attribute that is an ID. Value = 15. */
+        Uniqueidentifier = 15,
+
+        /** An attribute that is created by the system at run time. Value = 0x11. */
+        Virtual = 17,
     }
-  }
-  
+
+    type ImeMode = 0 | 1 | 2 | 3;
+    type DateTimeFieldBehavior = 0 | 1 | 3;
+    type PrivilegeType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+}

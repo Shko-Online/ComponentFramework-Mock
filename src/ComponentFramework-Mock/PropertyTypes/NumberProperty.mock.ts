@@ -13,24 +13,41 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock";
-import { NumberMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/NumberMetadata.mock";
-import { SinonStub, stub } from "sinon";
+import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { NumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/NumberMetadata.mock';
+import { SinonStub, stub } from 'sinon';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 
-export class NumberPropertyMock
-  extends PropertyMock
-  implements ComponentFramework.PropertyTypes.NumberProperty
-{
-  attributes?: NumberMetadataMock;
-  raw: number | null;
-  setValue: SinonStub<[value:number|null],void>;
-  constructor(defaultValue?: number) {
-    super();
-    this.raw = defaultValue;
-	this.setValue = stub();
-	this.setValue.callsFake((value)=>{
+export class NumberPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.NumberProperty {
+	boundTableName : string;
+    boundRowId : string;
+    boundColumn: string;
+    db : MetadataDB;
+
+    attributes?: NumberMetadataMock;
+    raw: number | null;
+    setValue: SinonStub<[value: number | null], void>;
+    constructor(defaultValue?: number) {
+        super();
+        this.raw = defaultValue;
+        this.setValue = stub();
+        this.setValue.callsFake((value) => {
+            this.raw = value;
+            this.formatted = '' + value;
+        });
+    }
+	Bind(columnName: string){
+		this.boundColumn = columnName;
+        const {value,attributeMetadata} = this.db.RefreshValue<ShkoOnline.NumberAttributeMetadata>(this.boundTableName, this.boundRowId, columnName);
+        if(attributeMetadata.AttributeType != ShkoOnline.AttributeType.Integer ||ShkoOnline.AttributeType.BigInt || ShkoOnline.AttributeType.Decimal || ShkoOnline.AttributeType.Double)
+		{
+			throw new Error("Type Error");
+		}
+		this.attributes.LogicalName = attributeMetadata.LogicalName;
+		this.attributes.DisplayName = attributeMetadata.DisplayName;
+		this.attributes.MaxValue = attributeMetadata.MaxValue;
+		this.attributes.MinValue = attributeMetadata.MinValue;
 		this.raw = value;
-		this.formatted = ''+value;
-	})
-  }
+	}
 }

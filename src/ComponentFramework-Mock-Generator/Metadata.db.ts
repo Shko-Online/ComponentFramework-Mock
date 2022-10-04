@@ -86,10 +86,10 @@ export class MetadataDB {
         });
         return tab;
     }
-    RefreshValue(entity: string, rowid: string, attributeName: string)
+    RefreshValue<T extends ShkoOnline.AttributeMetadata>(entity: string, rowid: string, attributeName: string)
     {
         const result = this.GetRow(entity,rowid);
-        const attributeMetadata = result.entityMetadata.Attributes.find((attribute=> attribute.LogicalName===attributeName));
+        const attributeMetadata = result.entityMetadata.Attributes.find((attribute=> attribute.LogicalName===attributeName)) as T;
         const value = result.row[attributeName];
         return { value, attributeMetadata};
     }

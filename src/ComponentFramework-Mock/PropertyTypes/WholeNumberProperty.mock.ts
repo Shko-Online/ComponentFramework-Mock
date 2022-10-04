@@ -13,23 +13,47 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { WholeNumberMetadataMock } from
-	'@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { WholeNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
+import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 import { SinonStub, stub } from 'sinon';
 import { NumberPropertyMock } from './NumberProperty.mock';
 
 export class WholeNumberPropertyMock
-	extends NumberPropertyMock
-	implements ComponentFramework.PropertyTypes.WholeNumberProperty {
-	attributes?: WholeNumberMetadataMock
-	setValue: SinonStub<[value: number | null], void>;
-	constructor(defaultValue?: number) {
-		super();
-		this.raw = defaultValue;
-		this.setValue = stub();
-		this.setValue.callsFake((value) => {
-			this.raw = value;
-			this.formatted = '' + value;
-		})
+    extends NumberPropertyMock
+    implements ComponentFramework.PropertyTypes.WholeNumberProperty
+{
+	boundTableName: string;
+    boundRowId: string;
+    boundColumn: string;
+    db: MetadataDB;
+	
+    attributes?: WholeNumberMetadataMock;
+    setValue: SinonStub<[value: number | null], void>;
+    constructor(defaultValue?: number) {
+        super();
+        this.raw = defaultValue;
+        this.setValue = stub();
+        this.setValue.callsFake((value) => {
+            this.raw = value;
+            this.formatted = '' + value;
+        });
+    }
+	Bind(columnName: string) {
+        this.boundColumn = columnName;
+        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.IntegerNumberAttributeMetadata>(
+            this.boundTableName,
+            this.boundRowId,
+            columnName,
+        );
+        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Integer) {
+            throw new Error('Type Error');
+        }
+		this.attributes.LogicalName = attributeMetadata.LogicalName;
+		this.attributes.MaxValue= attributeMetadata.MaxValue;
+		this.attributes.MinValue= attributeMetadata.MinValue;
+		this.attributes.Format = attributeMetadata.Format;
+		this.raw= value;
+
 	}
 }

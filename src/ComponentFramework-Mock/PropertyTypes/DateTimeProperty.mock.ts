@@ -13,33 +13,50 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock";
-import { DateTimeMetadataMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock";
-import { SinonStub, stub } from "sinon";
+import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { DateTimeMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock';
+import { SinonStub, stub } from 'sinon';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 
-export class DateTimePropertyMock
-  extends PropertyMock
-  implements ComponentFramework.PropertyTypes.DateTimeProperty
-{
-  raw: Date;
-  attributes: DateTimeMetadataMock;
-  setValue: SinonStub<[value: Date|null], void>;
-  refresh: SinonStub<[], void>;
-  db: Collection<any>;
-  constructor(defaultValue?: Date) {
-    super();
-    this.raw = defaultValue;
-    this.attributes = new DateTimeMetadataMock();
-    this.setValue = stub();
-    this.setValue.callsFake((value) => {
+export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
+    boundTableName: string;
+    boundRowId: string;
+    boundColumn: string;
+    db: MetadataDB;
+
+    raw: Date;
+    attributes: DateTimeMetadataMock;
+    setValue: SinonStub<[value: Date | null], void>;
+    refresh: SinonStub<[], void>;
+    constructor(defaultValue?: Date) {
+        super();
+        this.raw = defaultValue;
+        this.attributes = new DateTimeMetadataMock();
+        this.setValue = stub();
+        this.setValue.callsFake((value) => {
+            this.raw = value;
+            this.formatted = value?.toLocaleTimeString();
+        });
+        this.refresh = stub();
+        this.refresh.callsFake(() => {
+            const record = { value: undefined };
+            this.setValue(record.value);
+        });
+    }
+    Bind(columnName : string){
+      this.boundColumn = columnName;
+      const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.DateTimeAttributeMetadata>(
+          this.boundTableName,
+          this.boundRowId,
+          columnName,
+      );
+      if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.DateTime) {
+          throw new Error('Type Error');
+      }
+      this.attributes.LogicalName = attributeMetadata.LogicalName;
+      this.attributes.ImeMode = attributeMetadata.ImeMode;
+      this.attributes.Behavior = attributeMetadata.Behaviour;
       this.raw = value;
-      const metadata = {};
-      this.formatted = value?.toLocaleTimeString();
-    });
-    this.refresh = stub();
-    this.refresh.callsFake(()=>{
-      const record = {value: undefined};
-      this.setValue(record.value);
-    });
-  }
+    }
 }
