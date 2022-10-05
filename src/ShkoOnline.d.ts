@@ -13,9 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { TwoOptionsPropertyMock } from './ComponentFramework-Mock/PropertyTypes/TwoOptionsProperty.mock';
-
-export namespace ShkoOnline {
+declare namespace ShkoOnline {
     export type PropertyTypes<
         T extends {
             [P in keyof T]:

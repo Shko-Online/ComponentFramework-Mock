@@ -19,7 +19,6 @@ import { StringMetadataMock } from
     '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 
 export class StringPropertyMock
     extends PropertyMock

@@ -17,11 +17,11 @@ import { spy, fake, SinonSpy, SinonSpiedInstance } from "sinon";
 import { ContextMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock";
 import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
 import { KnownTypes } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes";
-import { MultiSelectOptionSetPropertyMock } from "../ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
-import { EntityRecord } from "../ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
-import { MetadataDB } from "./Metadata.db";
+import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
+import { EntityRecord } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
+import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db";
 import { arrayEqual } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual";
-import {ShkoOnline} from  "@shko-online/componentframework-mock/ShkoOnline";
+
 export class ComponentFrameworkMockGenerator<
   TInputs extends ShkoOnline.PropertyTypes<TInputs>,
   TOutputs extends KnownTypes<TOutputs>

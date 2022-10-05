@@ -14,10 +14,9 @@
 */
 
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 import { stub, SinonStub } from 'sinon';
-import { LookupMetadataMock } from '../Metadata/LookupMetadata.mock';
-import { PropertyMock } from './Property.mock';
+import { LookupMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/LookupMetadata.mock';
+import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 
 export class LookupPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.LookupProperty {
     boundTableName: string;

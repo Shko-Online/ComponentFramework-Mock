@@ -24,7 +24,7 @@ import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframewor
 import { DataSetMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSet.mock";
 import { EnumPropertyMock } from "./EnumProperty.mock";
 
-export type PropertyMap<T extends ComponentFrameworkMock.PropertyTypes<T>> = {
+export type PropertyMap<T extends ShkoOnline.PropertyTypes<T>> = {
   [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty
     ? new () => DateTimePropertyMock
     : T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty

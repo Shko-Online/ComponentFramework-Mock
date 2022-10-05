@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
+
 import { SinonStub, stub } from 'sinon';
 
 type ColumnReturnValue =

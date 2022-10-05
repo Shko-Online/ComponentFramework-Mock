@@ -17,7 +17,7 @@ import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFram
 import { TwoOptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
+
 import { OptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
 export class TwoOptionsPropertyMock
     extends PropertyMock

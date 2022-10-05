@@ -15,10 +15,10 @@
 
 import { SinonStub, stub } from "sinon";
 import { PagingMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Paging.mock";
-import { FilteringMock } from "./DataSetApi/Filtering.mock";
-import { LinkingMock } from "./DataSetApi/Linking.mock";
-import { EntityRecord } from "./DataSetApi/EntityRecord.mock";
-import { SortStatus } from "./DataSetApi/SortStatus.mock";
+import { FilteringMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Filtering.mock";
+import { LinkingMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Linking.mock";
+import { EntityRecord } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock";
+import { SortStatus } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/SortStatus.mock";
 
 // import { Column } from "./DataSetApi/Column.mock";
 

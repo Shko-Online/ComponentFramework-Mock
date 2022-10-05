@@ -14,17 +14,16 @@
 */
 
 import { ClientMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Client.mock";
-import { DeviceMock } from "./Device.mock";
-import { FactoryMock } from "./Factory.mocks";
-import { FormattingMock } from "./Formatting.mock";
-import { ModeMock } from "./Mode.mock";
-import { NavigationMock } from "./Navigation.mock";
-import { PropertyMap } from "./PropertyTypes/PropertyMap";
-import { ShkoOnline } from  "@shko-online/componentframework-mock/ShkoOnline";
-import { ResourcesMock } from "./Resources.mock";
-import { UserSettingsMock } from "./UserSettings.mock";
-import { UtilityMock } from "./Utility.mock";
-import { WebApiMock } from "./WebApi.mock";
+import { DeviceMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Device.mock";
+import { FactoryMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Factory.mocks";
+import { FormattingMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Formatting.mock";
+import { ModeMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Mode.mock";
+import { NavigationMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Navigation.mock";
+import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
+import { ResourcesMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Resources.mock";
+import { UserSettingsMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock";
+import { UtilityMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Utility.mock";
+import { WebApiMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/WebApi.mock";
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs> {

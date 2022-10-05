@@ -17,7 +17,7 @@ import { NumberPropertyMock } from '@shko-online/componentframework-mock/Compone
 import { DecimalNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
+
 
 export class DecimalNumberPropertyMock
     extends NumberPropertyMock

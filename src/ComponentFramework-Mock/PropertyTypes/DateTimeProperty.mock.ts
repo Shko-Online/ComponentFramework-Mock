@@ -17,7 +17,7 @@ import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFram
 import { DateTimeMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
+
 
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
     boundTableName: string;

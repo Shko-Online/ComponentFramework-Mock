@@ -15,9 +15,8 @@
 
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { WholeNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
-import { ShkoOnline } from '@shko-online/componentframework-mock/ShkoOnline';
 import { SinonStub, stub } from 'sinon';
-import { NumberPropertyMock } from './NumberProperty.mock';
+import { NumberPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
 
 export class WholeNumberPropertyMock
     extends NumberPropertyMock
