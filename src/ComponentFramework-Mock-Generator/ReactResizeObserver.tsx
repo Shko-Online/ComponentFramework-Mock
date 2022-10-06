@@ -3,7 +3,7 @@ import { KnownTypes } from  "@shko-online/componentframework-mock/ComponentFrame
 import { MultiSelectOptionSetPropertyMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
 import arrayEqual from  "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual";
 import { ComponentFrameworkMockGeneratorReact } from  "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator-React";
-import { ShkoOnline } from  "@shko-online/componentframework-mock/ShkoOnline";
+
 
 const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>,
   TOutputs extends KnownTypes<TOutputs>,>({componentFrameworkMockGeneratorReact}: {

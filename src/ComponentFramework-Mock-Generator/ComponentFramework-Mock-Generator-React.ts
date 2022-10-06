@@ -22,7 +22,7 @@ import { EntityRecord } from "@shko-online/componentframework-mock/ComponentFram
 import { MultiSelectOptionSetPropertyMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock";
 import ReactResizeObserver from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver";
 import arrayEqual from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual";
-import { ShkoOnline } from  "@shko-online/componentframework-mock/ShkoOnline";
+
 
 export class ComponentFrameworkMockGeneratorReact<
   TInputs extends ShkoOnline.PropertyTypes<TInputs>,

@@ -66,6 +66,8 @@ export class MultiSelectOptionSetPropertyMock
         this.attributes.Options = attributeMetadata.OptionSet.Options.map((metadata) => {
             return new OptionMetadataMock(metadata.Value, metadata.Label.UserLocalizedLabel.Label, metadata.Color);
         });
+        this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
+        this.raw = value;
         
     }
 }

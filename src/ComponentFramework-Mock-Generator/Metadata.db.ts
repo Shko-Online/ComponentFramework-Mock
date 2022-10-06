@@ -13,7 +13,6 @@
     language governing rights and limitations under the RPL. 
 */
 import  loki from 'lokijs';
-import { ShkoOnline } from "@shko-online/componentframework-mock/ShkoOnline";
 
 export class MetadataDB {
     attributes: {
