@@ -16,7 +16,6 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>,
   const [Component, setComponent] = useState(<></>); 
   useEffect(()=>{
     componentFrameworkMockGeneratorReact.notifyOutputChanged.callsFake(()=>{
-      console.log("output Changed")
       const updates = componentFrameworkMockGeneratorReact.control.getOutputs?.();
       componentFrameworkMockGeneratorReact.context.updatedProperties = [];
       for (let k in updates) {
@@ -51,8 +50,6 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>,
         const size = entries[0];
         componentFrameworkMockGeneratorReact.context.mode.allocatedHeight = size.contentRect.height;
         componentFrameworkMockGeneratorReact.context.mode.allocatedWidth = size.contentRect.width;
-        console.log("width", size.contentRect.width);
-        console.log("height", size.contentRect.height);
         setComponent(componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context));
       });
       if (value) observer.observe(containerRef.current);
