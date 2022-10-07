@@ -179,16 +179,102 @@ declare namespace ShkoOnline {
     export interface AttributeMetadata {
         /** Type of a column. */
         AttributeType: ShkoOnline.AttributeType;
+        /** The name of the attribute that this attribute extends.*/
+        AttributeOf: string;
+        /** The name of the type for the attribute.*/
+        AttributeTypeName: {
+            value: string;
+        };
+        /** */
+        AutoNumberFormat: string;
+        /** Whether field-level security can be applied to prevent a user from adding data to this attribute.*/
+        CanBeSecuredForCreate: boolean;
+        /** Whether field-level security can be applied to prevent a user from viewing data from this attribute.*/
+        CanBeSecuredForRead: boolean;
+        /** Whether field-level security can be applied to prevent a user from updating data for this attribute.*/
+        CanBeSecuredForUpdate: boolean;
+        /** Whether any settings not controlled by managed properties can be changed.*/
+        CanModifyAdditionalSettings: ShkoOnline.BooleanManagedProperty;
+        /**An organization-specific ID for the attribute used for auditing.*/
+        ColumnNumber: number;
+        CreatedOn: Date;
+        /**The Microsoft Dynamics 365 version that the attribute was deprecated in.*/
+        DeprecatedVersion: string;
+        /** The label containing the description for the attribute.*/
+        Description: {};
         /** Display name for the column. */
         DisplayName: string;
         /** Logical name of the table that contains the column. */
         EntityLogicalName: string;
+        ExternalName: string;
+        /**Indicates whether the item of metadata has changed. */
+        HasChanged: string;
+        /**For internal use only. */
+        InheritsFrom: string;
+        /** A string identifying the solution version that the solution component was added in. */
+        IntroducedVersion: string;
+        /** Whether the attribute is enabled for auditing. */
+        IsAuditEnabled: ShkoOnline.BooleanManagedProperty;
+        /** Whether the attribute is a custom attribute. */
+        IsCustomAttribute: boolean;
+        /** Whether the attribute allows customization.*/
+        IsCustomizable: ShkoOnline.BooleanManagedProperty;
+        IsDataSourceSecret: boolean;
+        /** For internal use only. */
+        IsFilterable: boolean;
+        /** For internal use only. */
+        IsGlobalFilterEnabled: ShkoOnline.BooleanManagedProperty;
+        /** Whether the attribute is a logical attribute. */
+        IsLogical: boolean;
+        /** Whether the attribute is part of a managed solution. */
+        IsManaged: boolean;
+        /** Whether the attribute represents the unique identifier for the record. */
+        IsPrimaryId: boolean;
+        /** Whether the attribute represents the primary attribute for the entity. */
+        IsPrimaryName: boolean;
+        /** Whether the attribute display name can be changed.*/
+        IsRenameable: ShkoOnline.BooleanManagedProperty;
+        IsRequiredForForm: boolean;
+        /** For internal use only. */
+        IsRetrievable: boolean;
+        /** For internal use only. */
+        IsSearchable: boolean;
+        /** Whether the attribute is secured for field-level security. */
+        IsSecured: boolean;
+        /** For internal use only. */
+        IsSortableEnabled: ShkoOnline.BooleanManagedProperty;
+        /** Whether the attribute appears in Advanced Find.*/
+        IsValidForAdvancedFind: ShkoOnline.BooleanManagedProperty;
+        /**Whether the value can be set when a record is created.*/
+        IsValidForCreate: boolean;
+        IsValidForForm: boolean;
+        IsValidForGrid: boolean;
+        /** Whether the value can be retrieved. */
+        IsValidForRead: boolean;
+        /** Whether the value can be updated.*/
+        IsValidForUpdate: boolean;
+        IsValidODataAttribute: boolean;
+        /** The id of the attribute that is linked between appointments and recurring appointments. */
+        LinkedAttributeId: string;
         /** Logical name for the column. */
         LogicalName: string;
+        /** A unique identifier for the metadata item. */
+        MetadataId: string;
+        ModifiedOn: Date;
+        /** The property that determines the data entry requirement level enforced for the attribute. */
+        RequiredLevel: {
+            /** The value of the managed property.*/
+            Value: ShkoOnline.AttributeRequiredLevel;
+            /** Whether the managed property value can be changed.*/
+            CanBeChanged: boolean;
+            /**The logical name for the managed property.*/
+            ManagedPropertyLogicalName: string;
+        };
         /**  Schema name for the column.  */
         SchemaName: string;
-        /** MetadataId */
-        MetadataId: string;
+        Settings: { name: string };
+        /** A value that indicates the source type for a calculated or rollup attribute. */
+        SourceType: number;
     }
 
     export interface BooleanAttributeMetadata extends ShkoOnline.AttributeMetadata {
@@ -199,6 +285,7 @@ declare namespace ShkoOnline {
         /**Options for the boolean column where each option is a key:value pair.*/
         OptionSet: ShkoOnline.BooleanOptionSet;
     }
+
     export interface BooleanOptionSet {
         MetadataId: string;
         IsCustomOptionSet: boolean;
@@ -227,6 +314,14 @@ declare namespace ShkoOnline {
             };
             Color: string | null;
         };
+    }
+    export interface BooleanManagedProperty {
+        /** The value of the managed property.*/
+        Value: boolean;
+        /** Whether the managed property value can be changed.*/
+        CanBeChanged: boolean;
+        /**The logical name for the managed property.*/
+        ManagedPropertyLogicalName: string;
     }
 
     export interface StringAttributeMetadata extends ShkoOnline.AttributeMetadata {
@@ -401,4 +496,5 @@ declare namespace ShkoOnline {
     type ImeMode = 0 | 1 | 2 | 3;
     type DateTimeFieldBehavior = 0 | 1 | 3;
     type PrivilegeType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+    type AttributeRequiredLevel = 0 | 1 | 2 | 3;
 }

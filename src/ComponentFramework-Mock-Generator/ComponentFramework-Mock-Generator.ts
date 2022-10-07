@@ -124,8 +124,6 @@ export class ComponentFrameworkMockGenerator<
         const size = entries[0];
         this.context.mode.allocatedHeight = size.contentRect.height;
         this.context.mode.allocatedWidth = size.contentRect.width;
-        console.log("width", size.contentRect.width);
-        console.log("height", size.contentRect.height);
         this.ExecuteUpdateView();
       });
       if (value) observer.observe(container);
