@@ -12,8 +12,7 @@
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
 */
-import  loki from 'lokijs';
-import { ShkoOnline } from "@shko-online/componentframework-mock/ShkoOnline";
+import loki from 'lokijs';
 
 export class MetadataDB {
     attributes: {
@@ -55,7 +54,7 @@ export class MetadataDB {
     }
     initItems(items: { '@odata.context': string; value: any[] }) {
         const entitySetName = items['@odata.context'].substring(items['@odata.context'].indexOf('#') + 1);
-        var tableMetadata = this.metadata.findOne({ EntitySetName: { $eq: entitySetName } });
+        const tableMetadata = this.metadata.findOne({ EntitySetName: { $eq: entitySetName } });
 
         const tableData = this.db.addCollection(`${tableMetadata.LogicalName}#data`);
         this.data[tableMetadata.LogicalName] = tableData;
@@ -75,31 +74,29 @@ export class MetadataDB {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
         const search = {};
         search[entityMetadata.PrimaryIdAttribute] = { $eq: id };
-        return {row: this.data[entity].findOne(search), entityMetadata};
+        return { row: this.data[entity].findOne(search), entityMetadata };
     }
 
     GetAllColumn(entity: string, attribute: string) {
         const tab = [];
-        var data = this.data[entity].chain().data();
+        const data = this.data[entity].chain().data();
         data.forEach((at) => {
             tab.push(at[attribute]);
         });
         return tab;
     }
-    RefreshValue<T extends ShkoOnline.AttributeMetadata>(entity: string, rowid: string, attributeName: string)
-    {
-        const result = this.GetRow(entity,rowid);
-        const attributeMetadata = result.entityMetadata.Attributes.find((attribute=> attribute.LogicalName===attributeName)) as T;
+    RefreshValue<T extends ShkoOnline.AttributeMetadata>(entity: string, rowid: string, attributeName: string) {
+        const result = this.GetRow(entity, rowid);
+        const attributeMetadata = result.entityMetadata.Attributes.find(
+            (attribute) => attribute.LogicalName === attributeName,
+        ) as T;
         const value = result.row[attributeName];
-        return { value, attributeMetadata};
+        return { value, attributeMetadata };
     }
-    GetRows(entity: string){
+    GetRows(entity: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
         const attributeMetadata = entityMetadata.Attributes;
         const rows = this.data[entity].chain().data();
-        return { rows, entityMetadata }
-       
-
-        
+        return { rows, entityMetadata };
     }
 }

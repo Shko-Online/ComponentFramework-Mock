@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export class Column implements ComponentFramework.PropertyHelper.DataSetApi.Column{
+export class Column implements ComponentFramework.PropertyHelper.DataSetApi.Column {
     name: string;
     displayName: string;
     dataType: string;
@@ -23,5 +23,4 @@ export class Column implements ComponentFramework.PropertyHelper.DataSetApi.Colu
     isHidden?: boolean;
     isPrimary?: boolean;
     disableSorting?: boolean;
-
 }

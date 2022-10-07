@@ -14,4 +14,4 @@
 */
 
 /// <reference types="powerapps-component-framework" />
-
+/// <reference types="./ShkoOnline" />

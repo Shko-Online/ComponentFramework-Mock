@@ -14,18 +14,17 @@
 */
 
 export type KnownTypes<TOutput> = {
-    [P in keyof TOutput]:
-    TOutput[P] extends string ?
-    string :
-    TOutput[P] extends number ?
-    number :
-    TOutput[P] extends Date ?
-    Date :
-    TOutput[P] extends boolean ?
-    boolean :
-    TOutput[P] extends ComponentFramework.LookupValue[] ?
-    ComponentFramework.LookupValue[] :
-    TOutput[P] extends number[] ?
-    number[] :
-    never
-}
+    [P in keyof TOutput]: TOutput[P] extends string
+        ? string
+        : TOutput[P] extends number
+        ? number
+        : TOutput[P] extends Date
+        ? Date
+        : TOutput[P] extends boolean
+        ? boolean
+        : TOutput[P] extends ComponentFramework.LookupValue[]
+        ? ComponentFramework.LookupValue[]
+        : TOutput[P] extends number[]
+        ? number[]
+        : never;
+};

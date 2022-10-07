@@ -13,7 +13,6 @@
 	language governing rights and limitations under the RPL. 
 */
 
-
 import { SinonStub, stub } from 'sinon';
 
 type ColumnReturnValue =
@@ -52,16 +51,16 @@ export class EntityRecord
     metadata: ShkoOnline.EntityMetadata;
 
     constructor(etn: string | undefined, id: string, name?: string) {
-      this.metadata = {
-        LogicalName: etn,
-        PrimaryIdAttribute: etn+'id',
-        PrimaryNameAttribute: 'name'
-      }  as ShkoOnline.EntityMetadata;
-      this.columns = {
-        [etn+'id']: id,
-        ['name']: name
-      };
-      this.etn = etn;
+        this.metadata = {
+            LogicalName: etn,
+            PrimaryIdAttribute: etn + 'id',
+            PrimaryNameAttribute: 'name',
+        } as ShkoOnline.EntityMetadata;
+        this.columns = {
+            [etn + 'id']: id,
+            ['name']: name,
+        };
+        this.etn = etn;
         this.id = { guid: id };
         this.name = name;
         this.columns = {};

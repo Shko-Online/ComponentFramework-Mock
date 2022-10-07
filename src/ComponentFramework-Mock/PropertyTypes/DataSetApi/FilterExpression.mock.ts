@@ -13,10 +13,8 @@
 	language governing rights and limitations under the RPL. 
 */
 
-
-export class FilterExpression   implements ComponentFramework.PropertyHelper.DataSetApi.FilterExpression{
-    conditions:ComponentFramework.PropertyHelper.DataSetApi.ConditionExpression[];
+export class FilterExpression implements ComponentFramework.PropertyHelper.DataSetApi.FilterExpression {
+    conditions: ComponentFramework.PropertyHelper.DataSetApi.ConditionExpression[];
     filterOperator: ComponentFramework.PropertyHelper.DataSetApi.Types.FilterOperator;
     filters?: ComponentFramework.PropertyHelper.DataSetApi.FilterExpression[];
-    
 }

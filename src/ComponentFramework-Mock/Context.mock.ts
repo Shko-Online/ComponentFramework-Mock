@@ -13,21 +13,22 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { ClientMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Client.mock";
-import { DeviceMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Device.mock";
-import { FactoryMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Factory.mocks";
-import { FormattingMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Formatting.mock";
-import { ModeMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Mode.mock";
-import { NavigationMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Navigation.mock";
-import { PropertyMap } from "@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap";
-import { ResourcesMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Resources.mock";
-import { UserSettingsMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock";
-import { UtilityMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/Utility.mock";
-import { WebApiMock } from  "@shko-online/componentframework-mock/ComponentFramework-Mock/WebApi.mock";
+import { ClientMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Client.mock';
+import { DeviceMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Device.mock';
+import { FactoryMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Factory.mocks';
+import { FormattingMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Formatting.mock';
+import { ModeMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Mode.mock';
+import { NavigationMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Navigation.mock';
+import { PropertyMap } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import { ResourcesMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Resources.mock';
+import { UserSettingsMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock';
+import { UtilityMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Utility.mock';
+import { WebApiMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/WebApi.mock';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
-    implements ComponentFramework.Context<IInputs> {
-    client:  ClientMock;   
+    implements ComponentFramework.Context<IInputs>
+{
+    client: ClientMock;
     device: DeviceMock;
     factory: FactoryMock;
     formatting: FormattingMock;
@@ -49,7 +50,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.mode = new ModeMock();
         this.navigation = new NavigationMock();
         this.parameters = {} as IInputs;
-        Object.getOwnPropertyNames(inputs).forEach(k => {
+        Object.getOwnPropertyNames(inputs).forEach((k) => {
             this.parameters[k] = new inputs[k]();
         });
         this.resources = new ResourcesMock();

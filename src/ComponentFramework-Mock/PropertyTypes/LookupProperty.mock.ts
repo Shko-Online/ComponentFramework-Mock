@@ -48,7 +48,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             this.boundRowId,
             columnName,
         );
-        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Lookup) {
+        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Lookup) {
             throw new Error('Type Error');
         }
         this.attributes.LogicalName = attributeMetadata.LogicalName;
