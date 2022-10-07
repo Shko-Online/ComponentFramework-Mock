@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { stub, SinonStub } from "sinon";
+import { stub, SinonStub } from 'sinon';
 
 export class ClientMock implements ComponentFramework.Client {
     disableScroll: boolean;
@@ -23,7 +23,7 @@ export class ClientMock implements ComponentFramework.Client {
     constructor() {
         this.disableScroll = false;
         this.getClient = stub();
-        this.getClient.returns("Web");
+        this.getClient.returns('Web');
         this.getFormFactor = stub();
         this.getFormFactor.returns(1);
         this.isOffline = stub();
