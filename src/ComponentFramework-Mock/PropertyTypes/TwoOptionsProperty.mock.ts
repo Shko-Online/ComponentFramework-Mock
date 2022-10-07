@@ -53,7 +53,7 @@ export class TwoOptionsPropertyMock
             this.boundRowId,
             columnName,
         );
-        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Boolean) {
+        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Boolean) {
             throw new Error('Type Error');
         }
         this.attributes.LogicalName = attributeMetadata.LogicalName;
@@ -69,6 +69,6 @@ export class TwoOptionsPropertyMock
             attributeMetadata.OptionSet.FalseOption.Label.UserLocalizedLabel.Label,
             attributeMetadata.OptionSet.FalseOption.Color,
         );
-		this.raw = value;
+        this.raw = value;
     }
 }

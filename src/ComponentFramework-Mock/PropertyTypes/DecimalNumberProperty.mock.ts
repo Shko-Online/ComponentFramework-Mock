@@ -18,7 +18,6 @@ import { DecimalNumberMetadataMock } from '@shko-online/componentframework-mock/
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
-
 export class DecimalNumberPropertyMock
     extends NumberPropertyMock
     implements ComponentFramework.PropertyTypes.DecimalNumberProperty
@@ -45,14 +44,14 @@ export class DecimalNumberPropertyMock
             this.boundRowId,
             columnName,
         );
-        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Decimal) {
+        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Decimal) {
             throw new Error('Type Error');
         }
-        this.attributes.LogicalName= attributeMetadata.LogicalName;
+        this.attributes.LogicalName = attributeMetadata.LogicalName;
         this.attributes.Precision = attributeMetadata.Precision;
         this.attributes.MaxValue = attributeMetadata.MaxValue;
         this.attributes.MinValue = attributeMetadata.MinValue;
-        this.attributes.ImeMode= attributeMetadata.ImeMode;
+        this.attributes.ImeMode = attributeMetadata.ImeMode;
         this.raw = value;
     }
 }

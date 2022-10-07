@@ -59,7 +59,7 @@ export class MultiSelectOptionSetPropertyMock
             this.boundRowId,
             columnName,
         );
-        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Picklist) {
+        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Picklist) {
             throw new Error('Type Error');
         }
         this.attributes.LogicalName = attributeMetadata.LogicalName;
@@ -68,6 +68,5 @@ export class MultiSelectOptionSetPropertyMock
         });
         this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
         this.raw = value;
-        
     }
 }

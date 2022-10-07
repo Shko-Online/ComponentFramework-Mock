@@ -22,11 +22,11 @@ export class WholeNumberPropertyMock
     extends NumberPropertyMock
     implements ComponentFramework.PropertyTypes.WholeNumberProperty
 {
-	boundTableName: string;
+    boundTableName: string;
     boundRowId: string;
     boundColumn: string;
     db: MetadataDB;
-	
+
     attributes?: WholeNumberMetadataMock;
     setValue: SinonStub<[value: number | null], void>;
     constructor(defaultValue?: number) {
@@ -38,21 +38,20 @@ export class WholeNumberPropertyMock
             this.formatted = '' + value;
         });
     }
-	Bind(columnName: string) {
+    Bind(columnName: string) {
         this.boundColumn = columnName;
         const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.IntegerNumberAttributeMetadata>(
             this.boundTableName,
             this.boundRowId,
             columnName,
         );
-        if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.Integer) {
+        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Integer) {
             throw new Error('Type Error');
         }
-		this.attributes.LogicalName = attributeMetadata.LogicalName;
-		this.attributes.MaxValue= attributeMetadata.MaxValue;
-		this.attributes.MinValue= attributeMetadata.MinValue;
-		this.attributes.Format = attributeMetadata.Format;
-		this.raw= value;
-
-	}
+        this.attributes.LogicalName = attributeMetadata.LogicalName;
+        this.attributes.MaxValue = attributeMetadata.MaxValue;
+        this.attributes.MinValue = attributeMetadata.MinValue;
+        this.attributes.Format = attributeMetadata.Format;
+        this.raw = value;
+    }
 }

@@ -18,7 +18,6 @@ import { DateTimeMetadataMock } from '@shko-online/componentframework-mock/Compo
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
-
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
     boundTableName: string;
     boundRowId: string;
@@ -44,19 +43,19 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
             this.setValue(record.value);
         });
     }
-    Bind(columnName : string){
-      this.boundColumn = columnName;
-      const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.DateTimeAttributeMetadata>(
-          this.boundTableName,
-          this.boundRowId,
-          columnName,
-      );
-      if (attributeMetadata.AttributeType != ShkoOnline.AttributeType.DateTime) {
-          throw new Error('Type Error');
-      }
-      this.attributes.LogicalName = attributeMetadata.LogicalName;
-      this.attributes.ImeMode = attributeMetadata.ImeMode;
-      this.attributes.Behavior = attributeMetadata.Behaviour;
-      this.raw = value;
+    Bind(columnName: string) {
+        this.boundColumn = columnName;
+        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.DateTimeAttributeMetadata>(
+            this.boundTableName,
+            this.boundRowId,
+            columnName,
+        );
+        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.DateTime) {
+            throw new Error('Type Error');
+        }
+        this.attributes.LogicalName = attributeMetadata.LogicalName;
+        this.attributes.ImeMode = attributeMetadata.ImeMode;
+        this.attributes.Behavior = attributeMetadata.Behaviour;
+        this.raw = value;
     }
 }

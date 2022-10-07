@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { stub, SinonStub } from "sinon";
+import { stub, SinonStub } from 'sinon';
 import { PopupServiceMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/FactoryApi/PopupService.mock';
 export class FactoryMock implements ComponentFramework.Factory {
     popupService = new PopupServiceMock();

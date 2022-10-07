@@ -38,7 +38,7 @@ export class WebApiMock implements ComponentFramework.WebApi {
         this.createRecord.callsFake((entityType: string, data: ComponentFramework.WebApi.Entity) => {
             return new Promise<ComponentFramework.LookupValue>((resolve) => {
                 resolve({
-                    id: '00000000-0000-0000-0000-000000000000',
+                    id: '00000000-0000-0000-0000-000000000001',
                     name: 'Any',
                     entityType: 'any',
                 });

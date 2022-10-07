@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from "sinon";
+import { SinonStub, stub } from 'sinon';
 
 export class ModeMock implements ComponentFramework.Mode {
     allocatedHeight: number;
@@ -22,16 +22,13 @@ export class ModeMock implements ComponentFramework.Mode {
     isVisible: boolean;
     label: string;
     setControlState: SinonStub<[ComponentFramework.Dictionary], boolean>;
-    setFullScreen: SinonStub<[value: boolean],void>;
-    trackContainerResize: SinonStub<[value: boolean],void>;
+    setFullScreen: SinonStub<[value: boolean], void>;
+    trackContainerResize: SinonStub<[value: boolean], void>;
     constructor() {
         this.setControlState = stub(); // this is mocked in ComponentFrameworkMockGenerator
         this.setFullScreen = stub();
 
         this.trackContainerResize = stub();
-        this.trackContainerResize.callsFake((value: boolean)=>{
-            
-        })
-        
+        this.trackContainerResize.callsFake((value: boolean) => {});
     }
 }

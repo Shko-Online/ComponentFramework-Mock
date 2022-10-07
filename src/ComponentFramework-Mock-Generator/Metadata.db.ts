@@ -62,7 +62,7 @@ export class MetadataDB {
             const row = {};
             tableMetadata.Attributes.forEach((attribute) => {
                 const key = attribute.LogicalName;
-                if (key in item) {
+                if (key in item) {  
                     row[key] = item[key];
                 }
             });

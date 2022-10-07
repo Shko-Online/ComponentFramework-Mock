@@ -18,12 +18,11 @@ import { NumberMetadataMock } from '@shko-online/componentframework-mock/Compone
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
-
 export class NumberPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.NumberProperty {
-	boundTableName : string;
-    boundRowId : string;
+    boundTableName: string;
+    boundRowId: string;
     boundColumn: string;
-    db : MetadataDB;
+    db: MetadataDB;
 
     attributes?: NumberMetadataMock;
     raw: number | null;
@@ -37,17 +36,25 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             this.formatted = '' + value;
         });
     }
-	Bind(columnName: string){
-		this.boundColumn = columnName;
-        const {value,attributeMetadata} = this.db.RefreshValue<ShkoOnline.NumberAttributeMetadata>(this.boundTableName, this.boundRowId, columnName);
-        if(attributeMetadata.AttributeType != ShkoOnline.AttributeType.Integer ||ShkoOnline.AttributeType.BigInt || ShkoOnline.AttributeType.Decimal || ShkoOnline.AttributeType.Double)
-		{
-			throw new Error("Type Error");
-		}
-		this.attributes.LogicalName = attributeMetadata.LogicalName;
-		this.attributes.DisplayName = attributeMetadata.DisplayName;
-		this.attributes.MaxValue = attributeMetadata.MaxValue;
-		this.attributes.MinValue = attributeMetadata.MinValue;
-		this.raw = value;
-	}
+    Bind(columnName: string) {
+        this.boundColumn = columnName;
+        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.NumberAttributeMetadata>(
+            this.boundTableName,
+            this.boundRowId,
+            columnName,
+        );
+        if (
+            attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Integer ||
+            ShkoOnline.AttributeType.BigInt ||
+            ShkoOnline.AttributeType.Decimal ||
+            ShkoOnline.AttributeType.Double
+        ) {
+            throw new Error('Type Error');
+        }
+        this.attributes.LogicalName = attributeMetadata.LogicalName;
+        this.attributes.DisplayName = attributeMetadata.DisplayName;
+        this.attributes.MaxValue = attributeMetadata.MaxValue;
+        this.attributes.MinValue = attributeMetadata.MinValue;
+        this.raw = value;
+    }
 }

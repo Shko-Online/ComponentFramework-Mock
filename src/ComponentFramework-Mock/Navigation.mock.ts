@@ -13,46 +13,79 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from "sinon";
+import { SinonStub, stub } from 'sinon';
 
 export class NavigationMock implements ComponentFramework.Navigation {
-    openAlertDialog: SinonStub<[alertStrings: ComponentFramework.NavigationApi.AlertDialogStrings, options?: ComponentFramework.NavigationApi.AlertDialogOptions], Promise<void>>;
-    openConfirmDialog: SinonStub<[confirmStrings: ComponentFramework.NavigationApi.ConfirmDialogStrings, options?: ComponentFramework.NavigationApi.ConfirmDialogOptions], Promise<ComponentFramework.NavigationApi.ConfirmDialogResponse>>;
+    openAlertDialog: SinonStub<
+        [
+            alertStrings: ComponentFramework.NavigationApi.AlertDialogStrings,
+            options?: ComponentFramework.NavigationApi.AlertDialogOptions,
+        ],
+        Promise<void>
+    >;
+    openConfirmDialog: SinonStub<
+        [
+            confirmStrings: ComponentFramework.NavigationApi.ConfirmDialogStrings,
+            options?: ComponentFramework.NavigationApi.ConfirmDialogOptions,
+        ],
+        Promise<ComponentFramework.NavigationApi.ConfirmDialogResponse>
+    >;
     openErrorDialog: SinonStub<[options: ComponentFramework.NavigationApi.ErrorDialogOptions], Promise<void>>;
-    openFile: SinonStub<[file: ComponentFramework.FileObject, options?: ComponentFramework.NavigationApi.OpenFileOptions], Promise<void>>;
-    openForm: SinonStub<[options: ComponentFramework.NavigationApi.EntityFormOptions, parameters?: { [key: string]: string; }], Promise<ComponentFramework.NavigationApi.OpenFormSuccessResponse>>;
+    openFile: SinonStub<
+        [file: ComponentFramework.FileObject, options?: ComponentFramework.NavigationApi.OpenFileOptions],
+        Promise<void>
+    >;
+    openForm: SinonStub<
+        [options: ComponentFramework.NavigationApi.EntityFormOptions, parameters?: { [key: string]: string }],
+        Promise<ComponentFramework.NavigationApi.OpenFormSuccessResponse>
+    >;
     openUrl: SinonStub<[url: string, options?: ComponentFramework.NavigationApi.OpenUrlOptions], void>;
-    openWebResource: SinonStub<[name: string, options?: ComponentFramework.NavigationApi.OpenWebResourceOptions, data?: string], void>;
-    constructor(){
+    openWebResource: SinonStub<
+        [name: string, options?: ComponentFramework.NavigationApi.OpenWebResourceOptions, data?: string],
+        void
+    >;
+    constructor() {
         this.openAlertDialog = stub();
-        const openAlertDialogStringsPromise = new Promise<ComponentFramework.NavigationApi.AlertDialogStrings>((resolve) => {
-            resolve({
-                text: "string",
-                confirmButtonLabel: "string" ,
-
-            })
-        })
-        const openAlertDialogOptionsPromise = new Promise<ComponentFramework.NavigationApi.AlertDialogOptions>((resolve) =>{
-            resolve({
-                height: 200,
-                width: 200,
-            })
-        })
-        this.openAlertDialog.callsFake((alertStrings: ComponentFramework.NavigationApi.AlertDialogStrings, options?: ComponentFramework.NavigationApi.AlertDialogOptions) => {
-            return new Promise<void> ((resolve) => {
-
-                resolve();
-            })
-        })
+        const openAlertDialogStringsPromise = new Promise<ComponentFramework.NavigationApi.AlertDialogStrings>(
+            (resolve) => {
+                resolve({
+                    text: 'string',
+                    confirmButtonLabel: 'string',
+                });
+            },
+        );
+        const openAlertDialogOptionsPromise = new Promise<ComponentFramework.NavigationApi.AlertDialogOptions>(
+            (resolve) => {
+                resolve({
+                    height: 200,
+                    width: 200,
+                });
+            },
+        );
+        this.openAlertDialog.callsFake(
+            (
+                alertStrings: ComponentFramework.NavigationApi.AlertDialogStrings,
+                options?: ComponentFramework.NavigationApi.AlertDialogOptions,
+            ) => {
+                return new Promise<void>((resolve) => {
+                    resolve();
+                });
+            },
+        );
 
         this.openConfirmDialog = stub();
-        this.openConfirmDialog.callsFake((confirmStrings: ComponentFramework.NavigationApi.ConfirmDialogStrings, options?: ComponentFramework.NavigationApi.ConfirmDialogOptions) =>{
-            return new Promise<ComponentFramework.NavigationApi.ConfirmDialogResponse>((resolve) =>{
-             resolve({
-                confirmed: true,
-             });
-            })
-        })
+        this.openConfirmDialog.callsFake(
+            (
+                confirmStrings: ComponentFramework.NavigationApi.ConfirmDialogStrings,
+                options?: ComponentFramework.NavigationApi.ConfirmDialogOptions,
+            ) => {
+                return new Promise<ComponentFramework.NavigationApi.ConfirmDialogResponse>((resolve) => {
+                    resolve({
+                        confirmed: true,
+                    });
+                });
+            },
+        );
 
         this.openErrorDialog = stub();
 

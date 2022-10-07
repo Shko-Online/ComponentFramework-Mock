@@ -13,46 +13,45 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { StringMetadataMock } from
-    '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
+import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { StringMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
-export class StringPropertyMock
-    extends PropertyMock
-    implements ComponentFramework.PropertyTypes.StringProperty {
-    boundTableName : string;
-    boundRowId : string;
+export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
+    boundTableName: string;
+    boundRowId: string;
     boundColumn: string;
-    db : MetadataDB;
+    db: MetadataDB;
 
     raw: string | null;
     attributes: StringMetadataMock;
-    setValue: SinonStub<[value: string|null],void>;
+    setValue: SinonStub<[value: string | null], void>;
     constructor(defaultValue?: string) {
         super();
         this.raw = defaultValue;
         this.attributes = new StringMetadataMock();
         this.setValue = stub();
-        this.setValue.callsFake((value)=>{
+        this.setValue.callsFake((value) => {
             this.raw = value;
             this.formatted = value;
-        })
+        });
     }
-    Bind(columnName: string){
+    Bind(columnName: string) {
         this.boundColumn = columnName;
-        const {value,attributeMetadata} = this.db.RefreshValue<ShkoOnline.StringAttributeMetadata>(this.boundTableName, this.boundRowId, columnName);
-        if(attributeMetadata.AttributeType != ShkoOnline.AttributeType.String)
-		{
-			throw new Error("Type Error");
-		}
+        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.StringAttributeMetadata>(
+            this.boundTableName,
+            this.boundRowId,
+            columnName,
+        );
+        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.String) {
+            throw new Error('Type Error');
+        }
         this.attributes.LogicalName = attributeMetadata.LogicalName;
         this.attributes.DisplayName = attributeMetadata.DisplayName;
         this.attributes.MaxLength = attributeMetadata.MaxLength;
         this.attributes.Format = attributeMetadata.Format;
-        this.attributes.ImeMode= attributeMetadata.ImeMode;
-        this.raw = value;   
+        this.attributes.ImeMode = attributeMetadata.ImeMode;
+        this.raw = value;
     }
 }
