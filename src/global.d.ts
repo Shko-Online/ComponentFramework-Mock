@@ -14,3 +14,4 @@
 */
 
 /// <reference types="powerapps-component-framework" />
+/// <reference path="./ShkoOnline.d.ts" />
