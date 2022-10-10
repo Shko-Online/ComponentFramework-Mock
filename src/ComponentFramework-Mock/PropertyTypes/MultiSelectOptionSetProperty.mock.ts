@@ -63,8 +63,9 @@ export class MultiSelectOptionSetPropertyMock
             throw new Error('Type Error');
         }
         this.attributes.LogicalName = attributeMetadata.LogicalName;
-        this.attributes.Options = attributeMetadata.OptionSet.Options.map((metadata) => {
-            return new OptionMetadataMock(metadata.Value, metadata.Label.UserLocalizedLabel.Label, metadata.Color);
+        this.attributes.Options =       Object.getOwnPropertyNames(  attributeMetadata.OptionSet.Options).map((value) => {
+            const metadata =  attributeMetadata.OptionSet.Options[value];
+            return new OptionMetadataMock(metadata.Value, metadata.Label, metadata.Color);
         });
         this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
         this.raw = value;

@@ -61,12 +61,12 @@ export class TwoOptionsPropertyMock
         this.attributes.DisplayName = attributeMetadata.DisplayName;
         this.attributes.Options[1] = new OptionMetadataMock(
             attributeMetadata.OptionSet.TrueOption.Value,
-            attributeMetadata.OptionSet.TrueOption.Label.UserLocalizedLabel.Label,
+            attributeMetadata.OptionSet.TrueOption.Label,
             attributeMetadata.OptionSet.TrueOption.Color,
         );
         this.attributes.Options[0] = new OptionMetadataMock(
             attributeMetadata.OptionSet.FalseOption.Value,
-            attributeMetadata.OptionSet.FalseOption.Label.UserLocalizedLabel.Label,
+            attributeMetadata.OptionSet.FalseOption.Label,
             attributeMetadata.OptionSet.FalseOption.Color,
         );
         this.raw = value;

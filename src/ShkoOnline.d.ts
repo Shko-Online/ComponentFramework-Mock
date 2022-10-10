@@ -298,20 +298,12 @@ declare namespace ShkoOnline {
         };
         TrueOption: {
             Value: number;
-            Label: {
-                UserLocalizedLabel: {
-                    Label: string;
-                };
-            };
+            Label: string
             Color: string | null;
         };
         FalseOption: {
             Value: number;
-            Label: {
-                UserLocalizedLabel: {
-                    Label: string;
-                };
-            };
+            Label: string;
             Color: string | null;
         };
     }
@@ -386,17 +378,13 @@ declare namespace ShkoOnline {
         IsCustomOptionSet: boolean;
         Name: string;
         OptionSetType: ShkoOnline.AttributeType.Picklist;
-        Options: [
-            {
+        Options: {
+            [value: number]: {
                 Value: number;
-                Label: {
-                    UserLocalizedLabel: {
-                        Label: string;
-                    };
-                };
+                Label: string;
                 Color: string;
-            },
-        ];
+            };
+        };
     }
 
     export interface StateAttributeMetadata extends ShkoOnline.AttributeMetadata {
