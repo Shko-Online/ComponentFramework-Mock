@@ -144,6 +144,18 @@ declare namespace ShkoOnline {
         Attributes: ShkoOnline.AttributeMetadata[];
     }
 
+    export interface AttributeMetadataCollection {
+        add: () => void;
+        get: (name: string) => ShkoOnline.AttributeMetadata;
+        getAll: () => ShkoOnline.AttributeMetadata[];
+        getByFilter: () => ShkoOnline.AttributeMetadata[];
+        getByName: (name: string) => ShkoOnline.AttributeMetadata;
+        getByIndex: (index: number) => ShkoOnline.AttributeMetadata;
+        getFirst: (lambda: (attribute: ShkoOnline.AttributeMetadata) => boolean) => ShkoOnline.AttributeMetadata;
+        getLength: () => number;
+        remove: () => void;
+    }
+
     export interface Privileges {
         /**Whether the privilege can be basic access level.*/
         CanBeBasic: boolean;
@@ -291,14 +303,10 @@ declare namespace ShkoOnline {
         IsCustomOptionSet: boolean;
         Name: string;
         OptionSetType: ShkoOnline.AttributeType.Boolean;
-        DisplayName: {
-            UserLocalizedLabel: {
-                Label: string;
-            };
-        };
+        DisplayName: string;
         TrueOption: {
             Value: number;
-            Label: string
+            Label: string;
             Color: string | null;
         };
         FalseOption: {

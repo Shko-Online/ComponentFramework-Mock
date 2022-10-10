@@ -12,40 +12,47 @@
 	PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
 	language governing rights and limitations under the RPL. 
 */
- 
-import { SinonStub, stub } from "sinon";
 
-export class AttributeMetadataCollection {
+import { SinonStub, stub } from 'sinon';
+
+export class AttributeMetadataCollection implements ShkoOnline.AttributeMetadataCollection {
     _attributes: ShkoOnline.AttributeMetadata[];
     add: SinonStub<[]>;
     get: SinonStub<[string], ShkoOnline.AttributeMetadata>;
-    getAll : SinonStub<[], ShkoOnline.AttributeMetadata[]>;
+    getAll: SinonStub<[], ShkoOnline.AttributeMetadata[]>;
     getByFilter: SinonStub<[], ShkoOnline.AttributeMetadata[]>;
     getByName: SinonStub<[string], ShkoOnline.AttributeMetadata>;
-    //???
-    getFirst: SinonStub<[], ShkoOnline.AttributeMetadata>; 
+    getByIndex: SinonStub<[index: number], ShkoOnline.AttributeMetadata>;
+    getFirst: SinonStub<[(attribute: ShkoOnline.AttributeMetadata) => boolean], ShkoOnline.AttributeMetadata>;
     getLength: SinonStub<[], number>;
-    remove : SinonStub<[]>;
+    remove: SinonStub<[]>;
 
-    constructor(){
+    constructor() {
         this.add = stub();
         this.get = stub();
-        this.get.callsFake((logicalName: string)=>{
-            return this._attributes.find((attribute)=> attribute.LogicalName === logicalName);
-        })
-        this.getAll =stub();
-        this.getAll.callsFake(() =>{
-           return this._attributes;
+        this.get.callsFake((logicalName: string) => {
+            return this._attributes.find((attribute) => attribute.LogicalName === logicalName);
+        });
+        this.getAll = stub();
+        this.getAll.callsFake(() => {
+            return this._attributes;
         });
         this.getByFilter = stub();
         this.getByName = stub();
-        this.getByName.callsFake((logicalName: string)=>{
-            return this._attributes.find((attribute)=> attribute.LogicalName === logicalName);
-        })
+        this.getByName.callsFake((logicalName: string) => {
+            return this._attributes.find((attribute) => attribute.LogicalName === logicalName);
+        });
+        this.getByIndex.callsFake((index: number) => {
+            return this._attributes[index];
+        });
         this.getFirst = stub();
-        this.getLength.callsFake(()=>{
+
+        this.getFirst.callsFake((lambda) => {
+            return this._attributes.find(lambda);
+        });
+        this.getLength.callsFake(() => {
             return this._attributes.length;
-        })
+        });
         this.remove = stub();
     }
 }
