@@ -1,6 +1,6 @@
 const backgroundImage = encodeURIComponent(`<svg
-width="32"
-height="32"
+width="84"
+height="84"
 viewBox="0 0 8.4666665 8.4666669"
 version="1.1"
 id="svg213"
@@ -108,9 +108,11 @@ xmlns:svg="http://www.w3.org/2000/svg">
 `);
 
 const showBanner = (name:string)=> console.info(
-    `%cShko Online\r\n%cWe just helped you test your ${name} component!\r\nContact us: %c%s%s%s`,
-    "background-image:url('data:image/svg+xml;utf8," + backgroundImage + "');background-repeat:no-repeat;color:transparent;background-position:center;font-size:84px;",
+    `%cShko Online\r\n%cWe just helped you test your %c${name}%c component!\r\nContact us: %c%s%s%s`,
+    "background-image:url('data:image/svg+xml;utf8," + backgroundImage + "');background-repeat:no-repeat;color:transparent;background-position:left;font-size:84px;",
     '',
+    'font-weight:bold;',
+    'font-weight:normal;',
     'font-weight:bold;',
     'sales',
     '\x40',
