@@ -22,6 +22,7 @@ import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFram
 import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
 import ReactResizeObserver from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver';
 import arrayEqual from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual';
+import showBanner from '../banner';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -42,6 +43,7 @@ export class ComponentFrameworkMockGeneratorReact<
     metadata: MetadataDB;
 
     constructor(control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>, inputs: PropertyMap<TInputs>) {
+        //showBanner(control.name);
         this.control = spy(new control());
         this.context = new ContextMock(inputs);
         this.metadata = new MetadataDB();
