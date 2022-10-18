@@ -36,7 +36,6 @@
     "include": [
         "src",
         "__tests__",
-        "__test-components__",
-        "dist/TestComponent"
+        "__test-components__"
     ]
 }
