@@ -22,7 +22,7 @@ import { NumberPropertyMock } from '@shko-online/componentframework-mock/Compone
 import { WholeNumberPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/WholeNumberProperty.mock';
 import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
 import { DataSetMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSet.mock';
-import { EnumPropertyMock } from './EnumProperty.mock';
+import { EnumPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/EnumProperty.mock';
 
 export type PropertyMap<T extends ShkoOnline.PropertyTypes<T>> = {
     [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty

@@ -17,7 +17,7 @@ import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFram
 import { OptionSetMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { OptionMetadataMock } from '../Metadata/OptionMetadata.mock';
+import { OptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
 
 export class MultiSelectOptionSetPropertyMock
     extends PropertyMock

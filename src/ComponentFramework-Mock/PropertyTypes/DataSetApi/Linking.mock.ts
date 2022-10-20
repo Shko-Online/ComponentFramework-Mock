@@ -14,7 +14,7 @@
 */
 
 import { SinonStub, stub } from "sinon";
-import {LinkEntityExposedExpression} from './LinkEntityExposedExpression.mock'
+import {LinkEntityExposedExpression} from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/LinkEntityExposedExpression.mock'
 
 export class LinkingMock
   implements ComponentFramework.PropertyHelper.DataSetApi.Linking

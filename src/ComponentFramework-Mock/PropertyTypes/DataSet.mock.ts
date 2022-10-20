@@ -20,8 +20,6 @@ import { LinkingMock } from '@shko-online/componentframework-mock/ComponentFrame
 import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
 import { SortStatus } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/SortStatus.mock';
 
-// import { Column } from "./DataSetApi/Column.mock";
-
 type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;
 
 export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
