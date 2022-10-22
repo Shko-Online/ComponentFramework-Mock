@@ -20,8 +20,8 @@ import { KnownTypes } from '@shko-online/componentframework-mock/ComponentFramew
 import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
 import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { arrayEqual } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual';
-import showBanner from '@shko-online/componentframework-mock/banner';
+import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
+import showBanner from '@shko-online/componentframework-mock/utils/banner';
 
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -56,12 +56,10 @@ export class ComponentFrameworkMockGenerator<
                 const result = this.metadata.metadata.findOne({
                     LogicalName: { $eq: entityName },
                 });
-                result.Attributes;
-                resolve({
-                    LogicalName: result.LogicalName,
-                    ActivityTypeMask: result.ActivityTypeMask,
-                    PrimaryNameAttribute: result.PrimaryNameAttribute,
-                } as ShkoOnline.EntityMetadata);
+                if(attributes){
+                    result.Attributes = result.Attributes.filter(attribute=>attributes.some(attributeFilter=> attribute.LogicalName===attributeFilter));
+                }
+                resolve(result);
             });
         });
 

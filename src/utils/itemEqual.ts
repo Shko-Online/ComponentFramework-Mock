@@ -1,4 +1,4 @@
-export const itemEqual = (source, target) => {
+const itemEqual = <T>(source: T, target: T) => {
     if (source === null && target === null) {
         return true;
     }
@@ -15,14 +15,4 @@ export const itemEqual = (source, target) => {
     return source === target;
 };
 
-
-export const arrayEqual = <T>(source: T[], target: T[]) => {
-    return (
-        Array.isArray(source) &&
-        Array.isArray(target) &&
-        source.length == target.length &&
-        source.every((s) => target.some((t) => itemEqual(s, t)))
-    );
-};
-
-export default arrayEqual;
+export default itemEqual;

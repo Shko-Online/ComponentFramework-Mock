@@ -21,8 +21,8 @@ import { ContextMock } from '@shko-online/componentframework-mock/ComponentFrame
 import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
 import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
 import ReactResizeObserver from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver';
-import arrayEqual from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/arrayEqual';
-import showBanner from '@shko-online/componentframework-mock/banner';
+import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
+import showBanner from '@shko-online/componentframework-mock/utils/banner';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -50,8 +50,10 @@ export class ComponentFrameworkMockGeneratorReact<
         this.context.utils.getEntityMetadata.callsFake((entityName: string, attributes?: string[]) => {
             return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>((resolve) => {
                 const result = this.metadata.metadata.find({
-                    LogicalName: 'systemuser',
+                    LogicalName: entityName,
                 });
+
+                resolve(result);
             });
         });
 
@@ -59,13 +61,6 @@ export class ComponentFrameworkMockGeneratorReact<
             this.state = { ...state, ...this.state };
             return true;
         });
-
-        this.data = {};
-        this.data['systemuser'] = {};
-        this.data['systemuser'][this.myUserId] = new EntityRecord('systemuser', this.myUserId, 'Betim Beja');
-
-        this.context.userSettings.userId = this.myUserId;
-        this.context.userSettings.userName = this.data['systemuser'][this.myUserId].name;
 
         this.notifyOutputChanged = stub();
         this.notifyOutputChanged.callsFake(() => {
