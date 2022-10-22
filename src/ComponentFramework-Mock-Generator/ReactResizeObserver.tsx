@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { KnownTypes } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes';
 import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
 import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
 import { ComponentFrameworkMockGeneratorReact } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator-React';
 
-const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, TOutputs extends KnownTypes<TOutputs>>({
+const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, TOutputs extends ShkoOnline.KnownTypes<TOutputs>>({
     componentFrameworkMockGeneratorReact,
 }: {
     componentFrameworkMockGeneratorReact: ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>;

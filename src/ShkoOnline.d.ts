@@ -1,28 +1,28 @@
 /*
-	Unless explicitly acquired and licensed from Licensor under another
-	license, the contents of this file are subject to the Reciprocal Public
-	License ("RPL") Version 1.5, or subsequent versions as allowed by the RPL,
-	and You may not copy or use this file in either source code or executable
-	form, except in compliance with the terms and conditions of the RPL.
+    Unless explicitly acquired and licensed from Licensor under another
+    license, the contents of this file are subject to the Reciprocal Public
+    License ("RPL") Version 1.5, or subsequent versions as allowed by the RPL,
+    and You may not copy or use this file in either source code or executable
+    form, except in compliance with the terms and conditions of the RPL.
 
-	All software distributed under the RPL is provided strictly on an "AS
-	IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND
-	LICENSOR HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT
-	LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-	PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
-	language governing rights and limitations under the RPL. 
+    All software distributed under the RPL is provided strictly on an "AS
+    IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND
+    LICENSOR HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT
+    LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+    PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
+    language governing rights and limitations under the RPL. 
 */
 
 declare namespace ShkoOnline {
     export type PropertyTypes<
         T extends {
             [P in keyof T]:
-                | ComponentFramework.PropertyTypes.Property
-                | ComponentFramework.PropertyTypes.DataSet
-                | ComponentFramework.PropertyTypes.EnumProperty<string>;
+            | ComponentFramework.PropertyTypes.Property
+            | ComponentFramework.PropertyTypes.DataSet
+            | ComponentFramework.PropertyTypes.EnumProperty<string>;
         },
     > = {
-        [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+            [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
             ? ComponentFramework.PropertyTypes.TwoOptionsProperty
             : T[P] extends ComponentFramework.PropertyTypes.DataSet
             ? ComponentFramework.PropertyTypes.DataSet
@@ -43,7 +43,7 @@ declare namespace ShkoOnline {
             : T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
             ? ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
             : never;
-    };
+        };
 
     /**
      * The entire property bag interface available to control via Context Object
@@ -51,6 +51,22 @@ declare namespace ShkoOnline {
     export interface Context<TInputs extends PropertyTypes<TInputs>> {
         parameters: TInputs;
     }
+
+    export type KnownTypes<TOutput> = {
+        [P in keyof TOutput]: TOutput[P] extends string
+        ? string
+        : TOutput[P] extends number
+        ? number
+        : TOutput[P] extends Date
+        ? Date
+        : TOutput[P] extends boolean
+        ? boolean
+        : TOutput[P] extends ComponentFramework.LookupValue[]
+        ? ComponentFramework.LookupValue[]
+        : TOutput[P] extends number[]
+        ? number[]
+        : never;
+    };
 
     /** https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-utility/getentitymetadata */
     export interface EntityMetadata {
@@ -333,10 +349,10 @@ declare namespace ShkoOnline {
 
     export interface NumberAttributeMetadata extends ShkoOnline.AttributeMetadata {
         AttributeType:
-            | ShkoOnline.AttributeType.Integer
-            | ShkoOnline.AttributeType.BigInt
-            | ShkoOnline.AttributeType.Decimal
-            | ShkoOnline.AttributeType.Double;
+        | ShkoOnline.AttributeType.Integer
+        | ShkoOnline.AttributeType.BigInt
+        | ShkoOnline.AttributeType.Decimal
+        | ShkoOnline.AttributeType.Double;
         ImeMode: ShkoOnline.ImeMode;
         MaxValue: number;
         MinValue: number;

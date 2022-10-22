@@ -14,7 +14,6 @@
 */
 import React from 'react';
 import { spy, stub, SinonSpiedInstance, SinonStub } from 'sinon';
-import { KnownTypes } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/KnownTypes';
 import { PropertyMap } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { ContextMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock';
@@ -23,11 +22,13 @@ import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframewor
 import ReactResizeObserver from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver';
 import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
 import showBanner from '@shko-online/componentframework-mock/utils/banner';
+import { MockGenerator } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/MockGenerator';
+import mockGetEntityMetadata from './mockGetEntityMetadata';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
-    TOutputs extends KnownTypes<TOutputs>,
-> {
+    TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
+> implements MockGenerator<TInputs, TOutputs>{
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     context: ContextMock<TInputs>;
     notifyOutputChanged: SinonStub<[], void>;
@@ -47,16 +48,9 @@ export class ComponentFrameworkMockGeneratorReact<
         this.control = spy(new control());
         this.context = new ContextMock(inputs);
         this.metadata = new MetadataDB();
-        this.context.utils.getEntityMetadata.callsFake((entityName: string, attributes?: string[]) => {
-            return new Promise<ComponentFramework.PropertyHelper.EntityMetadata>((resolve) => {
-                const result = this.metadata.metadata.find({
-                    LogicalName: entityName,
-                });
 
-                resolve(result);
-            });
-        });
-
+        mockGetEntityMetadata(this);
+        
         this.context.mode.setControlState.callsFake((state: ComponentFramework.Dictionary) => {
             this.state = { ...state, ...this.state };
             return true;
