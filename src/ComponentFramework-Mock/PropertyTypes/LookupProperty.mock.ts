@@ -1,16 +1,16 @@
 /*
-	Unless explicitly acquired and licensed from Licensor under another
-	license, the contents of this file are subject to the Reciprocal Public
-	License ("RPL") Version 1.5, or subsequent versions as allowed by the RPL,
-	and You may not copy or use this file in either source code or executable
-	form, except in compliance with the terms and conditions of the RPL.
+    Unless explicitly acquired and licensed from Licensor under another
+    license, the contents of this file are subject to the Reciprocal Public
+    License ("RPL") Version 1.5, or subsequent versions as allowed by the RPL,
+    and You may not copy or use this file in either source code or executable
+    form, except in compliance with the terms and conditions of the RPL.
 
-	All software distributed under the RPL is provided strictly on an "AS
-	IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND
-	LICENSOR HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT
-	LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-	PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
-	language governing rights and limitations under the RPL. 
+    All software distributed under the RPL is provided strictly on an "AS
+    IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND
+    LICENSOR HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT
+    LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+    PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
+    language governing rights and limitations under the RPL. 
 */
 
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
@@ -19,18 +19,36 @@ import { LookupMetadataMock } from '@shko-online/componentframework-mock/Compone
 import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 
 export class LookupPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.LookupProperty {
-    boundTableName: string;
-    boundRowId: string;
-    boundColumn: string;
-    db: MetadataDB;
-
     raw: ComponentFramework.LookupValue[];
     getTargetEntityType: SinonStub<[], string>;
     getViewId: SinonStub<[], string>;
     setValue: SinonStub<[value: ComponentFramework.LookupValue[]], void>;
     attributes?: LookupMetadataMock;
-    constructor() {
+    constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super();
+        this._db = db;
+        this._Bind(entityMetadata.LogicalName, propertyName);
+        this._Refresh.callsFake(()=>{
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.LookupAttributeMetadata>(
+                this._boundTable,
+                this._boundRow,
+                this._boundColumn,
+            );
+            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Lookup) {
+                throw new Error('Type Error');
+            }
+            this.attributes = new LookupMetadataMock();
+            this.attributes.LogicalName = attributeMetadata.LogicalName;
+            this.attributes.Targets = attributeMetadata.Targets;
+            this.raw = [value];
+        });
+        const attribute = {
+            AttributeType: ShkoOnline.AttributeType.Lookup,
+            EntityLogicalName: entityMetadata.LogicalName,
+            LogicalName: propertyName
+        } as ShkoOnline.LookupAttributeMetadata;
+        entityMetadata.Attributes.push(attribute);
+
         this.getTargetEntityType = stub();
         this.getTargetEntityType.returns('mocked_entity');
         this.getViewId = stub();
@@ -40,19 +58,5 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             this.raw = value;
             this.formatted = value?.map((lookup) => lookup.name).join(',');
         });
-    }
-    Bind(columnName) {
-        this.boundColumn = columnName;
-        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.LookupAttributeMetadata>(
-            this.boundTableName,
-            this.boundRowId,
-            columnName,
-        );
-        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Lookup) {
-            throw new Error('Type Error');
-        }
-        this.attributes.LogicalName = attributeMetadata.LogicalName;
-        this.attributes.Targets = attributeMetadata.Targets;
-        this.raw = value;
     }
 }

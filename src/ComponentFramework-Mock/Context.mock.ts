@@ -1,16 +1,16 @@
 /*
-	Unless explicitly acquired and licensed from Licensor under another
-	license, the contents of this file are subject to the Reciprocal Public
-	License ("RPL") Version 1.5, or subsequent versions as allowed by the RPL,
-	and You may not copy or use this file in either source code or executable
-	form, except in compliance with the terms and conditions of the RPL.
+    Unless explicitly acquired and licensed from Licensor under another
+    license, the contents of this file are subject to the Reciprocal Public
+    License ("RPL") Version 1.5, or subsequent versions as allowed by the RPL,
+    and You may not copy or use this file in either source code or executable
+    form, except in compliance with the terms and conditions of the RPL.
 
-	All software distributed under the RPL is provided strictly on an "AS
-	IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND
-	LICENSOR HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT
-	LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-	PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
-	language governing rights and limitations under the RPL. 
+    All software distributed under the RPL is provided strictly on an "AS
+    IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND
+    LICENSOR HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT
+    LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+    PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
+    language governing rights and limitations under the RPL. 
 */
 
 import { ClientMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Client.mock';
@@ -24,6 +24,7 @@ import { ResourcesMock } from '@shko-online/componentframework-mock/ComponentFra
 import { UserSettingsMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock';
 import { UtilityMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Utility.mock';
 import { WebApiMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/WebApi.mock';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs>
@@ -41,7 +42,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     webAPI: WebApiMock;
     updatedProperties: string[];
 
-    constructor(inputs: PropertyMap<IInputs>) {
+    constructor(inputs: PropertyMap<IInputs>, db: MetadataDB) {
         this.updatedProperties = [];
         this.client = new ClientMock();
         this.device = new DeviceMock();
@@ -50,9 +51,20 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.mode = new ModeMock();
         this.navigation = new NavigationMock();
         this.parameters = {} as IInputs;
-        Object.getOwnPropertyNames(inputs).forEach((k) => {
-            this.parameters[k] = new inputs[k]();
+
+        const CanvasEntity = {
+            LogicalName: '!CanvasApp',
+            EntitySetName: '!CanvasApp',
+            Attributes: []
+        } as ShkoOnline.EntityMetadata;
+
+        Object.getOwnPropertyNames<PropertyMap<IInputs>>(inputs).forEach((propertyName) => {
+            const parameter = new inputs[propertyName](propertyName as string, db, CanvasEntity);
+            parameter._boundColumn = propertyName as string;
+            parameter._db = db;
+            this.parameters[propertyName] = parameter as unknown as IInputs[keyof IInputs];
         });
+        db.initMetadata([CanvasEntity]);
         this.resources = new ResourcesMock();
         this.userSettings = new UserSettingsMock();
         this.utils = new UtilityMock();

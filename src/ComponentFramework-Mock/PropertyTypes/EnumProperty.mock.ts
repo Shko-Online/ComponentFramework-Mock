@@ -13,15 +13,49 @@
     language governing rights and limitations under the RPL. 
 */
 
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { SinonStub, stub } from 'sinon';
 
 export class EnumPropertyMock<EnumType extends string>
     implements ComponentFramework.PropertyTypes.EnumProperty<EnumType>
 {
-    type: string;
+    _boundColumn: string;
+	_boundTable: string;
+	_boundRow: string;
+	_db: MetadataDB;
+    _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
+    _Refresh: SinonStub<[], void>;
     raw: EnumType;
+    type: string;
     setValue: SinonStub<[value: EnumType | null], void>;
-    constructor(defaultValue?: number) {
+    constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
+        this._db = db;       
+        this._Refresh = stub();
+        this._Bind = stub();
+		this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
+			this._boundColumn = boundColumn;
+			this._boundRow = boundRow;
+			this._boundTable = boundTable;
+		});
+        this._Bind(entityMetadata.LogicalName, propertyName);
+        this._Refresh.callsFake(()=>{
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
+                this._boundTable,
+                this._boundRow,
+                this._boundColumn,
+            );
+            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Picklist) {
+                throw new Error('Type Error');
+            }
+            this.raw = value;
+        })
+        const attribute = {
+            AttributeType: ShkoOnline.AttributeType.Picklist,
+            EntityLogicalName: entityMetadata.LogicalName,
+            LogicalName: propertyName
+        } as ShkoOnline.EnumTypeAttributeMetadata;
+        entityMetadata.Attributes.push(attribute);
+
         this.setValue = stub();
         this.setValue.callsFake((value) => {
             this.raw = value;

@@ -22,26 +22,29 @@ declare namespace ShkoOnline {
             | ComponentFramework.PropertyTypes.EnumProperty<string>;
         },
     > = {
-            [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
-            ? ComponentFramework.PropertyTypes.TwoOptionsProperty
-            : T[P] extends ComponentFramework.PropertyTypes.DataSet
+            [P in keyof T]:
+            T[P] extends ComponentFramework.PropertyTypes.DataSet
             ? ComponentFramework.PropertyTypes.DataSet
-            : T[P] extends ComponentFramework.PropertyTypes.StringProperty
-            ? ComponentFramework.PropertyTypes.StringProperty
-            : T[P] extends ComponentFramework.PropertyTypes.NumberProperty
-            ? ComponentFramework.PropertyTypes.NumberProperty
             : T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty
             ? ComponentFramework.PropertyTypes.DateTimeProperty
             : T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty
             ? ComponentFramework.PropertyTypes.DecimalNumberProperty
-            : T[P] extends ComponentFramework.PropertyTypes.LookupProperty
-            ? ComponentFramework.PropertyTypes.LookupProperty
-            : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
-            ? ComponentFramework.PropertyTypes.WholeNumberProperty
             : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
             ? ComponentFramework.PropertyTypes.EnumProperty<string>
+            : T[P] extends ComponentFramework.PropertyTypes.LookupProperty
+            ? ComponentFramework.PropertyTypes.LookupProperty
             : T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
             ? ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+            : T[P] extends ComponentFramework.PropertyTypes.NumberProperty
+            ? ComponentFramework.PropertyTypes.NumberProperty
+            : T[P] extends ComponentFramework.PropertyTypes.OptionSetProperty
+            ? ComponentFramework.PropertyTypes.OptionSetProperty          
+            : T[P] extends ComponentFramework.PropertyTypes.StringProperty
+            ? ComponentFramework.PropertyTypes.StringProperty
+            : T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+            ? ComponentFramework.PropertyTypes.TwoOptionsProperty    
+            : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
+            ? ComponentFramework.PropertyTypes.WholeNumberProperty
             : never;
         };
 
@@ -509,4 +512,8 @@ declare namespace ShkoOnline {
     type DateTimeFieldBehavior = 0 | 1 | 3;
     type PrivilegeType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
     type AttributeRequiredLevel = 0 | 1 | 2 | 3;
+}
+
+interface ObjectConstructor {
+	getOwnPropertyNames<T>(o: T): (keyof T)[];
 }

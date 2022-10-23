@@ -15,6 +15,7 @@
 import loki from 'lokijs';
 
 export class MetadataDB {
+    _warnMissingInit: boolean;
     attributes: {
         [key: string]: Collection<ShkoOnline.AttributeMetadata>;
     };
@@ -24,6 +25,7 @@ export class MetadataDB {
     };
     db: loki;
     constructor() {
+        this._warnMissingInit = false;
         this.db = new loki('metadata.db');
         this.attributes = {};
         this.data = {};
@@ -62,7 +64,7 @@ export class MetadataDB {
             const row = {};
             tableMetadata.Attributes.forEach((attribute) => {
                 const key = attribute.LogicalName;
-                if (key in item) {  
+                if (key in item) {
                     row[key] = item[key];
                 }
             });
@@ -72,11 +74,15 @@ export class MetadataDB {
 
     GetRow(entity: string, id: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
-        const search = {};
-        search[entityMetadata.PrimaryIdAttribute] = { $eq: id };
-        return { row: this.data[entity].findOne(search), entityMetadata };
+        const entityData = this.data[entity];
+        if (entityData === undefined && this._warnMissingInit) {
+            console.warn(`no data initialized for ${entity} table.`);
+        }
+        if (id !== undefined) {
+            return { row: entityData?.findOne({ [entityMetadata.PrimaryIdAttribute]: { $eq: id } }), entityMetadata };
+        }
+        return { row: entityData?.findOne(), entityMetadata }
     }
-
     GetAllColumn(entity: string, attribute: string) {
         const tab = [];
         const data = this.data[entity].chain().data();
@@ -85,12 +91,12 @@ export class MetadataDB {
         });
         return tab;
     }
-    RefreshValue<T extends ShkoOnline.AttributeMetadata>(entity: string, rowid: string, attributeName: string) {
+    GetValueAndMetadata<T extends ShkoOnline.AttributeMetadata>(entity: string, rowid: string, attributeName: string) {
         const result = this.GetRow(entity, rowid);
         const attributeMetadata = result.entityMetadata.Attributes.find(
             (attribute) => attribute.LogicalName === attributeName,
         ) as T;
-        const value = result.row[attributeName];
+        const value = result.row?.[attributeName];
         return { value, attributeMetadata };
     }
     GetRows(entity: string) {
@@ -98,5 +104,10 @@ export class MetadataDB {
         const attributeMetadata = entityMetadata.Attributes;
         const rows = this.data[entity].chain().data();
         return { rows, entityMetadata };
+    }
+    UpdateValue<T>(value: T, entity: string, attribute: string, row: string) {
+        const update = this.GetRow(entity, row);
+        update.row[attribute] = value;
+        this.data[entity].update(update.row);
     }
 }

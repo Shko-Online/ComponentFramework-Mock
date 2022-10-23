@@ -19,39 +19,40 @@ import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
 export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
-    boundTableName: string;
-    boundRowId: string;
-    boundColumn: string;
-    db: MetadataDB;
-
     raw: string | null;
     attributes: StringMetadataMock;
     setValue: SinonStub<[value: string | null], void>;
-    constructor(defaultValue?: string) {
+    constructor(propertyName:string, db:MetadataDB, entityMetadata:ShkoOnline.EntityMetadata) {
         super();
-        this.raw = defaultValue;
+        this._db = db;
+        this._Bind(entityMetadata.LogicalName, propertyName);
+        this._Refresh.callsFake(()=>{
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.StringAttributeMetadata>(
+                this._boundTable,
+                this._boundRow,
+                this._boundColumn,
+            );
+            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.String) {
+                throw new Error('Type Error');
+            }
+            this.attributes.LogicalName = attributeMetadata.LogicalName;
+            this.attributes.DisplayName = attributeMetadata.DisplayName;
+            this.attributes.MaxLength = attributeMetadata.MaxLength;
+            this.attributes.Format = attributeMetadata.Format;
+            this.attributes.ImeMode = attributeMetadata.ImeMode;
+            this.raw = value;
+        })
+        const attribute = {
+            AttributeType: ShkoOnline.AttributeType.String,
+            EntityLogicalName: entityMetadata.LogicalName,
+            LogicalName: propertyName
+        } as ShkoOnline.StringAttributeMetadata;
+        entityMetadata.Attributes.push(attribute);
         this.attributes = new StringMetadataMock();
         this.setValue = stub();
         this.setValue.callsFake((value) => {
             this.raw = value;
             this.formatted = value;
         });
-    }
-    Bind(columnName: string) {
-        this.boundColumn = columnName;
-        const { value, attributeMetadata } = this.db.RefreshValue<ShkoOnline.StringAttributeMetadata>(
-            this.boundTableName,
-            this.boundRowId,
-            columnName,
-        );
-        if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.String) {
-            throw new Error('Type Error');
-        }
-        this.attributes.LogicalName = attributeMetadata.LogicalName;
-        this.attributes.DisplayName = attributeMetadata.DisplayName;
-        this.attributes.MaxLength = attributeMetadata.MaxLength;
-        this.attributes.Format = attributeMetadata.Format;
-        this.attributes.ImeMode = attributeMetadata.ImeMode;
-        this.raw = value;
     }
 }

@@ -46,11 +46,11 @@ export class ComponentFrameworkMockGeneratorReact<
     constructor(control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>, inputs: PropertyMap<TInputs>) {
         showBanner(control.name);
         this.control = spy(new control());
-        this.context = new ContextMock(inputs);
         this.metadata = new MetadataDB();
+        this.context = new ContextMock(inputs, this.metadata);
 
         mockGetEntityMetadata(this);
-        
+
         this.context.mode.setControlState.callsFake((state: ComponentFramework.Dictionary) => {
             this.state = { ...state, ...this.state };
             return true;
