@@ -232,7 +232,33 @@ declare namespace ShkoOnline {
         /**The Microsoft Dynamics 365 version that the attribute was deprecated in.*/
         DeprecatedVersion: string;
         /** The label containing the description for the attribute.*/
-        Description: {};
+        Description: {
+            LocalizedLabels: [{
+                /** The localized label string.*/
+                Label: string;
+                /** The language code for the label.*/
+                LanguageCode: number;
+                /** Whether the label is managed.*/
+                IsManaged: boolean;
+                /** A unique identifier for the metadata item.*/
+                MetadataId: string;
+                /** Whether the item of metadata has changed.*/
+                HasChanged: boolean;
+            }];
+            UserLocalizedLabel: {
+                 /** The localized label string.*/
+                 Label: string;
+                 /** The language code for the label.*/
+                 LanguageCode: number;
+                 /** Whether the label is managed.*/
+                 IsManaged: boolean;
+                 /** A unique identifier for the metadata item.*/
+                 MetadataId: string;
+                 /** Whether the item of metadata has changed.*/
+                 HasChanged: boolean;
+            }
+
+        };
         /** Display name for the column. */
         DisplayName: string;
         /** Logical name of the table that contains the column. */
