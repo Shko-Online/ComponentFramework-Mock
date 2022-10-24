@@ -17,6 +17,7 @@ import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramew
 import { WholeNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { NumberPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class WholeNumberPropertyMock
     extends NumberPropertyMock
@@ -33,10 +34,10 @@ export class WholeNumberPropertyMock
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Integer &&
-                attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Decimal &&
-                attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Double && 
-                attributeMetadata.AttributeType !== ShkoOnline.AttributeType.BigInt) { //ToDo: Fix AutoMetadata generation
+            if (attributeMetadata.AttributeType !== AttributeType.Integer &&
+                attributeMetadata.AttributeType !== AttributeType.Decimal &&
+                attributeMetadata.AttributeType !== AttributeType.Double && 
+                attributeMetadata.AttributeType !== AttributeType.BigInt) { //ToDo: Fix AutoMetadata generation
                 throw new Error('Type Error');
             }
             this.attributes = new WholeNumberMetadataMock();
@@ -48,7 +49,7 @@ export class WholeNumberPropertyMock
             this.formatted = value === undefined || value === null ? '' : '' + value;
         })
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.Integer,
+            AttributeType: AttributeType.Integer,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName
         } as ShkoOnline.IntegerNumberAttributeMetadata;

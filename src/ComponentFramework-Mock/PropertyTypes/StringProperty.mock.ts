@@ -17,6 +17,7 @@ import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFram
 import { StringMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
     raw: string | null;
@@ -32,7 +33,7 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.String) {
+            if (attributeMetadata.AttributeType !== AttributeType.String) {
                 throw new Error('Type Error');
             }
             this.attributes.LogicalName = attributeMetadata.LogicalName;
@@ -43,7 +44,7 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
             this.raw = value;
         })
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.String,
+            AttributeType: AttributeType.String,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName
         } as ShkoOnline.StringAttributeMetadata;

@@ -18,6 +18,7 @@ import { OptionSetMetadataMock } from '@shko-online/componentframework-mock/Comp
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { OptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class MultiSelectOptionSetPropertyMock
     extends PropertyMock
@@ -36,7 +37,7 @@ export class MultiSelectOptionSetPropertyMock
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Picklist) {
+            if (attributeMetadata.AttributeType !== AttributeType.Picklist) {
                 throw new Error('Type Error');
             }
             this.attributes.LogicalName = attributeMetadata.LogicalName;
@@ -51,7 +52,7 @@ export class MultiSelectOptionSetPropertyMock
             ).join(',');
         });
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.Picklist,
+            AttributeType: AttributeType.Picklist,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName
         } as ShkoOnline.PickListAttributeMetadata; // ToDO: Find right metadata

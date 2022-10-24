@@ -17,6 +17,7 @@ import { NumberPropertyMock } from '@shko-online/componentframework-mock/Compone
 import { DecimalNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class DecimalNumberPropertyMock
     extends NumberPropertyMock
@@ -33,7 +34,7 @@ export class DecimalNumberPropertyMock
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Decimal) {
+            if (attributeMetadata.AttributeType !== AttributeType.Decimal) {
                 throw new Error('Type Error');
             }
             this.attributes = new DecimalNumberMetadataMock();
@@ -45,7 +46,7 @@ export class DecimalNumberPropertyMock
             this.raw = value;
         });
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.Decimal,
+            AttributeType: AttributeType.Decimal,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName
         } as ShkoOnline.DecimalNumberAttributeMetadata;

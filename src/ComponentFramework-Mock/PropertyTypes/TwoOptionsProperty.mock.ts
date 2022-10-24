@@ -17,7 +17,7 @@ import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFram
 import { TwoOptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 import { OptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
 export class TwoOptionsPropertyMock
     extends PropertyMock
@@ -36,7 +36,7 @@ export class TwoOptionsPropertyMock
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Boolean) {
+            if (attributeMetadata.AttributeType !== AttributeType.Boolean) {
                 throw new Error('Type Error');
             }
             this.attributes.LogicalName = attributeMetadata.LogicalName;
@@ -56,7 +56,7 @@ export class TwoOptionsPropertyMock
             this.formatted = this.attributes.Options[value ? 1 : 0].Label;
         });
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.Boolean,
+            AttributeType: AttributeType.Boolean,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
             OptionSet: {

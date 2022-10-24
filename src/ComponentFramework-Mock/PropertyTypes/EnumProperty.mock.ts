@@ -13,8 +13,9 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { SinonStub, stub } from 'sinon';
+import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class EnumPropertyMock<EnumType extends string>
     implements ComponentFramework.PropertyTypes.EnumProperty<EnumType>
@@ -44,13 +45,13 @@ export class EnumPropertyMock<EnumType extends string>
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Picklist) {
+            if (attributeMetadata.AttributeType !== AttributeType.Picklist) {
                 throw new Error('Type Error');
             }
             this.raw = value;
         })
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.Picklist,
+            AttributeType: AttributeType.Picklist,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName
         } as ShkoOnline.EnumTypeAttributeMetadata;

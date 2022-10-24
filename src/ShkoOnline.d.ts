@@ -13,7 +13,7 @@
     language governing rights and limitations under the RPL. 
 */
 
-declare namespace ShkoOnline {
+declare module ShkoOnline {
     export type PropertyTypes<
         T extends {
             [P in keyof T]:
@@ -468,7 +468,7 @@ declare namespace ShkoOnline {
      * Describes the type of an attribute.
      * For the Web API use the AttributeTypeCode EnumType.
      */
-    export const enum AttributeType {
+    export enum AttributeType {
         /** A big integer attribute */
         BigInt = 18,
         /** A Boolean attribute. Value = 0. */

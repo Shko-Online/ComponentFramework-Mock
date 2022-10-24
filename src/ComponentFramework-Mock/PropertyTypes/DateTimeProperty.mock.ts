@@ -17,6 +17,7 @@ import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFram
 import { DateTimeMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock';
 import { SinonStub, stub } from 'sinon';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
     raw: Date;
@@ -27,7 +28,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.DateTime,
+            AttributeType: AttributeType.DateTime,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName
         } as ShkoOnline.DateTimeAttributeMetadata;
@@ -44,7 +45,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.DateTime) {
+            if (attributeMetadata.AttributeType !== AttributeType.DateTime) {
                 throw new Error('Type Error');
             }
             this.attributes = new DateTimeMetadataMock();

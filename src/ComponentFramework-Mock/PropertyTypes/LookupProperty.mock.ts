@@ -17,6 +17,7 @@ import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramew
 import { stub, SinonStub } from 'sinon';
 import { LookupMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/LookupMetadata.mock';
 import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class LookupPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.LookupProperty {
     raw: ComponentFramework.LookupValue[];
@@ -34,7 +35,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
                 this._boundRow,
                 this._boundColumn,
             );
-            if (attributeMetadata.AttributeType !== ShkoOnline.AttributeType.Lookup) {
+            if (attributeMetadata.AttributeType !== AttributeType.Lookup) {
                 throw new Error('Type Error');
             }
             this.attributes = new LookupMetadataMock();
@@ -43,7 +44,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             this.raw = [value];
         });
         const attribute = {
-            AttributeType: ShkoOnline.AttributeType.Lookup,
+            AttributeType: AttributeType.Lookup,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName
         } as ShkoOnline.LookupAttributeMetadata;
