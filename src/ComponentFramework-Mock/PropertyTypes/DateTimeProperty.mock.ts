@@ -49,7 +49,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
             }
             this.attributes = new DateTimeMetadataMock();
             this.attributes.Behavior = attributeMetadata.Behaviour;
-            this.attributes.Description = attributeMetadata.Description.UserLocalizedLabel.Label;
+            this.attributes.Description = attributeMetadata.Description?.UserLocalizedLabel?.Label;
             this.attributes.Format = attributeMetadata.Format;
             this.attributes.ImeMode = attributeMetadata.ImeMode;
             this.attributes.IsSecured = attributeMetadata.IsSecured;
