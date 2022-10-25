@@ -98,20 +98,9 @@ export class MetadataDB {
         });
     }
     initCanvasItems(items: any[]) {
-        const entitySetName = '!CanvasApp';
-        const tableMetadata = this.metadata.findOne({ EntitySetName: { $eq: entitySetName } });
-
-        const tableData = this.db.addCollection(`${tableMetadata.LogicalName}#data`);
-        this.data[tableMetadata.LogicalName] = tableData;
-        items.forEach((item) => {
-            const row = {};
-            tableMetadata.Attributes.forEach((attribute) => {
-                const key = attribute.LogicalName;
-                if (key in item) {
-                    row[key] = item[key];
-                }
-            });
-            tableData.insert(row);
+        this.initItems({
+            "@odata.context": "#!CanvasApp",
+            "value": items
         });
     }
     GetRow(entity: string, id: string) {
@@ -144,7 +133,7 @@ export class MetadataDB {
     GetRows(entity: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
         const attributeMetadata = entityMetadata.Attributes;
-        const rows =[... this.data[entity].data];
+        const rows = [... this.data[entity].data];
         return { rows, entityMetadata };
     }
     UpdateValue<T>(value: T, entity: string, attribute: string, row: string) {

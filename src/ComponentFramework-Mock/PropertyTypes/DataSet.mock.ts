@@ -30,6 +30,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
 	_db: MetadataDB;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
     _Refresh: SinonStub<[], void>;
+    _InitItems: SinonStub<[items: any[]], void>;
     addColumn?: SinonStub<[name: string, entityAlias?: string], void>;
     columns: Column[];
     error: boolean;
@@ -60,7 +61,6 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             Attributes: []
         } as ShkoOnline.EntityMetadata;
         this._db.initMetadata([dataSetEntity]);
-
         this._Refresh = stub();
         this._Bind = stub();
 		this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
@@ -69,10 +69,18 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
 			this._boundTable = boundTable;
 		});
         this._Bind(`!!${propertyName}`, propertyName);
+        this._InitItems = stub();
+        this._InitItems.callsFake((items)=>{
+            this._db.initItems({
+                '@odata.context': `#${this._boundTable}`,
+                value: items,
+            })
+        })
         this._Refresh.callsFake(()=>{
            var rows = this._db.GetRows(this._boundTable);
            const records = rows.rows.map(item=>{
             const row = new EntityRecord(undefined, item[rows.entityMetadata.PrimaryIdAttribute || 'id'], item.name);
+            row.metadata = rows.entityMetadata;
             row.columns = item;
             return row;
            });
