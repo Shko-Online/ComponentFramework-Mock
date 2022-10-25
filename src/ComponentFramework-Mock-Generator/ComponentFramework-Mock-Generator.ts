@@ -15,7 +15,10 @@
 
 import { spy, fake, SinonSpy, SinonSpiedInstance } from 'sinon';
 import { ContextMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock';
-import { PropertyMap, PropertyToMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import {
+    PropertyMap,
+    PropertyToMock,
+} from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
 import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
 import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
@@ -89,7 +92,12 @@ export class ComponentFrameworkMockGenerator<
                     }
 
                     // @ts-ignore
-                    this.metadata.UpdateValue(updates[k], property._boundTable, property._boundColumn, property._boundRow);
+                    this.metadata.UpdateValue(
+                        updates[k],
+                        property._boundTable,
+                        property._boundColumn,
+                        property._boundRow,
+                    );
                 }
             }
             if (this.context.updatedProperties.length > 0) {
@@ -123,19 +131,21 @@ export class ComponentFrameworkMockGenerator<
     }
 
     ExecuteInit() {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach((propertyName) => {
-            const parameter = this.context.parameters[propertyName] as unknown as PropertyToMock<TInputs>;
-            parameter._Refresh();
-        });
+        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
+            (propertyName) => {
+                this.context._parameters[propertyName]._Refresh();
+            },
+        );
         const state = this.state === undefined ? this.state : { ...this.state };
         this.control.init(this.context, this.notifyOutputChanged, state, this.container);
     }
 
     ExecuteUpdateView() {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach((propertyName) => {
-            const parameter = this.context.parameters[propertyName] as unknown as PropertyToMock<TInputs>;
-            parameter._Refresh();
-        });
+        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
+            (propertyName) => {
+                this.context._parameters[propertyName]._Refresh();
+            },
+        );
         this.control.updateView(this.context);
     }
 }

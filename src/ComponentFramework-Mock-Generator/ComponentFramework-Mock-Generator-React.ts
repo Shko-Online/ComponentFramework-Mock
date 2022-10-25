@@ -99,18 +99,21 @@ export class ComponentFrameworkMockGeneratorReact<
         });
     }
     ExecuteInit() {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach((propertyName) => {
-            const parameter = this.context.parameters[propertyName] as unknown as PropertyToMock<TInputs>;
-            parameter._Refresh();
-        });
+        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
+            (propertyName) => {
+                this.context._parameters[propertyName]._Refresh();
+            },
+        );
         const state = this.state === undefined ? this.state : { ...this.state };
         this.control.init(this.context, this.notifyOutputChanged, state);
     }
 
     ExecuteUpdateView(): React.ReactElement {
-        // div element react
-        // ref html
-        // observer
+        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
+            (propertyName) => {
+                this.context._parameters[propertyName]._Refresh();
+            },
+        );
 
         return React.createElement(ReactResizeObserver, { componentFrameworkMockGeneratorReact: this });
         //return this.control.updateView(this.context);
