@@ -24,6 +24,7 @@ import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
 import showBanner from '@shko-online/componentframework-mock/utils/banner';
 import { MockGenerator } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/MockGenerator';
 import mockGetEntityMetadata from './mockGetEntityMetadata';
+import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -62,6 +63,8 @@ export class ComponentFrameworkMockGeneratorReact<
             this.context.updatedProperties = [];
             for (const k in updates) {
                 if (k in this.context.parameters) {
+                    const property = this.context.parameters[k] as PropertyMock;
+
                     if (Array.isArray(updates[k])) {
                         const arrayUpdate = updates[k] as number[];
                         const property = this.context.parameters[k] as MultiSelectOptionSetPropertyMock;
@@ -75,9 +78,7 @@ export class ComponentFrameworkMockGeneratorReact<
                             this.context.updatedProperties.push(k);
                         }
                     }
-
-                    // @ts-ignore
-                    this.context.parameters[k].setValue(updates[k]);
+                    this.metadata.UpdateValue(updates[k], property._boundTable, property._boundColumn, property._boundRow)
                 }
             }
             if (this.context.updatedProperties.length > 0) {
