@@ -22,7 +22,8 @@ import { AttributeType } from '@shko-online/componentframework-mock/ComponentFra
 
 export class MultiSelectOptionSetPropertyMock
     extends PropertyMock
-    implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty {
+    implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+{
     raw: number[] | null;
     originalRaw: number[] | null;
     attributes?: OptionSetMetadataMock;
@@ -46,15 +47,15 @@ export class MultiSelectOptionSetPropertyMock
                 return new OptionMetadataMock(metadata.Value, metadata.Label, metadata.Color);
             });
             this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
-            this.raw = value;
-            this.formatted = (value as number[] || []).map((optionValue) =>
-                this.attributes.Options.find((option) => option.Value === optionValue).Label
-            ).join(',');
+            this.raw = value !== null ? [...value] : null;
+            this.formatted = ((value as number[]) || [])
+                .map((optionValue) => this.attributes.Options.find((option) => option.Value === optionValue).Label)
+                .join(',');
         });
         const attribute = {
             AttributeType: AttributeType.Picklist,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.PickListAttributeMetadata; // ToDO: Find right metadata
         entityMetadata.Attributes.push(attribute);
 

@@ -87,7 +87,7 @@ export class MetadataDB {
             tableData.insert(row);
         });
     }
-    initCanvasItems(items){
+    initCanvasItems(items: any[]){
         const entitySetName = "!CanvasApp";
         const tableMetadata = this.metadata.findOne({ EntitySetName: { $eq: entitySetName } });
 
@@ -104,29 +104,6 @@ export class MetadataDB {
             tableData.insert(row);
         });
     }
-// initCanvasAttributes(metadatas: ShkoOnline.EntityMetadata[]) {
-//     metadatas.forEach((metadata1) => {
-//         if (!this.metadata) {
-//             this.metadata = this.db.addCollection("!CanvasApp");
-//         }
-
-//         this.metadata.insert(metadata1);
-
-//         const userAttributes = this.db.addCollection(`${metadata1.LogicalName}#attributes`);
-//         this.attributes[metadata1.LogicalName] = userAttributes;
-//         const attributes = metadata1.Attributes;
-
-//         attributes.forEach((attribute) => {
-//             userAttributes.insert({
-//                 LogicalName: attribute.LogicalName,
-//                 SchemaName: attribute.SchemaName,
-//                 AttributeType: attribute.AttributeType,
-//                 MetadataId: attribute.MetadataId,
-//                 DisplayName: attribute.DisplayName,
-//             });
-//         });
-//     });
-// }
     GetRow(entity: string, id: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
         const entityData = this.data[entity];

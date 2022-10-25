@@ -70,7 +70,6 @@ export class ComponentFrameworkMockGenerator<
             const updates = this.control.getOutputs?.();
             this.context.updatedProperties = [];
             for (const k in updates) {
-
                 if (k in this.context.parameters) {
                     const property = this.context.parameters[k] as PropertyMock;
 
