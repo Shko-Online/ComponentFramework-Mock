@@ -50,10 +50,10 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
         } as ShkoOnline.StringAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
         this.attributes = new StringMetadataMock();
-        this.setValue = stub();
-        this.setValue.callsFake((value) => {
-            this.raw = value;
-            this.formatted = value;
-        });
+        // this.setValue = stub();
+        // this.setValue.callsFake((value) => {
+        //     this.raw = value;
+        //     this.formatted = value;
+        // });
     }
 }

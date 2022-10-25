@@ -435,7 +435,7 @@ declare module ShkoOnline {
             [value: number]: {
                 Value: number;
                 Label: string;
-                Color: string;
+                Color?: string;
             };
         };
     }
