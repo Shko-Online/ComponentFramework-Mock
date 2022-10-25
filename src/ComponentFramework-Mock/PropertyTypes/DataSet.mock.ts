@@ -41,7 +41,6 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     records: {
         [id: string]: EntityRecord;
     };
-    initRecords: SinonStub<[records: EntityRecord[]], void>;
     sortedRecordIds: string[];
     sorting: SortStatus[];
     clearSelectedRecordIds: SinonStub<[], void>;
@@ -55,6 +54,13 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     constructor(propertyName: string, db: MetadataDB) {
         this._boundColumn = propertyName;
         this._db = db;
+        const dataSetEntity = {
+            LogicalName: '!!'+propertyName,
+            EntitySetName: '!!'+propertyName,
+            Attributes: []
+        } as ShkoOnline.EntityMetadata;
+        this._db.initMetadata([dataSetEntity]);
+
         this._Refresh = stub();
         this._Bind = stub();
 		this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
@@ -62,29 +68,14 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
 			this._boundRow = boundRow;
 			this._boundTable = boundTable;
 		});
-        this._Bind(`!${propertyName}`, propertyName);
+        this._Bind(`!!${propertyName}`, propertyName);
         this._Refresh.callsFake(()=>{
-            
-        });
-        this.loading = false;
-        this.sortedRecordIds = [];
-        this.sorting = [];
-        this.columns = [];
-        this.paging = new PagingMock();
-        this.filtering = new FilteringMock();
-        this.records = {};
-        this.clearSelectedRecordIds = stub();
-        this.getSelectedRecordIds = stub();
-        this.getSelectedRecordIds.callsFake(() => []);
-        this.addColumn = stub();
-        this.getTargetEntityType = stub();
-        this.getTitle = stub();
-        this.getViewId = stub();
-        this.openDatasetItem = stub();
-        this.refresh = stub();
-        this.setSelectedRecordIds = stub();
-        this.initRecords = stub();
-        this.initRecords.callsFake((records) => {
+           var rows = this._db.GetRows(this._boundTable);
+           const records = rows.rows.map(item=>{
+            const row = new EntityRecord(undefined, item[rows.entityMetadata.PrimaryIdAttribute || 'id'], item.name);
+            row.columns = item;
+            return row;
+           });
             this.records = {};
             records.forEach((record) => {
                 this.records[record.getRecordId()] = record;
@@ -107,5 +98,23 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     .map((record) => record.getRecordId());
             }
         });
+        this.loading = false;
+        this.sortedRecordIds = [];
+        this.sorting = [];
+        this.columns = [];
+        this.paging = new PagingMock();
+        this.filtering = new FilteringMock();
+        this.records = {};
+        this.clearSelectedRecordIds = stub();
+        this.getSelectedRecordIds = stub();
+        this.getSelectedRecordIds.callsFake(() => []);
+        this.addColumn = stub();
+        this.getTargetEntityType = stub();
+        this.getTitle = stub();
+        this.getViewId = stub();
+        this.openDatasetItem = stub();
+        this.refresh = stub();
+        this.setSelectedRecordIds = stub();
+        
     }
 }

@@ -74,93 +74,93 @@ declare module ShkoOnline {
     /** https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-utility/getentitymetadata */
     export interface EntityMetadata {
         /** Whether a custom activity should appear in the activity menus in the Web application. 0 indicates that the custom activity doesn't appear; 1 indicates that it does appear. */
-        ActivityTypeMask: number;
+        ActivityTypeMask?: number;
         /**Indicates whether to automatically move records to the owner’s default queue when a record of this type is created or assigned.*/
-        AutoRouteToOwnerQueue: boolean;
+        AutoRouteToOwnerQueue?: boolean;
         /**For internal use only. */
-        CanEnableSyncToExternalSearchIndex: boolean;
+        CanEnableSyncToExternalSearchIndex?: boolean;
         /**Indicates whether the table can trigger a workflow process.*/
-        CanTriggerWorkflow: boolean;
+        CanTriggerWorkflow?: boolean;
         /**Description for the table.*/
-        Description: string;
+        Description?: string;
         /**Plural display name for the table.*/
-        DisplayCollectionName: string;
+        DisplayCollectionName?: string;
         /**Display name for the table.*/
-        DisplayName: string;
+        DisplayName?: string;
         /**Indicates whether the table will enforce custom state transitions.*/
-        EnforceStateTransitions: boolean;
+        EnforceStateTransitions?: boolean;
         /**The hexadecimal code to represent the color to be used for this table in the application.*/
-        EntityColor: string;
+        EntityColor?: string;
         /**Indicates whether activities are associated with this table.*/
-        HasActivities: boolean;
+        HasActivities?: boolean;
         /**Indicates whether the table is an activity.*/
-        IsActivity: boolean;
+        IsActivity?: boolean;
         /**Indicates whether the email messages can be sent to an email address stored in a record of this type.*/
-        IsActivityParty: boolean;
+        IsActivityParty?: boolean;
         /**Indicates whether the table is enabled for business process flows.*/
-        IsBusinessProcessEnabled: boolean;
+        IsBusinessProcessEnabled?: boolean;
         /**Indicates whether the table is a business process flow table.*/
-        IsBPFEntity: boolean;
+        IsBPFEntity?: boolean;
         /**Indicates whether the table is a child table.*/
-        IsChildEntity: boolean;
+        IsChildEntity?: boolean;
         /**Indicates whether connections are enabled for this table.*/
-        IsConnectionsEnabled: boolean;
+        IsConnectionsEnabled?: boolean;
         /**Indicates whether the table is a custom table.*/
-        IsCustomEntity: boolean;
+        IsCustomEntity?: boolean;
         /**Indicates whether the table is customizable.*/
-        IsCustomizable: boolean;
+        IsCustomizable?: boolean;
         /**Indicates whether document management is enabled.*/
-        IsDocumentManagementEnabled: boolean;
+        IsDocumentManagementEnabled?: boolean;
         /** Indicates whether the document recommendations is enabled.*/
-        IsDocumentRecommendationsEnabled: boolean;
+        IsDocumentRecommendationsEnabled?: boolean;
         /** Indicates whether duplicate detection is enabled.*/
-        IsDuplicateDetectionEnabled: boolean;
+        IsDuplicateDetectionEnabled?: boolean;
         /**Indicates whether charts are enabled.*/
-        IsEnabledForCharts: boolean;
+        IsEnabledForCharts?: boolean;
         /**Indicates whether the table can be imported using the Import Wizard.*/
-        IsImportable: boolean;
+        IsImportable?: boolean;
         /**Indicates the table is enabled for interactive experience.*/
-        IsInteractionCentricEnabled: boolean;
+        IsInteractionCentricEnabled?: boolean;
         /**Indicates whether knowledge management is enabled for the table.*/
-        IsKnowledgeManagementEnabled: boolean;
+        IsKnowledgeManagementEnabled?: boolean;
         /**Indicates whether mail merge is enabled for this table.*/
-        IsMailMergeEnabled: boolean;
+        IsMailMergeEnabled?: boolean;
         /**Indicates whether the table is part of a managed solution.*/
-        IsManaged: boolean;
+        IsManaged?: boolean;
         /**Indicates whether OneNote integration is enabled for the table.*/
-        IsOneNoteIntegrationEnabled: boolean;
+        IsOneNoteIntegrationEnabled?: boolean;
         /**Indicates whether optimistic concurrency is enabled for the table.*/
-        IsOptimisticConcurrencyEnabled: boolean;
+        IsOptimisticConcurrencyEnabled?: boolean;
         /**Indicates whether the table is enabled for quick create forms.*/
-        IsQuickCreateEnabled: boolean;
+        IsQuickCreateEnabled?: boolean;
         /**Indicates whether the table supports setting custom state transitions.*/
-        IsStateModelAware: boolean;
+        IsStateModelAware?: boolean;
         /**Indicates whether the table is will be shown in Advanced Find.*/
-        IsValidForAdvancedFind: boolean;
+        IsValidForAdvancedFind?: boolean;
         /**Indicates whether Microsoft Dynamics 365 for tablets users can see data for this table.*/
-        IsVisibleInMobileClient: boolean;
+        IsVisibleInMobileClient?: boolean;
         /**Indicates whether the table is enabled for Unified Interface.*/
-        IsEnabledInUnifiedInterface: boolean;
+        IsEnabledInUnifiedInterface?: boolean;
         /**The logical collection name.*/
-        LogicalCollectionName: string;
+        LogicalCollectionName?: string;
         /**The table type code.*/
-        ObjectTypeCode: number;
+        ObjectTypeCode?: number;
         /**The ownership type for the table: "UserOwned" or "OrganizationOwned".*/
-        OwnershipType: string;
+        OwnershipType?: string;
         /** The name of the Web API table set for this table. */
-        EntitySetName: string;
+        EntitySetName?: string;
         /** The logical name for the table. */
-        LogicalName: string;
+        LogicalName?: string;
         /**The name of the column that is the primary id for the table.*/
-        PrimaryIdAttribute: string;
+        PrimaryIdAttribute?: string;
         /**The name of the primary image column for a table.*/
-        PrimaryImageAttribute: string;
+        PrimaryImageAttribute?: string;
         /** The name of the primary column for a table. */
-        PrimaryNameAttribute: string;
+        PrimaryNameAttribute?: string;
         /**The privilege definitions for the table where *each* object contains the following values to define the security privilege for access to a table*/
-        Privileges: ShkoOnline.Privileges[];
+        Privileges?: ShkoOnline.Privileges[];
         /** A collection of column definitions objects. The object returned depends on the type of column definitions. */
-        Attributes: ShkoOnline.AttributeMetadata[];
+        Attributes?: ShkoOnline.AttributeMetadata[];
     }
 
     export interface AttributeMetadataCollection {

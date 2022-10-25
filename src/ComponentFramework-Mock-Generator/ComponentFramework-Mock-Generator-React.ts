@@ -14,7 +14,7 @@
 */
 import React from 'react';
 import { spy, stub, SinonSpiedInstance, SinonStub } from 'sinon';
-import { PropertyMap } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import { PropertyMap, PropertyToMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { ContextMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock';
 import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
@@ -99,6 +99,10 @@ export class ComponentFrameworkMockGeneratorReact<
         });
     }
     ExecuteInit() {
+        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach((propertyName) => {
+            const parameter = this.context.parameters[propertyName] as unknown as PropertyToMock<TInputs>;
+            parameter._Refresh();
+        });
         const state = this.state === undefined ? this.state : { ...this.state };
         this.control.init(this.context, this.notifyOutputChanged, state);
     }

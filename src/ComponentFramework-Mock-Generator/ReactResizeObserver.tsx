@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
 import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
 import { ComponentFrameworkMockGeneratorReact } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator-React';
+import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 
 const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, TOutputs extends ShkoOnline.KnownTypes<TOutputs>>({
     componentFrameworkMockGeneratorReact,
@@ -17,6 +18,7 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
             componentFrameworkMockGeneratorReact.context.updatedProperties = [];
             for (const k in updates) {
                 if (k in componentFrameworkMockGeneratorReact.context.parameters) {
+                    const property = componentFrameworkMockGeneratorReact.context.parameters[k] as PropertyMock;
                     if (Array.isArray(updates[k])) {
                         const arrayUpdate = updates[k] as number[];
                         const property = componentFrameworkMockGeneratorReact.context.parameters[
@@ -32,9 +34,7 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
                             componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
                         }
                     }
-
-                    // @ts-ignore
-                    componentFrameworkMockGeneratorReact.context.parameters[k].setValue(updates[k]);
+                    componentFrameworkMockGeneratorReact.metadata.UpdateValue(updates[k], property._boundTable, property._boundColumn, property._boundRow);
                 }
             }
             if (componentFrameworkMockGeneratorReact.context.updatedProperties.length > 0) {

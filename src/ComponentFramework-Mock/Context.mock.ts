@@ -52,6 +52,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.mode = new ModeMock();
         this.navigation = new NavigationMock();
         this.parameters = {} as IInputs;
+        this._parameters = {} as PropertyToMock<IInputs>;
 
         const CanvasEntity = {
             LogicalName: '!CanvasApp',
