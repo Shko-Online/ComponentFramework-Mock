@@ -47,7 +47,7 @@ export class MultiSelectOptionSetPropertyMock
                 return new OptionMetadataMock(metadata.Value, metadata.Label, metadata.Color);
             });
             this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
-            this.raw = value !== null ? [...value] : null;
+            this.raw = value === null || value === undefined ? null : [...value];
             this.formatted = ((value as number[]) || [])
                 .map((optionValue) => this.attributes.Options.find((option) => option.Value === optionValue).Label)
                 .join(',');
