@@ -27,29 +27,32 @@ import { OptionSetPropertyMock } from './OptionSetProperty.mock';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
 export type PropertyToMock<T extends ShkoOnline.PropertyTypes<T>> =
-    T extends ComponentFramework.PropertyTypes.DataSet
+{
+    [P in keyof T]:
+    T[P] extends ComponentFramework.PropertyTypes.DataSet
     ? DataSetMock
-    : T extends ComponentFramework.PropertyTypes.DateTimeProperty
+    : T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty
     ? DateTimePropertyMock
-    : T extends ComponentFramework.PropertyTypes.DecimalNumberProperty
+    : T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty
     ? DecimalNumberPropertyMock
-    : T extends ComponentFramework.PropertyTypes.EnumProperty<string>
+    : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
     ? EnumPropertyMock<string>
-    : T extends ComponentFramework.PropertyTypes.LookupProperty
+    : T[P] extends ComponentFramework.PropertyTypes.LookupProperty
     ? LookupPropertyMock
-    : T extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+    : T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
     ? MultiSelectOptionSetPropertyMock
-    : T extends ComponentFramework.PropertyTypes.NumberProperty
+    : T[P] extends ComponentFramework.PropertyTypes.NumberProperty
     ? NumberPropertyMock
-    : T extends ComponentFramework.PropertyTypes.OptionSetProperty
+    : T[P] extends ComponentFramework.PropertyTypes.OptionSetProperty
     ? OptionSetPropertyMock
-    : T extends ComponentFramework.PropertyTypes.StringProperty
+    : T[P] extends ComponentFramework.PropertyTypes.StringProperty
     ? StringPropertyMock
-    : T extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+    : T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
     ? TwoOptionsPropertyMock
-    : T extends ComponentFramework.PropertyTypes.WholeNumberProperty
+    : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
     ? WholeNumberPropertyMock
     : never;
+}
 
 export type PropertyMap<T extends ShkoOnline.PropertyTypes<T>> = {
     [P in keyof T]:

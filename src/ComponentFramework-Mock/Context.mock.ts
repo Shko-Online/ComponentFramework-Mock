@@ -19,7 +19,7 @@ import { FactoryMock } from '@shko-online/componentframework-mock/ComponentFrame
 import { FormattingMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Formatting.mock';
 import { ModeMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Mode.mock';
 import { NavigationMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Navigation.mock';
-import { PropertyMap } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import { PropertyMap, PropertyToMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
 import { ResourcesMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Resources.mock';
 import { UserSettingsMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock';
 import { UtilityMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Utility.mock';
@@ -36,6 +36,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     mode: ModeMock;
     navigation: NavigationMock;
     parameters: IInputs;
+    _parameters: PropertyToMock<IInputs>;
     resources: ResourcesMock;
     userSettings: UserSettingsMock;
     utils: UtilityMock;
@@ -62,6 +63,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
             const parameter = new inputs[propertyName](propertyName as string, db, CanvasEntity);
             parameter._boundColumn = propertyName as string;
             parameter._db = db;
+            this._parameters[propertyName] = parameter as unknown as PropertyToMock<IInputs>[keyof IInputs];
             this.parameters[propertyName] = parameter as unknown as IInputs[keyof IInputs];
         });
         db.initMetadata([CanvasEntity]);
