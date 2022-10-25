@@ -54,6 +54,22 @@ export class MetadataDB {
             });
         });
     }
+    getAttributeMetadata(entity:string, attribute:string){
+        return this.attributes[entity]?.findOne({
+            LogicalName    : { $eq: attribute}
+        })
+    }
+    upsertAttributeMetadata(entity:string, attributeMetadata: ShkoOnline.AttributeMetadata){
+        const tableMetadata = this.metadata.findOne({ LogicalName: { $eq: entity } });
+        tableMetadata.Attributes = tableMetadata.Attributes.filter(attribute=>attribute.LogicalName!== attributeMetadata.LogicalName);
+        tableMetadata.Attributes.push(attributeMetadata);
+        this.metadata.update(tableMetadata);
+
+        // this.attributes[entity].removeWhere({
+        //     LogicalName: {$eq: attributeMetadata.LogicalName}
+        // });
+        this.attributes[entity].update(attributeMetadata);
+    }
     initItems(items: { '@odata.context': string; value: any[] }) {
         const entitySetName = items['@odata.context'].substring(items['@odata.context'].indexOf('#') + 1);
         const tableMetadata = this.metadata.findOne({ EntitySetName: { $eq: entitySetName } });
@@ -71,7 +87,46 @@ export class MetadataDB {
             tableData.insert(row);
         });
     }
+    initCanvasItems(items){
+        const entitySetName = "!CanvasApp";
+        const tableMetadata = this.metadata.findOne({ EntitySetName: { $eq: entitySetName } });
 
+        const tableData = this.db.addCollection(`${tableMetadata.LogicalName}#data`);
+        this.data[tableMetadata.LogicalName] = tableData;
+        items.forEach((item) => {
+            const row = {};
+            tableMetadata.Attributes.forEach((attribute) => {
+                const key = attribute.LogicalName;
+                if (key in item) {
+                    row[key] = item[key];
+                }
+            });
+            tableData.insert(row);
+        });
+    }
+// initCanvasAttributes(metadatas: ShkoOnline.EntityMetadata[]) {
+//     metadatas.forEach((metadata1) => {
+//         if (!this.metadata) {
+//             this.metadata = this.db.addCollection("!CanvasApp");
+//         }
+
+//         this.metadata.insert(metadata1);
+
+//         const userAttributes = this.db.addCollection(`${metadata1.LogicalName}#attributes`);
+//         this.attributes[metadata1.LogicalName] = userAttributes;
+//         const attributes = metadata1.Attributes;
+
+//         attributes.forEach((attribute) => {
+//             userAttributes.insert({
+//                 LogicalName: attribute.LogicalName,
+//                 SchemaName: attribute.SchemaName,
+//                 AttributeType: attribute.AttributeType,
+//                 MetadataId: attribute.MetadataId,
+//                 DisplayName: attribute.DisplayName,
+//             });
+//         });
+//     });
+// }
     GetRow(entity: string, id: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
         const entityData = this.data[entity];

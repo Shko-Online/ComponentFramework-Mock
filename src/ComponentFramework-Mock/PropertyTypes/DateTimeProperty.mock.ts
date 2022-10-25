@@ -34,11 +34,11 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
         } as ShkoOnline.DateTimeAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
         this.attributes = new DateTimeMetadataMock();
-        this.setValue = stub();
-        this.setValue.callsFake((value) => {
-            this.raw = value;
-            this.formatted = value?.toLocaleTimeString();
-        });     
+        // this.setValue = stub();
+        // this.setValue.callsFake((value) => {
+        //     this.raw = value;
+        //     this.formatted = value?.toLocaleTimeString();
+        // });     
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
                 this._boundTable,
