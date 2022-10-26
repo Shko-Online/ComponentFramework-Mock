@@ -54,6 +54,33 @@ export type PropertyToMock<T extends ShkoOnline.PropertyTypes<T>> =
     : never;
 }
 
+type extractGeneric<Type> = Type extends EnumPropertyMock<infer X> ? X : never
+
+export type MockToRaw<TInput extends ShkoOnline.PropertyTypes<TInput>,T extends PropertyToMock<TInput>> = {
+    [P in keyof Omit<T,keyof Extract<T, DataSetMock>>]:
+     T[P] extends DateTimePropertyMock
+    ? Date
+    : T[P] extends DecimalNumberPropertyMock
+    ? number
+    : T[P] extends EnumPropertyMock<string>
+    ? extractGeneric<T[P]>
+    : T[P] extends LookupPropertyMock
+    ? ComponentFramework.LookupValue
+    : T[P] extends MultiSelectOptionSetPropertyMock
+    ? number[]
+    : T[P] extends NumberPropertyMock
+    ? number
+    : T[P] extends OptionSetPropertyMock
+    ? number
+    : T[P] extends StringPropertyMock
+    ? string
+    : T[P] extends TwoOptionsPropertyMock
+    ? boolean
+    : T[P] extends WholeNumberPropertyMock
+    ? number
+    : never;
+}
+
 export type PropertyMap<T extends ShkoOnline.PropertyTypes<T>> = {
     [P in keyof T]:
     T[P] extends ComponentFramework.PropertyTypes.DataSet

@@ -115,7 +115,7 @@ export class ComponentFrameworkMockGeneratorReact<
             },
         );
         
-        return React.createElement(ReactResizeObserver, { componentFrameworkMockGeneratorReact: this });
+        return React.createElement(ReactResizeObserver, { componentFrameworkMockGeneratorReact: this, circuitBreaker: new Object() });
         //return this.control.updateView(this.context);
     }
 }

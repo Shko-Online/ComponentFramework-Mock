@@ -6,8 +6,10 @@ import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFram
 
 const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, TOutputs extends ShkoOnline.KnownTypes<TOutputs>>({
     componentFrameworkMockGeneratorReact,
+    circuitBreaker
 }: {
     componentFrameworkMockGeneratorReact: ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>;
+    circuitBreaker: {}
 }) => {
     const containerRef = useRef();
     const [Component, setComponent] = useState(<></>);
@@ -68,7 +70,7 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
         setComponent(
             componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context)
         );
-    },[Component]);
+    },[circuitBreaker]);
 
     return (
         <div style={{ width: '100%', height: '100%' }} ref={containerRef}>

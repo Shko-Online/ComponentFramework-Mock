@@ -19,12 +19,13 @@ import { FactoryMock } from '@shko-online/componentframework-mock/ComponentFrame
 import { FormattingMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Formatting.mock';
 import { ModeMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Mode.mock';
 import { NavigationMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Navigation.mock';
-import { PropertyMap, PropertyToMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import { MockToRaw, PropertyMap, PropertyToMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
 import { ResourcesMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Resources.mock';
 import { UserSettingsMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock';
 import { UtilityMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Utility.mock';
 import { WebApiMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/WebApi.mock';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { SinonStub, stub } from 'sinon';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs>
@@ -37,6 +38,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     navigation: NavigationMock;
     parameters: IInputs;
     _parameters: PropertyToMock<IInputs>;
+    _SetCanvasItems: SinonStub<[MockToRaw<IInputs, PropertyToMock<IInputs>>], void>;
     resources: ResourcesMock;
     userSettings: UserSettingsMock;
     utils: UtilityMock;
@@ -53,7 +55,10 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.navigation = new NavigationMock();
         this.parameters = {} as IInputs;
         this._parameters = {} as PropertyToMock<IInputs>;
-
+        this._SetCanvasItems = stub();
+        this._SetCanvasItems.callsFake(parameters => {
+            db.initCanvasItems([parameters]);
+        })
         const CanvasEntity = {
             LogicalName: '!CanvasApp',
             EntitySetName: '!CanvasApp',
