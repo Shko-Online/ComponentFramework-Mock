@@ -57,7 +57,7 @@ export type PropertyToMock<T extends ShkoOnline.PropertyTypes<T>> =
 type extractGeneric<Type> = Type extends EnumPropertyMock<infer X> ? X : never
 
 export type MockToRaw<TInput extends ShkoOnline.PropertyTypes<TInput>,T extends PropertyToMock<TInput>> = {
-    [P in keyof Omit<T,keyof Extract<T, DataSetMock>>]:
+    [P in keyof T as T[P] extends DataSetMock ? never: P]:
      T[P] extends DateTimePropertyMock
     ? Date
     : T[P] extends DecimalNumberPropertyMock
