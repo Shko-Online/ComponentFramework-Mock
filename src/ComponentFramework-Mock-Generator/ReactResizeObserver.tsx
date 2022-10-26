@@ -62,11 +62,13 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
             if (value) observer.observe(containerRef.current);
             else observer.unobserve(containerRef.current);
         });
-
-        setComponent(
-            componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
-        );
     }, []);
+
+    useEffect(() => {
+        setComponent(
+            componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context)
+        );
+    });
 
     return (
         <div style={{ width: '100%', height: '100%' }} ref={containerRef}>

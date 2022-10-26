@@ -114,7 +114,7 @@ export class ComponentFrameworkMockGeneratorReact<
                 this.context._parameters[propertyName]._Refresh();
             },
         );
-
+        
         return React.createElement(ReactResizeObserver, { componentFrameworkMockGeneratorReact: this });
         //return this.control.updateView(this.context);
     }
