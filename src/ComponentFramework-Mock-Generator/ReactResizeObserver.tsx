@@ -40,6 +40,11 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
                 }
             }
             if (componentFrameworkMockGeneratorReact.context.updatedProperties.length > 0) {
+                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(componentFrameworkMockGeneratorReact.context.parameters).forEach(
+                    (propertyName) => {
+                        componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
+                    },
+                );
                 setComponent(
                     componentFrameworkMockGeneratorReact.control.updateView(
                         componentFrameworkMockGeneratorReact.context,
@@ -55,6 +60,11 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
                 componentFrameworkMockGeneratorReact.context.mode.allocatedWidth = size.contentRect.width;
                 console.log('width', size.contentRect.width);
                 console.log('height', size.contentRect.height);
+                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(componentFrameworkMockGeneratorReact.context.parameters).forEach(
+                    (propertyName) => {
+                        componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
+                    },
+                );
                 setComponent(
                     componentFrameworkMockGeneratorReact.control.updateView(
                         componentFrameworkMockGeneratorReact.context,
@@ -67,6 +77,11 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
     }, []);
 
     useEffect(() => {
+        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(componentFrameworkMockGeneratorReact.context.parameters).forEach(
+            (propertyName) => {
+                componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
+            },
+        );
         setComponent(
             componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context)
         );
