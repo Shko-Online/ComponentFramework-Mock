@@ -67,18 +67,15 @@ export class MetadataDB {
         tableMetadata.Attributes.push(attributeMetadata);
         this.metadata.update(tableMetadata);
 
-        if (
-            this.attributes[entity].find({
-                LogicalName: { $eq: attributeMetadata.LogicalName },
-            }) != null
-        ) {
-            this.attributes[entity].removeWhere({
-                LogicalName: { $eq: attributeMetadata.LogicalName },
-            });
-            this.attributes[entity].commit();
+        if( this.attributes[entity].find({
+            LogicalName: { $eq: attributeMetadata.LogicalName },
+        })){
+            this.attributes[entity].update(attributeMetadata);
+        }else{
+            this.attributes[entity].insert(attributeMetadata);
         }
-
-        this.attributes[entity].insert(attributeMetadata);
+      
+       
     }
     initItems(items: { '@odata.context': string; value: any[] }) {
         const entitySetName = items['@odata.context'].substring(items['@odata.context'].indexOf('#') + 1);
@@ -99,8 +96,8 @@ export class MetadataDB {
     }
     initCanvasItems(items: any[]) {
         this.initItems({
-            "@odata.context": "#!CanvasApp",
-            "value": items
+            '@odata.context': '#!CanvasApp',
+            value: items,
         });
     }
     GetRow(entity: string, id: string) {
@@ -133,7 +130,7 @@ export class MetadataDB {
     GetRows(entity: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
         const attributeMetadata = entityMetadata.Attributes;
-        const rows = [... this.data[entity].data];
+        const rows = [...(this.data[entity]?.data || [])];
         return { rows, entityMetadata };
     }
     UpdateValue<T>(value: T, entity: string, attribute: string, row: string) {
