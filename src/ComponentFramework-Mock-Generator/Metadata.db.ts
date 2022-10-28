@@ -52,6 +52,7 @@ export class MetadataDB {
                     DisplayName: attribute.DisplayName,
                 });
             });
+            console.log(this.attributes);
         });
     }
     getAttributeMetadata(entity: string, attribute: string) {
@@ -61,21 +62,21 @@ export class MetadataDB {
     }
     upsertAttributeMetadata(entity: string, attributeMetadata: ShkoOnline.AttributeMetadata) {
         const tableMetadata = this.metadata.findOne({ LogicalName: { $eq: entity } });
-        tableMetadata.Attributes = tableMetadata.Attributes.filter(
+        tableMetadata.Attributes =[... tableMetadata.Attributes.filter(
             (attribute) => attribute.LogicalName !== attributeMetadata.LogicalName,
-        );
+        )]
         tableMetadata.Attributes.push(attributeMetadata);
         this.metadata.update(tableMetadata);
 
         if( this.attributes[entity].find({
             LogicalName: { $eq: attributeMetadata.LogicalName },
-        })){
-            this.attributes[entity].update(attributeMetadata);
-        }else{
-            this.attributes[entity].insert(attributeMetadata);
+        }).length>0){
+            this.attributes[entity].removeWhere({
+                LogicalName: { $eq: attributeMetadata.LogicalName },
+            });
         }
-      
-       
+         this.attributes[entity].insert(attributeMetadata);       
+        console.log(this.attributes)
     }
     initItems(items: { '@odata.context': string; value: any[] }) {
         const entitySetName = items['@odata.context'].substring(items['@odata.context'].indexOf('#') + 1);

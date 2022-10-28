@@ -20,6 +20,7 @@ import { LinkingMock } from '@shko-online/componentframework-mock/ComponentFrame
 import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
 import { SortStatus } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/SortStatus.mock';
 import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import AttributeMetadataGenerator from '@shko-online/componentframework-mock/utils/AttributeMetadataGenerator';
 
 type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;
 
@@ -71,6 +72,30 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this._Bind(`!!${propertyName}`, propertyName);
         this._InitItems = stub();
         this._InitItems.callsFake((items)=>{
+            let i = 0;
+            let columns = {};
+            items.forEach((item)=>{
+                Object.getOwnPropertyNames(item).forEach(key=>{
+                    if(!(key in columns)){
+                        columns[key] = i++;
+                    }
+                })
+            })
+          this.columns =  Object.getOwnPropertyNames(columns).map(column=>(  {
+                "displayName": column,
+                "name": column,
+                "dataType": "SingleLine.Text",
+                "alias": column,
+                "order": columns[column],
+                "visualSizeFactor": 1
+            }))
+
+        //     console.log(this._boundTable)
+        //     new AttributeMetadataGenerator(this._boundTable).AddString(Object.getOwnPropertyNames(columns)).Attributes.forEach(attribute=>{
+        //    console.log(JSON.stringify(attribute));
+        //         this._db.upsertAttributeMetadata(this._boundTable, attribute);
+        //     })
+         
             this._db.initItems({
                 '@odata.context': `#${this._boundTable}`,
                 value: items,

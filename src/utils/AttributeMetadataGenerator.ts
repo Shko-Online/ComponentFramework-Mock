@@ -9,7 +9,7 @@ class AttributeMetadataGenerator {
         this.Attributes = [];
         this.AddString = stub();
         this.AddString.callsFake((args) => {
-       this.Attributes =     this.Attributes.concat(
+            this.Attributes = this.Attributes.concat(
                 args.map(
                     (logicalName) =>
                         ({
@@ -23,7 +23,7 @@ class AttributeMetadataGenerator {
         });
         this.AddBoolean = stub();
         this.AddBoolean.callsFake((args) => {
-            this.Attributes =      this.Attributes.concat(
+            this.Attributes = this.Attributes.concat(
                 args.map(
                     (logicalName) =>
                         ({
