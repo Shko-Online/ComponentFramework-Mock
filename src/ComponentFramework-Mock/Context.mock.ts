@@ -11,21 +11,25 @@
     LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
-*/
+    */
 
-import { ClientMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Client.mock';
-import { DeviceMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Device.mock';
-import { FactoryMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Factory.mocks';
-import { FormattingMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Formatting.mock';
-import { ModeMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Mode.mock';
-import { NavigationMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Navigation.mock';
-import { MockToRaw, PropertyMap, PropertyToMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
-import { ResourcesMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Resources.mock';
-import { UserSettingsMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock';
-import { UtilityMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Utility.mock';
-import { WebApiMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/WebApi.mock';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { SinonStub, stub } from 'sinon';
+import { ClientMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Client.mock';
+import { DeviceMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Device.mock';
+import { FactoryMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Factory.mocks';
+import { FormattingMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Formatting.mock';
+import { ModeMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Mode.mock';
+import { NavigationMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Navigation.mock';
+import {
+    MockToRaw,
+    PropertyMap,
+    PropertyToMock,
+} from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import { ResourcesMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Resources.mock';
+import { UserSettingsMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock';
+import { UtilityMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Utility.mock';
+import { WebApiMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/WebApi.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs>
@@ -56,13 +60,13 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.parameters = {} as IInputs;
         this._parameters = {} as PropertyToMock<IInputs>;
         this._SetCanvasItems = stub();
-        this._SetCanvasItems.callsFake(parameters => {
+        this._SetCanvasItems.callsFake((parameters) => {
             db.initCanvasItems([parameters]);
-        })
+        });
         const CanvasEntity = {
             LogicalName: '!CanvasApp',
             EntitySetName: '!CanvasApp',
-            Attributes: []
+            Attributes: [],
         } as ShkoOnline.EntityMetadata;
 
         Object.getOwnPropertyNames<PropertyMap<IInputs>>(inputs).forEach((propertyName) => {

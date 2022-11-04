@@ -13,16 +13,14 @@
   language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { OptionSetMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { OptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { OptionSetMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { OptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
-export class OptionSetPropertyMock
-    extends PropertyMock
-    implements ComponentFramework.PropertyTypes.OptionSetProperty {
+export class OptionSetPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.OptionSetProperty {
     raw: number | null;
     originalRaw: number | null;
     attributes?: OptionSetMetadataMock;
@@ -31,7 +29,7 @@ export class OptionSetPropertyMock
         super();
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
-        this._Refresh.callsFake(()=>{
+        this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
                 this._boundTable,
                 this._boundRow,
@@ -51,7 +49,7 @@ export class OptionSetPropertyMock
         const attribute = {
             AttributeType: AttributeType.Picklist,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.PickListAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
 
@@ -60,14 +58,11 @@ export class OptionSetPropertyMock
             this.raw = value;
             this.originalRaw = value;
             if (this.attributes && value != null) {
-                this.formatted = this.attributes.Options.filter((option) =>
-                    value === option.Value,
-                )[0].Label;
+                this.formatted = this.attributes.Options.filter((option) => value === option.Value)[0].Label;
             } else {
                 this.formatted = '';
             }
         });
         this.attributes = new OptionSetMetadataMock();
-
-    }  
+    }
 }

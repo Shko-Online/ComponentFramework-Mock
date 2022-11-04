@@ -13,15 +13,16 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { NumberPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
-import { DecimalNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
+import { NumberPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
+import { DecimalNumberMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class DecimalNumberPropertyMock
     extends NumberPropertyMock
-    implements ComponentFramework.PropertyTypes.DecimalNumberProperty {
+    implements ComponentFramework.PropertyTypes.DecimalNumberProperty
+{
     attributes?: DecimalNumberMetadataMock;
     setValue: SinonStub<[value: number | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
@@ -29,11 +30,12 @@ export class DecimalNumberPropertyMock
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
         this._Refresh.callsFake(() => {
-            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DecimalNumberAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
-                this._boundColumn,
-            );
+            const { value, attributeMetadata } =
+                this._db.GetValueAndMetadata<ShkoOnline.DecimalNumberAttributeMetadata>(
+                    this._boundTable,
+                    this._boundRow,
+                    this._boundColumn,
+                );
             if (attributeMetadata.AttributeType !== AttributeType.Decimal) {
                 throw new Error('Type Error');
             }
@@ -48,7 +50,7 @@ export class DecimalNumberPropertyMock
         const attribute = {
             AttributeType: AttributeType.Decimal,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.DecimalNumberAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
 

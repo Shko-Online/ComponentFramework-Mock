@@ -107,17 +107,20 @@ xmlns:svg="http://www.w3.org/2000/svg">
 </svg>
 `);
 
-const showBanner = (name:string)=> console.info(
-    `%cShko Online%c\t\r\n%cWe just helped you test your %c${name}%c component!\r\nContact us: %c%s%s%s`,
-    'font-size:0px;',
-    "background-image:url('data:image/svg+xml;utf8," + backgroundImage + "');background-repeat:no-repeat;color:transparent;background-position:center;font-size:84px;",
-    '',
-    'font-weight:bold;',
-    'font-weight:normal;',
-    'font-weight:bold;',
-    'sales',
-    '\x40',
-    'shko.online',
-  );
+const showBanner = (name: string) =>
+    console.info(
+        `%cShko Online%c\t\r\n%cWe just helped you test your %c${name}%c component!\r\nContact us: %c%s%s%s`,
+        'font-size:0px;',
+        "background-image:url('data:image/svg+xml;utf8," +
+            backgroundImage +
+            "');background-repeat:no-repeat;color:transparent;background-position:center;font-size:84px;",
+        '',
+        'font-weight:bold;',
+        'font-weight:normal;',
+        'font-weight:bold;',
+        'sales',
+        '\x40',
+        'shko.online',
+    );
 
-  export default showBanner;
+export default showBanner;

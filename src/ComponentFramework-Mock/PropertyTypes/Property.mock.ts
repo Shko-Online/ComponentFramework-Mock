@@ -13,30 +13,30 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db";
-import { SinonStub, stub } from "sinon";
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { SinonStub, stub } from 'sinon';
 
 export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
-	_boundColumn: string;
-	_boundRow: string;
-	_boundTable: string;
-	_db: MetadataDB;
-	_Refresh: SinonStub<[], void>;
-	_Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
-	error: boolean;
-	errorMessage: string;
-	formatted?: string;
-	security?: ComponentFramework.PropertyHelper.SecurityValues;
-	raw: any;
-	type: string;
-	attributes?: ComponentFramework.PropertyHelper.FieldPropertyMetadata.Metadata;
-	constructor() {
-		this._Refresh = stub();
-		this._Bind = stub();
-		this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
-			this._boundColumn = boundColumn;
-			this._boundRow = boundRow;
-			this._boundTable = boundTable;
-		});
-	}
+    _boundColumn: string;
+    _boundRow: string;
+    _boundTable: string;
+    _db: MetadataDB;
+    _Refresh: SinonStub<[], void>;
+    _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
+    error: boolean;
+    errorMessage: string;
+    formatted?: string;
+    security?: ComponentFramework.PropertyHelper.SecurityValues;
+    raw: any;
+    type: string;
+    attributes?: ComponentFramework.PropertyHelper.FieldPropertyMetadata.Metadata;
+    constructor() {
+        this._Refresh = stub();
+        this._Bind = stub();
+        this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
+            this._boundColumn = boundColumn;
+            this._boundRow = boundRow;
+            this._boundTable = boundTable;
+        });
+    }
 }

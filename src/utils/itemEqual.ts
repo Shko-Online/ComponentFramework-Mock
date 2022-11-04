@@ -2,7 +2,7 @@ const itemEqual = <T>(source: T, target: T) => {
     if (source === null && target === null) {
         return true;
     }
-    if (typeof source === "object" || typeof target === "object") {
+    if (typeof source === 'object' || typeof target === 'object') {
         const sourceO = source as ComponentFramework.LookupValue;
         const targetO = target as ComponentFramework.LookupValue;
         return (

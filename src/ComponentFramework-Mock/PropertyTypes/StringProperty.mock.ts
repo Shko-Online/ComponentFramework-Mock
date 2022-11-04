@@ -13,21 +13,21 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { StringMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { StringMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
     raw: string | null;
     attributes: StringMetadataMock;
     setValue: SinonStub<[value: string | null], void>;
-    constructor(propertyName:string, db:MetadataDB, entityMetadata:ShkoOnline.EntityMetadata) {
+    constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super();
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
-        this._Refresh.callsFake(()=>{
+        this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.StringAttributeMetadata>(
                 this._boundTable,
                 this._boundRow,
@@ -42,11 +42,11 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
             this.attributes.Format = attributeMetadata.Format;
             this.attributes.ImeMode = attributeMetadata.ImeMode;
             this.raw = value;
-        })
+        });
         const attribute = {
             AttributeType: AttributeType.String,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.StringAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
         this.attributes = new StringMetadataMock();

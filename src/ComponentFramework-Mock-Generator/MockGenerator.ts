@@ -13,11 +13,13 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { ContextMock } from "@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock";
-import { MetadataDB } from "@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db";
+import { ContextMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Context.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 
-export interface MockGenerator<TInputs extends ShkoOnline.PropertyTypes<TInputs>,
-    TOutputs extends ShkoOnline.KnownTypes<TOutputs>> {
+export interface MockGenerator<
+    TInputs extends ShkoOnline.PropertyTypes<TInputs>,
+    TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
+> {
     context: ContextMock<TInputs>;
     metadata: MetadataDB;
 }

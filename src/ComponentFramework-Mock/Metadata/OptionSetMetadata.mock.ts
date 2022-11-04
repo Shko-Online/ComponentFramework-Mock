@@ -13,18 +13,17 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { MetadataMock } 
-    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock";
-import { OptionMetadataMock } 
-    from "@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock";
+import { MetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock';
+import { OptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
 
-export class OptionSetMetadataMock 
+export class OptionSetMetadataMock
     extends MetadataMock
-    implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.OptionSetMetadata {
-        Options: OptionMetadataMock[];
-        DefaultValue: number;
+    implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.OptionSetMetadata
+{
+    Options: OptionMetadataMock[];
+    DefaultValue: number;
     constructor(defaultValue?: number) {
-        super();              
+        super();
         this.Options = [];
         this.DefaultValue = defaultValue;
     }

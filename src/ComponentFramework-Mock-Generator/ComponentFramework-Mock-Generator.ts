@@ -14,18 +14,15 @@
 */
 
 import { spy, fake, SinonSpy, SinonSpiedInstance } from 'sinon';
-import { ContextMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock';
-import {
-    PropertyMap,
-    PropertyToMock,
-} from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
-import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
-import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
-import showBanner from '@shko-online/componentframework-mock/utils/banner';
-import mockGetEntityMetadata from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/mockGetEntityMetadata';
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { ContextMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Context.mock';
+import { PropertyMap } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import { MultiSelectOptionSetPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
+import { EntityRecord } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import arrayEqual from '@shko.online/componentframework-mock/utils/arrayEqual';
+import showBanner from '@shko.online/componentframework-mock/utils/banner';
+import mockGetEntityMetadata from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/mockGetEntityMetadata';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,

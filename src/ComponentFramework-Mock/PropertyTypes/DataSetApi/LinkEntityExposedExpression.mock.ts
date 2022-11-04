@@ -13,11 +13,12 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export class LinkEntityExposedExpression implements ComponentFramework.PropertyHelper.DataSetApi.LinkEntityExposedExpression{
+export class LinkEntityExposedExpression
+    implements ComponentFramework.PropertyHelper.DataSetApi.LinkEntityExposedExpression
+{
     name: string;
     from: string;
     to: string;
     linkType: string;
     alias: string;
-
 }

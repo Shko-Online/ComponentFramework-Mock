@@ -13,15 +13,16 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { TwoOptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { TwoOptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
-import { OptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { OptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
 export class TwoOptionsPropertyMock
     extends PropertyMock
-    implements ComponentFramework.PropertyTypes.TwoOptionsProperty {
+    implements ComponentFramework.PropertyTypes.TwoOptionsProperty
+{
     raw: boolean;
     attributes?: TwoOptionMetadataMock;
     setValue: SinonStub<[value: boolean], void>;
@@ -62,13 +63,13 @@ export class TwoOptionsPropertyMock
             OptionSet: {
                 FalseOption: {
                     Value: 0,
-                    Label: 'No'
+                    Label: 'No',
                 },
                 TrueOption: {
                     Value: 1,
-                    Label: 'Yes'
-                }
-            }
+                    Label: 'Yes',
+                },
+            },
         } as ShkoOnline.BooleanAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
 

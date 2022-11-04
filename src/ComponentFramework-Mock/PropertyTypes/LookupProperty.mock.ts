@@ -13,11 +13,11 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { stub, SinonStub } from 'sinon';
-import { LookupMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/LookupMetadata.mock';
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { LookupMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/LookupMetadata.mock';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class LookupPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.LookupProperty {
     raw: ComponentFramework.LookupValue[];
@@ -29,7 +29,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
         super();
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
-        this._Refresh.callsFake(()=>{
+        this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.LookupAttributeMetadata>(
                 this._boundTable,
                 this._boundRow,
@@ -46,7 +46,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
         const attribute = {
             AttributeType: AttributeType.Lookup,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.LookupAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
 

@@ -32,6 +32,6 @@ export class ModeMock implements ComponentFramework.Mode {
         this.setFullScreen.callsFake((value) => {
             this._FullScreen = value;
         });
-        this.trackContainerResize = stub();  // this is mocked in ComponentFrameworkMockGenerator
+        this.trackContainerResize = stub(); // this is mocked in ComponentFrameworkMockGenerator
     }
 }

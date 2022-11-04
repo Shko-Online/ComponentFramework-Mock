@@ -14,32 +14,32 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class EnumPropertyMock<EnumType extends string>
     implements ComponentFramework.PropertyTypes.EnumProperty<EnumType>
 {
     _boundColumn: string;
-	_boundTable: string;
-	_boundRow: string;
-	_db: MetadataDB;
+    _boundTable: string;
+    _boundRow: string;
+    _db: MetadataDB;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
     _Refresh: SinonStub<[], void>;
     raw: EnumType;
     type: string;
     setValue: SinonStub<[value: EnumType | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        this._db = db;       
+        this._db = db;
         this._Refresh = stub();
         this._Bind = stub();
-		this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
-			this._boundColumn = boundColumn;
-			this._boundRow = boundRow;
-			this._boundTable = boundTable;
-		});
+        this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
+            this._boundColumn = boundColumn;
+            this._boundRow = boundRow;
+            this._boundTable = boundTable;
+        });
         this._Bind(entityMetadata.LogicalName, propertyName);
-        this._Refresh.callsFake(()=>{
+        this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
                 this._boundTable,
                 this._boundRow,
@@ -49,11 +49,11 @@ export class EnumPropertyMock<EnumType extends string>
                 throw new Error('Type Error');
             }
             this.raw = value;
-        })
+        });
         const attribute = {
             AttributeType: AttributeType.Picklist,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.EnumTypeAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
 

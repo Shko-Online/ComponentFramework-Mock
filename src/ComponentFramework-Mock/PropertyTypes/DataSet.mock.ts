@@ -14,21 +14,21 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { PagingMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Paging.mock';
-import { FilteringMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Filtering.mock';
-import { LinkingMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Linking.mock';
-import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
-import { SortStatus } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/SortStatus.mock';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import AttributeMetadataGenerator from '@shko-online/componentframework-mock/utils/AttributeMetadataGenerator';
+import { PagingMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Paging.mock';
+import { FilteringMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Filtering.mock';
+import { LinkingMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Linking.mock';
+import { EntityRecord } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
+import { SortStatus } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/SortStatus.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import AttributeMetadataGenerator from '@shko.online/componentframework-mock/utils/AttributeMetadataGenerator';
 
 type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;
 
 export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     _boundColumn: string;
-	_boundTable: string;
-	_boundRow: string;
-	_db: MetadataDB;
+    _boundTable: string;
+    _boundRow: string;
+    _db: MetadataDB;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
     _Refresh: SinonStub<[], void>;
     _InitItems: SinonStub<[items: any[]], void>;
@@ -57,58 +57,62 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this._boundColumn = propertyName;
         this._db = db;
         const dataSetEntity = {
-            LogicalName: '!!'+propertyName,
-            EntitySetName: '!!'+propertyName,
-            Attributes: []
+            LogicalName: '!!' + propertyName,
+            EntitySetName: '!!' + propertyName,
+            Attributes: [],
         } as ShkoOnline.EntityMetadata;
         this._db.initMetadata([dataSetEntity]);
         this._Refresh = stub();
         this._Bind = stub();
-		this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
-			this._boundColumn = boundColumn;
-			this._boundRow = boundRow;
-			this._boundTable = boundTable;
-		});
+        this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
+            this._boundColumn = boundColumn;
+            this._boundRow = boundRow;
+            this._boundTable = boundTable;
+        });
         this._Bind(`!!${propertyName}`, propertyName);
         this._InitItems = stub();
-        this._InitItems.callsFake((items)=>{
+        this._InitItems.callsFake((items) => {
             let i = 0;
             let columns = {};
-            items.forEach((item)=>{
-                Object.getOwnPropertyNames(item).forEach(key=>{
-                    if(!(key in columns)){
+            items.forEach((item) => {
+                Object.getOwnPropertyNames(item).forEach((key) => {
+                    if (!(key in columns)) {
                         columns[key] = i++;
                     }
-                })
-            })
-          this.columns =  Object.getOwnPropertyNames(columns).map(column=>(  {
-                "displayName": column,
-                "name": column,
-                "dataType": "SingleLine.Text",
-                "alias": column,
-                "order": columns[column],
-                "visualSizeFactor": 1
-            }))
+                });
+            });
+            this.columns = Object.getOwnPropertyNames(columns).map((column) => ({
+                displayName: column,
+                name: column,
+                dataType: 'SingleLine.Text',
+                alias: column,
+                order: columns[column],
+                visualSizeFactor: 1,
+            }));
 
-        //     console.log(this._boundTable)
-        //     new AttributeMetadataGenerator(this._boundTable).AddString(Object.getOwnPropertyNames(columns)).Attributes.forEach(attribute=>{
-        //    console.log(JSON.stringify(attribute));
-        //         this._db.upsertAttributeMetadata(this._boundTable, attribute);
-        //     })
-         
+            //     console.log(this._boundTable)
+            //     new AttributeMetadataGenerator(this._boundTable).AddString(Object.getOwnPropertyNames(columns)).Attributes.forEach(attribute=>{
+            //    console.log(JSON.stringify(attribute));
+            //         this._db.upsertAttributeMetadata(this._boundTable, attribute);
+            //     })
+
             this._db.initItems({
                 '@odata.context': `#${this._boundTable}`,
                 value: items,
-            })
-        })
-        this._Refresh.callsFake(()=>{
-           var rows = this._db.GetRows(this._boundTable);
-           const records = rows.rows.map(item=>{
-            const row = new EntityRecord(undefined, item[rows.entityMetadata.PrimaryIdAttribute || 'id'], item.name);
-            row.metadata = rows.entityMetadata;
-            row.columns = item;
-            return row;
-           });
+            });
+        });
+        this._Refresh.callsFake(() => {
+            var rows = this._db.GetRows(this._boundTable);
+            const records = rows.rows.map((item) => {
+                const row = new EntityRecord(
+                    undefined,
+                    item[rows.entityMetadata.PrimaryIdAttribute || 'id'],
+                    item.name,
+                );
+                row.metadata = rows.entityMetadata;
+                row.columns = item;
+                return row;
+            });
             this.records = {};
             records.forEach((record) => {
                 this.records[record.getRecordId()] = record;
@@ -143,14 +147,13 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this.getSelectedRecordIds.callsFake(() => []);
         this.addColumn = stub();
         this.getTargetEntityType = stub();
-        this.getTargetEntityType.callsFake(()=>{
+        this.getTargetEntityType.callsFake(() => {
             return this._boundTable;
-        })
+        });
         this.getTitle = stub();
         this.getViewId = stub();
         this.openDatasetItem = stub();
         this.refresh = stub();
         this.setSelectedRecordIds = stub();
-        
     }
 }

@@ -1,69 +1,69 @@
+/**
+ * Describes the type of an attribute.
+ * For the Web API use the AttributeTypeCode EnumType.
+ */
+export enum AttributeType {
+    /** A big integer attribute */
+    BigInt = 18,
+    /** A Boolean attribute. Value = 0. */
+    Boolean = 0,
+
+    /** An attribute that contains calendar rules. Value = 0x10. */
+    CalendarRules = 16,
+
+    /** An attribute that represents a customer. Value = 1.*/
+    Customer = 1,
+
+    /** A date/time attribute. Value = 2. */
+    DateTime = 2,
+
+    /** A decimal attribute. Value = 3. */
+    Decimal = 3,
+
+    /** A double attribute. Value = 4. */
+    Double = 4,
+
+    /** An entity name attribute. Value = 20. */
+    EntityName = 20,
+
     /**
-     * Describes the type of an attribute.
-     * For the Web API use the AttributeTypeCode EnumType.
+     * An integer attribute. Value = 5.
      */
-     export enum AttributeType {
-        /** A big integer attribute */
-        BigInt = 18,
-        /** A Boolean attribute. Value = 0. */
-        Boolean = 0,
+    Integer = 5,
 
-        /** An attribute that contains calendar rules. Value = 0x10. */
-        CalendarRules = 16,
+    /**A lookup attribute. Value = 6. */
+    Lookup = 6,
 
-        /** An attribute that represents a customer. Value = 1.*/
-        Customer = 1,
+    /** A managed property attribute. Value = 0x13. */
+    ManagedProperty = 19,
 
-        /** A date/time attribute. Value = 2. */
-        DateTime = 2,
+    /** A memo attribute. Value = 7. */
+    Memo = 7,
 
-        /** A decimal attribute. Value = 3. */
-        Decimal = 3,
+    /** A money attribute. Value = 8. */
+    Money = 8,
 
-        /** A double attribute. Value = 4. */
-        Double = 4,
+    /** An owner attribute. Value = 9. */
+    Owner = 9,
 
-        /** An entity name attribute. Value = 20. */
-        EntityName = 20,
+    /** A partylist attribute. Value = 10.*/
+    PartyList = 10,
 
-        /**
-         * An integer attribute. Value = 5.
-         */
-        Integer = 5,
+    /** A picklist attribute. Value = 11. */
+    Picklist = 11,
 
-        /**A lookup attribute. Value = 6. */
-        Lookup = 6,
+    /** A state attribute. Value = 12. */
+    State = 12,
 
-        /** A managed property attribute. Value = 0x13. */
-        ManagedProperty = 19,
+    /** A status attribute. Value = 13. */
+    Status = 13,
 
-        /** A memo attribute. Value = 7. */
-        Memo = 7,
+    /** A string attribute. Value = 14.*/
+    String = 14,
 
-        /** A money attribute. Value = 8. */
-        Money = 8,
+    /** An attribute that is an ID. Value = 15. */
+    Uniqueidentifier = 15,
 
-        /** An owner attribute. Value = 9. */
-        Owner = 9,
-
-        /** A partylist attribute. Value = 10.*/
-        PartyList = 10,
-
-        /** A picklist attribute. Value = 11. */
-        Picklist = 11,
-
-        /** A state attribute. Value = 12. */
-        State = 12,
-
-        /** A status attribute. Value = 13. */
-        Status = 13,
-
-        /** A string attribute. Value = 14.*/
-        String = 14,
-
-        /** An attribute that is an ID. Value = 15. */
-        Uniqueidentifier = 15,
-
-        /** An attribute that is created by the system at run time. Value = 0x11. */
-        Virtual = 17,
-    }
+    /** An attribute that is created by the system at run time. Value = 0x11. */
+    Virtual = 17,
+}

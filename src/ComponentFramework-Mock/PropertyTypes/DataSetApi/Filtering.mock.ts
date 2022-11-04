@@ -14,16 +14,16 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { FilterExpression } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/FilterExpression.mock';
+import { FilterExpression } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/FilterExpression.mock';
 
 export class FilteringMock implements ComponentFramework.PropertyHelper.DataSetApi.Filtering {
-	getFilter: SinonStub<[], FilterExpression>;
-	setFilter: SinonStub<[FilterExpression], void>;
-	clearFilter: SinonStub<[], void>;
+    getFilter: SinonStub<[], FilterExpression>;
+    setFilter: SinonStub<[FilterExpression], void>;
+    clearFilter: SinonStub<[], void>;
 
-	constructor() {
-		this.clearFilter = stub();
-		this.getFilter = stub();
-		this.setFilter = stub();
-	}
+    constructor() {
+        this.clearFilter = stub();
+        this.getFilter = stub();
+        this.setFilter = stub();
+    }
 }

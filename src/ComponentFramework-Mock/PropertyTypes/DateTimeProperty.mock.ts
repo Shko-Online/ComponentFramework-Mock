@@ -13,11 +13,11 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { DateTimeMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { DateTimeMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
     raw: Date;
@@ -30,7 +30,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
         const attribute = {
             AttributeType: AttributeType.DateTime,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.DateTimeAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
         this.attributes = new DateTimeMetadataMock();
@@ -38,7 +38,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
         // this.setValue.callsFake((value) => {
         //     this.raw = value;
         //     this.formatted = value?.toLocaleTimeString();
-        // });     
+        // });
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
                 this._boundTable,
@@ -58,8 +58,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
             this.attributes.RequiredLevel = attributeMetadata.RequiredLevel?.Value;
             this.attributes.SourceType = attributeMetadata.SourceType;
             this.raw = value;
-            this.formatted = value?.toLocaleTimeString(); //ToDo: Format date 
+            this.formatted = value?.toLocaleTimeString(); //ToDo: Format date
         });
     }
-
 }

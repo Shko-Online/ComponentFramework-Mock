@@ -18,21 +18,18 @@
         "sourceMap": true,
         "baseUrl": ".",
         "paths": {
-            "@shko-online/componentframework-mock*": [
+            "@shko.online/componentframework-mock*": [
                 "./src*"
-            ],
-            "@albanian-xrm/test-components*": [
-                "./__test-components__*"
             ]
         },
         "typeRoots": [
-            "./node_modules/@types",
-            "./src"
+            "./node_modules/@types"
         ]
     },
     "exclude": [
         "node_modules",
         "wwwroot",
+        "dist"
     ],
     "include": [
         "src",

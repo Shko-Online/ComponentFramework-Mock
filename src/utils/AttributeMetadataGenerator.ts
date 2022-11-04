@@ -1,5 +1,5 @@
 import { SinonStub, stub } from 'sinon';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 class AttributeMetadataGenerator {
     Attributes: ShkoOnline.AttributeMetadata[];

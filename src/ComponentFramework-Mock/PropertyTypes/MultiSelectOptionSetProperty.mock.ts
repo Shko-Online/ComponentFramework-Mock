@@ -13,12 +13,12 @@
   language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { OptionSetMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { OptionSetMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { OptionMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { OptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class MultiSelectOptionSetPropertyMock
     extends PropertyMock

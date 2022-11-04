@@ -13,23 +13,15 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from "sinon";
-import {LinkEntityExposedExpression} from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/LinkEntityExposedExpression.mock'
+import { SinonStub, stub } from 'sinon';
+import { LinkEntityExposedExpression } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/LinkEntityExposedExpression.mock';
 
-export class LinkingMock
-  implements ComponentFramework.PropertyHelper.DataSetApi.Linking
-{
-  getLinkedEntities: SinonStub<
-    [],
-    LinkEntityExposedExpression[]
-  >;
-  addLinkedEntity: SinonStub<
-    [LinkEntityExposedExpression],
-    void
-  >;
+export class LinkingMock implements ComponentFramework.PropertyHelper.DataSetApi.Linking {
+    getLinkedEntities: SinonStub<[], LinkEntityExposedExpression[]>;
+    addLinkedEntity: SinonStub<[LinkEntityExposedExpression], void>;
 
-  constructor() {
-    this.addLinkedEntity = stub();
-    this.getLinkedEntities = stub();
-  }
+    constructor() {
+        this.addLinkedEntity = stub();
+        this.getLinkedEntities = stub();
+    }
 }

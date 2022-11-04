@@ -13,16 +13,12 @@
 	language governing rights and limitations under the RPL. 
 */
 
-
-
-export class Popup implements ComponentFramework.FactoryApi.Popup.Popup{
+export class Popup implements ComponentFramework.FactoryApi.Popup.Popup {
     id?: string;
     name: string;
     closeOnOutsideClick?: boolean;
     popupToOpen?: string;
     type: ComponentFramework.FactoryApi.Popup.Types.PopupType;
-    PopupType = 1 | 2;
+    PopupType: 1 | 2;
     content: HTMLElement;
-
 }
-    

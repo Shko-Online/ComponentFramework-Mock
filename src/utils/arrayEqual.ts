@@ -1,4 +1,4 @@
-import itemEqual from '@shko-online/componentframework-mock/utils/itemEqual';
+import itemEqual from '@shko.online/componentframework-mock/utils/itemEqual';
 
 const arrayEqual = <T>(source: T[], target: T[]) => {
     return (

@@ -13,11 +13,11 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { NumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/NumberMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { NumberMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/NumberMetadata.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class NumberPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.NumberProperty {
     attributes?: NumberMetadataMock;
@@ -34,10 +34,12 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
                 this._boundColumn,
             );
             if (
-                !(attributeMetadata.AttributeType === AttributeType.Integer ||
+                !(
+                    attributeMetadata.AttributeType === AttributeType.Integer ||
                     attributeMetadata.AttributeType === AttributeType.BigInt ||
                     attributeMetadata.AttributeType === AttributeType.Decimal ||
-                    attributeMetadata.AttributeType === AttributeType.Double)
+                    attributeMetadata.AttributeType === AttributeType.Double
+                )
             ) {
                 throw new Error('Type Error');
             }
@@ -48,11 +50,11 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             this.attributes.MinValue = attributeMetadata.MinValue;
             this.raw = value;
             this.formatted = value === null || value === undefined ? '' : '' + value;
-        })
+        });
         const attribute = {
             AttributeType: AttributeType.Decimal,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.NumberAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
 

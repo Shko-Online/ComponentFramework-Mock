@@ -14,22 +14,25 @@
 */
 import React from 'react';
 import { spy, stub, SinonSpiedInstance, SinonStub } from 'sinon';
-import { PropertyMap, PropertyToMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { ContextMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Context.mock';
-import { EntityRecord } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
-import { MultiSelectOptionSetPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
-import ReactResizeObserver from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver';
-import arrayEqual from '@shko-online/componentframework-mock/utils/arrayEqual';
-import showBanner from '@shko-online/componentframework-mock/utils/banner';
-import { MockGenerator } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/MockGenerator';
+import {
+    PropertyMap
+} from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { ContextMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Context.mock';
+import { EntityRecord } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
+import { MultiSelectOptionSetPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
+import ReactResizeObserver from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver';
+import arrayEqual from '@shko.online/componentframework-mock/utils/arrayEqual';
+import showBanner from '@shko.online/componentframework-mock/utils/banner';
+import { MockGenerator } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/MockGenerator';
 import mockGetEntityMetadata from './mockGetEntityMetadata';
-import { PropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
-> implements MockGenerator<TInputs, TOutputs>{
+> implements MockGenerator<TInputs, TOutputs>
+{
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     context: ContextMock<TInputs>;
     notifyOutputChanged: SinonStub<[], void>;
@@ -78,7 +81,12 @@ export class ComponentFrameworkMockGeneratorReact<
                             this.context.updatedProperties.push(k);
                         }
                     }
-                    this.metadata.UpdateValue(updates[k], property._boundTable, property._boundColumn, property._boundRow)
+                    this.metadata.UpdateValue(
+                        updates[k],
+                        property._boundTable,
+                        property._boundColumn,
+                        property._boundRow,
+                    );
                 }
             }
             if (this.context.updatedProperties.length > 0) {
@@ -114,8 +122,11 @@ export class ComponentFrameworkMockGeneratorReact<
                 this.context._parameters[propertyName]._Refresh();
             },
         );
-        
-        return React.createElement(ReactResizeObserver, { componentFrameworkMockGeneratorReact: this, circuitBreaker: new Object() });
+
+        return React.createElement(ReactResizeObserver, {
+            componentFrameworkMockGeneratorReact: this,
+            circuitBreaker: new Object(),
+        });
         //return this.control.updateView(this.context);
     }
 }

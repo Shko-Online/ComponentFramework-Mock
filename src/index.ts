@@ -13,4 +13,5 @@
 	language governing rights and limitations under the RPL. 
 */
 
-/// <reference types="powerapps-component-framework" />
+export { ComponentFrameworkMockGenerator } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator';
+export { ComponentFrameworkMockGeneratorReact } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator-React';

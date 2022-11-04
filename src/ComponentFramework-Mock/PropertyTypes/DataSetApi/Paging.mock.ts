@@ -13,42 +13,39 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from "sinon";
+import { SinonStub, stub } from 'sinon';
 
-export class PagingMock
-  implements ComponentFramework.PropertyHelper.DataSetApi.Paging
-{
-  totalResultCount: number;
-  firstPageNumber: number;
-  lastPageNumber: number;
-  pageSize: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  loadNextPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
-  loadPreviousPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
-  loadOnlyNewPage: boolean;
-  reset: SinonStub<[], void>;
-  setPageSize: SinonStub<[pageSize: number], void>;
-  loadExactPage: SinonStub<[pageNumber: number], void>;
-  
+export class PagingMock implements ComponentFramework.PropertyHelper.DataSetApi.Paging {
+    totalResultCount: number;
+    firstPageNumber: number;
+    lastPageNumber: number;
+    pageSize: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    loadNextPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
+    loadPreviousPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
+    loadOnlyNewPage: boolean;
+    reset: SinonStub<[], void>;
+    setPageSize: SinonStub<[pageSize: number], void>;
+    loadExactPage: SinonStub<[pageNumber: number], void>;
 
-  constructor() {
-    this.loadOnlyNewPage=true;
-    this.totalResultCount = -1;
-    this.firstPageNumber = 1;
-    this.lastPageNumber = 1;
-    this.hasNextPage = false;
-    this.hasPreviousPage = false;
-    this.pageSize = 10;
-    this.loadNextPage = stub();
-    this.loadNextPage.callsFake(()=> this.loadOnlyNewPage)
-    this.loadPreviousPage = stub();
-    this.loadPreviousPage.callsFake(() => this.loadOnlyNewPage)
-    this.setPageSize = stub();
-    this.setPageSize.callsFake((pageSize: number) =>{
-      this.pageSize=pageSize;
-    })
-    this.reset = stub();
-    this.loadExactPage = stub();
-  }
+    constructor() {
+        this.loadOnlyNewPage = true;
+        this.totalResultCount = -1;
+        this.firstPageNumber = 1;
+        this.lastPageNumber = 1;
+        this.hasNextPage = false;
+        this.hasPreviousPage = false;
+        this.pageSize = 10;
+        this.loadNextPage = stub();
+        this.loadNextPage.callsFake(() => this.loadOnlyNewPage);
+        this.loadPreviousPage = stub();
+        this.loadPreviousPage.callsFake(() => this.loadOnlyNewPage);
+        this.setPageSize = stub();
+        this.setPageSize.callsFake((pageSize: number) => {
+            this.pageSize = pageSize;
+        });
+        this.reset = stub();
+        this.loadExactPage = stub();
+    }
 }

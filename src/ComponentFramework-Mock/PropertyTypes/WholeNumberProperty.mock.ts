@@ -13,15 +13,16 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { MetadataDB } from '@shko-online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { WholeNumberMetadataMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
+import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { WholeNumberMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/WholeNumberMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { NumberPropertyMock } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
-import { AttributeType } from '@shko-online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { NumberPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
+import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export class WholeNumberPropertyMock
     extends NumberPropertyMock
-    implements ComponentFramework.PropertyTypes.WholeNumberProperty {
+    implements ComponentFramework.PropertyTypes.WholeNumberProperty
+{
     attributes?: WholeNumberMetadataMock;
     setValue: SinonStub<[value: number | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
@@ -29,15 +30,19 @@ export class WholeNumberPropertyMock
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
         this._Refresh.callsFake(() => {
-            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.IntegerNumberAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
-                this._boundColumn,
-            );
-            if (attributeMetadata.AttributeType !== AttributeType.Integer &&
+            const { value, attributeMetadata } =
+                this._db.GetValueAndMetadata<ShkoOnline.IntegerNumberAttributeMetadata>(
+                    this._boundTable,
+                    this._boundRow,
+                    this._boundColumn,
+                );
+            if (
+                attributeMetadata.AttributeType !== AttributeType.Integer &&
                 attributeMetadata.AttributeType !== AttributeType.Decimal &&
-                attributeMetadata.AttributeType !== AttributeType.Double && 
-                attributeMetadata.AttributeType !== AttributeType.BigInt) { //ToDo: Fix AutoMetadata generation
+                attributeMetadata.AttributeType !== AttributeType.Double &&
+                attributeMetadata.AttributeType !== AttributeType.BigInt
+            ) {
+                //ToDo: Fix AutoMetadata generation
                 throw new Error('Type Error');
             }
             this.attributes = new WholeNumberMetadataMock();
@@ -47,11 +52,11 @@ export class WholeNumberPropertyMock
             this.attributes.Format = attributeMetadata.Format;
             this.raw = value;
             this.formatted = value === undefined || value === null ? '' : '' + value;
-        })
+        });
         const attribute = {
             AttributeType: AttributeType.Integer,
             EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName
+            LogicalName: propertyName,
         } as ShkoOnline.IntegerNumberAttributeMetadata;
         entityMetadata.Attributes.push(attribute);
 
@@ -60,5 +65,5 @@ export class WholeNumberPropertyMock
             this.raw = value;
             this.formatted = '' + value;
         });
-    }   
+    }
 }
