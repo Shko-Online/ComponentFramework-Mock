@@ -12,7 +12,7 @@
 	PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
 	language governing rights and limitations under the RPL. 
 */
-import { MetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock';
+import { MetadataMock } from './Metadata.mock';
 
 export class LookupMetadataMock
     extends MetadataMock

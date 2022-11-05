@@ -16,6 +16,7 @@
         "declaration": true,
         "declarationMap": true,
         "sourceMap": true,
+        "sourceRoot": "../src",
         "baseUrl": ".",
         "paths": {
             "@shko.online/componentframework-mock*": [

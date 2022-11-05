@@ -13,8 +13,8 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { SinonStub, stub } from 'sinon';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
     _boundColumn: string;

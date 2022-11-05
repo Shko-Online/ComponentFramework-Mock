@@ -14,10 +14,10 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { NumberMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/NumberMetadata.mock';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { NumberMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import { AttributeType } from './AttributeType';
+import { PropertyMock } from './Property.mock';
 
 export class NumberPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.NumberProperty {
     attributes?: NumberMetadataMock;

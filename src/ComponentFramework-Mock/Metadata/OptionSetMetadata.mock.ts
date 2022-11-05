@@ -13,8 +13,8 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { MetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock';
-import { OptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
+import { MetadataMock } from './Metadata.mock';
+import { OptionMetadataMock } from './OptionMetadata.mock';
 
 export class OptionSetMetadataMock
     extends MetadataMock

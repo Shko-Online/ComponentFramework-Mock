@@ -26,7 +26,7 @@ type ColumnReturnValue =
     | ComponentFramework.LookupValue
     | ComponentFramework.LookupValue[];
 
-export class EntityRecord
+export class EntityRecordMock
     implements ComponentFramework.PropertyHelper.DataSetApi.EntityRecord, ComponentFramework.EntityReference
 {
     id: { guid: string };

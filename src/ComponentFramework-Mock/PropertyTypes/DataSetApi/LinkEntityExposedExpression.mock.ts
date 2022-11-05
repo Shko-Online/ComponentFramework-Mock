@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export class LinkEntityExposedExpression
+export class LinkEntityExposedExpressionMock
     implements ComponentFramework.PropertyHelper.DataSetApi.LinkEntityExposedExpression
 {
     name: string;

@@ -12,6 +12,7 @@
     PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
     language governing rights and limitations under the RPL. 
 */
+
 import loki from 'lokijs';
 
 export class MetadataDB {
@@ -61,6 +62,8 @@ export class MetadataDB {
         });
     }
     upsertAttributeMetadata(entity: string, attributeMetadata: ShkoOnline.AttributeMetadata) {
+        delete attributeMetadata['$loki'];
+
         const tableMetadata = this.metadata.findOne({ LogicalName: { $eq: entity } });
         tableMetadata.Attributes = [
             ...tableMetadata.Attributes.filter((attribute) => attribute.LogicalName !== attributeMetadata.LogicalName),
@@ -68,17 +71,13 @@ export class MetadataDB {
         tableMetadata.Attributes.push(attributeMetadata);
         this.metadata.update(tableMetadata);
 
-        if (
-            this.attributes[entity].find({
-                LogicalName: { $eq: attributeMetadata.LogicalName },
-            }).length > 0
-        ) {
-            this.attributes[entity].removeWhere({
-                LogicalName: { $eq: attributeMetadata.LogicalName },
-            });
+        const oldMetadata = this.attributes[entity].findOne({
+            LogicalName: { $eq: attributeMetadata.LogicalName },
+        });
+        if (oldMetadata) {
+            this.attributes[entity].remove(oldMetadata);
         }
         this.attributes[entity].insert(attributeMetadata);
-        console.log(this.attributes);
     }
     initItems(items: { '@odata.context': string; value: any[] }) {
         const entitySetName = items['@odata.context'].substring(items['@odata.context'].indexOf('#') + 1);

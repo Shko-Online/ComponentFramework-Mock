@@ -13,8 +13,8 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { ContextMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Context.mock';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { ContextMock } from '../ComponentFramework-Mock';
+import { MetadataDB } from './Metadata.db';
 
 export interface MockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,

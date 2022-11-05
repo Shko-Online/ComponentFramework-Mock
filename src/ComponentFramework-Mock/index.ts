@@ -13,67 +13,54 @@
 	language governing rights and limitations under the RPL. 
 */
 
-/// <reference types="powerapps-component-framework" />
-/// <reference path="./ShkoOnline.d.ts" />
-
+export { AttributeMetadataCollection } from './AttributeMetadataCollection';
+export { ClientMock } from './Client.mock';
+export { ContextMock } from './Context.mock';
+export { DeviceMock } from './Device.mock';
+export { FactoryMock } from './Factory.mocks';
+export { PopupMock, PopupServiceMock } from './FactoryApi';
+export { FormattingMock } from './Formatting.mock';
 export {
-    AttributeMetadataCollection,
-    AttributeType,
-    ClientMock,
-    ColumnMock,
-    ConditionExpressionMock,
-    ContextMock,
-    DataSetMock,
     DateTimeMetadataMock,
-    DateTimePropertyMock,
     DecimalNumberMetadataMock,
-    DecimalNumberPropertyMock,
-    DeviceMock,
-    EntityRecordMock,
-    EnumPropertyMock,
-    FactoryMock,
-    FilterExpressionMock,
-    FormattingMock,
-    LinkEntityExposedExpressionMock,
-    LinkingMock,
     LookupMetadataMock,
-    LookupPropertyMock,
     MetadataMock,
-    MockToRaw,
-    ModeMock,
-    MultiSelectOptionSetPropertyMock,
-    NavigationMock,
     NumberMetadataMock,
-    NumberPropertyMock,
     OptionMetadataMock,
     OptionSetMetadataMock,
+    StringMetadataMock,
+    TwoOptionMetadataMock,
+    WholeNumberMetadataMock,
+} from './Metadata';
+export { ModeMock } from './Mode.mock';
+export { NavigationMock } from './Navigation.mock';
+export {
+    AttributeType,
+    ColumnMock,
+    ConditionExpressionMock,
+    DataSetMock,
+    DateTimePropertyMock,
+    DecimalNumberPropertyMock,
+    EntityRecordMock,
+    EnumPropertyMock,
+    FilterExpressionMock,
+    LinkEntityExposedExpressionMock,
+    LinkingMock,
+    LookupPropertyMock,
+    MockToRaw,
+    MultiSelectOptionSetPropertyMock,
+    NumberPropertyMock,
     OptionSetPropertyMock,
     PagingMock,
-    PopupMock,
-    PopupServiceMock,
     PropertyMap,
     PropertyMock,
     PropertyToMock,
-    ResourcesMock,
     SortStatusMock,
-    StringMetadataMock,
     StringPropertyMock,
-    TwoOptionMetadataMock,
     TwoOptionsPropertyMock,
-    UserSettingsMock,
-    UtilityMock,
-    WebApiMock,
-    WholeNumberMetadataMock,
     WholeNumberPropertyMock,
-} from './ComponentFramework-Mock';
-
-export {
-    ComponentFrameworkMockGeneratorReact,
-    ComponentFrameworkMockGenerator,
-    MetadataDB,
-    MockGenerator,
-    ReactResizeObserver,
-    mockGetEntityMetadata,
-} from './ComponentFramework-Mock-Generator';
-
-export { AttributeMetadataGenerator, arrayEqual } from './utils';
+} from './PropertyTypes';
+export { ResourcesMock } from './Resources.mock';
+export { UserSettingsMock } from './UserSettings.mock';
+export { UtilityMock } from './Utility.mock';
+export { WebApiMock } from './WebApi.mock';

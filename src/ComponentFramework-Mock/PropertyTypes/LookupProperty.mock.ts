@@ -13,11 +13,11 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
 import { stub, SinonStub } from 'sinon';
-import { LookupMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/LookupMetadata.mock';
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import { LookupMetadataMock } from '../Metadata';
+import { PropertyMock } from './Property.mock';
+import { AttributeType } from './AttributeType';
 
 export class LookupPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.LookupProperty {
     raw: ComponentFramework.LookupValue[];

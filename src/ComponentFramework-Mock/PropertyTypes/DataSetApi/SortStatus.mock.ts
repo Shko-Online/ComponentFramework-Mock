@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export class SortStatus implements ComponentFramework.PropertyHelper.DataSetApi.SortStatus {
+export class SortStatusMock implements ComponentFramework.PropertyHelper.DataSetApi.SortStatus {
     name: string;
     sortDirection: ComponentFramework.PropertyHelper.DataSetApi.Types.SortDirection;
 }

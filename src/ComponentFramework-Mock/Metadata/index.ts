@@ -13,20 +13,13 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { MetadataMock } from './Metadata.mock';
-import { OptionMetadataMock } from './OptionMetadata.mock';
-
-export class TwoOptionMetadataMock
-    extends MetadataMock
-    implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.TwoOptionMetadata
-{
-    Options: [OptionMetadataMock, OptionMetadataMock];
-    DefaultValue: boolean;
-    constructor(defaultValue?: boolean) {
-        super();
-        const FalseOption = new OptionMetadataMock(0, 'No');
-        const TrueOption = new OptionMetadataMock(1, 'Yes');
-        this.Options = [FalseOption, TrueOption];
-        this.DefaultValue = defaultValue || false;
-    }
-}
+export { DateTimeMetadataMock } from './DateTimeMetadata.mock';
+export { DecimalNumberMetadataMock } from './DecimalNumberMetadata.mock';
+export { LookupMetadataMock } from './LookupMetadata.mock';
+export { MetadataMock } from './Metadata.mock';
+export { NumberMetadataMock } from './NumberMetadata.mock';
+export { OptionMetadataMock } from './OptionMetadata.mock';
+export { OptionSetMetadataMock } from './OptionSetMetadata.mock';
+export { StringMetadataMock } from './StringMetadata.mock';
+export { TwoOptionMetadataMock } from './TwoOptionMetadata.mock';
+export { WholeNumberMetadataMock } from './WholeNumberMetadata.mock';

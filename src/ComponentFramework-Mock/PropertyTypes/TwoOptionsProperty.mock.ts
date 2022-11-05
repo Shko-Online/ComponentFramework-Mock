@@ -13,12 +13,12 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { TwoOptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/TwoOptionMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
-import { OptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
+import { OptionMetadataMock, TwoOptionMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
+import { AttributeType } from './AttributeType';
+import { PropertyMock } from './Property.mock';
+
 export class TwoOptionsPropertyMock
     extends PropertyMock
     implements ComponentFramework.PropertyTypes.TwoOptionsProperty

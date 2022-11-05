@@ -14,11 +14,10 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { OptionSetMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionSetMetadata.mock';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { OptionMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/OptionMetadata.mock';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { OptionMetadataMock, OptionSetMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import { AttributeType } from './AttributeType';
+import { PropertyMock } from './Property.mock';
 
 export class OptionSetPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.OptionSetProperty {
     raw: number | null;

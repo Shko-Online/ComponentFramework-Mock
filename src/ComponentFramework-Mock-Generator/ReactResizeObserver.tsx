@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MultiSelectOptionSetPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
-import arrayEqual from '@shko.online/componentframework-mock/utils/arrayEqual';
-import { ComponentFrameworkMockGeneratorReact } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator-React';
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock';
+import { arrayEqual } from '../utils';
+import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
+import { PropertyMock } from '../ComponentFramework-Mock';
 
-const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, TOutputs extends ShkoOnline.KnownTypes<TOutputs>>({
+export const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, TOutputs extends ShkoOnline.KnownTypes<TOutputs>>({
     componentFrameworkMockGeneratorReact,
     circuitBreaker
 }: {
@@ -93,5 +93,3 @@ const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, 
         </div>
     );
 };
-
-export default ReactResizeObserver;

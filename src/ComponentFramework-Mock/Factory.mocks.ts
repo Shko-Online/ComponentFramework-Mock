@@ -14,7 +14,7 @@
 */
 
 import { stub, SinonStub } from 'sinon';
-import { PopupServiceMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/FactoryApi/PopupService.mock';
+import { PopupServiceMock } from './FactoryApi';
 export class FactoryMock implements ComponentFramework.Factory {
     popupService = new PopupServiceMock();
     getPopupService: SinonStub<[void], PopupServiceMock>;

@@ -14,8 +14,8 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import { AttributeType } from './AttributeType';
 
 export class EnumPropertyMock<EnumType extends string>
     implements ComponentFramework.PropertyTypes.EnumProperty<EnumType>

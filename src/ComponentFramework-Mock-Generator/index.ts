@@ -13,5 +13,9 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export { ComponentFrameworkMockGenerator } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator';
-export { ComponentFrameworkMockGeneratorReact } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/ComponentFramework-Mock-Generator-React';
+export { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
+export { ComponentFrameworkMockGenerator } from './ComponentFramework-Mock-Generator';
+export { MetadataDB } from './Metadata.db';
+export { MockGenerator } from './MockGenerator';
+export { mockGetEntityMetadata } from './mockGetEntityMetadata';
+export { ReactResizeObserver } from './ReactResizeObserver';

@@ -15,18 +15,17 @@
 import React from 'react';
 import { spy, stub, SinonSpiedInstance, SinonStub } from 'sinon';
 import {
-    PropertyMap
-} from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { ContextMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Context.mock';
-import { EntityRecord } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
-import { MultiSelectOptionSetPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
-import ReactResizeObserver from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/ReactResizeObserver';
-import arrayEqual from '@shko.online/componentframework-mock/utils/arrayEqual';
-import showBanner from '@shko.online/componentframework-mock/utils/banner';
-import { MockGenerator } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/MockGenerator';
-import mockGetEntityMetadata from './mockGetEntityMetadata';
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+    ContextMock,
+    EntityRecordMock,
+    MultiSelectOptionSetPropertyMock,
+    PropertyMap,
+    PropertyMock,
+} from '../ComponentFramework-Mock';
+import { MetadataDB } from './Metadata.db';
+import { ReactResizeObserver } from './ReactResizeObserver';
+import { arrayEqual, showBanner } from '../utils';
+import { MockGenerator } from './MockGenerator';
+import { mockGetEntityMetadata } from './mockGetEntityMetadata';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -40,7 +39,7 @@ export class ComponentFrameworkMockGeneratorReact<
 
     data: {
         [entityName: string]: {
-            [entityId: string]: EntityRecord;
+            [entityId: string]: EntityRecordMock;
         };
     };
 

@@ -13,11 +13,11 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { NumberPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
-import { DecimalNumberMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/DecimalNumberMetadata.mock';
 import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { AttributeType } from './AttributeType';
+import { NumberPropertyMock } from './NumberProperty.mock';
+import { DecimalNumberMetadataMock } from '../Metadata/DecimalNumberMetadata.mock';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
 
 export class DecimalNumberPropertyMock
     extends NumberPropertyMock

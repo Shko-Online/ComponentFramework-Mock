@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export class ConditionExpression implements ComponentFramework.PropertyHelper.DataSetApi.ConditionExpression {
+export class ConditionExpressionMock implements ComponentFramework.PropertyHelper.DataSetApi.ConditionExpression {
     attributeName: string;
     conditionOperator: ComponentFramework.PropertyHelper.DataSetApi.Types.ConditionOperator;
     value: string | string[];

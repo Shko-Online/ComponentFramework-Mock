@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { NumberMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/NumberMetadata.mock';
+import { NumberMetadataMock } from './NumberMetadata.mock';
 
 export class DecimalNumberMetadataMock
     extends NumberMetadataMock

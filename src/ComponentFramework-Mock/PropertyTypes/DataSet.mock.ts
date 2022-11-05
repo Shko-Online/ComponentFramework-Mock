@@ -14,13 +14,13 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { PagingMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Paging.mock';
-import { FilteringMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Filtering.mock';
-import { LinkingMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/Linking.mock';
-import { EntityRecord } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
-import { SortStatus } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/SortStatus.mock';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import AttributeMetadataGenerator from '@shko.online/componentframework-mock/utils/AttributeMetadataGenerator';
+import { PagingMock } from './DataSetApi/Paging.mock';
+import { FilteringMock } from './DataSetApi/Filtering.mock';
+import { LinkingMock } from './DataSetApi/Linking.mock';
+import { EntityRecordMock } from './DataSetApi/EntityRecord.mock';
+import { SortStatusMock } from './DataSetApi/SortStatus.mock';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
+// import { AttributeMetadataGenerator } from '../../utils/AttributeMetadataGenerator';
 
 type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;
 
@@ -41,10 +41,10 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     loading: boolean;
     paging: PagingMock;
     records: {
-        [id: string]: EntityRecord;
+        [id: string]: EntityRecordMock;
     };
     sortedRecordIds: string[];
-    sorting: SortStatus[];
+    sorting: SortStatusMock[];
     clearSelectedRecordIds: SinonStub<[], void>;
     getSelectedRecordIds: SinonStub<[], string[]>;
     getTargetEntityType: SinonStub<[], string>;
@@ -104,7 +104,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this._Refresh.callsFake(() => {
             var rows = this._db.GetRows(this._boundTable);
             const records = rows.rows.map((item) => {
-                const row = new EntityRecord(
+                const row = new EntityRecordMock(
                     undefined,
                     item[rows.entityMetadata.PrimaryIdAttribute || 'id'],
                     item.name,

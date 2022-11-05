@@ -13,11 +13,11 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { StringMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/StringMetadata.mock';
-import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { SinonStub } from 'sinon';
+import { StringMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import { AttributeType } from './AttributeType';
+import { PropertyMock } from './Property.mock';
 
 export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
     raw: string | null;

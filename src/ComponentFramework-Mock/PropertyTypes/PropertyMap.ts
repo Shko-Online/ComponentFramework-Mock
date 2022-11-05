@@ -13,18 +13,18 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { DateTimePropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DateTimeProperty.mock';
-import { DecimalNumberPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DecimalNumberProperty.mock';
-import { StringPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/StringProperty.mock';
-import { TwoOptionsPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/TwoOptionsProperty.mock';
-import { LookupPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/LookupProperty.mock';
-import { NumberPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/NumberProperty.mock';
-import { WholeNumberPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/WholeNumberProperty.mock';
-import { MultiSelectOptionSetPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
-import { DataSetMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSet.mock';
-import { EnumPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/EnumProperty.mock';
-import { OptionSetPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/OptionSetProperty.mock';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+import { DateTimePropertyMock } from './DateTimeProperty.mock';
+import { DecimalNumberPropertyMock } from './DecimalNumberProperty.mock';
+import { StringPropertyMock } from './StringProperty.mock';
+import { TwoOptionsPropertyMock } from './TwoOptionsProperty.mock';
+import { LookupPropertyMock } from './LookupProperty.mock';
+import { NumberPropertyMock } from './NumberProperty.mock';
+import { WholeNumberPropertyMock } from './WholeNumberProperty.mock';
+import { MultiSelectOptionSetPropertyMock } from './MultiSelectOptionSetProperty.mock';
+import { DataSetMock } from './DataSet.mock';
+import { EnumPropertyMock } from './EnumProperty.mock';
+import { OptionSetPropertyMock } from './OptionSetProperty.mock';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export type PropertyToMock<T extends ShkoOnline.PropertyTypes<T>> = {
     [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.DataSet

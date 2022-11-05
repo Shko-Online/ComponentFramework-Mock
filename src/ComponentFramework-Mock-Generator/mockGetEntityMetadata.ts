@@ -1,6 +1,6 @@
-import { MockGenerator } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/MockGenerator';
+import { MockGenerator } from './MockGenerator';
 
-const mockGetEntityMetadata = <
+export const mockGetEntityMetadata = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 >(
@@ -20,5 +20,3 @@ const mockGetEntityMetadata = <
         });
     });
 };
-
-export default mockGetEntityMetadata;

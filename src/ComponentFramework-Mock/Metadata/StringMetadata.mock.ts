@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-import { MetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/Metadata.mock';
+import { MetadataMock } from './Metadata.mock';
 
 export class StringMetadataMock
     extends MetadataMock

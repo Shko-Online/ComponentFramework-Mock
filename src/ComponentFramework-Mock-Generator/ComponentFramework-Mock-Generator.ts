@@ -14,15 +14,16 @@
 */
 
 import { spy, fake, SinonSpy, SinonSpiedInstance } from 'sinon';
-import { ContextMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Context.mock';
-import { PropertyMap } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
-import { MultiSelectOptionSetPropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/MultiSelectOptionSetProperty.mock';
-import { EntityRecord } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/DataSetApi/EntityRecord.mock';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import arrayEqual from '@shko.online/componentframework-mock/utils/arrayEqual';
-import showBanner from '@shko.online/componentframework-mock/utils/banner';
-import mockGetEntityMetadata from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/mockGetEntityMetadata';
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
+import { MetadataDB } from './Metadata.db';
+import { arrayEqual, showBanner } from '../utils';
+import { mockGetEntityMetadata } from './mockGetEntityMetadata';
+import {
+    ContextMock,
+    EntityRecordMock,
+    MultiSelectOptionSetPropertyMock,
+    PropertyMap,
+    PropertyMock,
+} from '../ComponentFramework-Mock';
 
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -36,7 +37,7 @@ export class ComponentFrameworkMockGenerator<
 
     data: {
         [entityName: string]: {
-            [entityId: string]: EntityRecord;
+            [entityId: string]: EntityRecordMock;
         };
     };
 
@@ -61,7 +62,7 @@ export class ComponentFrameworkMockGenerator<
 
         this.data = {};
         this.data['systemuser'] = {};
-        this.data['systemuser'][this.myUserId] = new EntityRecord('systemuser', this.myUserId, 'Betim Beja');
+        this.data['systemuser'][this.myUserId] = new EntityRecordMock('systemuser', this.myUserId, 'Betim Beja');
 
         this.context.userSettings.userId = this.myUserId;
         this.context.userSettings.userName = this.data['systemuser'][this.myUserId].name;

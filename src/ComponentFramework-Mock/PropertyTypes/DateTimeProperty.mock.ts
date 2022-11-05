@@ -13,11 +13,11 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { PropertyMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/Property.mock';
-import { DateTimeMetadataMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Metadata/DateTimeMetadata.mock';
-import { SinonStub, stub } from 'sinon';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
-import { AttributeType } from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { SinonStub } from 'sinon';
+import { PropertyMock } from './Property.mock';
+import { AttributeType } from './AttributeType';
+import { DateTimeMetadataMock } from '../Metadata/DateTimeMetadata.mock';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
 
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
     raw: Date;

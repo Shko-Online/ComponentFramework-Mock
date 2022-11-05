@@ -14,22 +14,22 @@
     */
 
 import { SinonStub, stub } from 'sinon';
-import { ClientMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Client.mock';
-import { DeviceMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Device.mock';
-import { FactoryMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Factory.mocks';
-import { FormattingMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Formatting.mock';
-import { ModeMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Mode.mock';
-import { NavigationMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Navigation.mock';
+import { ClientMock } from './Client.mock';
+import { DeviceMock } from './Device.mock';
+import { FactoryMock } from './Factory.mocks';
+import { FormattingMock } from './Formatting.mock';
+import { ModeMock } from './Mode.mock';
+import { NavigationMock } from './Navigation.mock';
 import {
     MockToRaw,
     PropertyMap,
     PropertyToMock,
-} from '@shko.online/componentframework-mock/ComponentFramework-Mock/PropertyTypes/PropertyMap';
-import { ResourcesMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Resources.mock';
-import { UserSettingsMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/UserSettings.mock';
-import { UtilityMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/Utility.mock';
-import { WebApiMock } from '@shko.online/componentframework-mock/ComponentFramework-Mock/WebApi.mock';
-import { MetadataDB } from '@shko.online/componentframework-mock/ComponentFramework-Mock-Generator/Metadata.db';
+} from './PropertyTypes';
+import { ResourcesMock } from './Resources.mock';
+import { UserSettingsMock } from './UserSettings.mock';
+import { UtilityMock } from './Utility.mock';
+import { WebApiMock } from './WebApi.mock';
+import { MetadataDB } from '../ComponentFramework-Mock-Generator/Metadata.db';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs>

@@ -13,7 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export class Column implements ComponentFramework.PropertyHelper.DataSetApi.Column {
+export class ColumnMock implements ComponentFramework.PropertyHelper.DataSetApi.Column {
     name: string;
     displayName: string;
     dataType: string;
