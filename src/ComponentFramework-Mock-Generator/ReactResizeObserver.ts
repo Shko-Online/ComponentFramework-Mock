@@ -1,21 +1,33 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+    createElement,
+    Fragment,
+    JSXElementConstructor,
+    ReactElement,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock';
 import { arrayEqual } from '../utils';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
 import { PropertyMock } from '../ComponentFramework-Mock';
 
-export const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TInputs>, TOutputs extends ShkoOnline.KnownTypes<TOutputs>>({
+export const ReactResizeObserver = <
+    TInputs extends ShkoOnline.PropertyTypes<TInputs>,
+    TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
+>({
     componentFrameworkMockGeneratorReact,
-    circuitBreaker
+    circuitBreaker,
 }: {
     componentFrameworkMockGeneratorReact: ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>;
-    circuitBreaker: {}
+    circuitBreaker: {};
 }) => {
     const containerRef = useRef();
-    const [Component, setComponent] = useState(<></>);
+    const [Component, setComponent] = useState<ReactElement<any, string | JSXElementConstructor<any>>>(
+        createElement(Fragment),
+    );
     useEffect(() => {
         componentFrameworkMockGeneratorReact.notifyOutputChanged.callsFake(() => {
-            console.log('output Changed');
             const updates = componentFrameworkMockGeneratorReact.control.getOutputs?.();
             componentFrameworkMockGeneratorReact.context.updatedProperties = [];
             for (const k in updates) {
@@ -36,15 +48,20 @@ export const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TIn
                             componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
                         }
                     }
-                    componentFrameworkMockGeneratorReact.metadata.UpdateValue(updates[k], property._boundTable, property._boundColumn, property._boundRow);
+                    componentFrameworkMockGeneratorReact.metadata.UpdateValue(
+                        updates[k],
+                        property._boundTable,
+                        property._boundColumn,
+                        property._boundRow,
+                    );
                 }
             }
             if (componentFrameworkMockGeneratorReact.context.updatedProperties.length > 0) {
-                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(componentFrameworkMockGeneratorReact.context.parameters).forEach(
-                    (propertyName) => {
-                        componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
-                    },
-                );
+                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(
+                    componentFrameworkMockGeneratorReact.context.parameters,
+                ).forEach((propertyName) => {
+                    componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
+                });
                 setComponent(
                     componentFrameworkMockGeneratorReact.control.updateView(
                         componentFrameworkMockGeneratorReact.context,
@@ -58,13 +75,11 @@ export const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TIn
                 const size = entries[0];
                 componentFrameworkMockGeneratorReact.context.mode.allocatedHeight = size.contentRect.height;
                 componentFrameworkMockGeneratorReact.context.mode.allocatedWidth = size.contentRect.width;
-                console.log('width', size.contentRect.width);
-                console.log('height', size.contentRect.height);
-                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(componentFrameworkMockGeneratorReact.context.parameters).forEach(
-                    (propertyName) => {
-                        componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
-                    },
-                );
+                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(
+                    componentFrameworkMockGeneratorReact.context.parameters,
+                ).forEach((propertyName) => {
+                    componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
+                });
                 setComponent(
                     componentFrameworkMockGeneratorReact.control.updateView(
                         componentFrameworkMockGeneratorReact.context,
@@ -77,19 +92,22 @@ export const ReactResizeObserver = <TInputs extends ShkoOnline.PropertyTypes<TIn
     }, []);
 
     useEffect(() => {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(componentFrameworkMockGeneratorReact.context.parameters).forEach(
-            (propertyName) => {
-                componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
-            },
-        );
+        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(
+            componentFrameworkMockGeneratorReact.context.parameters,
+        ).forEach((propertyName) => {
+            componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
+        });
         setComponent(
-            componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context)
+            componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
         );
     }, [circuitBreaker]);
 
-    return (
-        <div style={{ width: '100%', height: '100%' }} ref={containerRef}>
-            {Component}
-        </div>
+    return createElement(
+        'div',
+        {
+            style: { width: '100%', height: '100%' },
+            ref: containerRef,
+        },
+        Component,
     );
 };

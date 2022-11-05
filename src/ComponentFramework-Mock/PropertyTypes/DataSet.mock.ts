@@ -90,9 +90,8 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                 visualSizeFactor: 1,
             }));
 
-            //     console.log(this._boundTable)
             //     new AttributeMetadataGenerator(this._boundTable).AddString(Object.getOwnPropertyNames(columns)).Attributes.forEach(attribute=>{
-            //    console.log(JSON.stringify(attribute));
+  
             //         this._db.upsertAttributeMetadata(this._boundTable, attribute);
             //     })
 

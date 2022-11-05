@@ -53,7 +53,6 @@ export class MetadataDB {
                     DisplayName: attribute.DisplayName,
                 });
             });
-            console.log(this.attributes);
         });
     }
     getAttributeMetadata(entity: string, attribute: string) {
@@ -71,12 +70,9 @@ export class MetadataDB {
         tableMetadata.Attributes.push(attributeMetadata);
         this.metadata.update(tableMetadata);
 
-        const oldMetadata = this.attributes[entity].findOne({
+        this.attributes[entity].removeWhere({
             LogicalName: { $eq: attributeMetadata.LogicalName },
         });
-        if (oldMetadata) {
-            this.attributes[entity].remove(oldMetadata);
-        }
         this.attributes[entity].insert(attributeMetadata);
     }
     initItems(items: { '@odata.context': string; value: any[] }) {
