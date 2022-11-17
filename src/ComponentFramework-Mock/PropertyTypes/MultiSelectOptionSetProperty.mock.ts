@@ -24,54 +24,38 @@ export class MultiSelectOptionSetPropertyMock
     implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
 {
     raw: number[] | null;
-    originalRaw: number[] | null;
     attributes?: OptionSetMetadataMock;
-    setValue: SinonStub<[value: number[] | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super();
-        this._db = db;
-        this._Bind(entityMetadata.LogicalName, propertyName);
+        super(db,entityMetadata.LogicalName, propertyName);      
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
+                this._boundTable,               
                 this._boundColumn,
+                this._boundRow,
             );
-            if (attributeMetadata.AttributeType !== AttributeType.Picklist) {
+            if (attributeMetadata === null || attributeMetadata.AttributeType !== AttributeType.Picklist) {
                 throw new Error('Type Error');
             }
-            this.attributes.LogicalName = attributeMetadata.LogicalName;
-            this.attributes.Options = Object.getOwnPropertyNames(attributeMetadata.OptionSet.Options).map((value) => {
+            const attributes = new OptionSetMetadataMock();
+            attributes.LogicalName = attributeMetadata.LogicalName;
+            attributes.Options = Object.getOwnPropertyNames(attributeMetadata.OptionSet.Options).map((value) => {
                 const metadata = attributeMetadata.OptionSet.Options[value];
                 return new OptionMetadataMock(metadata.Value, metadata.Label, metadata.Color);
             });
-            this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
+            attributes.DefaultValue = attributeMetadata.DefaultFormValue;
             this.raw = value === null || value === undefined ? null : [...value];
             this.formatted = ((value as number[]) || [])
-                .map((optionValue) => this.attributes.Options.find((option) => option.Value === optionValue).Label)
+                .map((optionValue) => attributes.Options.find((option) => option.Value === optionValue)?.Label)
                 .join(',');
+            this.attributes = attributes;
         });
         const attribute = {
             AttributeType: AttributeType.Picklist,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.PickListAttributeMetadata; // ToDO: Find right metadata
-        entityMetadata.Attributes.push(attribute);
-
-        this.setValue = stub();
-        this.setValue.callsFake((value) => {
-            this.raw = value != null ? [...value] : null;
-            this.originalRaw = value != null ? [...value] : null;
-            if (this.attributes && value != null) {
-                this.formatted = this.attributes.Options.filter((option) =>
-                    value.some((selectedOption) => selectedOption === option.Value),
-                )
-                    .map((option) => option.Label)
-                    .join(',');
-            } else {
-                this.formatted = '';
-            }
-        });
+        entityMetadata.Attributes?.push(attribute);
         this.attributes = new OptionSetMetadataMock();
+        this.raw = null;
     }
 }

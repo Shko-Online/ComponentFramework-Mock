@@ -17,9 +17,9 @@ import { spy, fake, SinonSpy, SinonSpiedInstance } from 'sinon';
 import { MetadataDB } from './Metadata.db';
 import { arrayEqual, showBanner } from '../utils';
 import { mockGetEntityMetadata } from './mockGetEntityMetadata';
+import { mockSetControlState } from './mockSetControlState';
 import {
     ContextMock,
-    EntityRecordMock,
     MultiSelectOptionSetPropertyMock,
     PropertyMap,
     PropertyMock,
@@ -35,13 +35,6 @@ export class ComponentFrameworkMockGenerator<
     state: ComponentFramework.Dictionary;
     container: HTMLDivElement;
 
-    data: {
-        [entityName: string]: {
-            [entityId: string]: EntityRecordMock;
-        };
-    };
-
-    myUserId: string;
     metadata: MetadataDB;
 
     constructor(
@@ -50,23 +43,13 @@ export class ComponentFrameworkMockGenerator<
         container?: HTMLDivElement,
     ) {
         showBanner(control.name);
+        this.state = {};
         this.control = spy(new control());
         this.metadata = new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
         mockGetEntityMetadata(this);
-
-        this.context.mode.setControlState.callsFake((state: ComponentFramework.Dictionary) => {
-            this.state = { ...state, ...this.state };
-            return true;
-        });
-
-        this.data = {};
-        this.data['systemuser'] = {};
-        this.data['systemuser'][this.myUserId] = new EntityRecordMock('systemuser', this.myUserId, 'Betim Beja');
-
-        this.context.userSettings.userId = this.myUserId;
-        this.context.userSettings.userName = this.data['systemuser'][this.myUserId].name;
-
+        mockSetControlState(this);
+        
         this.notifyOutputChanged = fake(() => {
             const updates = this.control.getOutputs?.();
             this.context.updatedProperties = [];
@@ -111,8 +94,8 @@ export class ComponentFrameworkMockGenerator<
                 this.context.mode.allocatedWidth = size.contentRect.width;
                 this.ExecuteUpdateView();
             });
-            if (value) observer.observe(container);
-            else observer.unobserve(container);
+            if (value) observer.observe(this.container);
+            else observer.unobserve(this.container);
         });
     }
 
@@ -125,6 +108,7 @@ export class ComponentFrameworkMockGenerator<
                     return elements[i].getElementsByTagName('value')[0].innerHTML;
                 }
             }
+            throw new Error(`Could not find string with id '${id}'`);
         });
     }
 

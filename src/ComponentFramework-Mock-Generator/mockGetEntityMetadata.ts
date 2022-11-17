@@ -7,16 +7,22 @@ export const mockGetEntityMetadata = <
     mockGenerator: MockGenerator<TInputs, TOutputs>,
 ) => {
     mockGenerator.context.utils.getEntityMetadata.callsFake((entityName: string, attributes?: string[]) => {
-        return new Promise<ShkoOnline.EntityMetadata>((resolve) => {
+        return new Promise<ShkoOnline.EntityMetadata>((resolve, reject) => {
             const result = mockGenerator.metadata.metadata.findOne({
                 LogicalName: { $eq: entityName },
-            });
+            }) as ShkoOnline.EntityMetadata & Partial<LokiObj>;
+            if(!result){
+                reject(`Could not find entity metadata for '${entityName}'`);
+                return;
+            }
             if (attributes) {
-                result.Attributes = result.Attributes.filter((attribute) =>
+                result.Attributes = result.Attributes?.filter((attribute) =>
                     attributes.some((attributeFilter) => attribute.LogicalName === attributeFilter),
                 );
             }
-            resolve(result);
+            delete result.$loki;
+            delete result.meta;
+            resolve(result as ShkoOnline.EntityMetadata);
         });
     });
 };

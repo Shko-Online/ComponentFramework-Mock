@@ -14,39 +14,18 @@
 */
 
 declare module ShkoOnline {
-    export type PropertyTypes<
-        T extends {
-            [P in keyof T]:
-            | ComponentFramework.PropertyTypes.Property
-            | ComponentFramework.PropertyTypes.DataSet
-            | ComponentFramework.PropertyTypes.EnumProperty<string>;
-        },
-    > = {
-            [P in keyof T]:
-            T[P] extends ComponentFramework.PropertyTypes.DataSet
-            ? ComponentFramework.PropertyTypes.DataSet
-            : T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty
-            ? ComponentFramework.PropertyTypes.DateTimeProperty
-            : T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty
-            ? ComponentFramework.PropertyTypes.DecimalNumberProperty
-            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
-            ? ComponentFramework.PropertyTypes.EnumProperty<string>
-            : T[P] extends ComponentFramework.PropertyTypes.LookupProperty
-            ? ComponentFramework.PropertyTypes.LookupProperty
-            : T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
-            ? ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
-            : T[P] extends ComponentFramework.PropertyTypes.NumberProperty
-            ? ComponentFramework.PropertyTypes.NumberProperty
-            : T[P] extends ComponentFramework.PropertyTypes.OptionSetProperty
-            ? ComponentFramework.PropertyTypes.OptionSetProperty          
-            : T[P] extends ComponentFramework.PropertyTypes.StringProperty
-            ? ComponentFramework.PropertyTypes.StringProperty
-            : T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
-            ? ComponentFramework.PropertyTypes.TwoOptionsProperty    
-            : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
-            ? ComponentFramework.PropertyTypes.WholeNumberProperty
-            : never;
-        };
+    type EnumType<Type> = Type extends ComponentFramework.PropertyTypes.EnumProperty<infer X> ? X : never;
+
+    export type PropertyTypes<T extends {[key:string]:any}> = {
+        [P in keyof T]: 
+            T[P] extends ComponentFramework.PropertyTypes.Property ? 
+            T[P] : 
+            T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string> ? 
+            T[P] :
+            T[P] extends ComponentFramework.PropertyTypes.DataSet ?
+            T[P] :
+            never;
+    }
 
     /**
      * The entire property bag interface available to control via Context Object
@@ -56,19 +35,19 @@ declare module ShkoOnline {
     }
 
     export type KnownTypes<TOutput> = {
-        [P in keyof TOutput]: TOutput[P] extends string
-        ? string
-        : TOutput[P] extends number
-        ? number
-        : TOutput[P] extends Date
-        ? Date
-        : TOutput[P] extends boolean
-        ? boolean
-        : TOutput[P] extends ComponentFramework.LookupValue[]
-        ? ComponentFramework.LookupValue[]
-        : TOutput[P] extends number[]
-        ? number[]
-        : never;
+        [P in keyof TOutput]: TOutput[P] extends string | undefined
+            ? TOutput[P]
+            : TOutput[P] extends number | undefined
+            ? TOutput[P]
+            : TOutput[P] extends Date | undefined
+            ? TOutput[P]
+            : TOutput[P] extends boolean | undefined
+            ? TOutput[P]
+            : TOutput[P] extends ComponentFramework.LookupValue[] | undefined
+            ? TOutput[P]
+            : TOutput[P] extends number[] | undefined
+            ? TOutput[P]
+            : never;
     };
 
     /** https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference/xrm-utility/getentitymetadata */
@@ -150,7 +129,7 @@ declare module ShkoOnline {
         /** The name of the Web API table set for this table. */
         EntitySetName?: string;
         /** The logical name for the table. */
-        LogicalName?: string;
+        LogicalName: string;
         /**The name of the column that is the primary id for the table.*/
         PrimaryIdAttribute?: string;
         /**The name of the primary image column for a table.*/
@@ -165,12 +144,14 @@ declare module ShkoOnline {
 
     export interface AttributeMetadataCollection {
         add: () => void;
-        get: (name: string) => ShkoOnline.AttributeMetadata;
+        get: (name: string) => ShkoOnline.AttributeMetadata | undefined;
         getAll: () => ShkoOnline.AttributeMetadata[];
         getByFilter: () => ShkoOnline.AttributeMetadata[];
-        getByName: (name: string) => ShkoOnline.AttributeMetadata;
-        getByIndex: (index: number) => ShkoOnline.AttributeMetadata;
-        getFirst: (lambda: (attribute: ShkoOnline.AttributeMetadata) => boolean) => ShkoOnline.AttributeMetadata;
+        getByName: (name: string) => ShkoOnline.AttributeMetadata | undefined;
+        getByIndex: (index: number) => ShkoOnline.AttributeMetadata | undefined;
+        getFirst: (
+            lambda: (attribute: ShkoOnline.AttributeMetadata) => boolean,
+        ) => ShkoOnline.AttributeMetadata | undefined;
         getLength: () => number;
         remove: () => void;
     }
@@ -233,7 +214,21 @@ declare module ShkoOnline {
         DeprecatedVersion: string;
         /** The label containing the description for the attribute.*/
         Description: {
-            LocalizedLabels: [{
+            LocalizedLabels: [
+                {
+                    /** The localized label string.*/
+                    Label: string;
+                    /** The language code for the label.*/
+                    LanguageCode: number;
+                    /** Whether the label is managed.*/
+                    IsManaged: boolean;
+                    /** A unique identifier for the metadata item.*/
+                    MetadataId: string;
+                    /** Whether the item of metadata has changed.*/
+                    HasChanged: boolean;
+                },
+            ];
+            UserLocalizedLabel: {
                 /** The localized label string.*/
                 Label: string;
                 /** The language code for the label.*/
@@ -244,20 +239,7 @@ declare module ShkoOnline {
                 MetadataId: string;
                 /** Whether the item of metadata has changed.*/
                 HasChanged: boolean;
-            }];
-            UserLocalizedLabel: {
-                 /** The localized label string.*/
-                 Label: string;
-                 /** The language code for the label.*/
-                 LanguageCode: number;
-                 /** Whether the label is managed.*/
-                 IsManaged: boolean;
-                 /** A unique identifier for the metadata item.*/
-                 MetadataId: string;
-                 /** Whether the item of metadata has changed.*/
-                 HasChanged: boolean;
-            }
-
+            };
         };
         /** Display name for the column. */
         DisplayName: string;
@@ -378,10 +360,10 @@ declare module ShkoOnline {
 
     export interface NumberAttributeMetadata extends ShkoOnline.AttributeMetadata {
         AttributeType:
-        | ShkoOnline.AttributeType.Integer
-        | ShkoOnline.AttributeType.BigInt
-        | ShkoOnline.AttributeType.Decimal
-        | ShkoOnline.AttributeType.Double;
+            | ShkoOnline.AttributeType.Integer
+            | ShkoOnline.AttributeType.BigInt
+            | ShkoOnline.AttributeType.Decimal
+            | ShkoOnline.AttributeType.Double;
         ImeMode: ShkoOnline.ImeMode;
         MaxValue: number;
         MinValue: number;
@@ -541,5 +523,5 @@ declare module ShkoOnline {
 }
 
 interface ObjectConstructor {
-	getOwnPropertyNames<T>(o: T): (keyof T)[];
+    getOwnPropertyNames<T>(o: T): (keyof T)[];
 }

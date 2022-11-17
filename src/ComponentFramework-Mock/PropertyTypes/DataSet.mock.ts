@@ -18,20 +18,20 @@ import { PagingMock } from './DataSetApi/Paging.mock';
 import { FilteringMock } from './DataSetApi/Filtering.mock';
 import { LinkingMock } from './DataSetApi/Linking.mock';
 import { EntityRecordMock } from './DataSetApi/EntityRecord.mock';
-import { SortStatusMock } from './DataSetApi/SortStatus.mock';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
-// import { AttributeMetadataGenerator } from '../../utils/AttributeMetadataGenerator';
+import { AttributeMetadataGenerator } from '../../utils/AttributeMetadataGenerator';
 
 type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;
 
 export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     _boundColumn: string;
     _boundTable: string;
-    _boundRow: string;
+    _boundRow?: string;
     _db: MetadataDB;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
     _Refresh: SinonStub<[], void>;
-    _InitItems: SinonStub<[items: any[]], void>;
+    _InitItems: SinonStub<[items: { [column: string]: any }[]], void>;
+    _SelectedRecordIds: string[];
     addColumn?: SinonStub<[name: string, entityAlias?: string], void>;
     columns: Column[];
     error: boolean;
@@ -44,7 +44,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         [id: string]: EntityRecordMock;
     };
     sortedRecordIds: string[];
-    sorting: SortStatusMock[];
+    sorting: ComponentFramework.PropertyHelper.DataSetApi.SortStatus[];
     clearSelectedRecordIds: SinonStub<[], void>;
     getSelectedRecordIds: SinonStub<[], string[]>;
     getTargetEntityType: SinonStub<[], string>;
@@ -54,11 +54,18 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     refresh: SinonStub<[], void>;
     setSelectedRecordIds: SinonStub<[ids: string[]], void>;
     constructor(propertyName: string, db: MetadataDB) {
+        this._boundTable = `!!${propertyName}`;
         this._boundColumn = propertyName;
         this._db = db;
+        this._SelectedRecordIds = [];
+        this.error = false;
+        this.errorMessage = '';
+        this.linking = new LinkingMock();
         const dataSetEntity = {
             LogicalName: '!!' + propertyName,
             EntitySetName: '!!' + propertyName,
+            PrimaryIdAttribute: 'id',
+            PrimaryNameAttribute: 'name',
             Attributes: [],
         } as ShkoOnline.EntityMetadata;
         this._db.initMetadata([dataSetEntity]);
@@ -69,11 +76,11 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             this._boundRow = boundRow;
             this._boundTable = boundTable;
         });
-        this._Bind(`!!${propertyName}`, propertyName);
+
         this._InitItems = stub();
         this._InitItems.callsFake((items) => {
             let i = 0;
-            let columns = {};
+            let columns: { [key: string]: number } = {};
             items.forEach((item) => {
                 Object.getOwnPropertyNames(item).forEach((key) => {
                     if (!(key in columns)) {
@@ -81,49 +88,52 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     }
                 });
             });
-            this.columns = Object.getOwnPropertyNames(columns).map((column) => ({
-                displayName: column,
-                name: column,
-                dataType: 'SingleLine.Text',
-                alias: column,
-                order: columns[column],
-                visualSizeFactor: 1,
-            }));
+            this.columns = Object.getOwnPropertyNames(columns).map((column) => {
+                return {
+                    displayName: column as string,
+                    name: column as string,
+                    dataType: 'SingleLine.Text',
+                    alias: column as string,
+                    order: columns[column],
+                    visualSizeFactor: 1,
+                };
+            });
 
-            //     new AttributeMetadataGenerator(this._boundTable).AddString(Object.getOwnPropertyNames(columns)).Attributes.forEach(attribute=>{
-  
-            //         this._db.upsertAttributeMetadata(this._boundTable, attribute);
-            //     })
+            new AttributeMetadataGenerator(this._boundTable)
+                .AddString(Object.getOwnPropertyNames(columns) as string[])
+                .Attributes.forEach((attribute) => {
+                    this._db.upsertAttributeMetadata(this._boundTable, attribute);
+                });
 
             this._db.initItems({
                 '@odata.context': `#${this._boundTable}`,
                 value: items,
             });
+            this._Refresh();
         });
         this._Refresh.callsFake(() => {
             var rows = this._db.GetRows(this._boundTable);
             const records = rows.rows.map((item) => {
                 const row = new EntityRecordMock(
-                    undefined,
-                    item[rows.entityMetadata.PrimaryIdAttribute || 'id'],
-                    item.name,
+                    db,
+                    this._boundTable,
+                    item[rows.entityMetadata?.PrimaryIdAttribute || 'id'],
                 );
-                row.metadata = rows.entityMetadata;
-                row.columns = item;
                 return row;
             });
             this.records = {};
             records.forEach((record) => {
                 this.records[record.getRecordId()] = record;
             });
+            this.paging.pageSize = this.paging._pageSize;
             this.paging.totalResultCount = records.length;
             if (this.sorting.length > 0) {
                 const sort = this.sorting[0];
                 this.sortedRecordIds = records
                     .sort((record1, record2) =>
                         sort.sortDirection === 0
-                            ? record1.getFormattedValue(sort.name).localeCompare(record2.getFormattedValue(sort.name))
-                            : record2.getFormattedValue(sort.name).localeCompare(record1.getFormattedValue(sort.name)),
+                            ? record1.getFormattedValue(sort.name)?.localeCompare(record2.getFormattedValue(sort.name))
+                            : record2.getFormattedValue(sort.name)?.localeCompare(record1.getFormattedValue(sort.name)),
                     )
                     .map((record) => record.getRecordId());
             } else {
@@ -142,8 +152,11 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this.filtering = new FilteringMock();
         this.records = {};
         this.clearSelectedRecordIds = stub();
+        this.clearSelectedRecordIds.callsFake(() => {
+            this._SelectedRecordIds = [];
+        });
         this.getSelectedRecordIds = stub();
-        this.getSelectedRecordIds.callsFake(() => []);
+        this.getSelectedRecordIds.callsFake(() => [...this._SelectedRecordIds]);
         this.addColumn = stub();
         this.getTargetEntityType = stub();
         this.getTargetEntityType.callsFake(() => {
@@ -154,5 +167,10 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this.openDatasetItem = stub();
         this.refresh = stub();
         this.setSelectedRecordIds = stub();
+        this.setSelectedRecordIds.callsFake((ids) => {
+            this._SelectedRecordIds = ids ? [...ids] : [];
+        });
+     
+      
     }
 }

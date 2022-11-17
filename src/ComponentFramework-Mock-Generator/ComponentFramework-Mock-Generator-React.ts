@@ -22,10 +22,11 @@ import {
     PropertyMock,
 } from '../ComponentFramework-Mock';
 import { MetadataDB } from './Metadata.db';
-import { ReactResizeObserver } from './ReactResizeObserver';
+import { ReactResizeObserver, ReactResizeObserverProps } from './ReactResizeObserver';
 import { arrayEqual, showBanner } from '../utils';
 import { MockGenerator } from './MockGenerator';
 import { mockGetEntityMetadata } from './mockGetEntityMetadata';
+import { mockSetControlState } from './mockSetControlState';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -36,28 +37,20 @@ export class ComponentFrameworkMockGeneratorReact<
     context: ContextMock<TInputs>;
     notifyOutputChanged: SinonStub<[], void>;
     state: ComponentFramework.Dictionary;
-
-    data: {
-        [entityName: string]: {
-            [entityId: string]: EntityRecordMock;
-        };
-    };
-
     myUserId: string;
     metadata: MetadataDB;
 
     constructor(control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>, inputs: PropertyMap<TInputs>) {
         showBanner(control.name);
+        this.state = {};
+        this.myUserId = "";
         this.control = spy(new control());
         this.metadata = new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
 
         mockGetEntityMetadata(this);
+        mockSetControlState(this);
 
-        this.context.mode.setControlState.callsFake((state: ComponentFramework.Dictionary) => {
-            this.state = { ...state, ...this.state };
-            return true;
-        });
 
         this.notifyOutputChanged = stub();
         this.notifyOutputChanged.callsFake(() => {
@@ -103,6 +96,7 @@ export class ComponentFrameworkMockGeneratorReact<
                     return elements[i].getElementsByTagName('value')[0].innerHTML;
                 }
             }
+            throw new Error(`Could not find string with id '${id}'`);
         });
     }
     ExecuteInit() {
@@ -122,7 +116,7 @@ export class ComponentFrameworkMockGeneratorReact<
             },
         );
 
-        return React.createElement(ReactResizeObserver, {
+        return React.createElement(ReactResizeObserver<TInputs, TOutputs>, {
             componentFrameworkMockGeneratorReact: this,
             circuitBreaker: new Object(),
         });

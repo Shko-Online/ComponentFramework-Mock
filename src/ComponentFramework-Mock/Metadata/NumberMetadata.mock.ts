@@ -22,4 +22,10 @@ export class NumberMetadataMock
     ImeMode: ComponentFramework.PropertyHelper.Types.ImeMode;
     MinValue: number;
     MaxValue: number;
+	constructor(){
+		super();
+		this.ImeMode = 0;
+		this.MinValue = Number.MIN_SAFE_INTEGER;
+		this.MaxValue = Number.MAX_SAFE_INTEGER;
+	}
 }

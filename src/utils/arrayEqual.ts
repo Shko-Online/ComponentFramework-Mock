@@ -15,7 +15,7 @@
 
 import { itemEqual } from './itemEqual';
 
-export const arrayEqual = <T>(source: T[], target: T[]) => {
+export const arrayEqual = <T>(source: T[]|null, target: T[]|null) => {
     return (
         Array.isArray(source) &&
         Array.isArray(target) &&

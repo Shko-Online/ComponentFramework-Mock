@@ -1,16 +1,16 @@
-import {
-    createElement,
-    Fragment,
-    JSXElementConstructor,
-    ReactElement,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { createElement, Fragment, JSXElementConstructor, ReactElement, useEffect, useRef, useState } from 'react';
 import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock';
 import { arrayEqual } from '../utils';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
 import { PropertyMock } from '../ComponentFramework-Mock';
+
+export interface ReactResizeObserverProps<
+    TInputs extends ShkoOnline.PropertyTypes<TInputs>,
+    TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
+> {
+    componentFrameworkMockGeneratorReact: ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>;
+    circuitBreaker: {};
+}
 
 export const ReactResizeObserver = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -18,11 +18,8 @@ export const ReactResizeObserver = <
 >({
     componentFrameworkMockGeneratorReact,
     circuitBreaker,
-}: {
-    componentFrameworkMockGeneratorReact: ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>;
-    circuitBreaker: {};
-}) => {
-    const containerRef = useRef();
+}: ReactResizeObserverProps<TInputs, TOutputs>) => {
+    const containerRef = useRef<HTMLElement>();
     const [Component, setComponent] = useState<ReactElement<any, string | JSXElementConstructor<any>>>(
         createElement(Fragment),
     );
@@ -42,9 +39,8 @@ export const ReactResizeObserver = <
                             componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
                         }
                     } else if (typeof updates[k] === 'object') {
-                    } else {
-                        // @ts-ignore
-                        if (componentFrameworkMockGeneratorReact.context.parameters[k].raw !== updates[k]) {
+                    } else {                      
+                        if ((componentFrameworkMockGeneratorReact.context.parameters[k] as any).raw !== updates[k]) {
                             componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
                         }
                     }
@@ -71,6 +67,10 @@ export const ReactResizeObserver = <
         });
 
         componentFrameworkMockGeneratorReact.context.mode.trackContainerResize.callsFake((value) => {
+            if(!containerRef.current){
+                console.error('Container Ref is null');
+                return;
+            }
             const observer = new ResizeObserver((entries) => {
                 const size = entries[0];
                 componentFrameworkMockGeneratorReact.context.mode.allocatedHeight = size.contentRect.height;

@@ -20,30 +20,23 @@ import { DateTimeMetadataMock } from '../Metadata/DateTimeMetadata.mock';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
 
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
-    raw: Date;
-    attributes: DateTimeMetadataMock;
-    setValue: SinonStub<[value: Date | null], void>;
+    raw: Date | null;
+    attributes?: DateTimeMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super();
-        this._db = db;
-        this._Bind(entityMetadata.LogicalName, propertyName);
+        super(db, entityMetadata.LogicalName, propertyName);
+        this.raw = null;
         const attribute = {
             AttributeType: AttributeType.DateTime,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.DateTimeAttributeMetadata;
-        entityMetadata.Attributes.push(attribute);
+        entityMetadata.Attributes?.push(attribute);
         this.attributes = new DateTimeMetadataMock();
-        // this.setValue = stub();
-        // this.setValue.callsFake((value) => {
-        //     this.raw = value;
-        //     this.formatted = value?.toLocaleTimeString();
-        // });
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
+                this._boundTable,           
                 this._boundColumn,
+                this._boundRow,
             );
             if (attributeMetadata.AttributeType !== AttributeType.DateTime) {
                 throw new Error('Type Error');

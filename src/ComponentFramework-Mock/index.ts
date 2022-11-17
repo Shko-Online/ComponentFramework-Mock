@@ -18,7 +18,7 @@ export { ClientMock } from './Client.mock';
 export { ContextMock } from './Context.mock';
 export { DeviceMock } from './Device.mock';
 export { FactoryMock } from './Factory.mocks';
-export { PopupMock, PopupServiceMock } from './FactoryApi';
+export { PopupServiceMock } from './FactoryApi';
 export { FormattingMock } from './Formatting.mock';
 export {
     DateTimeMetadataMock,
@@ -36,15 +36,12 @@ export { ModeMock } from './Mode.mock';
 export { NavigationMock } from './Navigation.mock';
 export {
     AttributeType,
-    ColumnMock,
-    ConditionExpressionMock,
     DataSetMock,
     DateTimePropertyMock,
     DecimalNumberPropertyMock,
     EntityRecordMock,
     EnumPropertyMock,
-    FilterExpressionMock,
-    LinkEntityExposedExpressionMock,
+    FilteringMock,
     LinkingMock,
     LookupPropertyMock,
     MockToRaw,
@@ -55,7 +52,6 @@ export {
     PropertyMap,
     PropertyMock,
     PropertyToMock,
-    SortStatusMock,
     StringPropertyMock,
     TwoOptionsPropertyMock,
     WholeNumberPropertyMock,

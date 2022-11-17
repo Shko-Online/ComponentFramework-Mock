@@ -15,16 +15,7 @@
 
 export { AttributeType } from './AttributeType';
 export { DataSetMock } from './DataSet.mock';
-export {
-    ColumnMock,
-    ConditionExpressionMock,
-    EntityRecordMock,
-    FilterExpressionMock,
-    LinkEntityExposedExpressionMock,
-    LinkingMock,
-    PagingMock,
-    SortStatusMock,
-} from './DataSetApi';
+export { EntityRecordMock, FilteringMock, LinkingMock, PagingMock } from './DataSetApi';
 export { DateTimePropertyMock } from './DateTimeProperty.mock';
 export { DecimalNumberPropertyMock } from './DecimalNumberProperty.mock';
 export { EnumPropertyMock } from './EnumProperty.mock';

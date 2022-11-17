@@ -26,14 +26,13 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
     setValue: SinonStub<[value: ComponentFramework.LookupValue[]], void>;
     attributes?: LookupMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super();
-        this._db = db;
-        this._Bind(entityMetadata.LogicalName, propertyName);
+        super(db,entityMetadata.LogicalName, propertyName);
+        this.raw = [];
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.LookupAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
+                this._boundTable,           
                 this._boundColumn,
+                this._boundRow,
             );
             if (attributeMetadata.AttributeType !== AttributeType.Lookup) {
                 throw new Error('Type Error');
@@ -48,7 +47,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.LookupAttributeMetadata;
-        entityMetadata.Attributes.push(attribute);
+        entityMetadata.Attributes?.push(attribute);
 
         this.getTargetEntityType = stub();
         this.getTargetEntityType.returns('mocked_entity');

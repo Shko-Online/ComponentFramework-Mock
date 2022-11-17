@@ -22,4 +22,8 @@ export class WholeNumberMetadataMock
     Format: string;
     LanguageByCode?: ComponentFramework.Dictionary | undefined;
     TimeZoneByCode?: ComponentFramework.Dictionary | undefined;
+    constructor() {
+		super();
+        this.Format = '#';
+    }
 }

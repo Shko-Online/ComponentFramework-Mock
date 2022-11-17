@@ -24,14 +24,13 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
     raw: number | null;
     setValue: SinonStub<[value: number | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super();
-        this._db = db;
-        this._Bind(entityMetadata.LogicalName, propertyName);
+        super(db, entityMetadata.LogicalName, propertyName);
+        this.raw = null;
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.NumberAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
+                this._boundTable,              
                 this._boundColumn,
+                this._boundRow,
             );
             if (
                 !(
@@ -56,7 +55,7 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.NumberAttributeMetadata;
-        entityMetadata.Attributes.push(attribute);
+        entityMetadata.Attributes?.push(attribute);
 
         this.setValue = stub();
         this.setValue.callsFake((value) => {

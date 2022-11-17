@@ -21,20 +21,19 @@ import { PropertyMock } from './Property.mock';
 
 export class OptionSetPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.OptionSetProperty {
     raw: number | null;
-    originalRaw: number | null;
-    attributes?: OptionSetMetadataMock;
-    setValue: SinonStub<[value: number | null], void>;
+    attributes: OptionSetMetadataMock;
+
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super();
-        this._db = db;
-        this._Bind(entityMetadata.LogicalName, propertyName);
+        super(db, entityMetadata.LogicalName, propertyName);
+        this.raw = null;
+        this.attributes = new OptionSetMetadataMock();
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
+                this._boundTable,               
                 this._boundColumn,
+                this._boundRow,
             );
-            if (attributeMetadata.AttributeType !== AttributeType.Picklist) {
+            if (attributeMetadata === null || attributeMetadata.AttributeType !== AttributeType.Picklist) {
                 throw new Error('Type Error');
             }
             this.attributes.LogicalName = attributeMetadata.LogicalName;
@@ -50,18 +49,6 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.PickListAttributeMetadata;
-        entityMetadata.Attributes.push(attribute);
-
-        this.setValue = stub();
-        this.setValue.callsFake((value) => {
-            this.raw = value;
-            this.originalRaw = value;
-            if (this.attributes && value != null) {
-                this.formatted = this.attributes.Options.filter((option) => value === option.Value)[0].Label;
-            } else {
-                this.formatted = '';
-            }
-        });
-        this.attributes = new OptionSetMetadataMock();
+        entityMetadata.Attributes?.push(attribute);
     }
 }

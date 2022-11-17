@@ -26,6 +26,11 @@ export class ModeMock implements ComponentFramework.Mode {
     setFullScreen: SinonStub<[value: boolean], void>;
     trackContainerResize: SinonStub<[value: boolean], void>;
     constructor() {
+        this.allocatedHeight = -1;
+        this.allocatedWidth = -1;
+        this.isVisible = true;
+        this.isControlDisabled = false;
+        this.label = 'Mocked with @shko.online/componentframework-mock';
         this.setControlState = stub(); // this is mocked in ComponentFrameworkMockGenerator
         this._FullScreen = false;
         this.setFullScreen = stub();

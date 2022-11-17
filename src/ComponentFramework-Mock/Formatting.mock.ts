@@ -63,14 +63,12 @@ export class FormattingMock implements ComponentFramework.Formatting {
         });
         this.formatDateLongAbbreviated = stub();
         this.formatDateLongAbbreviated.callsFake((value: Date) => {
-            return value !== null
-                ? value.toLocaleString(this.locale, {
+            return value.toLocaleString(this.locale, {
                       day: '2-digit',
                       weekday: 'short',
                       year: 'numeric',
                       month: 'long',
-                  })
-                : null;
+                  });
         });
         this.formatDateShort = stub();
         this.formatDateShort.callsFake((value: Date, includeTime?: boolean) => {
@@ -78,12 +76,10 @@ export class FormattingMock implements ComponentFramework.Formatting {
         });
         this.formatDateYearMonth = stub();
         this.formatDateYearMonth.callsFake((value: Date) => {
-            return value !== null
-                ? value.toLocaleString(this.locale, {
+            return value.toLocaleString(this.locale, {
                       year: 'numeric',
                       month: 'long',
-                  })
-                : null;
+                  });
         });
         this.formatInteger = stub();
         this.formatInteger.callsFake((value: number) => {

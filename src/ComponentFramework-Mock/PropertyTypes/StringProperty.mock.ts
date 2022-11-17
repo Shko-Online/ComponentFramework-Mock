@@ -22,16 +22,14 @@ import { PropertyMock } from './Property.mock';
 export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
     raw: string | null;
     attributes: StringMetadataMock;
-    setValue: SinonStub<[value: string | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super();
-        this._db = db;
-        this._Bind(entityMetadata.LogicalName, propertyName);
+        super(db, entityMetadata.LogicalName, propertyName);
+        this.raw = null;
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.StringAttributeMetadata>(
-                this._boundTable,
-                this._boundRow,
+                this._boundTable,             
                 this._boundColumn,
+                this._boundRow,
             );
             if (attributeMetadata.AttributeType !== AttributeType.String) {
                 throw new Error('Type Error');
@@ -48,12 +46,7 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.StringAttributeMetadata;
-        entityMetadata.Attributes.push(attribute);
+        entityMetadata.Attributes?.push(attribute);
         this.attributes = new StringMetadataMock();
-        // this.setValue = stub();
-        // this.setValue.callsFake((value) => {
-        //     this.raw = value;
-        //     this.formatted = value;
-        // });
     }
 }

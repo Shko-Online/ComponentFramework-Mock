@@ -20,6 +20,6 @@ export class OptionMetadataMock implements ComponentFramework.PropertyHelper.Opt
     constructor(value: number, label: string, color?: string) {
         this.Value = value;
         this.Label = label;
-        this.Color = color;
+        this.Color = color || '';
     }
 }

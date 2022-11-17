@@ -13,11 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export { ColumnMock } from './Column.mock';
-export { ConditionExpressionMock } from './ConditionExpression.mock';
 export { EntityRecordMock } from './EntityRecord.mock';
-export { FilterExpressionMock } from './FilterExpression.mock';
-export { LinkEntityExposedExpressionMock } from './LinkEntityExposedExpression.mock';
+export { FilteringMock } from './Filtering.mock';
 export { LinkingMock } from './Linking.mock';
 export { PagingMock } from './Paging.mock';
-export { SortStatusMock } from './SortStatus.mock';

@@ -20,8 +20,6 @@ export {
     AttributeMetadataCollection,
     AttributeType,
     ClientMock,
-    ColumnMock,
-    ConditionExpressionMock,
     ContextMock,
     DataSetMock,
     DateTimeMetadataMock,
@@ -32,9 +30,8 @@ export {
     EntityRecordMock,
     EnumPropertyMock,
     FactoryMock,
-    FilterExpressionMock,
+    FilteringMock,
     FormattingMock,
-    LinkEntityExposedExpressionMock,
     LinkingMock,
     LookupMetadataMock,
     LookupPropertyMock,
@@ -49,13 +46,11 @@ export {
     OptionSetMetadataMock,
     OptionSetPropertyMock,
     PagingMock,
-    PopupMock,
     PopupServiceMock,
     PropertyMap,
     PropertyMock,
     PropertyToMock,
     ResourcesMock,
-    SortStatusMock,
     StringMetadataMock,
     StringPropertyMock,
     TwoOptionMetadataMock,
@@ -74,6 +69,7 @@ export {
     MockGenerator,
     ReactResizeObserver,
     mockGetEntityMetadata,
+    mockSetControlState
 } from './ComponentFramework-Mock-Generator';
 
 export { AttributeMetadataGenerator, arrayEqual } from './utils';

@@ -13,5 +13,4 @@
 	language governing rights and limitations under the RPL. 
 */
 
-export { PopupMock } from './Popup.mock';
 export { PopupServiceMock } from './PopupService.mock';

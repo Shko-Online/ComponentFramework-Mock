@@ -20,4 +20,12 @@ export class MetadataMock implements ComponentFramework.PropertyHelper.FieldProp
     IsSecured: boolean;
     SourceType: number;
     Description: string;
+    constructor() {
+        this.DisplayName = '';
+        this.LogicalName = '';
+        this.RequiredLevel = 0;
+        this.IsSecured = false;
+        this.SourceType = 0;
+        this.Description = '';
+    }
 }

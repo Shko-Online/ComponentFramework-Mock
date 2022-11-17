@@ -26,15 +26,13 @@ export class DecimalNumberPropertyMock
     attributes?: DecimalNumberMetadataMock;
     setValue: SinonStub<[value: number | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(propertyName, db, entityMetadata);
-        this._db = db;
-        this._Bind(entityMetadata.LogicalName, propertyName);
+        super(propertyName, db, entityMetadata);       
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } =
                 this._db.GetValueAndMetadata<ShkoOnline.DecimalNumberAttributeMetadata>(
-                    this._boundTable,
-                    this._boundRow,
+                    this._boundTable,                  
                     this._boundColumn,
+                    this._boundRow,
                 );
             if (attributeMetadata.AttributeType !== AttributeType.Decimal) {
                 throw new Error('Type Error');
@@ -52,7 +50,7 @@ export class DecimalNumberPropertyMock
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.DecimalNumberAttributeMetadata;
-        entityMetadata.Attributes.push(attribute);
+        entityMetadata.Attributes?.push(attribute);
 
         this.setValue = stub();
         this.setValue.callsFake((value) => {

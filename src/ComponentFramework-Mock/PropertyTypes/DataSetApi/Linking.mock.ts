@@ -14,11 +14,12 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { LinkEntityExposedExpressionMock } from './LinkEntityExposedExpression.mock';
+
+type LinkEntityExposedExpression = ComponentFramework.PropertyHelper.DataSetApi.LinkEntityExposedExpression;
 
 export class LinkingMock implements ComponentFramework.PropertyHelper.DataSetApi.Linking {
-    getLinkedEntities: SinonStub<[], LinkEntityExposedExpressionMock[]>;
-    addLinkedEntity: SinonStub<[LinkEntityExposedExpressionMock], void>;
+    getLinkedEntities: SinonStub<[], LinkEntityExposedExpression[]>;
+    addLinkedEntity: SinonStub<[LinkEntityExposedExpression], void>;
 
     constructor() {
         this.addLinkedEntity = stub();

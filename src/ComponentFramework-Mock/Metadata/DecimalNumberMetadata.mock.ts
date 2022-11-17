@@ -20,4 +20,8 @@ export class DecimalNumberMetadataMock
     implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.DecimalNumberMetadata
 {
     Precision: number;
+	constructor(){
+		super();
+		this.Precision=0;
+	}
 }

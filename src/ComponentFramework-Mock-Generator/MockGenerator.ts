@@ -22,4 +22,5 @@ export interface MockGenerator<
 > {
     context: ContextMock<TInputs>;
     metadata: MetadataDB;
+    state: ComponentFramework.Dictionary;
 }

@@ -16,6 +16,7 @@
 import { SinonStub, stub } from 'sinon';
 
 export class PagingMock implements ComponentFramework.PropertyHelper.DataSetApi.Paging {
+    _pageSize: number;
     totalResultCount: number;
     firstPageNumber: number;
     lastPageNumber: number;
@@ -24,13 +25,11 @@ export class PagingMock implements ComponentFramework.PropertyHelper.DataSetApi.
     hasPreviousPage: boolean;
     loadNextPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
     loadPreviousPage: SinonStub<[loadOnlyNewPage?: boolean], void>;
-    loadOnlyNewPage: boolean;
     reset: SinonStub<[], void>;
     setPageSize: SinonStub<[pageSize: number], void>;
     loadExactPage: SinonStub<[pageNumber: number], void>;
 
     constructor() {
-        this.loadOnlyNewPage = true;
         this.totalResultCount = -1;
         this.firstPageNumber = 1;
         this.lastPageNumber = 1;
@@ -38,12 +37,12 @@ export class PagingMock implements ComponentFramework.PropertyHelper.DataSetApi.
         this.hasPreviousPage = false;
         this.pageSize = 10;
         this.loadNextPage = stub();
-        this.loadNextPage.callsFake(() => this.loadOnlyNewPage);
+        this.loadNextPage.callsFake(() => this.hasNextPage);
         this.loadPreviousPage = stub();
-        this.loadPreviousPage.callsFake(() => this.loadOnlyNewPage);
+        this.loadPreviousPage.callsFake(() => this.hasPreviousPage);
         this.setPageSize = stub();
         this.setPageSize.callsFake((pageSize: number) => {
-            this.pageSize = pageSize;
+            this._pageSize = pageSize;
         });
         this.reset = stub();
         this.loadExactPage = stub();

@@ -26,36 +26,6 @@ export class UserSettingsMock implements ComponentFramework.UserSettings {
     getTimeZoneOffsetMinutes: SinonStub<[date?: Date], number>;
 
     constructor() {
-        this.getTimeZoneOffsetMinutes = stub();
-        this.numberFormattingInfo = {
-            currencyDecimalDigits: 5,
-            currencyDecimalSeparator: '.',
-            currencyGroupSeparator: ',',
-            currencyGroupSizes: [3],
-            currencyNegativePattern: 0,
-            currencyPositivePattern: 0,
-            currencySymbol: undefined,
-            nanSymbol: 'NaN',
-            nativeDigits: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
-            negativeInfinitySymbol: '-Infinity',
-            negativeSign: '-',
-            numberDecimalDigits: 2,
-            numberDecimalSeparator: '.',
-            numberGroupSeparator: ',',
-            numberGroupSizes: [3],
-            numberNegativePattern: 1,
-            perMilleSymbol: '',
-            percentDecimalDigits: 2,
-            percentDecimalSeparator: '.',
-            percentGroupSeparator: ',',
-            percentGroupSizes: [3],
-            percentNegativePattern: 0,
-            percentPositivePattern: 0,
-            percentSymbol: '%',
-            positiveInfinitySymbol: 'Infinity',
-            positiveSign: '+',
-        };
-
         this.dateFormattingInfo = {
             amDesignator: 'AM',
             abbreviatedDayNames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -91,8 +61,8 @@ export class UserSettingsMock implements ComponentFramework.UserSettings {
             ],
             calendarWeekRule: 0,
             calendar: {
-                minSupportedDateTime: undefined,
-                maxSupportedDateTime: undefined,
+                minSupportedDateTime: new Date(1753,0,1),
+                maxSupportedDateTime: new Date(9999,11,31),
                 algorithmType: 1,
                 calendarType: 1,
                 twoDigitYearMax: 2029,
@@ -143,5 +113,39 @@ export class UserSettingsMock implements ComponentFramework.UserSettings {
             universalSortableDateTimePattern: "yyyy'-'MM'-'dd HH':'mm':'ss'Z'",
             yearMonthPattern: 'MMMM yyyy',
         };
+        this.isRTL = true;
+        this.languageId = 1033;
+        this.numberFormattingInfo = {
+            currencyDecimalDigits: 5,
+            currencyDecimalSeparator: '.',
+            currencyGroupSeparator: ',',
+            currencyGroupSizes: [3],
+            currencyNegativePattern: 0,
+            currencyPositivePattern: 0,
+            currencySymbol: "$",
+            nanSymbol: 'NaN',
+            nativeDigits: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            negativeInfinitySymbol: '-Infinity',
+            negativeSign: '-',
+            numberDecimalDigits: 2,
+            numberDecimalSeparator: '.',
+            numberGroupSeparator: ',',
+            numberGroupSizes: [3],
+            numberNegativePattern: 1,
+            perMilleSymbol: '',
+            percentDecimalDigits: 2,
+            percentDecimalSeparator: '.',
+            percentGroupSeparator: ',',
+            percentGroupSizes: [3],
+            percentNegativePattern: 0,
+            percentPositivePattern: 0,
+            percentSymbol: '%',
+            positiveInfinitySymbol: 'Infinity',
+            positiveSign: '+',
+        };
+        this.securityRoles = [];
+        this.userId = '';
+        this.userName = '';
+        this.getTimeZoneOffsetMinutes = stub();
     }
 }

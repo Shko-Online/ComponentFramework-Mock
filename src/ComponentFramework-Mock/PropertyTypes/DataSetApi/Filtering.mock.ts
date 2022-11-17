@@ -14,16 +14,30 @@
 */
 
 import { SinonStub, stub } from 'sinon';
-import { FilterExpressionMock } from './FilterExpression.mock';
+
+type FilterExpression = ComponentFramework.PropertyHelper.DataSetApi.FilterExpression;
 
 export class FilteringMock implements ComponentFramework.PropertyHelper.DataSetApi.Filtering {
-    getFilter: SinonStub<[], FilterExpressionMock>;
-    setFilter: SinonStub<[FilterExpressionMock], void>;
+    _Filter: FilterExpression;
+    getFilter: SinonStub<[], FilterExpression>;
+    setFilter: SinonStub<[FilterExpression], void>;
     clearFilter: SinonStub<[], void>;
 
     constructor() {
+        const defaultFilter = {
+            conditions: [],
+            filterOperator: 0,
+        } as FilterExpression;
+        this._Filter = defaultFilter;
         this.clearFilter = stub();
+        this.clearFilter.callsFake(() => {
+            this._Filter = defaultFilter;
+        });
         this.getFilter = stub();
+        this.getFilter.callsFake(() => ({ ...this._Filter }));
         this.setFilter = stub();
+        this.setFilter.callsFake((filter) => {
+            this._Filter = { ...filter };
+        });
     }
 }

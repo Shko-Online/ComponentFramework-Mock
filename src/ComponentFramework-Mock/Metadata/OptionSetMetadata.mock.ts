@@ -22,9 +22,9 @@ export class OptionSetMetadataMock
 {
     Options: OptionMetadataMock[];
     DefaultValue: number;
-    constructor(defaultValue?: number) {
+    constructor() {
         super();
         this.Options = [];
-        this.DefaultValue = defaultValue;
+        this.DefaultValue = 0;
     }
 }

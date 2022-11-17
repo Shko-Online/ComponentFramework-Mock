@@ -13,6 +13,7 @@
 	language governing rights and limitations under the RPL. 
 */
 
+import { MetadataDB } from '../../../ComponentFramework-Mock-Generator/Metadata.db';
 import { SinonStub, stub } from 'sinon';
 
 type ColumnReturnValue =
@@ -26,61 +27,48 @@ type ColumnReturnValue =
     | ComponentFramework.LookupValue
     | ComponentFramework.LookupValue[];
 
-export class EntityRecordMock
-    implements ComponentFramework.PropertyHelper.DataSetApi.EntityRecord, ComponentFramework.EntityReference
-{
-    id: { guid: string };
-
-    /**
-     * The entity logical name. Read-only.
-     */
-    etn?: string | undefined;
-
-    /**
-     * The name of the entity reference. Read-only.
-     */
-    name: string;
+export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataSetApi.EntityRecord {
+    _db: MetadataDB;
+    _boundRow: string;
+    _boundTable: string;
     getFormattedValue: SinonStub<[columnName: string], string>;
     getRecordId: SinonStub<[], string>;
     getValue: SinonStub<[columnName: string], ColumnReturnValue>;
     getNamedReference: SinonStub<[], ComponentFramework.EntityReference>;
-    columns: {
-        [columnName: string]: ColumnReturnValue;
-    };
-
-    metadata: ShkoOnline.EntityMetadata;
-
-    constructor(etn: string | undefined, id: string, name?: string) {
-        this.metadata = {
-            LogicalName: etn,
-            PrimaryIdAttribute: etn + 'id',
-            PrimaryNameAttribute: 'name',
-        } as ShkoOnline.EntityMetadata;
-        this.columns = {
-            [etn + 'id']: id,
-            ['name']: name,
-        };
-        this.etn = etn;
-        this.id = { guid: id };
-        this.name = name;
-        this.columns = {};
+    constructor(db: MetadataDB, etn: string, id: string) {
+        this._db = db;
+        this._boundTable = etn;
+        this._boundRow = id;
         this.getFormattedValue = stub();
         this.getFormattedValue.callsFake((columnName) => {
-            if (!(columnName in this.columns)) {
-                return undefined;
-            }
-            return '' + this.columns[columnName];
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
+                this._boundTable,              
+                columnName,
+                this._boundRow,
+            );
+            return value===undefined ? value : '' + value;
         });
         this.getNamedReference = stub();
         this.getNamedReference.callsFake(() => {
-            const id = { guid: this.columns[this.metadata.PrimaryIdAttribute] as string };
-            const etn = this.metadata.LogicalName;
-            const name = this.columns[this.metadata.PrimaryNameAttribute] as string;
+            const { row, entityMetadata } = this._db.GetRow(this._boundTable, this._boundRow);
+            if (row === null) {              
+                return {id: {guid: ''},  name: ''};
+            }
+            const id = { guid: row?.[entityMetadata.PrimaryIdAttribute || (entityMetadata.LogicalName + 'id')] as string };
+            const etn = entityMetadata.LogicalName;
+            const name = row?.[entityMetadata.PrimaryNameAttribute || 'name'] as string;
             return { id, etn, name };
         });
         this.getRecordId = stub();
-        this.getRecordId.callsFake(() => this.id.guid);
+        this.getRecordId.callsFake(() => id);
         this.getValue = stub();
-        this.getValue.callsFake((columnName) => this.columns[columnName]);
+        this.getValue.callsFake((columnName) => {
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
+                this._boundTable,              
+                columnName,
+                this._boundRow,
+            );
+            return value;
+        });
     }
 }
