@@ -23,24 +23,29 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
     raw: ComponentFramework.LookupValue[];
     getTargetEntityType: SinonStub<[], string>;
     getViewId: SinonStub<[], string>;
-    setValue: SinonStub<[value: ComponentFramework.LookupValue[]], void>;
     attributes?: LookupMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db,entityMetadata.LogicalName, propertyName);
+        super(db, entityMetadata.LogicalName, propertyName);
         this.raw = [];
         this._Refresh.callsFake(() => {
-            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.LookupAttributeMetadata>(
-                this._boundTable,           
-                this._boundColumn,
-                this._boundRow,
-            );
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<
+                ShkoOnline.LookupAttributeMetadata,
+                ComponentFramework.LookupValue
+            >(this._boundTable, this._boundColumn, this._boundRow);
             if (attributeMetadata.AttributeType !== AttributeType.Lookup) {
                 throw new Error('Type Error');
             }
             this.attributes = new LookupMetadataMock();
             this.attributes.LogicalName = attributeMetadata.LogicalName;
             this.attributes.Targets = attributeMetadata.Targets;
-            this.raw = [value];
+            if(value){
+                this.raw = [value];
+                this.formatted = value.name;
+            }else{
+                this.raw = [];
+                this.formatted = '';
+            }
+         
         });
         const attribute = {
             AttributeType: AttributeType.Lookup,
@@ -50,13 +55,18 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
         entityMetadata.Attributes?.push(attribute);
 
         this.getTargetEntityType = stub();
-        this.getTargetEntityType.returns('mocked_entity');
+        this.getTargetEntityType.callsFake(() => {
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.LookupAttributeMetadata, ComponentFramework.LookupValue>(
+                this._boundTable,
+                this._boundColumn,
+                this._boundRow,
+            );
+            if (attributeMetadata.AttributeType !== AttributeType.Lookup) {
+                throw new Error('Type Error');
+            }
+            return attributeMetadata.Targets?.[0] || value.entityType;
+        });
         this.getViewId = stub();
         this.getViewId.returns('00000000-0000-0000-0000-000000000000');
-        this.setValue = stub();
-        this.setValue.callsFake((value) => {
-            this.raw = value;
-            this.formatted = value?.map((lookup) => lookup.name).join(',');
-        });
     }
 }

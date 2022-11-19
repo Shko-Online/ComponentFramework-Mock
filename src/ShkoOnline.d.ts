@@ -388,7 +388,7 @@ declare module ShkoOnline {
 
     export interface LookupAttributeMetadata extends ShkoOnline.AttributeMetadata {
         AttributeType: ShkoOnline.AttributeType.Lookup;
-        Targets: [];
+        Targets: string[];
     }
 
     export interface EnumTypeAttributeMetadata extends ShkoOnline.AttributeMetadata {

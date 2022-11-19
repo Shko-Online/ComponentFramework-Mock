@@ -20,11 +20,7 @@ import { FactoryMock } from './Factory.mocks';
 import { FormattingMock } from './Formatting.mock';
 import { ModeMock } from './Mode.mock';
 import { NavigationMock } from './Navigation.mock';
-import {
-    MockToRaw,
-    PropertyMap,
-    PropertyToMock,
-} from './PropertyTypes';
+import { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
 import { ResourcesMock } from './Resources.mock';
 import { UserSettingsMock } from './UserSettings.mock';
 import { UtilityMock } from './Utility.mock';
@@ -42,7 +38,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     navigation: NavigationMock;
     parameters: IInputs;
     _parameters: PropertyToMock<IInputs>;
-    _SetCanvasItems: SinonStub<[MockToRaw<IInputs, PropertyToMock<IInputs>>], void>;
+    _SetCanvasItems: SinonStub<[items: Partial<MockToRaw<IInputs, PropertyToMock<IInputs>>>], void>;
     resources: ResourcesMock;
     userSettings: UserSettingsMock;
     utils: UtilityMock;

@@ -170,7 +170,5 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this.setSelectedRecordIds.callsFake((ids) => {
             this._SelectedRecordIds = ids ? [...ids] : [];
         });
-     
-      
     }
 }

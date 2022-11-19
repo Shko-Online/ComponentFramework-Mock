@@ -143,12 +143,12 @@ export class MetadataDB {
         });
         return tab;
     }
-    GetValueAndMetadata<T extends ShkoOnline.AttributeMetadata>(entity: string, attributeName: string, rowid?: string) {
+    GetValueAndMetadata<TAttribute extends ShkoOnline.AttributeMetadata, TValue = any>(entity: string, attributeName: string, rowid?: string) {
         const result = this.GetRow(entity, rowid);
         const attributeMetadata = result.entityMetadata.Attributes?.find(
             (attribute) => attribute.LogicalName === attributeName,
-        ) as T;
-        const value = result.row?.[attributeName];
+        ) as TAttribute;
+        const value = result.row?.[attributeName] as TValue;
         return { value, attributeMetadata };
     }
     GetRows(entity: string) {
