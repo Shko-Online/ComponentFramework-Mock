@@ -17,7 +17,8 @@ steps:
 
 - task: Npm@1
   inputs:
-    command: 'test'
+    command: 'custom'
+    customCommand: 'test'
   displayName: "Test"
 
 - task: PublishCodeCoverageResults@1
