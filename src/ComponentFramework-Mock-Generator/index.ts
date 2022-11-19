@@ -18,5 +18,7 @@ export { ComponentFrameworkMockGenerator } from './ComponentFramework-Mock-Gener
 export { MetadataDB } from './Metadata.db';
 export { MockGenerator } from './MockGenerator';
 export { mockGetEntityMetadata } from './mockGetEntityMetadata';
+export { mockRefreshParameters } from './mockRefreshParameters';
+export { mockSetControlResource } from './mockSetControlResource';
 export { mockSetControlState } from './mockSetControlState';
 export { ReactResizeObserver } from './ReactResizeObserver';

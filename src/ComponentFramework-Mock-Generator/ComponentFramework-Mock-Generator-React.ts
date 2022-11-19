@@ -13,113 +13,65 @@
     language governing rights and limitations under the RPL. 
 */
 import React from 'react';
-import { spy, stub, SinonSpiedInstance, SinonStub } from 'sinon';
+import { spy, SinonSpiedInstance, SinonStub, stub } from 'sinon';
 import {
     ContextMock,
-    EntityRecordMock,
-    MultiSelectOptionSetPropertyMock,
     PropertyMap,
-    PropertyMock,
 } from '../ComponentFramework-Mock';
 import { MetadataDB } from './Metadata.db';
-import { ReactResizeObserver, ReactResizeObserverProps } from './ReactResizeObserver';
-import { arrayEqual, showBanner } from '../utils';
+import { ReactResizeObserver } from './ReactResizeObserver';
+import { showBanner } from '../utils';
 import { MockGenerator } from './MockGenerator';
 import { mockGetEntityMetadata } from './mockGetEntityMetadata';
 import { mockSetControlState } from './mockSetControlState';
+import { mockSetControlResource } from './mockSetControlResource';
+import { mockRefreshParameters } from './mockRefreshParameters';
+import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > implements MockGenerator<TInputs, TOutputs>
 {
-    control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
+    _RefreshParameters: SinonStub<[], void>;
     context: ContextMock<TInputs>;
+    control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
     state: ComponentFramework.Dictionary;
-    myUserId: string;
+    SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
 
     constructor(control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>, inputs: PropertyMap<TInputs>) {
         showBanner(control.name);
         this.state = {};
-        this.myUserId = "";
         this.control = spy(new control());
         this.metadata = new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
 
         mockGetEntityMetadata(this);
-        mockSetControlState(this);
-
-
         this.notifyOutputChanged = stub();
-        this.notifyOutputChanged.callsFake(() => {
-            const updates = this.control.getOutputs?.();
-            this.context.updatedProperties = [];
-            for (const k in updates) {
-                if (k in this.context.parameters) {
-                    const property = this.context.parameters[k] as PropertyMock;
-
-                    if (Array.isArray(updates[k])) {
-                        const arrayUpdate = updates[k] as number[];
-                        const property = this.context.parameters[k] as MultiSelectOptionSetPropertyMock;
-                        if (!arrayEqual(arrayUpdate, property.raw)) {
-                            this.context.updatedProperties.push(k);
-                        }
-                    } else if (typeof updates[k] === 'object') {
-                    } else {
-                        // @ts-ignore
-                        if (this.context.parameters[k].raw !== updates[k]) {
-                            this.context.updatedProperties.push(k);
-                        }
-                    }
-                    this.metadata.UpdateValue(
-                        updates[k],
-                        property._boundTable,
-                        property._boundColumn,
-                        property._boundRow,
-                    );
-                }
-            }
-            if (this.context.updatedProperties.length > 0) {
-                this.ExecuteUpdateView();
-            }
-        });
+        mockNotifyOutputChanged(this, this.control.getOutputs, this.ExecuteUpdateView);
+        this._RefreshParameters = stub();
+        mockRefreshParameters(this);
+        this.SetControlResource = stub();
+        mockSetControlResource(this);
+        mockSetControlState(this);
     }
 
-    SetControlResource(resource: string) {
-        const xmlResource = new DOMParser().parseFromString(resource, 'text/xml');
-        const elements = xmlResource.getElementsByTagNameNS('', 'data');
-        this.context.resources.getString.callsFake((id) => {
-            for (let i = 0; i < elements.length; i++) {
-                if (elements[i].getAttribute('name') === id) {
-                    return elements[i].getElementsByTagName('value')[0].innerHTML;
-                }
-            }
-            throw new Error(`Could not find string with id '${id}'`);
-        });
-    }
     ExecuteInit() {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
-            (propertyName) => {
-                this.context._parameters[propertyName]._Refresh();
-            },
-        );
+        this._RefreshParameters();
         const state = this.state === undefined ? this.state : { ...this.state };
         this.control.init(this.context, this.notifyOutputChanged, state);
     }
 
-    ExecuteUpdateView(): React.ReactElement {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
-            (propertyName) => {
-                this.context._parameters[propertyName]._Refresh();
-            },
-        );
+    private circuitBreaker = false;
 
+    ExecuteUpdateView(): React.ReactElement {
+        this._RefreshParameters();
+        this.circuitBreaker = !this.circuitBreaker;
         return React.createElement(ReactResizeObserver<TInputs, TOutputs>, {
             componentFrameworkMockGeneratorReact: this,
-            circuitBreaker: new Object(),
+            circuitBreaker: this.circuitBreaker ,
         });
-        //return this.control.updateView(this.context);
     }
 }

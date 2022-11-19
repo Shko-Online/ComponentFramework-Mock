@@ -69,6 +69,8 @@ export {
     MockGenerator,
     ReactResizeObserver,
     mockGetEntityMetadata,
+    mockRefreshParameters,
+    mockSetControlResource,
     mockSetControlState
 } from './ComponentFramework-Mock-Generator';
 

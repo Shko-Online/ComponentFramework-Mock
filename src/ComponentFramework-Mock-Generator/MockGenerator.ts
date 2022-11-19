@@ -13,6 +13,7 @@
     language governing rights and limitations under the RPL. 
 */
 
+import { SinonStub } from 'sinon';
 import { ContextMock } from '../ComponentFramework-Mock';
 import { MetadataDB } from './Metadata.db';
 
@@ -20,7 +21,10 @@ export interface MockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > {
+    _RefreshParameters: SinonStub<[], void>;
     context: ContextMock<TInputs>;
     metadata: MetadataDB;
+    notifyOutputChanged: SinonStub<[], void>;
     state: ComponentFramework.Dictionary;
+    SetControlResource: SinonStub<[resource: string],void>;
 }

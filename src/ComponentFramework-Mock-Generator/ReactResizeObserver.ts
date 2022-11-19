@@ -92,11 +92,7 @@ export const ReactResizeObserver = <
     }, []);
 
     useEffect(() => {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(
-            componentFrameworkMockGeneratorReact.context.parameters,
-        ).forEach((propertyName) => {
-            componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
-        });
+        componentFrameworkMockGeneratorReact._RefreshParameters();
         setComponent(
             componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
         );

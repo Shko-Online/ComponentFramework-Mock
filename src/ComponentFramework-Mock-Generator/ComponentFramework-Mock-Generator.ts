@@ -13,28 +13,27 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { spy, fake, SinonSpy, SinonSpiedInstance } from 'sinon';
+import { spy, SinonSpiedInstance, SinonStub, stub } from 'sinon';
 import { MetadataDB } from './Metadata.db';
-import { arrayEqual, showBanner } from '../utils';
+import { showBanner } from '../utils';
 import { mockGetEntityMetadata } from './mockGetEntityMetadata';
 import { mockSetControlState } from './mockSetControlState';
-import {
-    ContextMock,
-    MultiSelectOptionSetPropertyMock,
-    PropertyMap,
-    PropertyMock,
-} from '../ComponentFramework-Mock';
+import { ContextMock, PropertyMap } from '../ComponentFramework-Mock';
+import { mockSetControlResource } from './mockSetControlResource';
+import { mockRefreshParameters } from './mockRefreshParameters';
+import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > {
-    control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
-    context: ContextMock<TInputs>;
-    notifyOutputChanged: SinonSpy<[], void>;
-    state: ComponentFramework.Dictionary;
+    _RefreshParameters: SinonStub<[], void>;
     container: HTMLDivElement;
-
+    context: ContextMock<TInputs>;
+    control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
+    notifyOutputChanged: SinonStub<[], void>;
+    state: ComponentFramework.Dictionary;
+    SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
 
     constructor(
@@ -44,49 +43,11 @@ export class ComponentFrameworkMockGenerator<
     ) {
         showBanner(control.name);
         this.state = {};
+        this.container = container ?? document.createElement('div');
         this.control = spy(new control());
         this.metadata = new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
-        mockGetEntityMetadata(this);
-        mockSetControlState(this);
-        
-        this.notifyOutputChanged = fake(() => {
-            const updates = this.control.getOutputs?.();
-            this.context.updatedProperties = [];
-            for (const k in updates) {
-                if (k in this.context.parameters) {
-                    const property = this.context.parameters[k] as PropertyMock;
 
-                    if (Array.isArray(updates[k])) {
-                        const arrayUpdate = updates[k] as number[];
-                        const property = this.context.parameters[k] as MultiSelectOptionSetPropertyMock;
-                        if (!arrayEqual(arrayUpdate, property.raw)) {
-                            this.context.updatedProperties.push(k);
-                        }
-                    } else if (typeof updates[k] === 'object') {
-                        //ToDo: Update
-                    } else {
-                        // @ts-ignore
-                        if (this.context.parameters[k].raw !== updates[k]) {
-                            this.context.updatedProperties.push(k);
-                        }
-                    }
-
-                    // @ts-ignore
-                    this.metadata.UpdateValue(
-                        updates[k],
-                        property._boundTable,
-                        property._boundColumn,
-                        property._boundRow,
-                    );
-                }
-            }
-            if (this.context.updatedProperties.length > 0) {
-                this.ExecuteUpdateView();
-            }
-        });
-
-        this.container = container ?? document.createElement('div');
         this.context.mode.trackContainerResize.callsFake((value) => {
             const observer = new ResizeObserver((entries) => {
                 const size = entries[0];
@@ -97,37 +58,25 @@ export class ComponentFrameworkMockGenerator<
             if (value) observer.observe(this.container);
             else observer.unobserve(this.container);
         });
-    }
 
-    SetControlResource(resource: string) {
-        const xmlResource = new DOMParser().parseFromString(resource, 'text/xml');
-        const elements = xmlResource.getElementsByTagNameNS('', 'data');
-        this.context.resources.getString.callsFake((id) => {
-            for (let i = 0; i < elements.length; i++) {
-                if (elements[i].getAttribute('name') === id) {
-                    return elements[i].getElementsByTagName('value')[0].innerHTML;
-                }
-            }
-            throw new Error(`Could not find string with id '${id}'`);
-        });
+        mockGetEntityMetadata(this);
+        this.notifyOutputChanged = stub();
+        mockNotifyOutputChanged(this, this.control.getOutputs, this.ExecuteUpdateView);
+        this._RefreshParameters = stub();
+        mockRefreshParameters(this);
+        this.SetControlResource = stub();
+        mockSetControlResource(this);
+        mockSetControlState(this);
     }
 
     ExecuteInit() {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
-            (propertyName) => {
-                this.context._parameters[propertyName]._Refresh();
-            },
-        );
+        this._RefreshParameters();
         const state = this.state === undefined ? this.state : { ...this.state };
         this.control.init(this.context, this.notifyOutputChanged, state, this.container);
     }
 
     ExecuteUpdateView() {
-        Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(this.context.parameters).forEach(
-            (propertyName) => {
-                this.context._parameters[propertyName]._Refresh();
-            },
-        );
+        this._RefreshParameters();
         this.control.updateView(this.context);
     }
 }

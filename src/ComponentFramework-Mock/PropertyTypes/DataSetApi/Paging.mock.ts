@@ -35,6 +35,7 @@ export class PagingMock implements ComponentFramework.PropertyHelper.DataSetApi.
         this.lastPageNumber = 1;
         this.hasNextPage = false;
         this.hasPreviousPage = false;
+        this._pageSize = 10;
         this.pageSize = 10;
         this.loadNextPage = stub();
         this.loadNextPage.callsFake(() => this.hasNextPage);
