@@ -18,10 +18,10 @@ import { SinonStub, stub } from 'sinon';
 export class AttributeMetadataCollection implements ShkoOnline.AttributeMetadataCollection {
     _attributes: ShkoOnline.AttributeMetadata[];
     add: SinonStub<[]>;
-    get: SinonStub<[string], ShkoOnline.AttributeMetadata| undefined>;
+    get: SinonStub<[logicalName:string], ShkoOnline.AttributeMetadata| undefined>;
     getAll: SinonStub<[], ShkoOnline.AttributeMetadata[]>;
     getByFilter: SinonStub<[], ShkoOnline.AttributeMetadata[]>;
-    getByName: SinonStub<[string], ShkoOnline.AttributeMetadata|undefined>;
+    getByName: SinonStub<[name:string], ShkoOnline.AttributeMetadata|undefined>;
     getByIndex: SinonStub<[index: number], ShkoOnline.AttributeMetadata|undefined>;
     getFirst: SinonStub<[(attribute: ShkoOnline.AttributeMetadata) => boolean], ShkoOnline.AttributeMetadata|undefined>;
     getLength: SinonStub<[], number>;

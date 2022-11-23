@@ -1,5 +1,5 @@
 import { it, expect, describe, beforeEach } from '@jest/globals';
-import { PagingMock, MetadataDB } from '../src';
+import { PagingMock } from '../src';
 
 describe('PagingSetMock', () => {
     let paging: PagingMock;

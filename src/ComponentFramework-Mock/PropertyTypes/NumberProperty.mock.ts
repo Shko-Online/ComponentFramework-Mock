@@ -13,7 +13,6 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from 'sinon';
 import { NumberMetadataMock } from '../Metadata';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 import { AttributeType } from './AttributeType';
@@ -22,7 +21,6 @@ import { PropertyMock } from './Property.mock';
 export class NumberPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.NumberProperty {
     attributes?: NumberMetadataMock;
     raw: number | null;
-    setValue: SinonStub<[value: number | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super(db, entityMetadata.LogicalName, propertyName);
         this.raw = null;
@@ -56,11 +54,5 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             LogicalName: propertyName,
         } as ShkoOnline.NumberAttributeMetadata;
         entityMetadata.Attributes?.push(attribute);
-
-        this.setValue = stub();
-        this.setValue.callsFake((value) => {
-            this.raw = value;
-            this.formatted = '' + value;
-        });
     }
 }

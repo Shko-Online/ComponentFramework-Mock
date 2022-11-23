@@ -15,20 +15,17 @@
 
 import { SinonStub, stub } from 'sinon';
 
+type AlertDialogStrings = ComponentFramework.NavigationApi.AlertDialogStrings;
+type AlertDialogOptions = ComponentFramework.NavigationApi.AlertDialogOptions;
+type ConfirmDialogStrings = ComponentFramework.NavigationApi.ConfirmDialogStrings;
+type ConfirmDialogOptions = ComponentFramework.NavigationApi.ConfirmDialogOptions;
+type ConfirmDialogResponse = ComponentFramework.NavigationApi.ConfirmDialogResponse;
+
 export class NavigationMock implements ComponentFramework.Navigation {
-    openAlertDialog: SinonStub<
-        [
-            alertStrings: ComponentFramework.NavigationApi.AlertDialogStrings,
-            options?: ComponentFramework.NavigationApi.AlertDialogOptions,
-        ],
-        Promise<void>
-    >;
+    openAlertDialog: SinonStub<[alertStrings: AlertDialogStrings, options?: AlertDialogOptions], Promise<void>>;
     openConfirmDialog: SinonStub<
-        [
-            confirmStrings: ComponentFramework.NavigationApi.ConfirmDialogStrings,
-            options?: ComponentFramework.NavigationApi.ConfirmDialogOptions,
-        ],
-        Promise<ComponentFramework.NavigationApi.ConfirmDialogResponse>
+        [confirmStrings: ConfirmDialogStrings, options?: ConfirmDialogOptions],
+        Promise<ConfirmDialogResponse>
     >;
     openErrorDialog: SinonStub<[options: ComponentFramework.NavigationApi.ErrorDialogOptions], Promise<void>>;
     openFile: SinonStub<

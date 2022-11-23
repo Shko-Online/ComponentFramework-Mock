@@ -13,7 +13,6 @@
   language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from 'sinon';
 import { PropertyMock } from './Property.mock';
 import { OptionMetadataMock, OptionSetMetadataMock } from '../Metadata';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';

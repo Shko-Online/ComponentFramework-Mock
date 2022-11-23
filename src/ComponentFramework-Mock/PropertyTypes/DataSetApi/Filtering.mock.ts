@@ -20,7 +20,7 @@ type FilterExpression = ComponentFramework.PropertyHelper.DataSetApi.FilterExpre
 export class FilteringMock implements ComponentFramework.PropertyHelper.DataSetApi.Filtering {
     _Filter: FilterExpression;
     getFilter: SinonStub<[], FilterExpression>;
-    setFilter: SinonStub<[FilterExpression], void>;
+    setFilter: SinonStub<[expression: FilterExpression], void>;
     clearFilter: SinonStub<[], void>;
 
     constructor() {

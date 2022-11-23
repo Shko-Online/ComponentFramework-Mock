@@ -21,7 +21,7 @@ export class ModeMock implements ComponentFramework.Mode {
     isControlDisabled: boolean;
     isVisible: boolean;
     label: string;
-    setControlState: SinonStub<[ComponentFramework.Dictionary], boolean>;
+    setControlState: SinonStub<[state: ComponentFramework.Dictionary], boolean>;
     _FullScreen: boolean;
     setFullScreen: SinonStub<[value: boolean], void>;
     trackContainerResize: SinonStub<[value: boolean], void>;

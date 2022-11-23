@@ -13,7 +13,6 @@
     language governing rights and limitations under the RPL. 
 */
 
-import { SinonStub, stub } from 'sinon';
 import { AttributeType } from './AttributeType';
 import { NumberPropertyMock } from './NumberProperty.mock';
 import { DecimalNumberMetadataMock } from '../Metadata/DecimalNumberMetadata.mock';
@@ -24,7 +23,6 @@ export class DecimalNumberPropertyMock
     implements ComponentFramework.PropertyTypes.DecimalNumberProperty
 {
     attributes?: DecimalNumberMetadataMock;
-    setValue: SinonStub<[value: number | null], void>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super(propertyName, db, entityMetadata);       
         this._Refresh.callsFake(() => {
@@ -51,11 +49,5 @@ export class DecimalNumberPropertyMock
             LogicalName: propertyName,
         } as ShkoOnline.DecimalNumberAttributeMetadata;
         entityMetadata.Attributes?.push(attribute);
-
-        this.setValue = stub();
-        this.setValue.callsFake((value) => {
-            this.raw = value;
-            this.formatted = '' + value;
-        });
     }
 }

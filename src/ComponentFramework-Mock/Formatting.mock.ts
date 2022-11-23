@@ -15,6 +15,8 @@
 
 import { stub, SinonStub } from 'sinon';
 
+type DateTimeFieldBehavior = ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior;
+
 export class FormattingMock implements ComponentFramework.Formatting {
     formatCurrency: SinonStub<[value: number, precision?: number, currencySymbol?: string], string>;
     formatDecimal: SinonStub<[value: number, precision?: number], string>;
@@ -25,10 +27,7 @@ export class FormattingMock implements ComponentFramework.Formatting {
     formatDateYearMonth: SinonStub<[value: Date], string>;
     formatInteger: SinonStub<[value: number], string>;
     formatLanguage: SinonStub<[value: number], string>;
-    formatTime: SinonStub<
-        [value: Date, behavior: ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior],
-        string
-    >;
+    formatTime: SinonStub<[value: Date, behavior: DateTimeFieldBehavior], string>;
     getWeekOfYear: SinonStub<[value: Date], number>;
     locale: 'en-US' | 'it-IT';
     constructor() {
@@ -64,11 +63,11 @@ export class FormattingMock implements ComponentFramework.Formatting {
         this.formatDateLongAbbreviated = stub();
         this.formatDateLongAbbreviated.callsFake((value: Date) => {
             return value.toLocaleString(this.locale, {
-                      day: '2-digit',
-                      weekday: 'short',
-                      year: 'numeric',
-                      month: 'long',
-                  });
+                day: '2-digit',
+                weekday: 'short',
+                year: 'numeric',
+                month: 'long',
+            });
         });
         this.formatDateShort = stub();
         this.formatDateShort.callsFake((value: Date, includeTime?: boolean) => {
@@ -77,9 +76,9 @@ export class FormattingMock implements ComponentFramework.Formatting {
         this.formatDateYearMonth = stub();
         this.formatDateYearMonth.callsFake((value: Date) => {
             return value.toLocaleString(this.locale, {
-                      year: 'numeric',
-                      month: 'long',
-                  });
+                year: 'numeric',
+                month: 'long',
+            });
         });
         this.formatInteger = stub();
         this.formatInteger.callsFake((value: number) => {
@@ -91,7 +90,7 @@ export class FormattingMock implements ComponentFramework.Formatting {
         });
         this.formatTime = stub();
         this.formatTime.callsFake(
-            (value: Date, behavior: ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior) => {
+            (value: Date, behavior: DateTimeFieldBehavior) => {
                 throw new Error('Method not implemented.');
             },
         );

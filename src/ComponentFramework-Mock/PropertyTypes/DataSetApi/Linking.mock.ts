@@ -19,7 +19,7 @@ type LinkEntityExposedExpression = ComponentFramework.PropertyHelper.DataSetApi.
 
 export class LinkingMock implements ComponentFramework.PropertyHelper.DataSetApi.Linking {
     getLinkedEntities: SinonStub<[], LinkEntityExposedExpression[]>;
-    addLinkedEntity: SinonStub<[LinkEntityExposedExpression], void>;
+    addLinkedEntity: SinonStub<[expression: LinkEntityExposedExpression], void>;
 
     constructor() {
         this.addLinkedEntity = stub();

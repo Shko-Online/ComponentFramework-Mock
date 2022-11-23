@@ -16,12 +16,12 @@
 import { stub, SinonStub } from 'sinon';
 import { PopupServiceMock } from './FactoryApi';
 export class FactoryMock implements ComponentFramework.Factory {
-    popupService = new PopupServiceMock();
-    getPopupService: SinonStub<[void], PopupServiceMock>;
-    requestRender: SinonStub<[void], void>;
+    _popupService = new PopupServiceMock();
+    getPopupService: SinonStub<[], PopupServiceMock>;
+    requestRender: SinonStub<[], void>;
     constructor() {
         this.getPopupService = stub();
-        this.getPopupService.returns(this.popupService);
+        this.getPopupService.returns(this._popupService);
         this.requestRender = stub();
     }
 }
