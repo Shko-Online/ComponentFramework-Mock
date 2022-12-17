@@ -1,3 +1,8 @@
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import '.';
 import { expectType } from 'tsd';
 import { EnumPropertyMock } from '../../src';

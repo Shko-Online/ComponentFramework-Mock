@@ -1,3 +1,8 @@
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import { createElement, Fragment, JSXElementConstructor, ReactElement, useEffect, useRef, useState } from 'react';
 import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock';
 import { arrayEqual } from '../utils';

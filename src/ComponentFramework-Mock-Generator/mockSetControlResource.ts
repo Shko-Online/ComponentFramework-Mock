@@ -1,3 +1,8 @@
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import { stub } from 'sinon';
 import { MockGenerator } from './MockGenerator';
 

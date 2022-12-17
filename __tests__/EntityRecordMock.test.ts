@@ -1,3 +1,8 @@
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { EntityRecordMock, MetadataDB } from '../src';
 

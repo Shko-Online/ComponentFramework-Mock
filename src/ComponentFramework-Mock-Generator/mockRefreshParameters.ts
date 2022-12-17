@@ -1,4 +1,8 @@
-import { stub } from 'sinon';
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import { MockGenerator } from './MockGenerator';
 
 export const mockRefreshParameters = <
