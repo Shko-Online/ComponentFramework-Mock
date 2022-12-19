@@ -58,7 +58,14 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             PrimaryNameAttribute: 'name',
             Attributes: [],
         } as ShkoOnline.EntityMetadata;
-        this._db.initMetadata([dataSetEntity]);
+        const dataSetColumnsEntity = {
+            LogicalName: '!!' + propertyName + '$columns',
+            EntitySetName: '!!' + propertyName + '$columns',
+            PrimaryIdAttribute: 'name',
+            PrimaryNameAttribute: 'displayName',
+            Attributes: [],
+        } as ShkoOnline.EntityMetadata;
+        this._db.initMetadata([dataSetEntity, dataSetColumnsEntity]);
         this._Refresh = stub();
         this._Bind = stub();
         this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
@@ -78,22 +85,33 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     }
                 });
             });
-            this.columns = Object.getOwnPropertyNames(columns).map((column) => {
-                return {
-                    displayName: column as string,
-                    name: column as string,
-                    dataType: 'SingleLine.Text',
-                    alias: column as string,
-                    order: columns[column],
-                    visualSizeFactor: 1,
-                };
-            });
 
             new AttributeMetadataGenerator(this._boundTable)
                 .AddString(Object.getOwnPropertyNames(columns) as string[])
                 .Attributes.forEach((attribute) => {
                     this._db.upsertAttributeMetadata(this._boundTable, attribute);
                 });
+
+            new AttributeMetadataGenerator(`${this._boundTable}$columns`)
+                .AddString(['displayName', 'name', 'dataType', 'alias'])
+                .AddInteger(['order', 'visualSizeFactor'])
+                .Attributes.forEach((attribute) => {
+                    this._db.upsertAttributeMetadata(`${this._boundTable}$columns`, attribute);
+                });
+
+            this._db.initItems({
+                '@odata.context': `#${this._boundTable}$columns`,
+                value: Object.getOwnPropertyNames(columns).map((column) => {
+                    return {
+                        displayName: column as string,
+                        name: column as string,
+                        dataType: 'SingleLine.Text',
+                        alias: column as string,
+                        order: columns[column],
+                        visualSizeFactor: 1,
+                    };
+                }),
+            });
 
             this._db.initItems({
                 '@odata.context': `#${this._boundTable}`,
@@ -102,7 +120,9 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             this._Refresh();
         });
         this._Refresh.callsFake(() => {
-            var rows = this._db.GetRows(this._boundTable);
+            const columnsResult = this._db.GetRows(`${this._boundTable}$columns`);
+            this.columns = columnsResult.rows;
+            const rows = this._db.GetRows(this._boundTable);
             const records = rows.rows.map((item) => {
                 const row = new EntityRecordMock(
                     db,

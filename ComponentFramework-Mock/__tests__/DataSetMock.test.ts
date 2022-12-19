@@ -108,6 +108,37 @@ describe('DataSetMock', () => {
         ]);
     });
 
+    it('columns definition can be updated', () => {
+        db.UpdateValue<string>('Record Id', `!!dataset$columns`, 'displayName', 'id');
+        dataset._Refresh();
+        expect(dataset.columns).toEqual([
+            {
+                alias: 'id',
+                dataType: 'SingleLine.Text',
+                displayName: 'Record Id',
+                name: 'id',
+                order: 0,
+                visualSizeFactor: 1,
+            },
+            {
+                alias: 'col1',
+                dataType: 'SingleLine.Text',
+                displayName: 'col1',
+                name: 'col1',
+                order: 1,
+                visualSizeFactor: 1,
+            },
+            {
+                alias: 'col2',
+                dataType: 'SingleLine.Text',
+                displayName: 'col2',
+                name: 'col2',
+                order: 2,
+                visualSizeFactor: 1,
+            },
+        ]);
+    });
+
     it('SelectedRecordIds methods should work', () => {
         dataset.setSelectedRecordIds(['1', '2']);
         expect(dataset.getSelectedRecordIds()).toEqual(['1', '2']);

@@ -126,14 +126,18 @@ export class MetadataDB {
         };
     }
     GetAllColumn(entity: string, attribute: string) {
-        const tab:any[] = [];
+        const tab: any[] = [];
         const data = this.data[entity].chain().data();
         data.forEach((at) => {
             tab.push(at[attribute]);
         });
         return tab;
     }
-    GetValueAndMetadata<TAttribute extends ShkoOnline.AttributeMetadata, TValue = any>(entity: string, attributeName: string, rowid?: string) {
+    GetValueAndMetadata<TAttribute extends ShkoOnline.AttributeMetadata, TValue = any>(
+        entity: string,
+        attributeName: string,
+        rowid?: string,
+    ) {
         const result = this.GetRow(entity, rowid);
         const attributeMetadata = result.entityMetadata.Attributes?.find(
             (attribute) => attribute.LogicalName === attributeName,
@@ -143,7 +147,7 @@ export class MetadataDB {
     }
     GetRows(entity: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity });
-        const rows = [...(this.data[entity]?.data || [])];
+        const rows = [...(this.data[entity]?.data.map(({ $loki, meta, ...rest }) => ({ ...rest })) || [])];
         return { rows, entityMetadata };
     }
     UpdateValue<T>(value: T, entity: string, attribute: string, row?: string) {

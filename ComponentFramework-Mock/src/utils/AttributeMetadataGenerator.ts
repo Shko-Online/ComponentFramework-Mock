@@ -10,6 +10,7 @@ export class AttributeMetadataGenerator {
     Attributes: ShkoOnline.AttributeMetadata[];
     AddString: SinonStub<[args: string[]], AttributeMetadataGenerator>;
     AddBoolean: SinonStub<[args: string[]], AttributeMetadataGenerator>;
+    AddInteger: SinonStub<[args: string[]], AttributeMetadataGenerator>;
     constructor(entityLogicalName: string) {
         this.Attributes = [];
         this.AddString = stub();
@@ -36,6 +37,20 @@ export class AttributeMetadataGenerator {
                             LogicalName: logicalName,
                             AttributeType: AttributeType.Boolean,
                         } as ShkoOnline.BooleanAttributeMetadata),
+                ),
+            );
+            return this;
+        });
+        this.AddInteger = stub();
+        this.AddInteger.callsFake((args) => {
+            this.Attributes = this.Attributes.concat(
+                args.map(
+                    (logicalName) =>
+                        ({
+                            EntityLogicalName: entityLogicalName,
+                            LogicalName: logicalName,
+                            AttributeType: AttributeType.Integer,
+                        } as ShkoOnline.IntegerNumberAttributeMetadata),
                 ),
             );
             return this;
