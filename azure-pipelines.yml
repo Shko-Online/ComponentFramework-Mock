@@ -13,12 +13,14 @@ steps:
 - task: Npm@1
   inputs:
     command: 'install'
+    workingDir: 'ComponentFramework-Mock'
   displayName: "Install NPM Dependencies"
 
 - task: Npm@1
   inputs:
     command: 'custom'
     customCommand: 'test'
+    workingDir: 'ComponentFramework-Mock'
   displayName: "Test"
 
 - task: PublishCodeCoverageResults@1
@@ -26,4 +28,4 @@ steps:
   condition: succeededOrFailed()
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: "coverage/cobertura-coverage.xml"
+    summaryFileLocation: "ComponentFramework-Mock/coverage/cobertura-coverage.xml"

@@ -1,4 +1,5 @@
 __tests__
 __type-tests__
+coverage/
 jest.config.js
-setup-tests.js
+setup-tests.ts

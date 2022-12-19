@@ -1,0 +1,13 @@
+{
+    "private": true,
+    "name": "@shko.online/build-scripts",
+    "dependencies": {
+        "@babel/cli": "^7.19.3",
+        "chalk": "4",
+        "execa": "5",
+        "fs-extra": "^10.1.0",
+        "npmlog": "^7.0.1",
+        "read-pkg-up": "7",
+        "shelljs": "^0.8.5"
+    }
+}

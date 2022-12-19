@@ -30,7 +30,7 @@
     "exclude": [
         "node_modules",
         "wwwroot",
-        "dist"
+        "lib"
     ],
     "include": [
         "src",
