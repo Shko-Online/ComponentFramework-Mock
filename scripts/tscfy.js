@@ -5,6 +5,7 @@ const { run } = require('./run');
 
 function getCommand(watch) {
     const args = [
+        '--project tsconfig.build.json',
         '--outDir ./lib/ts3.9',
         '--listEmittedFiles false',
         '--declaration true',
@@ -39,7 +40,7 @@ async function tscfy(options = {}) {
     }
 
     if (!watch) {
-        await execa.command('yarn run -T downlevel-dts lib/ts3.9 lib/ts3.4');
+        await execa.command('npx downlevel-dts lib/ts3.9 lib/ts3.4');
     }
 }
 

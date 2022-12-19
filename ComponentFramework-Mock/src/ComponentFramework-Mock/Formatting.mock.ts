@@ -7,6 +7,11 @@ import { stub, SinonStub } from 'sinon';
 
 type DateTimeFieldBehavior = ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior;
 
+const symbolToCurrency = {
+    '€': 'EUR',
+    $: 'USD',
+};
+
 export class FormattingMock implements ComponentFramework.Formatting {
     formatCurrency: SinonStub<[value: number, precision?: number, currencySymbol?: string], string>;
     formatDecimal: SinonStub<[value: number, precision?: number], string>;
@@ -24,17 +29,21 @@ export class FormattingMock implements ComponentFramework.Formatting {
         this.locale = 'en-US';
         this.formatCurrency = stub();
         this.formatCurrency.callsFake((value: number, precision?: number, currencySymbol?: string) => {
-            return value.toLocaleString(this.locale, {
-                style: 'currency',
-                currency: 'USD',
-                maximumSignificantDigits: precision,
-                currencySign: currencySymbol,
-            });
+            const currency = symbolToCurrency[currencySymbol];
+            return (
+                (currencySymbol && !currency ? currencySymbol : '') +
+                value.toLocaleString(this.locale, {
+                    style: currency ? 'currency' : 'decimal',
+                    currency,
+                    maximumFractionDigits: precision,
+                    minimumFractionDigits: precision,
+                })
+            );
         });
         this.formatDecimal = stub();
         this.formatDecimal.callsFake((value: number, precision?: number) => {
             return value.toLocaleString(this.locale, {
-                maximumSignificantDigits: precision,
+                maximumFractionDigits: precision,
             });
         });
         this.formatDateAsFilterStringInUTC = stub();
@@ -79,11 +88,9 @@ export class FormattingMock implements ComponentFramework.Formatting {
             return `${value}`;
         });
         this.formatTime = stub();
-        this.formatTime.callsFake(
-            (value: Date, behavior: DateTimeFieldBehavior) => {
-                throw new Error('Method not implemented.');
-            },
-        );
+        this.formatTime.callsFake((value: Date, behavior: DateTimeFieldBehavior) => {
+            throw new Error('Method not implemented.');
+        });
         this.getWeekOfYear = stub();
         this.getWeekOfYear.callsFake((value: Date) => {
             const leapYear = value.getFullYear() % 4 === 0;
