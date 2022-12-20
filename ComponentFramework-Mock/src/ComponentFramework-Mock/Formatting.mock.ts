@@ -7,7 +7,7 @@ import { stub, SinonStub } from 'sinon';
 
 type DateTimeFieldBehavior = ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior;
 
-const symbolToCurrency = {
+const symbolToCurrency: { [key: string]: string } = {
     '€': 'EUR',
     $: 'USD',
 };
@@ -29,7 +29,7 @@ export class FormattingMock implements ComponentFramework.Formatting {
         this.locale = 'en-US';
         this.formatCurrency = stub();
         this.formatCurrency.callsFake((value: number, precision?: number, currencySymbol?: string) => {
-            const currency = symbolToCurrency[currencySymbol];
+            const currency = currencySymbol ? symbolToCurrency[currencySymbol] : undefined;
             return (
                 (currencySymbol && !currency ? currencySymbol : '') +
                 value.toLocaleString(this.locale, {

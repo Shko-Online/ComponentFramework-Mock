@@ -51,7 +51,7 @@ export class ComponentFrameworkMockGenerator<
 
         mockGetEntityMetadata(this);
         this.notifyOutputChanged = stub();
-        mockNotifyOutputChanged(this, this.control.getOutputs.bind(this.control), this.ExecuteUpdateView.bind(this));
+        mockNotifyOutputChanged(this, this.control.getOutputs?.bind(this.control), this.ExecuteUpdateView.bind(this));
         this._RefreshParameters = stub();
         mockRefreshParameters(this);
         this.SetControlResource = stub();
