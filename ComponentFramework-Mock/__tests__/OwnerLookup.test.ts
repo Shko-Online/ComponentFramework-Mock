@@ -5,8 +5,8 @@
 
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { ComponentFrameworkMockGenerator, LookupPropertyMock } from '../src';
-import { OwnerLookup } from './sample-components/OwnerLookup';
-import { IInputs, IOutputs } from './sample-components/OwnerLookup/generated/ManifestTypes';
+import { OwnerLookup } from '../__sample-components__/OwnerLookup';
+import { IInputs, IOutputs } from '../__sample-components__/OwnerLookup/generated/ManifestTypes';
 
 describe('OwnerLookup', () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
