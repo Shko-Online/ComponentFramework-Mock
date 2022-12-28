@@ -23,6 +23,10 @@ steps:
     workingDir: 'ComponentFramework-Mock'
   displayName: "Test"
 
+- script: 'npx semantic-release'
+  workingDirectory: 'ComponentFramework-Mock'
+  displayName: 'Semantic Release'
+  
 - task: PublishCodeCoverageResults@1
   displayName: "Publish code coverage results"
   condition: succeededOrFailed()
