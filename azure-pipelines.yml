@@ -26,6 +26,9 @@ steps:
 - script: 'npx semantic-release'
   workingDirectory: 'ComponentFramework-Mock'
   displayName: 'Semantic Release'
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+    NPM_TOKEN: $(NPM_TOKEN)
   
 - task: PublishCodeCoverageResults@1
   displayName: "Publish code coverage results"
