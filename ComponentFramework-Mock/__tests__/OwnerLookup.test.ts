@@ -29,6 +29,10 @@ describe('OwnerLookup', () => {
         document.body.appendChild(container);
     });
 
+    afterEach(() => {
+        document.body.innerHTML = null;
+    })
+
     it('Should render lookup value', () => {
         mockGenerator.ExecuteInit();
         mockGenerator.ExecuteUpdateView();
