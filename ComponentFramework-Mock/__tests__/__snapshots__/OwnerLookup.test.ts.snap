@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OwnerLookup Should render lookup value 1`] = `
+<div>
+  <p>
+    [team-guid1] Shko Online
+  </p>
+  <button
+    value="Assign To Myself"
+  />
+</div>
+`;
+
+exports[`OwnerLookup Should update value on click 1`] = `
+<body>
+  <div>
+    <p>
+      [undefined-undefined] undefined
+    </p>
+    <button
+      value="Assign To Myself"
+    />
+  </div>
+</body>
+`;
