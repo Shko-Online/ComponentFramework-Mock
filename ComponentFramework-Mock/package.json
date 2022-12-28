@@ -1,6 +1,6 @@
 {
     "name": "@shko.online/componentframework-mock",
-    "version": "0.1.9",
+    "version": "0.1.10",
     "description": "Mocking library to help with testing PowerApps Component Framework Components",
     "repository": "https://github.com/shko-online/ComponentFramework-Mock",
     "author": "Shko Online <sales@shko.online> (https://shko.online)",
@@ -76,7 +76,7 @@
         "ts-jest": "^29.0.3",
         "tsd": "^0.24.1",
         "typescript": "^4.7.4"
-    },    
+    },
     "scripts": {
         "build": "npm run lint && node ../scripts/build.js",
         "lint": "eslint",
