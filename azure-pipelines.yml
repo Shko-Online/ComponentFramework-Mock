@@ -25,6 +25,12 @@ steps:
 
 - task: Npm@1
   inputs:
+    command: 'install'
+    workingDir: 'scripts'
+  displayName: "Install 'scripts' NPM Dependencies"
+
+- task: Npm@1
+  inputs:
     command: 'custom'
     customCommand: 'run build'
     workingDir: 'ComponentFramework-Mock'
