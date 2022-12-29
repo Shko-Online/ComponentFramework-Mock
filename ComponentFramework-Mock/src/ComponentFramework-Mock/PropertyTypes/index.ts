@@ -14,7 +14,7 @@ export { MultiSelectOptionSetPropertyMock } from './MultiSelectOptionSetProperty
 export { NumberPropertyMock } from './NumberProperty.mock';
 export { OptionSetPropertyMock } from './OptionSetProperty.mock';
 export { PropertyMock } from './Property.mock';
-export { MockToRaw, PropertyMap, PropertyToMock } from './PropertyMap';
+export type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyMap';
 export { StringPropertyMock } from './StringProperty.mock';
 export { TwoOptionsPropertyMock } from './TwoOptionsProperty.mock';
 export { WholeNumberPropertyMock } from './WholeNumberProperty.mock';

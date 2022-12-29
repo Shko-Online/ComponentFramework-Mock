@@ -4,7 +4,8 @@
 */
 
 import { MetadataDB } from '../../../ComponentFramework-Mock-Generator/Metadata.db';
-import { SinonStub, stub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 
 type ColumnReturnValue =
     | string

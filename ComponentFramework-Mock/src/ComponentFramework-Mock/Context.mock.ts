@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { SinonStub, stub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 import { ClientMock } from './Client.mock';
 import { DeviceMock } from './Device.mock';
 import { FactoryMock } from './Factory.mocks';

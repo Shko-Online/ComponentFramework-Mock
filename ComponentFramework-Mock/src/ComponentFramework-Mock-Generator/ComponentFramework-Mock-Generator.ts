@@ -3,12 +3,14 @@
     Licensed under the MIT license.
 */
 
-import { spy, SinonSpiedInstance, SinonStub, stub } from 'sinon';
+import type { SinonSpiedInstance, SinonStub } from 'sinon';
+import type { PropertyMap } from '../ComponentFramework-Mock';
+import { spy, stub } from 'sinon';
 import { MetadataDB } from './Metadata.db';
+import { ContextMock } from '../ComponentFramework-Mock';
 import { showBanner } from '../utils';
 import { mockGetEntityMetadata } from './mockGetEntityMetadata';
 import { mockSetControlState } from './mockSetControlState';
-import { ContextMock, PropertyMap } from '../ComponentFramework-Mock';
 import { mockSetControlResource } from './mockSetControlResource';
 import { mockRefreshParameters } from './mockRefreshParameters';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';

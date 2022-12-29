@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { stub, SinonStub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 
 type DateTimeFieldBehavior = ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior;
 

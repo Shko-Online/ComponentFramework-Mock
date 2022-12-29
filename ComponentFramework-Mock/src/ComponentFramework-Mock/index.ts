@@ -34,18 +34,16 @@ export {
     FilteringMock,
     LinkingMock,
     LookupPropertyMock,
-    MockToRaw,
     MultiSelectOptionSetPropertyMock,
     NumberPropertyMock,
     OptionSetPropertyMock,
     PagingMock,
-    PropertyMap,
     PropertyMock,
-    PropertyToMock,
     StringPropertyMock,
     TwoOptionsPropertyMock,
     WholeNumberPropertyMock,
 } from './PropertyTypes';
+export type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
 export { ResourcesMock } from './Resources.mock';
 export { UserSettingsMock } from './UserSettings.mock';
 export { UtilityMock } from './Utility.mock';

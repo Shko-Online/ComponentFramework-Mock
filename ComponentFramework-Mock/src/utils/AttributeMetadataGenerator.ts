@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { SinonStub, stub } from 'sinon';
+import type { SinonStub }from 'sinon';
+import { stub } from 'sinon';
 import { AttributeType } from '../ComponentFramework-Mock';
 
 export class AttributeMetadataGenerator {

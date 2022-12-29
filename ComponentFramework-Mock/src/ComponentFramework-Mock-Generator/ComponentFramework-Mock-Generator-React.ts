@@ -3,16 +3,16 @@
     Licensed under the MIT license.
 */
 
-import React from 'react';
-import { spy, SinonSpiedInstance, SinonStub, stub } from 'sinon';
-import {
-    ContextMock,
-    PropertyMap,
-} from '../ComponentFramework-Mock';
+import type { SinonSpiedInstance, SinonStub } from 'sinon';
+import type { PropertyMap } from '../ComponentFramework-Mock';
+import type { MockGenerator } from './MockGenerator';
+import type { ReactElement } from 'react';
+import { createElement } from 'react';
+import { spy, stub } from 'sinon';
+import { ContextMock } from '../ComponentFramework-Mock';
 import { MetadataDB } from './Metadata.db';
 import { ReactResizeObserver } from './ReactResizeObserver';
 import { showBanner } from '../utils';
-import { MockGenerator } from './MockGenerator';
 import { mockGetEntityMetadata } from './mockGetEntityMetadata';
 import { mockSetControlState } from './mockSetControlState';
 import { mockSetControlResource } from './mockSetControlResource';
@@ -57,12 +57,12 @@ export class ComponentFrameworkMockGeneratorReact<
 
     private circuitBreaker = false;
 
-    ExecuteUpdateView(): React.ReactElement {
+    ExecuteUpdateView(): ReactElement {
         this._RefreshParameters();
         this.circuitBreaker = !this.circuitBreaker;
-        return React.createElement(ReactResizeObserver<TInputs, TOutputs>, {
+        return createElement(ReactResizeObserver<TInputs, TOutputs>, {
             componentFrameworkMockGeneratorReact: this,
-            circuitBreaker: this.circuitBreaker ,
+            circuitBreaker: this.circuitBreaker,
         });
     }
 }

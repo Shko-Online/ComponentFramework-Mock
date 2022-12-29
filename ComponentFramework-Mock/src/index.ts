@@ -1,10 +1,13 @@
 /*
-    Copyright (c) 2022 Betim Beja and Shko Online LLC
-    Licensed under the MIT license.
+Copyright (c) 2022 Betim Beja and Shko Online LLC
+Licensed under the MIT license.
 */
 
 /// <reference types="powerapps-component-framework" />
 /// <reference path="./ShkoOnline.d.ts" />
+
+export type { MockToRaw, PropertyMap, PropertyToMock } from './ComponentFramework-Mock';
+export type { MockGenerator } from './ComponentFramework-Mock-Generator';
 
 export {
     AttributeMetadataCollection,
@@ -26,7 +29,6 @@ export {
     LookupMetadataMock,
     LookupPropertyMock,
     MetadataMock,
-    MockToRaw,
     ModeMock,
     MultiSelectOptionSetPropertyMock,
     NavigationMock,
@@ -37,9 +39,7 @@ export {
     OptionSetPropertyMock,
     PagingMock,
     PopupServiceMock,
-    PropertyMap,
     PropertyMock,
-    PropertyToMock,
     ResourcesMock,
     StringMetadataMock,
     StringPropertyMock,
@@ -56,12 +56,11 @@ export {
     ComponentFrameworkMockGeneratorReact,
     ComponentFrameworkMockGenerator,
     MetadataDB,
-    MockGenerator,
     ReactResizeObserver,
     mockGetEntityMetadata,
     mockRefreshParameters,
     mockSetControlResource,
-    mockSetControlState
+    mockSetControlState,
 } from './ComponentFramework-Mock-Generator';
 
 export { AttributeMetadataGenerator, arrayEqual } from './utils';

@@ -3,11 +3,11 @@
     Licensed under the MIT license.
 */
 
-import { createElement, Fragment, JSXElementConstructor, ReactElement, useEffect, useRef, useState } from 'react';
-import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock';
-import { arrayEqual } from '../utils';
+import type { JSXElementConstructor, ReactElement } from 'react';
+import { createElement, Fragment, useEffect, useRef, useState } from 'react';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
-import { PropertyMock } from '../ComponentFramework-Mock';
+import { MultiSelectOptionSetPropertyMock, PropertyMock } from '../ComponentFramework-Mock';
+import { arrayEqual } from '../utils';
 
 export interface ReactResizeObserverProps<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -44,7 +44,7 @@ export const ReactResizeObserver = <
                             componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
                         }
                     } else if (typeof updates[k] === 'object') {
-                    } else {                      
+                    } else {
                         if ((componentFrameworkMockGeneratorReact.context.parameters[k] as any).raw !== updates[k]) {
                             componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
                         }
@@ -72,7 +72,7 @@ export const ReactResizeObserver = <
         });
 
         componentFrameworkMockGeneratorReact.context.mode.trackContainerResize.callsFake((value) => {
-            if(!containerRef.current){
+            if (!containerRef.current) {
                 console.error('Container Ref is null');
                 return;
             }

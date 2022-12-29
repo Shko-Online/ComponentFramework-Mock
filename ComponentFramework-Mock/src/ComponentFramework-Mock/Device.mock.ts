@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { stub, SinonStub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 
 export class DeviceMock implements ComponentFramework.Device {
     captureAudio: SinonStub<[], Promise<ComponentFramework.FileObject>>;

@@ -3,8 +3,8 @@
     Licensed under the MIT license.
 */
 
+import type { MockGenerator } from './MockGenerator';
 import { stub } from 'sinon';
-import { MockGenerator } from './MockGenerator';
 
 export const mockSetControlResource = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,

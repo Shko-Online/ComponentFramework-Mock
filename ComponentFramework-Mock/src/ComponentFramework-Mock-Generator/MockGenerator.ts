@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-import { SinonStub } from 'sinon';
+import type { SinonStub } from 'sinon';
 import { ContextMock } from '../ComponentFramework-Mock';
 import { MetadataDB } from './Metadata.db';
 

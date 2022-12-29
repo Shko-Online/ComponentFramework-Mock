@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { stub, SinonStub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 import { LookupMetadataMock } from '../Metadata';
 import { PropertyMock } from './Property.mock';

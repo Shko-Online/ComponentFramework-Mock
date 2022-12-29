@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { SinonStub, stub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 
 export class ModeMock implements ComponentFramework.Mode {
     allocatedHeight: number;

@@ -3,10 +3,11 @@
     Licensed under the MIT license.
 */
 
-import { SinonSpy, stub } from 'sinon';
-import { LookupPropertyMock, MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock/PropertyTypes';
-import { arrayEqual, itemEqual } from '../utils';
-import { MockGenerator } from './MockGenerator';
+import type { SinonSpy } from 'sinon';
+import type { MockGenerator } from './MockGenerator';
+import { stub } from 'sinon';
+import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock/PropertyTypes';
+import { arrayEqual } from '../utils';
 
 export const mockNotifyOutputChanged = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,

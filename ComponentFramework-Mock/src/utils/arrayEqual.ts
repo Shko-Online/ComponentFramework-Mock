@@ -5,7 +5,7 @@
 
 import { itemEqual } from './itemEqual';
 
-export const arrayEqual = <T>(source: T[]|null, target: T[]|null) => {
+export const arrayEqual = <T>(source: T[] | null, target: T[] | null) => {
     return (
         Array.isArray(source) &&
         Array.isArray(target) &&
@@ -13,5 +13,3 @@ export const arrayEqual = <T>(source: T[]|null, target: T[]|null) => {
         source.every((s) => target.some((t) => itemEqual<T>(s, t)))
     );
 };
-
-export default arrayEqual;

@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { SinonStub, stub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 import { PagingMock } from './DataSetApi/Paging.mock';
 import { FilteringMock } from './DataSetApi/Filtering.mock';
 import { LinkingMock } from './DataSetApi/Linking.mock';

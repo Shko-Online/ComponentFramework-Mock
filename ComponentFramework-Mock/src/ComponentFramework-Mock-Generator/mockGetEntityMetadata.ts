@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-import { MockGenerator } from './MockGenerator';
+import type { MockGenerator } from './MockGenerator';
 
 export const mockGetEntityMetadata = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,

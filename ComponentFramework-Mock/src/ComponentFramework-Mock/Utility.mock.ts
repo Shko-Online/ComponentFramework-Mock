@@ -3,7 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { SinonStub, stub } from 'sinon';
+import { stub } from 'sinon';
+import type { SinonStub }from 'sinon';
 export class UtilityMock implements ComponentFramework.Utility {
     getEntityMetadata: SinonStub<[entityName: string, attributes?: string[]], Promise<ShkoOnline.EntityMetadata>>;
     hasEntityPrivilege: SinonStub<
