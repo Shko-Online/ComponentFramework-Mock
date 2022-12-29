@@ -23,6 +23,13 @@ steps:
     workingDir: 'ComponentFramework-Mock'
   displayName: "Test"
 
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    customCommand: 'build'
+    workingDir: 'ComponentFramework-Mock'
+  displayName: "Build"
+
 - script: 'npx semantic-release'
   workingDirectory: 'ComponentFramework-Mock'
   displayName: 'Semantic Release'

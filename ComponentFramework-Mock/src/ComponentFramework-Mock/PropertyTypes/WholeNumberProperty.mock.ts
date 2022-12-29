@@ -3,10 +3,11 @@
     Licensed under the MIT license.
 */
 
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
-import { WholeNumberMetadataMock } from '../Metadata';
+import type { ShkoOnline } from '../../ShkoOnline';
 import { AttributeType } from './AttributeType';
 import { NumberPropertyMock } from './NumberProperty.mock';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import { WholeNumberMetadataMock } from '../Metadata';
 
 export class WholeNumberPropertyMock
     extends NumberPropertyMock
@@ -20,7 +21,7 @@ export class WholeNumberPropertyMock
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } =
                 this._db.GetValueAndMetadata<ShkoOnline.IntegerNumberAttributeMetadata>(
-                    this._boundTable,                  
+                    this._boundTable,
                     this._boundColumn,
                     this._boundRow,
                 );

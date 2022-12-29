@@ -4,6 +4,8 @@
 */
 
 import type { JSXElementConstructor, ReactElement } from 'react';
+import type { ShkoOnline } from '../ShkoOnline';
+
 import { createElement, Fragment, useEffect, useRef, useState } from 'react';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
 import { MultiSelectOptionSetPropertyMock, PropertyMock } from '../ComponentFramework-Mock';

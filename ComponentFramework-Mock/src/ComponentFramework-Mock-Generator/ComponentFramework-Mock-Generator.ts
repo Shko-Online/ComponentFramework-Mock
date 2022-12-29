@@ -5,15 +5,17 @@
 
 import type { SinonSpiedInstance, SinonStub } from 'sinon';
 import type { PropertyMap } from '../ComponentFramework-Mock';
+import type { ShkoOnline } from '../ShkoOnline';
+
 import { spy, stub } from 'sinon';
 import { MetadataDB } from './Metadata.db';
-import { ContextMock } from '../ComponentFramework-Mock';
-import { showBanner } from '../utils';
 import { mockGetEntityMetadata } from './mockGetEntityMetadata';
 import { mockSetControlState } from './mockSetControlState';
 import { mockSetControlResource } from './mockSetControlResource';
 import { mockRefreshParameters } from './mockRefreshParameters';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
+import { ContextMock } from '../ComponentFramework-Mock';
+import { showBanner } from '../utils';
 
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,

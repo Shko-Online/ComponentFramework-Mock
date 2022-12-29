@@ -4,6 +4,8 @@
 */
 
 import type { MockGenerator } from './MockGenerator';
+import type { ShkoOnline } from '../ShkoOnline';
+
 import { stub } from 'sinon';
 
 export const mockSetControlResource = <

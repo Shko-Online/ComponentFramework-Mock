@@ -3,6 +3,7 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../src/ShkoOnline';
 import { EnumPropertyMock, MetadataDB, PropertyToMock, StringPropertyMock } from '../src';
 import { expectType } from 'tsd';
 import '.';

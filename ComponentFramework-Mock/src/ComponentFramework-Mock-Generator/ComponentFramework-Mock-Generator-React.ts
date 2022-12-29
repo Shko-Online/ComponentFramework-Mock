@@ -4,9 +4,11 @@
 */
 
 import type { SinonSpiedInstance, SinonStub } from 'sinon';
-import type { PropertyMap } from '../ComponentFramework-Mock';
-import type { MockGenerator } from './MockGenerator';
 import type { ReactElement } from 'react';
+import type { MockGenerator } from './MockGenerator';
+import type { PropertyMap } from '../ComponentFramework-Mock';
+import type { ShkoOnline } from '../ShkoOnline';
+
 import { createElement } from 'react';
 import { spy, stub } from 'sinon';
 import { ContextMock } from '../ComponentFramework-Mock';

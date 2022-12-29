@@ -3,10 +3,11 @@
     Licensed under the MIT license.
 */
 
-import { OptionMetadataMock, OptionSetMetadataMock } from '../Metadata';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import type { ShkoOnline } from '../../ShkoOnline';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
+import { OptionMetadataMock, OptionSetMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class OptionSetPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.OptionSetProperty {
     raw: number | null;
@@ -18,7 +19,7 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
         this.attributes = new OptionSetMetadataMock();
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
-                this._boundTable,               
+                this._boundTable,
                 this._boundColumn,
                 this._boundRow,
             );

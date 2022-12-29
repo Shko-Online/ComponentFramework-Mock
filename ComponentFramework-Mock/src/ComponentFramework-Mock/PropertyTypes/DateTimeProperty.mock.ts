@@ -3,6 +3,7 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../../ShkoOnline';
 import { PropertyMock } from './Property.mock';
 import { AttributeType } from './AttributeType';
 import { DateTimeMetadataMock } from '../Metadata/DateTimeMetadata.mock';
@@ -23,7 +24,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
         this.attributes = new DateTimeMetadataMock();
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
-                this._boundTable,           
+                this._boundTable,
                 this._boundColumn,
                 this._boundRow,
             );

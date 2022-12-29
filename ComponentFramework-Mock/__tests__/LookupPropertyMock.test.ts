@@ -3,6 +3,7 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../src/ShkoOnline';
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { AttributeType, LookupPropertyMock, MetadataDB } from '../src';
 
@@ -62,7 +63,7 @@ describe('LookupPropertyMock', () => {
         property._Refresh();
         expect(property.raw).toEqual([
             {
-                id:  'SomeGuid' ,
+                id: 'SomeGuid',
                 name: 'Betim Beja',
                 entityType: 'contact',
             },
@@ -72,7 +73,7 @@ describe('LookupPropertyMock', () => {
     it('_Refresh should refresh the data', () => {
         db.UpdateValue(
             {
-                id:  'SomeGuid' ,
+                id: 'SomeGuid',
                 name: 'Betim Beja2',
                 entityType: 'contact',
             },
@@ -82,7 +83,7 @@ describe('LookupPropertyMock', () => {
         property._Refresh();
         expect(property.raw).toEqual([
             {
-                id:  'SomeGuid' ,
+                id: 'SomeGuid',
                 name: 'Betim Beja2',
                 entityType: 'contact',
             },
@@ -97,7 +98,7 @@ describe('LookupPropertyMock', () => {
         } as ShkoOnline.LookupAttributeMetadata);
         db.UpdateValue(
             {
-                id:  'SomeGuid' ,
+                id: 'SomeGuid',
                 name: 'Betim Beja2',
                 entityType: 'contact',
             },
@@ -108,7 +109,7 @@ describe('LookupPropertyMock', () => {
         property._Refresh();
         expect(property.raw).toEqual([
             {
-                id:  'SomeGuid' ,
+                id: 'SomeGuid',
                 name: 'Betim Beja2',
                 entityType: 'contact',
             },
@@ -117,6 +118,6 @@ describe('LookupPropertyMock', () => {
 
     it('Should return target entity type', () => {
         property._Refresh();
-        expect(property.getTargetEntityType()).toEqual( 'contact');
+        expect(property.getTargetEntityType()).toEqual('contact');
     });
 });

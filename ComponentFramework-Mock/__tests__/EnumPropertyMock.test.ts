@@ -3,12 +3,13 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../src/ShkoOnline';
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { AttributeType, EnumPropertyMock, MetadataDB } from '../src';
 
 describe('EnumPropertyMock', () => {
     let db: MetadataDB;
-    let enumproperty: EnumPropertyMock<'1'|'2'|'3'>;
+    let enumproperty: EnumPropertyMock<'1' | '2' | '3'>;
     let LogicalName: string;
     let boundRow: string;
 

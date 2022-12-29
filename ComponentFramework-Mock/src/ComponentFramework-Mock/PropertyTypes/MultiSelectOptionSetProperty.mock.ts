@@ -3,10 +3,11 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../../ShkoOnline';
+import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
 import { OptionMetadataMock, OptionSetMetadataMock } from '../Metadata';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
-import { AttributeType } from './AttributeType';
 
 export class MultiSelectOptionSetPropertyMock
     extends PropertyMock
@@ -15,10 +16,10 @@ export class MultiSelectOptionSetPropertyMock
     raw: number[] | null;
     attributes?: OptionSetMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db,entityMetadata.LogicalName, propertyName);      
+        super(db, entityMetadata.LogicalName, propertyName);
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
-                this._boundTable,               
+                this._boundTable,
                 this._boundColumn,
                 this._boundRow,
             );

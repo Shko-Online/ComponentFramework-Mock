@@ -3,10 +3,11 @@
     Licensed under the MIT license.
 */
 
-import { NumberMetadataMock } from '../Metadata';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import type { ShkoOnline } from '../../ShkoOnline';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
+import { NumberMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class NumberPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.NumberProperty {
     attributes?: NumberMetadataMock;
@@ -16,7 +17,7 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
         this.raw = null;
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.NumberAttributeMetadata>(
-                this._boundTable,              
+                this._boundTable,
                 this._boundColumn,
                 this._boundRow,
             );

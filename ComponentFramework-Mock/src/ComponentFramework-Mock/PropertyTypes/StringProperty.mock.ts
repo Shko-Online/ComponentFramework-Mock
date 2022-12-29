@@ -3,10 +3,11 @@
     Licensed under the MIT license.
 */
 
-import { StringMetadataMock } from '../Metadata';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import type { ShkoOnline } from '../../ShkoOnline';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
+import { StringMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
     raw: string | null;
@@ -16,7 +17,7 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
         this.raw = null;
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.StringAttributeMetadata>(
-                this._boundTable,             
+                this._boundTable,
                 this._boundColumn,
                 this._boundRow,
             );

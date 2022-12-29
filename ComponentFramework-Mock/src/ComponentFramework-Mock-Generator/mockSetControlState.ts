@@ -4,6 +4,7 @@
 */
 
 import type { MockGenerator } from './MockGenerator';
+import type { ShkoOnline } from '../ShkoOnline';
 
 export const mockSetControlState = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,

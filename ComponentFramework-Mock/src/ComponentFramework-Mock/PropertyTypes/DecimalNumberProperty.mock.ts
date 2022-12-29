@@ -3,6 +3,8 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../../ShkoOnline';
+
 import { AttributeType } from './AttributeType';
 import { NumberPropertyMock } from './NumberProperty.mock';
 import { DecimalNumberMetadataMock } from '../Metadata/DecimalNumberMetadata.mock';

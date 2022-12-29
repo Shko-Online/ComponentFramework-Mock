@@ -6,16 +6,15 @@
 declare module ShkoOnline {
     type EnumType<Type> = Type extends ComponentFramework.PropertyTypes.EnumProperty<infer X> ? X : never;
 
-    export type PropertyTypes<T extends {[key:string]:any}> = {
-        [P in keyof T]: 
-            T[P] extends ComponentFramework.PropertyTypes.Property ? 
-            T[P] : 
-            T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string> ? 
-            T[P] :
-            T[P] extends ComponentFramework.PropertyTypes.DataSet ?
-            T[P] :
-            never;
-    }
+    export type PropertyTypes<T extends { [key: string]: any }> = {
+        [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.Property
+            ? T[P]
+            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
+            ? T[P]
+            : T[P] extends ComponentFramework.PropertyTypes.DataSet
+            ? T[P]
+            : never;
+    };
 
     /**
      * The entire property bag interface available to control via Context Object
@@ -512,6 +511,4 @@ declare module ShkoOnline {
     type AttributeRequiredLevel = 0 | 1 | 2 | 3;
 }
 
-interface ObjectConstructor {
-    getOwnPropertyNames<T>(o: T): (keyof T)[];
-}
+export type { ShkoOnline };

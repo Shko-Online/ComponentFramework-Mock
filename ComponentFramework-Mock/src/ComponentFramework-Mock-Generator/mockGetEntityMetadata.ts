@@ -4,6 +4,7 @@
 */
 
 import type { MockGenerator } from './MockGenerator';
+import type { ShkoOnline } from '../ShkoOnline';
 
 export const mockGetEntityMetadata = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -16,7 +17,7 @@ export const mockGetEntityMetadata = <
             const result = mockGenerator.metadata.metadata.findOne({
                 LogicalName: { $eq: entityName },
             }) as ShkoOnline.EntityMetadata & Partial<LokiObj>;
-            if(!result){
+            if (!result) {
                 reject(`Could not find entity metadata for '${entityName}'`);
                 return;
             }

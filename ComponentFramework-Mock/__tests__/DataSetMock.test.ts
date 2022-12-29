@@ -3,6 +3,7 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../src/ShkoOnline';
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { DataSetMock, MetadataDB } from '../src';
 

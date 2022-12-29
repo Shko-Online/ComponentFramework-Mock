@@ -3,6 +3,7 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../ShkoOnline';
 import loki from 'lokijs';
 
 export class MetadataDB {

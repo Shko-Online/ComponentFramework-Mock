@@ -3,15 +3,17 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
+import type { ShkoOnline } from '../ShkoOnline';
+import type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
+
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
 import { ClientMock } from './Client.mock';
 import { DeviceMock } from './Device.mock';
 import { FactoryMock } from './Factory.mocks';
 import { FormattingMock } from './Formatting.mock';
 import { ModeMock } from './Mode.mock';
 import { NavigationMock } from './Navigation.mock';
-import { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
 import { ResourcesMock } from './Resources.mock';
 import { UserSettingsMock } from './UserSettings.mock';
 import { UtilityMock } from './Utility.mock';

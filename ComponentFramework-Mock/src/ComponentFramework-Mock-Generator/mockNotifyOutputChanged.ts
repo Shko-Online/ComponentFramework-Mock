@@ -5,6 +5,8 @@
 
 import type { SinonSpy } from 'sinon';
 import type { MockGenerator } from './MockGenerator';
+import type { ShkoOnline } from '../ShkoOnline';
+
 import { stub } from 'sinon';
 import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock/PropertyTypes';
 import { arrayEqual } from '../utils';

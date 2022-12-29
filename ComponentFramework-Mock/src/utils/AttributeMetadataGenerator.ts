@@ -3,7 +3,9 @@
     Licensed under the MIT license.
 */
 
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
+import type { ShkoOnline } from '../ShkoOnline';
+
 import { stub } from 'sinon';
 import { AttributeType } from '../ComponentFramework-Mock';
 

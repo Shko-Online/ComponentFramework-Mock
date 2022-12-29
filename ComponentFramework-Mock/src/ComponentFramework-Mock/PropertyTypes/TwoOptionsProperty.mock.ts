@@ -3,17 +3,19 @@
     Licensed under the MIT license.
 */
 
-import { OptionMetadataMock, TwoOptionMetadataMock } from '../Metadata';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
+import type { ShkoOnline } from '../../ShkoOnline';
+
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
+import { OptionMetadataMock, TwoOptionMetadataMock } from '../Metadata';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
 
 export class TwoOptionsPropertyMock
     extends PropertyMock
     implements ComponentFramework.PropertyTypes.TwoOptionsProperty
 {
     raw: boolean;
-    attributes?: TwoOptionMetadataMock;  
+    attributes?: TwoOptionMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super(db, entityMetadata.LogicalName, propertyName);
         this.raw = false;
@@ -24,7 +26,7 @@ export class TwoOptionsPropertyMock
                 this._boundColumn,
                 this._boundRow,
             );
-            if (attributeMetadata ===null || attributeMetadata.AttributeType !== AttributeType.Boolean) {
+            if (attributeMetadata === null || attributeMetadata.AttributeType !== AttributeType.Boolean) {
                 throw new Error('Type Error');
             }
             const attributes = new TwoOptionMetadataMock();
@@ -34,12 +36,12 @@ export class TwoOptionsPropertyMock
             attributes.Options[1] = new OptionMetadataMock(
                 attributeMetadata.OptionSet.TrueOption.Value,
                 attributeMetadata.OptionSet.TrueOption.Label,
-                attributeMetadata.OptionSet.TrueOption.Color||undefined,
+                attributeMetadata.OptionSet.TrueOption.Color || undefined,
             );
             attributes.Options[0] = new OptionMetadataMock(
                 attributeMetadata.OptionSet.FalseOption.Value,
                 attributeMetadata.OptionSet.FalseOption.Label,
-                attributeMetadata.OptionSet.FalseOption.Color||undefined,
+                attributeMetadata.OptionSet.FalseOption.Color || undefined,
             );
             this.raw = value;
             this.formatted = attributes.Options[value ? 1 : 0].Label;

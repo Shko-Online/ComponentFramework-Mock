@@ -3,6 +3,7 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../src/ShkoOnline';
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { DateTimePropertyMock, MetadataDB } from '../src';
 
@@ -60,12 +61,11 @@ describe('DateTimePropertyMock', () => {
     });
 
     it('Can bind to a different column', () => {
-        db.upsertAttributeMetadata(LogicalName, 
-            {
-                AttributeType: 2, 
-                LogicalName: 'new_date',
-                SchemaName: 'new_Date',
-            } as ShkoOnline.DateTimeAttributeMetadata)
+        db.upsertAttributeMetadata(LogicalName, {
+            AttributeType: 2,
+            LogicalName: 'new_date',
+            SchemaName: 'new_Date',
+        } as ShkoOnline.DateTimeAttributeMetadata);
         db.UpdateValue(new Date(2022, 10, 19), LogicalName, 'new_date');
         datetimeproperty._Bind(LogicalName, 'new_date');
         datetimeproperty._Refresh();

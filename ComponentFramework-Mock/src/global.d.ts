@@ -4,3 +4,7 @@
 */
 
 /// <reference types="powerapps-component-framework" />
+
+interface ObjectConstructor {
+    getOwnPropertyNames<T>(o: T): (keyof T)[];
+}

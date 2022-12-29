@@ -3,9 +3,10 @@
     Licensed under the MIT license.
 */
 
-import { MetadataDB } from '../../../ComponentFramework-Mock-Generator/Metadata.db';
+import type { ShkoOnline } from '../../../ShkoOnline';
+import type { SinonStub } from 'sinon';
+import { MetadataDB } from '../../../ComponentFramework-Mock-Generator';
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
 
 type ColumnReturnValue =
     | string
@@ -33,19 +34,21 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
         this.getFormattedValue = stub();
         this.getFormattedValue.callsFake((columnName) => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
-                this._boundTable,              
+                this._boundTable,
                 columnName,
                 this._boundRow,
             );
-            return value===undefined ? value : '' + value;
+            return value === undefined ? value : '' + value;
         });
         this.getNamedReference = stub();
         this.getNamedReference.callsFake(() => {
             const { row, entityMetadata } = this._db.GetRow(this._boundTable, this._boundRow);
-            if (row === null) {              
-                return {id: {guid: ''},  name: ''};
+            if (row === null) {
+                return { id: { guid: '' }, name: '' };
             }
-            const id = { guid: row?.[entityMetadata.PrimaryIdAttribute || (entityMetadata.LogicalName + 'id')] as string };
+            const id = {
+                guid: row?.[entityMetadata.PrimaryIdAttribute || entityMetadata.LogicalName + 'id'] as string,
+            };
             const etn = entityMetadata.LogicalName;
             const name = row?.[entityMetadata.PrimaryNameAttribute || 'name'] as string;
             return { id, etn, name };
@@ -55,7 +58,7 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
         this.getValue = stub();
         this.getValue.callsFake((columnName) => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
-                this._boundTable,              
+                this._boundTable,
                 columnName,
                 this._boundRow,
             );

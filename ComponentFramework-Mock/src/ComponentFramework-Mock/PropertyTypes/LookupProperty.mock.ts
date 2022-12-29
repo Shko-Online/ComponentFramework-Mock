@@ -3,8 +3,9 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
+import type { ShkoOnline } from '../../ShkoOnline';
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 import { LookupMetadataMock } from '../Metadata';
 import { PropertyMock } from './Property.mock';
@@ -29,14 +30,13 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             this.attributes = new LookupMetadataMock();
             this.attributes.LogicalName = attributeMetadata.LogicalName;
             this.attributes.Targets = attributeMetadata.Targets;
-            if(value){
+            if (value) {
                 this.raw = [value];
                 this.formatted = value.name;
-            }else{
+            } else {
                 this.raw = [];
                 this.formatted = '';
             }
-         
         });
         const attribute = {
             AttributeType: AttributeType.Lookup,
@@ -47,11 +47,10 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
 
         this.getTargetEntityType = stub();
         this.getTargetEntityType.callsFake(() => {
-            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.LookupAttributeMetadata, ComponentFramework.LookupValue>(
-                this._boundTable,
-                this._boundColumn,
-                this._boundRow,
-            );
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<
+                ShkoOnline.LookupAttributeMetadata,
+                ComponentFramework.LookupValue
+            >(this._boundTable, this._boundColumn, this._boundRow);
             if (attributeMetadata.AttributeType !== AttributeType.Lookup) {
                 throw new Error('Type Error');
             }

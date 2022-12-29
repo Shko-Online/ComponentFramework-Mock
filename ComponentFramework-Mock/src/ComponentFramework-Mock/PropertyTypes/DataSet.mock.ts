@@ -3,8 +3,9 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
+import type { ShkoOnline } from '../../ShkoOnline';
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
 import { PagingMock } from './DataSetApi/Paging.mock';
 import { FilteringMock } from './DataSetApi/Filtering.mock';
 import { LinkingMock } from './DataSetApi/Linking.mock';

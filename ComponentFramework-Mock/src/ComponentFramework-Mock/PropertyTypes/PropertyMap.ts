@@ -3,6 +3,8 @@
     Licensed under the MIT license.
 */
 
+import type { ShkoOnline } from '../../ShkoOnline';
+
 import { DateTimePropertyMock } from './DateTimeProperty.mock';
 import { DecimalNumberPropertyMock } from './DecimalNumberProperty.mock';
 import { StringPropertyMock } from './StringProperty.mock';

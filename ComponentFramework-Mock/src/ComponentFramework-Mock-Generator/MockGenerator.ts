@@ -4,6 +4,8 @@
 */
 
 import type { SinonStub } from 'sinon';
+import type { ShkoOnline } from '../ShkoOnline';
+
 import { ContextMock } from '../ComponentFramework-Mock';
 import { MetadataDB } from './Metadata.db';
 
@@ -16,5 +18,5 @@ export interface MockGenerator<
     metadata: MetadataDB;
     notifyOutputChanged: SinonStub<[], void>;
     state: ComponentFramework.Dictionary;
-    SetControlResource: SinonStub<[resource: string],void>;
+    SetControlResource: SinonStub<[resource: string], void>;
 }
