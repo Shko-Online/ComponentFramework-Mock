@@ -1,3 +1,10 @@
+## [0.1.11](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.10...v0.1.11) (2022-12-29)
+
+
+### Bug Fixes
+
+* Fixed types import/export ([a29943b](https://github.com/shko-online/ComponentFramework-Mock/commit/a29943b589cfd9939fc1c6b4a50088b45ed66de6))
+
 ## [0.1.10](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.9...v0.1.10) (2022-12-28)
 
 
