@@ -38,11 +38,9 @@ describe('DecimalNumberPropertyMock', () => {
                 } as ShkoOnline.StringAttributeMetadata,
             ],
         } as ShkoOnline.EntityMetadata;
-
-        db.initMetadata([entityMetadata]);
-
         decimalnumberproperty = new DecimalNumberPropertyMock('number', db, entityMetadata);
-
+        
+        db.initMetadata([entityMetadata]);
         db.initItems({
             '@odata.context': '#' + LogicalName,
             value: [{ id: boundRow, name: 'Betim Beja', number: 101.01 }],

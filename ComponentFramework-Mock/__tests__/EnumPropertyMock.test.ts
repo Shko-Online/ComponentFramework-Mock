@@ -38,11 +38,9 @@ describe('EnumPropertyMock', () => {
                 } as ShkoOnline.StringAttributeMetadata,
             ],
         } as ShkoOnline.EntityMetadata;
-
-        db.initMetadata([entityMetadata]);
-
         enumproperty = new EnumPropertyMock('enum', db, entityMetadata);
 
+        db.initMetadata([entityMetadata]);
         db.initItems({
             '@odata.context': '#' + LogicalName,
             value: [{ id: boundRow, name: 'Betim Beja', enum: '1' }],

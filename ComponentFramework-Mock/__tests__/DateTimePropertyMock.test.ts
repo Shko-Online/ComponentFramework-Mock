@@ -38,11 +38,9 @@ describe('DateTimePropertyMock', () => {
                 } as ShkoOnline.StringAttributeMetadata,
             ],
         } as ShkoOnline.EntityMetadata;
-
-        db.initMetadata([entityMetadata]);
-
         datetimeproperty = new DateTimePropertyMock('date', db, entityMetadata);
 
+        db.initMetadata([entityMetadata]);
         db.initItems({
             '@odata.context': '#' + LogicalName,
             value: [{ id: boundRow, name: 'Betim Beja', date: new Date(2022, 10, 18) }],
