@@ -1,3 +1,10 @@
+## [0.1.13](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.12...v0.1.13) (2023-01-31)
+
+
+### Bug Fixes
+
+* Fixed updatedProperties for Dates ([f9908b0](https://github.com/shko-online/ComponentFramework-Mock/commit/f9908b050559e3d115641f167782aff122b7f745))
+
 ## [0.1.12](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.11...v0.1.12) (2022-12-29)
 
 
