@@ -1,3 +1,8 @@
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import { IInputs, IOutputs } from './generated/ManifestTypes';
 
 export class OwnerLookup implements ComponentFramework.StandardControl<IInputs, IOutputs> {

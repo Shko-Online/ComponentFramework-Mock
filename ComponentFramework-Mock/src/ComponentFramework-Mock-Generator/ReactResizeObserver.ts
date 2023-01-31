@@ -10,6 +10,7 @@ import { createElement, Fragment, useEffect, useRef, useState } from 'react';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
 import { MultiSelectOptionSetPropertyMock, PropertyMock } from '../ComponentFramework-Mock';
 import { arrayEqual } from '../utils';
+import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 
 export interface ReactResizeObserverProps<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -31,35 +32,10 @@ export const ReactResizeObserver = <
         createElement(Fragment),
     );
     useEffect(() => {
-        componentFrameworkMockGeneratorReact.notifyOutputChanged.callsFake(() => {
-            const updates = componentFrameworkMockGeneratorReact.control.getOutputs?.();
-            componentFrameworkMockGeneratorReact.context.updatedProperties = [];
-            for (const k in updates) {
-                if (k in componentFrameworkMockGeneratorReact.context.parameters) {
-                    const property = componentFrameworkMockGeneratorReact.context.parameters[k] as PropertyMock;
-                    if (Array.isArray(updates[k])) {
-                        const arrayUpdate = updates[k] as number[];
-                        const property = componentFrameworkMockGeneratorReact.context.parameters[
-                            k
-                        ] as MultiSelectOptionSetPropertyMock;
-                        if (!arrayEqual(arrayUpdate, property.raw)) {
-                            componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
-                        }
-                    } else if (typeof updates[k] === 'object') {
-                    } else {
-                        if ((componentFrameworkMockGeneratorReact.context.parameters[k] as any).raw !== updates[k]) {
-                            componentFrameworkMockGeneratorReact.context.updatedProperties.push(k);
-                        }
-                    }
-                    componentFrameworkMockGeneratorReact.metadata.UpdateValue(
-                        updates[k],
-                        property._boundTable,
-                        property._boundColumn,
-                        property._boundRow,
-                    );
-                }
-            }
-            if (componentFrameworkMockGeneratorReact.context.updatedProperties.length > 0) {
+        mockNotifyOutputChanged(
+            componentFrameworkMockGeneratorReact,
+            componentFrameworkMockGeneratorReact.control.getOutputs?.bind(componentFrameworkMockGeneratorReact.control),
+            () => {
                 Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(
                     componentFrameworkMockGeneratorReact.context.parameters,
                 ).forEach((propertyName) => {
@@ -70,9 +46,8 @@ export const ReactResizeObserver = <
                         componentFrameworkMockGeneratorReact.context,
                     ),
                 );
-            }
-        });
-
+            });
+      
         componentFrameworkMockGeneratorReact.context.mode.trackContainerResize.callsFake((value) => {
             if (!containerRef.current) {
                 console.error('Container Ref is null');

@@ -42,8 +42,7 @@ export class ComponentFrameworkMockGeneratorReact<
         this.context = new ContextMock(inputs, this.metadata);
 
         mockGetEntityMetadata(this);
-        this.notifyOutputChanged = stub();
-        mockNotifyOutputChanged(this, this.control.getOutputs?.bind(this.control), this.ExecuteUpdateView.bind(this));
+        this.notifyOutputChanged = stub();    
         this._RefreshParameters = stub();
         mockRefreshParameters(this);
         this.SetControlResource = stub();

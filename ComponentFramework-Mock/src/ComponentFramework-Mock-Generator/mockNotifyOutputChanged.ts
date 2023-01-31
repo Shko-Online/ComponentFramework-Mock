@@ -8,7 +8,7 @@ import type { MockGenerator } from './MockGenerator';
 import type { ShkoOnline } from '../ShkoOnline';
 
 import { stub } from 'sinon';
-import { MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock/PropertyTypes';
+import { DateTimePropertyMock, MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock/PropertyTypes';
 import { arrayEqual } from '../utils';
 
 export const mockNotifyOutputChanged = <
@@ -39,9 +39,17 @@ export const mockNotifyOutputChanged = <
                     if (!arrayEqual(arrayUpdate, property.raw)) {
                         mockGenerator.context.updatedProperties.push(k);
                     }
-                } /*else if (typeof updates[k] === 'object') {
+                } else if (updates[k] instanceof Date){
+                    if((mockGenerator.context._parameters[k] as unknown as DateTimePropertyMock).raw?.getTime() !==
+                    (updates[k] as Date)?.getTime()){
+                        mockGenerator.context.updatedProperties.push(k);
+                    }
+                }
+                /*else if (typeof updates[k] === 'object') {
                     // ToDo
-                }*/ else {
+                }*/
+              
+                else {
                     if (
                         (mockGenerator.context._parameters[k] as unknown as MultiSelectOptionSetPropertyMock).raw !==
                         updates[k]
