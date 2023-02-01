@@ -4,23 +4,27 @@
 */
 
 import { it, expect, describe, beforeEach } from '@jest/globals';
-import { ComponentFrameworkMockGenerator, DateTimePropertyMock } from '../src';
-import { YearPicker } from '../__sample-components__/YearPicker';
-import { IInputs, IOutputs } from '../__sample-components__/YearPicker/generated/ManifestTypes';
+import { ComponentFrameworkMockGenerator, LookupPropertyMock } from '../../src';
+import { OwnerLookup } from '../../__sample-components__/OwnerLookup';
+import { IInputs, IOutputs } from '../../__sample-components__/OwnerLookup/generated/ManifestTypes';
 
-describe('YearPicker', () => {
+describe('OwnerLookup', () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
     beforeEach(() => {
         const container = document.createElement('div');
         mockGenerator = new ComponentFrameworkMockGenerator(
-            YearPicker,
+            OwnerLookup,
             {
-                value: DateTimePropertyMock,
+                value: LookupPropertyMock,
             },
             container,
         );
-        mockGenerator.context._SetCanvasItems( {
-            value: new Date(2023,0,1)
+        mockGenerator.context._SetCanvasItems({
+            value: {
+                entityType: 'team',
+                id: 'guid1',
+                name: 'Shko Online',
+            },
         });
         document.body.appendChild(container);
     });
@@ -29,21 +33,20 @@ describe('YearPicker', () => {
         document.body.innerHTML = null;
     })
 
-    it('Should render date year', () => {
+    it('Should render lookup value', () => {
         mockGenerator.ExecuteInit();
         mockGenerator.ExecuteUpdateView();
         expect(mockGenerator.container).toMatchSnapshot();
     });
 
-    it('Should contain value in updatedProperties', () => {
+    it('Should update value on click', () => {
         mockGenerator.ExecuteInit();
         mockGenerator.ExecuteUpdateView();
 
-        const input = mockGenerator.container.getElementsByTagName('input')[0];
-        input.value = '2021';
+        const button = mockGenerator.container.getElementsByTagName('button')[0];
         var evt = document.createEvent('Event');
-        evt.initEvent('input', false, true);      
-        input.dispatchEvent(evt);
+        evt.initEvent('click', false, true);
+        button.dispatchEvent(evt);
 
         expect(mockGenerator.context.updatedProperties).toStrictEqual(['value']);
         expect(document.body).toMatchSnapshot();
