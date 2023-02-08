@@ -19,6 +19,7 @@ export class EnumPropertyMock<EnumType extends string>
     _db: MetadataDB;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
     _Refresh: SinonStub<[], void>;
+    _SetValue: SinonStub<[value: EnumType | null], void>;
     raw: EnumType;
     type: string;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
@@ -34,6 +35,10 @@ export class EnumPropertyMock<EnumType extends string>
             this._boundRow = boundRow;
         });
         this._Bind(entityMetadata.LogicalName, propertyName);
+        this._SetValue = stub();
+        this._SetValue.callsFake((value) => {
+            this._db.UpdateValue<EnumType | null>(value, this._boundTable, this._boundColumn, this._boundRow);
+        });
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
                 this._boundTable,

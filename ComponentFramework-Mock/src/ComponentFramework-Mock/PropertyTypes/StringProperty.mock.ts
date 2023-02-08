@@ -3,18 +3,26 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../../ShkoOnline';
+
+import { stub } from 'sinon';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
 import { StringMetadataMock } from '../Metadata';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class StringPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.StringProperty {
-    raw: string | null;
+    _SetValue: SinonStub<[value: string | null], void>;
     attributes: StringMetadataMock;
+    raw: string | null;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super(db, entityMetadata.LogicalName, propertyName);
         this.raw = null;
+        this._SetValue = stub();
+        this._SetValue.callsFake((value) => {
+            this._db.UpdateValue<string | null>(value, this._boundTable, this._boundColumn, this._boundRow);
+        });
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.StringAttributeMetadata>(
                 this._boundTable,

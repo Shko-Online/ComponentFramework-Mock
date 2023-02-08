@@ -21,11 +21,12 @@ export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > {
-    _RefreshParameters: SinonStub<[], void>;
+    RefreshParameters: SinonStub<[], void>;
     container: HTMLDivElement;
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
+    onOutputChanged: SinonStub<[],void>; 
     state: ComponentFramework.Dictionary;
     SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
@@ -56,7 +57,8 @@ export class ComponentFrameworkMockGenerator<
         mockGetEntityMetadata(this);
         this.notifyOutputChanged = stub();
         mockNotifyOutputChanged(this, this.control.getOutputs?.bind(this.control), this.ExecuteUpdateView.bind(this));
-        this._RefreshParameters = stub();
+        this.onOutputChanged = stub();
+        this.RefreshParameters = stub();
         mockRefreshParameters(this);
         this.SetControlResource = stub();
         mockSetControlResource(this);
@@ -64,13 +66,13 @@ export class ComponentFrameworkMockGenerator<
     }
 
     ExecuteInit() {
-        this._RefreshParameters();
+        this.RefreshParameters();
         const state = this.state === undefined ? this.state : { ...this.state };
         this.control.init(this.context, this.notifyOutputChanged, state, this.container);
     }
 
     ExecuteUpdateView() {
-        this._RefreshParameters();
+        this.RefreshParameters();
         this.control.updateView(this.context);
     }
 }

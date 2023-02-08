@@ -8,8 +8,6 @@ import type { ShkoOnline } from '../ShkoOnline';
 
 import { createElement, Fragment, useEffect, useRef, useState } from 'react';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
-import { MultiSelectOptionSetPropertyMock, PropertyMock } from '../ComponentFramework-Mock';
-import { arrayEqual } from '../utils';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 
 export interface ReactResizeObserverProps<
@@ -74,7 +72,7 @@ export const ReactResizeObserver = <
     }, []);
 
     useEffect(() => {
-        componentFrameworkMockGeneratorReact._RefreshParameters();
+        componentFrameworkMockGeneratorReact.RefreshParameters();
         setComponent(
             componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
         );

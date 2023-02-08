@@ -12,8 +12,15 @@ export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
     _boundRow?: string;
     _boundTable: string;
     _db: MetadataDB;
+    /**
+     * Used by the framework to refresh the property value using the in-memory database.
+     */
     _Refresh: SinonStub<[], void>;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
+    /** 
+     * Shortcut to update the value in the database using the binding information of the property.
+     */
+    _SetValue: SinonStub<[value: any], void>;
     error: boolean;
     errorMessage: string;
     formatted?: string;
@@ -27,6 +34,7 @@ export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
         this._boundColumn = boundColumn;
         this._boundRow = undefined;     
         this._Refresh = stub();
+        this._SetValue = stub();
         this._Bind = stub();
         this._Bind.callsFake((boundTable: string, boundColumn: string, boundRow?: string) => {
             this._boundColumn = boundColumn;

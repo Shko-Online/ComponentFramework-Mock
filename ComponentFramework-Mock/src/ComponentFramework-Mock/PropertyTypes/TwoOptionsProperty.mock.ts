@@ -3,8 +3,10 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../../ShkoOnline';
 
+import { stub } from 'sinon';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
 import { OptionMetadataMock, TwoOptionMetadataMock } from '../Metadata';
@@ -14,12 +16,17 @@ export class TwoOptionsPropertyMock
     extends PropertyMock
     implements ComponentFramework.PropertyTypes.TwoOptionsProperty
 {
-    raw: boolean;
+    _SetValue: SinonStub<[value: boolean | null], void>;
     attributes?: TwoOptionMetadataMock;
+    raw: boolean;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super(db, entityMetadata.LogicalName, propertyName);
         this.raw = false;
         this.attributes = new TwoOptionMetadataMock();
+        this._SetValue = stub();
+        this._SetValue.callsFake((value) => {
+            this._db.UpdateValue<boolean | null>(value, this._boundTable, this._boundColumn, this._boundRow);
+        });
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.BooleanAttributeMetadata>(
                 this._boundTable,

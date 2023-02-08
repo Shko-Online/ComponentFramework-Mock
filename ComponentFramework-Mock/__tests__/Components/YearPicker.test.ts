@@ -4,9 +4,9 @@
 */
 
 import { it, expect, describe, beforeEach } from '@jest/globals';
-import { ComponentFrameworkMockGenerator, DateTimePropertyMock } from '../../src';
 import { YearPicker } from '../../__sample-components__/YearPicker';
 import { IInputs, IOutputs } from '../../__sample-components__/YearPicker/generated/ManifestTypes';
+import { ComponentFrameworkMockGenerator, DateTimePropertyMock } from '../../src';
 
 describe('YearPicker', () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
@@ -19,15 +19,15 @@ describe('YearPicker', () => {
             },
             container,
         );
-        mockGenerator.context._SetCanvasItems( {
-            value: new Date(2023,0,1)
+        mockGenerator.context._SetCanvasItems({
+            value: new Date(2023, 0, 1),
         });
         document.body.appendChild(container);
     });
 
     afterEach(() => {
         document.body.innerHTML = null;
-    })
+    });
 
     it('Should render date year', () => {
         mockGenerator.ExecuteInit();
@@ -42,10 +42,20 @@ describe('YearPicker', () => {
         const input = mockGenerator.container.getElementsByTagName('input')[0];
         input.value = '2021';
         var evt = document.createEvent('Event');
-        evt.initEvent('input', false, true);      
+        evt.initEvent('input', false, true);
         input.dispatchEvent(evt);
 
         expect(mockGenerator.context.updatedProperties).toStrictEqual(['value']);
+        expect(mockGenerator.onOutputChanged.called).toBeTruthy();
+        expect(mockGenerator.context._parameters.value.raw).toEqual(new Date(2021, 0, 1));
         expect(document.body).toMatchSnapshot();
+    });
+
+    it('Should update the value from the framework', () => {
+        mockGenerator.ExecuteInit();
+        mockGenerator.ExecuteUpdateView();
+        mockGenerator.context._parameters.value._SetValue(new Date(2021, 0, 1));
+        mockGenerator.context._parameters.value._Refresh();
+        expect(mockGenerator.context._parameters.value.raw).toEqual(new Date(2021, 0, 1));
     });
 });

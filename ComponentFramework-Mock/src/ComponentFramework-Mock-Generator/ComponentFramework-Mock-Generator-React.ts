@@ -26,10 +26,11 @@ export class ComponentFrameworkMockGeneratorReact<
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > implements MockGenerator<TInputs, TOutputs>
 {
-    _RefreshParameters: SinonStub<[], void>;
+    RefreshParameters: SinonStub<[], void>;
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
+    onOutputChanged: SinonStub<[],void>; 
     state: ComponentFramework.Dictionary;
     SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
@@ -42,16 +43,18 @@ export class ComponentFrameworkMockGeneratorReact<
         this.context = new ContextMock(inputs, this.metadata);
 
         mockGetEntityMetadata(this);
-        this.notifyOutputChanged = stub();    
-        this._RefreshParameters = stub();
+        this.notifyOutputChanged = stub(); // Mocked in ReactResizeObserver
+        this.onOutputChanged = stub();
+        this.RefreshParameters = stub();
         mockRefreshParameters(this);
         this.SetControlResource = stub();
         mockSetControlResource(this);
         mockSetControlState(this);
     }
+   
 
     ExecuteInit() {
-        this._RefreshParameters();
+        this.RefreshParameters();
         const state = this.state === undefined ? this.state : { ...this.state };
         this.control.init(this.context, this.notifyOutputChanged, state);
     }
@@ -59,7 +62,7 @@ export class ComponentFrameworkMockGeneratorReact<
     private circuitBreaker = false;
 
     ExecuteUpdateView(): ReactElement {
-        this._RefreshParameters();
+        this.RefreshParameters();
         this.circuitBreaker = !this.circuitBreaker;
         return createElement(ReactResizeObserver<TInputs, TOutputs>, {
             componentFrameworkMockGeneratorReact: this,

@@ -3,15 +3,20 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../../ShkoOnline';
-import { PropertyMock } from './Property.mock';
+
+import {stub} from 'sinon';
 import { AttributeType } from './AttributeType';
+import { PropertyMock } from './Property.mock';
 import { DateTimeMetadataMock } from '../Metadata/DateTimeMetadata.mock';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
 
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
-    raw: Date | null;
+    _SetValue: SinonStub<[value: Date | null], void>;
     attributes?: DateTimeMetadataMock;
+    raw: Date | null;
+
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         super(db, entityMetadata.LogicalName, propertyName);
         this.raw = null;
@@ -22,6 +27,10 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
         } as ShkoOnline.DateTimeAttributeMetadata;
         entityMetadata.Attributes?.push(attribute);
         this.attributes = new DateTimeMetadataMock();
+        this._SetValue = stub();
+        this._SetValue.callsFake((value) => {
+            this._db.UpdateValue<Date | null>(value, this._boundTable, this._boundColumn, this._boundRow);
+        });
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
                 this._boundTable,

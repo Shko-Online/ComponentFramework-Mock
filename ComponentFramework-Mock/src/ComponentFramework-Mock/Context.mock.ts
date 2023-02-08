@@ -7,7 +7,7 @@ import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../ShkoOnline';
 import type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
 
-import { stub } from 'sinon';
+import Sinon, { stub } from 'sinon';
 import { ClientMock } from './Client.mock';
 import { DeviceMock } from './Device.mock';
 import { FactoryMock } from './Factory.mocks';

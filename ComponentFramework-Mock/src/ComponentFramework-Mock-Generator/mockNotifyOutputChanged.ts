@@ -7,7 +7,6 @@ import type { SinonSpy } from 'sinon';
 import type { MockGenerator } from './MockGenerator';
 import type { ShkoOnline } from '../ShkoOnline';
 
-import { stub } from 'sinon';
 import { DateTimePropertyMock, MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock/PropertyTypes';
 import { arrayEqual } from '../utils';
 
@@ -19,7 +18,6 @@ export const mockNotifyOutputChanged = <
     getOutputs: SinonSpy<[], TOutputs> | undefined,
     executeUpdateView: () => void,
 ) => {
-    mockGenerator.notifyOutputChanged = stub();
     mockGenerator.notifyOutputChanged.callsFake(() => {
         const updates = getOutputs?.();
         if (!updates) return;
@@ -39,17 +37,17 @@ export const mockNotifyOutputChanged = <
                     if (!arrayEqual(arrayUpdate, property.raw)) {
                         mockGenerator.context.updatedProperties.push(k);
                     }
-                } else if (updates[k] instanceof Date){
-                    if((mockGenerator.context._parameters[k] as unknown as DateTimePropertyMock).raw?.getTime() !==
-                    (updates[k] as Date)?.getTime()){
+                } else if (updates[k] instanceof Date) {
+                    if (
+                        (mockGenerator.context._parameters[k] as unknown as DateTimePropertyMock).raw?.getTime() !==
+                        (updates[k] as Date)?.getTime()
+                    ) {
                         mockGenerator.context.updatedProperties.push(k);
                     }
-                }
+                } else {
                 /*else if (typeof updates[k] === 'object') {
                     // ToDo
                 }*/
-              
-                else {
                     if (
                         (mockGenerator.context._parameters[k] as unknown as MultiSelectOptionSetPropertyMock).raw !==
                         updates[k]
@@ -78,6 +76,7 @@ export const mockNotifyOutputChanged = <
         }
         if (mockGenerator.context.updatedProperties.length > 0) {
             executeUpdateView();
+            mockGenerator.onOutputChanged?.();
         }
     });
 };

@@ -5,11 +5,12 @@
 
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../../ShkoOnline';
+
 import { stub } from 'sinon';
-import { PagingMock } from './DataSetApi/Paging.mock';
+import { EntityRecordMock } from './DataSetApi/EntityRecord.mock';
 import { FilteringMock } from './DataSetApi/Filtering.mock';
 import { LinkingMock } from './DataSetApi/Linking.mock';
-import { EntityRecordMock } from './DataSetApi/EntityRecord.mock';
+import { PagingMock } from './DataSetApi/Paging.mock';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
 import { AttributeMetadataGenerator } from '../../utils/AttributeMetadataGenerator';
 

@@ -5,6 +5,7 @@
 
 import type { MockGenerator } from './MockGenerator';
 import type { ShkoOnline } from '../ShkoOnline';
+import { stub } from 'sinon';
 
 export const mockRefreshParameters = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -12,7 +13,8 @@ export const mockRefreshParameters = <
 >(
     mockGenerator: MockGenerator<TInputs, TOutputs>,
 ) => {
-    mockGenerator._RefreshParameters.callsFake(() => {
+    mockGenerator.RefreshParameters = stub();
+    mockGenerator.RefreshParameters.callsFake(() => {
         Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(mockGenerator.context.parameters).forEach(
             (propertyName) => {
                 mockGenerator.context._parameters[propertyName]._Refresh();
