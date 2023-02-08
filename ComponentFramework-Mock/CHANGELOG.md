@@ -1,3 +1,10 @@
+## [0.1.14](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.13...v0.1.14) (2023-02-08)
+
+
+### Bug Fixes
+
+* Added _SetValue helper function ([4a05133](https://github.com/shko-online/ComponentFramework-Mock/commit/4a051336f408a375ae9a9f04d3570ca123cd887c))
+
 ## [0.1.13](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.12...v0.1.13) (2023-01-31)
 
 
