@@ -39,6 +39,8 @@ async function tscfy(options = {}) {
         await run({ watch, command, silent, errorCallback });
     }
 
+    await execa.command('npx copyfiles -u 1 src/**/*.d.ts lib/ts3.9')
+
     if (!watch) {
         await execa.command('npx downlevel-dts lib/ts3.9 lib/ts3.4');
     }

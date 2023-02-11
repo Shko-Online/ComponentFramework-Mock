@@ -22,10 +22,7 @@
             "@shko.online/componentframework-mock*": [
                 "./src*"
             ]
-        },
-        "typeRoots": [
-            "./node_modules/@types"
-        ]
+        }
     },
     "exclude": [
         "node_modules",

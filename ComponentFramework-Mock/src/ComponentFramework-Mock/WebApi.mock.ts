@@ -6,7 +6,7 @@
 import type { SinonStub } from 'sinon';
 
 import { stub } from 'sinon';
-import { parseOData } from '@shko.online/dataverse-odata'
+import { parseOData } from '@shko.online/dataverse-odata';
 import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 
 export class WebApiMock implements ComponentFramework.WebApi {
@@ -83,15 +83,15 @@ export class WebApiMock implements ComponentFramework.WebApi {
                             message: `Could not find record with id: '${id}' for entity: '${entityType}'.`,
                         });
                     }
-                    if(options){
-                       var parsed = parseOData(options);
-                       if(parsed.$select){
-                       const oldRow = result.row;
-                       result.row = {};
-                       parsed.$select.forEach(attribute=>{
-                        result.row[attribute] = oldRow[attribute];
-                       })
-                       }
+                    if (options) {
+                        var parsed = parseOData(options);
+                        if (parsed.$select) {
+                            const oldRow = result.row;
+                            result.row = {};
+                            parsed.$select.forEach((attribute) => {
+                                result.row[attribute] = oldRow[attribute];
+                            });
+                        }
                     }
                     resolve(result.row);
                 }, this._Delay);

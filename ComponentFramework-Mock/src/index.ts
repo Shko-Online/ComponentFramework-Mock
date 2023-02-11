@@ -3,9 +3,6 @@ Copyright (c) 2022 Betim Beja and Shko Online LLC
 Licensed under the MIT license.
 */
 
-/// <reference types="powerapps-component-framework" />
-/// <reference path="./global.d.ts" />
-
 export type { MockToRaw, PropertyMap, PropertyToMock } from './ComponentFramework-Mock';
 export type { MockGenerator } from './ComponentFramework-Mock-Generator';
 export type { ShkoOnline } from './ShkoOnline';
