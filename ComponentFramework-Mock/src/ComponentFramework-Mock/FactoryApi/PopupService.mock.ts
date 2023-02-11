@@ -3,8 +3,9 @@
     Licensed under the MIT license.
 */
 
-import { stub } from 'sinon';
 import type { SinonStub }from 'sinon';
+
+import { stub } from 'sinon';
 
 export class PopupServiceMock implements ComponentFramework.FactoryApi.Popup.PopupService {
     createPopup: SinonStub<[props: ComponentFramework.FactoryApi.Popup.Popup], void>;

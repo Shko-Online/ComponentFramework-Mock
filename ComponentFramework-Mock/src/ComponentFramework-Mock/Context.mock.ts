@@ -18,7 +18,7 @@ import { ResourcesMock } from './Resources.mock';
 import { UserSettingsMock } from './UserSettings.mock';
 import { UtilityMock } from './Utility.mock';
 import { WebApiMock } from './WebApi.mock';
-import { MetadataDB } from '../ComponentFramework-Mock-Generator/Metadata.db';
+import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs>
@@ -69,6 +69,6 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.resources = new ResourcesMock();
         this.userSettings = new UserSettingsMock();
         this.utils = new UtilityMock();
-        this.webAPI = new WebApiMock();
+        this.webAPI = new WebApiMock(db);
     }
 }

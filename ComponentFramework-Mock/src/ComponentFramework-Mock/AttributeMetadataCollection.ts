@@ -3,10 +3,10 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../ShkoOnline';
 
 import { stub } from 'sinon';
-import type { SinonStub } from 'sinon';
 
 export class AttributeMetadataCollection implements ShkoOnline.AttributeMetadataCollection {
     _attributes: ShkoOnline.AttributeMetadata[];

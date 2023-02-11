@@ -3,10 +3,14 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
+
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import { parseOData } from '@shko.online/dataverse-odata'
+import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 
 export class WebApiMock implements ComponentFramework.WebApi {
+    _Delay: number;
     createRecord: SinonStub<
         [entityType: string, data: ComponentFramework.WebApi.Entity],
         Promise<ComponentFramework.LookupValue>
@@ -24,7 +28,8 @@ export class WebApiMock implements ComponentFramework.WebApi {
         [entityType: string, id: string, options?: string],
         Promise<ComponentFramework.WebApi.Entity>
     >;
-    constructor() {
+    constructor(db: MetadataDB) {
+        this._Delay = 200;
         this.createRecord = stub();
         this.createRecord.callsFake((entityType: string, data: ComponentFramework.WebApi.Entity) => {
             return new Promise<ComponentFramework.LookupValue>((resolve) => {
@@ -67,10 +72,29 @@ export class WebApiMock implements ComponentFramework.WebApi {
         });
         this.retrieveRecord = stub();
         this.retrieveRecord.callsFake((entityType: string, id: string, options?: string) => {
-            return new Promise<ComponentFramework.WebApi.Entity>((resolve) => {
-                resolve({
-                    ['']: [],
-                });
+            return new Promise<ComponentFramework.WebApi.Entity>((resolve, reject) => {
+                setTimeout(() => {
+                    const result = db.GetRowForAPI(entityType, id);
+                    if (!result.entityMetadata) {
+                        return reject({ message: `Entity ${entityType} does not exist.` });
+                    }
+                    if (!result.row) {
+                        return reject({
+                            message: `Could not find record with id: '${id}' for entity: '${entityType}'.`,
+                        });
+                    }
+                    if(options){
+                       var parsed = parseOData(options);
+                       if(parsed.$select){
+                       const oldRow = result.row;
+                       result.row = {};
+                       parsed.$select.forEach(attribute=>{
+                        result.row[attribute] = oldRow[attribute];
+                       })
+                       }
+                    }
+                    resolve(result.row);
+                }, this._Delay);
             });
         });
     }

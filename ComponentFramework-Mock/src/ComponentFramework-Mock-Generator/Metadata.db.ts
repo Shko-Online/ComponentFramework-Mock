@@ -4,7 +4,9 @@
 */
 
 import type { ShkoOnline } from '../ShkoOnline';
+
 import loki from 'lokijs';
+import { AttributeType } from '../ComponentFramework-Mock';
 
 export class MetadataDB {
     _warnMissingInit: boolean;
@@ -92,10 +94,23 @@ export class MetadataDB {
         if (!tableMetadata.Attributes) return;
         items.value.forEach((item) => {
             let row: { [key: string]: any } = {};
+            row['ownerid'] = item['ownerid'];
             tableMetadata.Attributes?.forEach((attribute) => {
                 const key = attribute.LogicalName;
-                if (key in item) {
+                if ((attribute.AttributeType as unknown) === 'Lookup' && `_${key}_value` in item) {
+                    row[key] = item[`_${key}_value`]
+                        ? ({
+                              entityType: item[`_${key}_value@Microsoft.Dynamics.CRM.lookuplogicalname`],
+                              id: item[`_${key}_value`],
+                              name: item[`_${key}_value@OData.Community.Display.V1.FormattedValue`],
+                          } as ComponentFramework.LookupValue)
+                        : null;
+                    row[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`] =
+                        item[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`]; // Temporary hack
+                } else if (key in item) {
                     row[key] = item[key];
+                    if((attribute.AttributeType as unknown) !== 'String' )    row[`${key}@OData.Community.Display.V1.FormattedValue`] =
+                        item[`${key}@OData.Community.Display.V1.FormattedValue`]; // Temporary hack
                 }
             });
             tableData.insert(row);
@@ -110,21 +125,43 @@ export class MetadataDB {
     GetRow(entity: string, id?: string) {
         const entityMetadata = this.metadata.findOne({ LogicalName: entity }) as ShkoOnline.EntityMetadata &
             Partial<LokiObj>;
+        if (entityMetadata === undefined && this._warnMissingInit) {
+            console.warn(`no metadata initialized for ${entity} table.`);
+        }
         const entityData = this.data[entity];
-        delete entityMetadata.$loki;
-        delete entityMetadata.meta;
+        delete entityMetadata?.$loki;
+        delete entityMetadata?.meta;
         if (entityData === undefined && this._warnMissingInit) {
             console.warn(`no data initialized for ${entity} table.`);
         }
-        if (id === undefined) {
-            return { row: entityData?.findOne(), entityMetadata: entityMetadata as ShkoOnline.EntityMetadata };
+        const row =
+            id === undefined
+                ? entityData?.findOne()
+                : entityData?.findOne({
+                      [entityMetadata?.PrimaryIdAttribute || entityMetadata?.LogicalName + 'id']: { $eq: id },
+                  });
+        delete row?.$loki;
+        delete row?.meta;
+        return { row, entityMetadata: entityMetadata as ShkoOnline.EntityMetadata };
+    }
+    GetRowForAPI(entity: string, id?: string) {
+        const result = this.GetRow(entity, id);
+        if (result.entityMetadata && result.entityMetadata.Attributes && result.row) {
+            result.entityMetadata.Attributes.forEach((attribute) => {
+                const key = attribute.LogicalName;
+                if ((attribute.AttributeType as unknown) === 'Lookup' && key in result.row) {
+                    const toExpand = result.row[key] as ComponentFramework.LookupValue;
+                    delete result.row[key];
+
+                    result.row[`_${key}_value`] = toExpand?.id || null;
+                    result.row[`_${key}_value@Microsoft.Dynamics.CRM.lookuplogicalname`] = toExpand?.entityType;
+                    result.row[`_${key}_value@OData.Community.Display.V1.FormattedValue`] = toExpand?.name;
+                    result.row[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`] =
+                        result.row?.[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`];
+                }
+            });
         }
-        return {
-            row: entityData?.findOne({
-                [entityMetadata.PrimaryIdAttribute || entityMetadata.LogicalName + 'id']: { $eq: id },
-            }),
-            entityMetadata: entityMetadata as ShkoOnline.EntityMetadata,
-        };
+        return result;
     }
     GetAllColumn(entity: string, attribute: string) {
         const tab: any[] = [];
