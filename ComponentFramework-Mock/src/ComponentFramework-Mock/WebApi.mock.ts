@@ -3,10 +3,15 @@
     Licensed under the MIT license.
 */
 
+import type { SinonStub } from 'sinon';
+
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import { parseOData } from '@shko.online/dataverse-odata';
+import { MetadataDB } from '../ComponentFramework-Mock-Generator';
+import { newGuid } from '../utils/newGuid';
 
 export class WebApiMock implements ComponentFramework.WebApi {
+    _Delay: number;
     createRecord: SinonStub<
         [entityType: string, data: ComponentFramework.WebApi.Entity],
         Promise<ComponentFramework.LookupValue>
@@ -24,34 +29,56 @@ export class WebApiMock implements ComponentFramework.WebApi {
         [entityType: string, id: string, options?: string],
         Promise<ComponentFramework.WebApi.Entity>
     >;
-    constructor() {
+    constructor(db: MetadataDB) {
+        this._Delay = 200;
         this.createRecord = stub();
         this.createRecord.callsFake((entityType: string, data: ComponentFramework.WebApi.Entity) => {
-            return new Promise<ComponentFramework.LookupValue>((resolve) => {
-                resolve({
-                    id: '00000000-0000-0000-0000-000000000001',
-                    name: 'Any',
-                    entityType: 'any',
-                });
+            return new Promise<ComponentFramework.LookupValue>((resolve, reject) => {
+                setTimeout(() => {
+                    const metadata = db.getTableMetadata(entityType);
+                    if (!metadata) {
+                        return reject({ message: `Entity ${entityType} does not exist.` });
+                    }
+                    const newObject = {
+                        id: newGuid(),
+                        name: data[metadata.PrimaryNameAttribute || 'name'],
+                        entityType: entityType,
+                    };
+                    data[metadata.PrimaryIdAttribute || entityType + 'id'] = newObject.id;
+                    db.AddRow(entityType, data, metadata);
+                    resolve(newObject);
+                }, this._Delay);
             });
         });
         this.deleteRecord = stub();
         this.deleteRecord.callsFake((entityType: string, id: string) => {
-            return new Promise<ComponentFramework.LookupValue>((resolve) => {
-                resolve({
-                    id: '00000000-0000-0000-0000-000000000000',
-                    name: 'Any',
-                    entityType: 'any',
-                });
+            return new Promise<ComponentFramework.LookupValue>((resolve, reject) => {
+                setTimeout(() => {
+                    const result = db.GetRow(entityType, id);
+                    if (!result.entityMetadata) {
+                        return reject({ message: `Entity ${entityType} does not exist.` });
+                    }
+                    if (!result.row) {
+                        return reject({
+                            message: `Could not find record with id: '${id}' for entity: '${entityType}'.`,
+                        });
+                    }
+                    db.RemoveRow(entityType, id);
+                    resolve({
+                        id,
+                        name: result.row?.[result.entityMetadata.PrimaryNameAttribute || 'name'],
+                        entityType,
+                    });
+                }, this._Delay);
             });
         });
         this.updateRecord = stub();
         this.updateRecord.callsFake((entityType: string, id: string, data: ComponentFramework.WebApi.Entity) => {
             return new Promise<ComponentFramework.LookupValue>((resolve) => {
                 resolve({
-                    id: '00000000-0000-0000-0000-000000000000',
+                    id,
                     name: 'Any',
-                    entityType: 'any',
+                    entityType,
                 });
             });
         });
@@ -67,10 +94,29 @@ export class WebApiMock implements ComponentFramework.WebApi {
         });
         this.retrieveRecord = stub();
         this.retrieveRecord.callsFake((entityType: string, id: string, options?: string) => {
-            return new Promise<ComponentFramework.WebApi.Entity>((resolve) => {
-                resolve({
-                    ['']: [],
-                });
+            return new Promise<ComponentFramework.WebApi.Entity>((resolve, reject) => {
+                setTimeout(() => {
+                    const result = db.GetRowForAPI(entityType, id);
+                    if (!result.entityMetadata) {
+                        return reject({ message: `Entity ${entityType} does not exist.` });
+                    }
+                    if (!result.row) {
+                        return reject({
+                            message: `Could not find record with id: '${id}' for entity: '${entityType}'.`,
+                        });
+                    }
+                    if (options) {
+                        var parsed = parseOData(options);
+                        if (parsed.$select) {
+                            const oldRow = result.row;
+                            result.row = {};
+                            parsed.$select.forEach((attribute) => {
+                                result.row[attribute] = oldRow[attribute];
+                            });
+                        }
+                    }
+                    resolve(result.row);
+                }, this._Delay);
             });
         });
     }
