@@ -123,9 +123,9 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             this._Refresh();
         });
         this._Refresh.callsFake(() => {
-            const columnsResult = this._db.GetRows(`${this._boundTable}$columns`);
+            const columnsResult = this._db.GetAllRows(`${this._boundTable}$columns`);
             this.columns = columnsResult.rows;
-            const rows = this._db.GetRows(this._boundTable);
+            const rows = this._db.GetAllRows(this._boundTable);
             const records = rows.rows.map((item) => {
                 const row = new EntityRecordMock(
                     db,

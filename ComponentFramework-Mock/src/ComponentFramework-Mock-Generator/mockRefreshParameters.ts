@@ -3,6 +3,8 @@
     Licensed under the MIT license.
 */
 
+/// <reference path="../global.d.ts" />
+
 import type { MockGenerator } from './MockGenerator';
 import type { ShkoOnline } from '../ShkoOnline';
 import { stub } from 'sinon';

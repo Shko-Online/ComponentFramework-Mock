@@ -10,6 +10,7 @@ import { IInputs, IOutputs } from '../__sample-components__/OwnerLookup/generate
 import userMetadataJson from './data/systemUser.json';
 import userDataJson from './data/systemUserData.json';
 import betimBeja from './data/betimBeja.json';
+import { assert } from 'console';
 
 describe('WebApiMock', () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
@@ -27,7 +28,7 @@ describe('WebApiMock', () => {
         mockGenerator.metadata.initItems(JSON.parse(JSON.stringify(userDataJson)));
     });
 
-    it('Should reject if no metadata', async () => {
+    it('Should reject retrieve if no metadata', async () => {
         await expect(
             mockGenerator.context.webAPI.retrieveRecord('account', '48268759-f226-ed11-9db1-000d3a264915'),
         ).rejects.toEqual({
@@ -35,7 +36,7 @@ describe('WebApiMock', () => {
         });
     });
 
-    it('Should reject if row not found', async () => {
+    it('Should reject retrieve if row not found', async () => {
         await expect(
             mockGenerator.context.webAPI.retrieveRecord('systemuser', '48268759-f226-ed11-9db2-000d3a264915'),
         ).rejects.toEqual({
@@ -44,7 +45,7 @@ describe('WebApiMock', () => {
     });
 
     it('Should retrieve record when row is found', async () => {
-        delete betimBeja["@odata.etag"];
+        delete betimBeja['@odata.etag'];
 
         await expect(
             mockGenerator.context.webAPI.retrieveRecord('systemuser', '682d1eb3-0ba4-ed11-aad1-000d3add5311'),
@@ -52,10 +53,61 @@ describe('WebApiMock', () => {
     });
 
     it('Should retrieve records selected attributes', async () => {
-        const {fullname} = JSON.parse(JSON.stringify(betimBeja));
-        
+        const { fullname } = JSON.parse(JSON.stringify(betimBeja));
+
         await expect(
-            mockGenerator.context.webAPI.retrieveRecord('systemuser', '682d1eb3-0ba4-ed11-aad1-000d3add5311','?$select=fullname'),
-        ).resolves.toEqual({fullname});
+            mockGenerator.context.webAPI.retrieveRecord(
+                'systemuser',
+                '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                '?$select=fullname',
+            ),
+        ).resolves.toEqual({ fullname });
+    });
+
+    it('Should reject delete if no metadata', async () => {
+        await expect(
+            mockGenerator.context.webAPI.deleteRecord('account', '48268759-f226-ed11-9db1-000d3a264915'),
+        ).rejects.toEqual({
+            message: 'Entity account does not exist.',
+        });
+    });
+
+    it('Should reject delete if row not found', async () => {
+        await expect(
+            mockGenerator.context.webAPI.deleteRecord('systemuser', '48268759-f226-ed11-9db2-000d3a264915'),
+        ).rejects.toEqual({
+            message: "Could not find record with id: '48268759-f226-ed11-9db2-000d3a264915' for entity: 'systemuser'.",
+        });
+    });
+
+    it('Should delete record when row is found', async () => {
+        delete betimBeja['@odata.etag'];
+
+        await expect(
+            mockGenerator.context.webAPI.deleteRecord('systemuser', '682d1eb3-0ba4-ed11-aad1-000d3add5311'),
+        ).resolves.toEqual({
+            name: 'Betim Beja',
+            id: '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+            entityType: 'systemuser',
+        });
+    });
+
+    it('Should reject create if no metadata', async () => {
+        await expect(
+            mockGenerator.context.webAPI.createRecord('account', { accountid: '48268759-f226-ed11-9db1-000d3a264915' }),
+        ).rejects.toEqual({
+            message: 'Entity account does not exist.',
+        });
+    });
+
+    it('Should create if metadata available', async () => {
+        const createdUser = await mockGenerator.context.webAPI.createRecord('systemuser', {
+            firstname: 'Betim',
+            lastname: 'Beja',
+        });
+        expect(createdUser.id).not.toBeNull();
+        expect(createdUser.id).not.toBeUndefined();
+        const userData = mockGenerator.metadata.GetRow('systemuser', createdUser.id);
+        expect(userData.row['firstname']).toEqual('Betim');
     });
 });

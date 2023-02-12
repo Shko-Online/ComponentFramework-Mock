@@ -61,4 +61,4 @@ export {
     mockSetControlState,
 } from './ComponentFramework-Mock-Generator';
 
-export { AttributeMetadataGenerator, arrayEqual } from './utils';
+export { arrayEqual, AttributeMetadataGenerator, itemEqual, newGuid, showBanner } from './utils';
