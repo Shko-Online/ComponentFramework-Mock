@@ -1,3 +1,12 @@
+## [0.1.15](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.14...v0.1.15) (2023-02-12)
+
+
+### Bug Fixes
+
+* fixed bundled types ([8552ffd](https://github.com/shko-online/ComponentFramework-Mock/commit/8552ffd7aa2ba7d0d964dfea4e47aa8786575a2e))
+* Implemented WebAPI.create and delete ([9374860](https://github.com/shko-online/ComponentFramework-Mock/commit/9374860a8f2e21866f5a2f63324a2e5cede94866))
+* WebApi RetrieveRecord ([61f1ca1](https://github.com/shko-online/ComponentFramework-Mock/commit/61f1ca18fda8879276f87df993d773ee2bbd5dac))
+
 ## [0.1.14](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.13...v0.1.14) (2023-02-08)
 
 
