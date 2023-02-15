@@ -1,3 +1,10 @@
+## [0.1.16](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.15...v0.1.16) (2023-02-15)
+
+
+### Bug Fixes
+
+* added readme to npm package ([c53061c](https://github.com/shko-online/ComponentFramework-Mock/commit/c53061cc2936eafd5da5381664c892e51e3296fa))
+
 ## [0.1.15](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.14...v0.1.15) (2023-02-12)
 
 
