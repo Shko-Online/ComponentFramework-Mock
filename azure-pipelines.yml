@@ -1,3 +1,6 @@
+trigger:
+- main
+
 pool:
   vmImage: windows-latest
 
@@ -9,31 +12,21 @@ steps:
 - task: Npm@1
   inputs:
     command: 'install'
-    workingDir: 'ComponentFramework-Mock'
   displayName: "Install NPM Dependencies"
 
 - task: Npm@1
   inputs:
     command: 'custom'
     customCommand: 'test'
-    workingDir: 'ComponentFramework-Mock'
   displayName: "Test"
-
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: 'scripts'
-  displayName: "Install 'scripts' NPM Dependencies"
 
 - task: Npm@1
   inputs:
     command: 'custom'
     customCommand: 'run build'
-    workingDir: 'ComponentFramework-Mock'
   displayName: "Build"
 
 - script: 'npx semantic-release'
-  workingDirectory: 'ComponentFramework-Mock'
   displayName: 'Semantic Release'
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
@@ -44,4 +37,4 @@ steps:
   condition: succeededOrFailed()
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: "ComponentFramework-Mock/coverage/cobertura-coverage.xml"
+    summaryFileLocation: "coverage/cobertura-coverage.xml"

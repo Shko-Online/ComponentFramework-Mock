@@ -57,6 +57,7 @@
         "@semantic-release/git": "^10.0.1",
         "@semantic-release/npm": "^9.0.1",
         "@semantic-release/release-notes-generator": "^10.0.3",
+        "@shko.online/build-npm-package": "^0.1.0",
         "@storybook/react-docgen-typescript-plugin": "^1.0.1",
         "@types/babel__core": "^7.1.20",
         "@types/jest": "^29.2.3",
@@ -80,7 +81,7 @@
         "typescript": "^4.7.4"
     },
     "scripts": {
-        "build": "npm run lint && node ../scripts/build.js",
+        "build": "npm run lint && build-npm-package",
         "lint": "eslint",
         "tsc": "tsc --project tsconfig.build.json",
         "test": "npm run test:types && npm run test:jest",
