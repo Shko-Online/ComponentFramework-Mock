@@ -51,7 +51,7 @@ export type MockToRaw<TInput extends ShkoOnline.PropertyTypes<TInput>, T extends
         ? Date
         : T[P] extends DecimalNumberPropertyMock
         ? number
-        : T[P] extends EnumPropertyMock<string>
+        : T[P] extends EnumPropertyMock<extractGeneric<T[P]>>
         ? extractGeneric<T[P]>
         : T[P] extends LookupPropertyMock
         ? ComponentFramework.LookupValue

@@ -9,7 +9,7 @@ declare module ShkoOnline {
     export type PropertyTypes<T extends { [key: string]: any }> = {
         [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.Property
             ? T[P]
-            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
+            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<EnumType<T[P]>>
             ? T[P]
             : T[P] extends ComponentFramework.PropertyTypes.DataSet
             ? T[P]
