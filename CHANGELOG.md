@@ -1,3 +1,10 @@
+## [0.1.17](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.16...v0.1.17) (2023-02-16)
+
+
+### Bug Fixes
+
+* Fixed embedded types for Enums ([d080122](https://github.com/shko-online/ComponentFramework-Mock/commit/d0801220371f8a453676f8e43ca221c66fad1c54))
+
 ## [0.1.16](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.15...v0.1.16) (2023-02-15)
 
 

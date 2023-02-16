@@ -1,6 +1,6 @@
 {
     "name": "@shko.online/componentframework-mock",
-    "version": "0.1.16",
+    "version": "0.1.17",
     "description": "Mocking library to help with testing PowerApps Component Framework Components",
     "repository": "https://github.com/shko-online/ComponentFramework-Mock",
     "author": "Shko Online <sales@shko.online> (https://shko.online)",
