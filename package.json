@@ -20,15 +20,20 @@
         ".": {
             "require": "./lib/cjs/index.js",
             "import": "./lib/esm/index.js",
-            "types": "./lib/ts3.9/index.d.ts"
+            "types": "./lib/ts4.2/index.d.ts"
         }
     },
     "main": "lib/cjs/index.js",
     "module": "lib/esm/index.mjs",
-    "types": "lib/ts3.9/index.d.ts",
+    "types": "lib/ts4.2/index.d.ts",
     "typesVersions": {
+        "<4.1": {
+            "lib/ts4.2/*": [
+                "lib/ts3.9/*"
+            ]
+        },
         "<3.8": {
-            "lib/ts3.9/*": [
+            "lib/ts4.2/*": [
                 "lib/ts3.4/*"
             ]
         }
@@ -57,7 +62,7 @@
         "@semantic-release/git": "^10.0.1",
         "@semantic-release/npm": "^9.0.1",
         "@semantic-release/release-notes-generator": "^10.0.3",
-        "@shko.online/build-npm-package": "^0.1.0",
+        "@shko.online/build-npm-package": "^0.1.1",
         "@storybook/react-docgen-typescript-plugin": "^1.0.1",
         "@types/babel__core": "^7.1.20",
         "@types/jest": "^29.2.3",

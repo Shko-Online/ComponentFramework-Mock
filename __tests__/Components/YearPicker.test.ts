@@ -6,7 +6,7 @@
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { YearPicker } from '../../__sample-components__/YearPicker';
 import { IInputs, IOutputs } from '../../__sample-components__/YearPicker/generated/ManifestTypes';
-import { ComponentFrameworkMockGenerator, DateTimePropertyMock } from '../../src';
+import { ComponentFrameworkMockGenerator, DateTimePropertyMock, EnumPropertyMock } from '../../src';
 
 describe('YearPicker', () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
@@ -16,11 +16,13 @@ describe('YearPicker', () => {
             YearPicker,
             {
                 value: DateTimePropertyMock,
+                enum: EnumPropertyMock<'Yes' | 'No'>,
             },
             container,
         );
         mockGenerator.context._SetCanvasItems({
             value: new Date(2023, 0, 1),
+            enum: 'Yes',
         });
         document.body.appendChild(container);
     });
@@ -57,5 +59,11 @@ describe('YearPicker', () => {
         mockGenerator.context._parameters.value._SetValue(new Date(2021, 0, 1));
         mockGenerator.context._parameters.value._Refresh();
         expect(mockGenerator.context._parameters.value.raw).toEqual(new Date(2021, 0, 1));
+    });
+
+    it('Should accept enum value', () => {
+        mockGenerator.ExecuteInit();
+        mockGenerator.ExecuteUpdateView();
+        expect(mockGenerator.context._parameters.enum.raw).toEqual('Yes');
     });
 });
