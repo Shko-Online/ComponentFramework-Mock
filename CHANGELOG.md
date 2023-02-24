@@ -1,3 +1,10 @@
+## [0.1.19](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.18...v0.1.19) (2023-02-24)
+
+
+### Bug Fixes
+
+* dataset autogenerates record id ([5ef9be8](https://github.com/shko-online/ComponentFramework-Mock/commit/5ef9be85bee4ad73b9e11bc6946aae797eb54c0d))
+
 ## [0.1.18](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.17...v0.1.18) (2023-02-16)
 
 
