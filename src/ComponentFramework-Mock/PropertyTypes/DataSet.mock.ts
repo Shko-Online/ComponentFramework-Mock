@@ -116,6 +116,15 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                 }),
             });
 
+            const tableMetadata = this._db.getTableMetadata(this._boundTable);
+            if (tableMetadata) {
+                items.forEach((item, i) => {
+                    if (item[tableMetadata?.PrimaryIdAttribute || 'id'] === undefined) {
+                        item[tableMetadata?.PrimaryIdAttribute || 'id'] = i + '';
+                    }
+                });
+            }
+
             this._db.initItems({
                 '@odata.context': `#${this._boundTable}`,
                 value: items,
