@@ -34,7 +34,7 @@ export class MetadataDB {
      */
     initMetadata(metadatas: ShkoOnline.EntityMetadata[]) {
         metadatas.forEach((metadata) => {
-            this.metadata.insert(metadata);
+            this.metadata.insert({ ...metadata });
 
             const attributesCollection = this.db.addCollection(`${metadata.LogicalName}#attributes`);
             this.attributes[metadata.LogicalName] = attributesCollection;
@@ -45,6 +45,7 @@ export class MetadataDB {
             });
         });
     }
+
     /**
      * Get the metadata for a specific attribute
      * @param entity The target table
@@ -58,15 +59,15 @@ export class MetadataDB {
             return null;
         }
 
-        const result = this.attributes[entity].findOne({
+        const resultDB = this.attributes[entity].findOne({
             LogicalName: { $eq: attribute },
-        }) as ShkoOnline.AttributeMetadata & Partial<LokiObj>;
-        if (result) {
-            delete result.$loki;
-            delete result.meta;
-        } else {
+        });
+        if (!resultDB) {
             console.warn(`Could not find metadata for ${entity} ${attribute}`);
+            return;
         }
+
+        const { $loki, meta, ...result } = resultDB;
         return result as ShkoOnline.AttributeMetadata;
     }
 
@@ -75,16 +76,14 @@ export class MetadataDB {
      * @param entity The target table
      */
     getTableMetadata(entity: string) {
-        const tableMetadata = this.metadata.findOne({ LogicalName: { $eq: entity } }) as ShkoOnline.EntityMetadata &
-            Partial<LokiObj>;
-        if (!tableMetadata) {
+        const tableMetadataDB = this.metadata.findOne({ LogicalName: { $eq: entity } });
+        if (!tableMetadataDB) {
             if (this._warnMissingInit) {
                 console.warn(`Missing init for ${entity}`);
             }
             return;
         }
-        delete tableMetadata['$loki'];
-        delete tableMetadata['meta'];
+        const { $loki, meta, ...tableMetadata } = tableMetadataDB;
         return tableMetadata as ShkoOnline.EntityMetadata;
     }
 
@@ -95,25 +94,29 @@ export class MetadataDB {
      * @returns
      */
     upsertAttributeMetadata(entity: string, attributeMetadata: ShkoOnline.AttributeMetadata) {
-        const tableMetadata = this.metadata.findOne({ LogicalName: { $eq: entity } });
+        const tableMetadata = this.getTableMetadata(entity);
         if (!tableMetadata) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for ${entity}`);
-            }
-            return null;
+            console.warn(`Could not find metadata for ${entity}`);
+            return;
         }
         tableMetadata.Attributes = [
             ...(tableMetadata.Attributes || []).filter(
                 (attribute) => attribute.LogicalName !== attributeMetadata.LogicalName,
             ),
         ];
-        tableMetadata.Attributes?.push(attributeMetadata);
-        this.metadata.update(tableMetadata);
+        if (!attributeMetadata.EntityLogicalName) {
+            attributeMetadata.EntityLogicalName = entity;
+        }
+        tableMetadata.Attributes.push(attributeMetadata);
+        this.metadata.removeWhere({
+            LogicalName: { $eq: tableMetadata.LogicalName },
+        });
 
+        this.metadata.insert(tableMetadata);
         this.attributes[entity].removeWhere({
             LogicalName: { $eq: attributeMetadata.LogicalName },
         });
-        this.attributes[entity].insert(attributeMetadata);
+        this.attributes[entity].insert({ ...attributeMetadata });
     }
 
     /**
@@ -154,7 +157,7 @@ export class MetadataDB {
             return;
         }
         let row: { [key: string]: any } = {};
-        row['ownerid'] = item['ownerid'];
+        if ('ownerid' in item) row['ownerid'] = item['ownerid'];
         tableMetadata.Attributes?.forEach((attribute) => {
             const key = attribute.LogicalName;
             if ((attribute.AttributeType as unknown) === 'Lookup' && `_${key}_value` in item) {
@@ -165,11 +168,12 @@ export class MetadataDB {
                           name: item[`_${key}_value@OData.Community.Display.V1.FormattedValue`],
                       } as ComponentFramework.LookupValue)
                     : null;
-                row[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`] =
-                    item[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`]; // Temporary hack
+                if (`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty` in item)
+                    row[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`] =
+                        item[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`]; // Temporary hack
             } else if (key in item) {
                 row[key] = item[key];
-                if ((attribute.AttributeType as unknown) !== 'String')
+                if (`${key}@OData.Community.Display.V1.FormattedValue` in item)
                     row[`${key}@OData.Community.Display.V1.FormattedValue`] =
                         item[`${key}@OData.Community.Display.V1.FormattedValue`]; // Temporary hack
             }
@@ -195,26 +199,25 @@ export class MetadataDB {
      * @returns
      */
     GetRow(entity: string, id?: string) {
-        const entityMetadata = this.metadata.findOne({ LogicalName: entity }) as ShkoOnline.EntityMetadata &
-            Partial<LokiObj>;
-        if (entityMetadata === undefined && this._warnMissingInit) {
-            console.warn(`no metadata initialized for ${entity} table.`);
-        }
+        const entityMetadata = this.getTableMetadata(entity);
         const entityData = this.data[entity];
-        delete entityMetadata?.$loki;
-        delete entityMetadata?.meta;
         if (entityData === undefined && this._warnMissingInit) {
             console.warn(`no data initialized for ${entity} table.`);
         }
-        const row =
+        const rowDB = entityData?.findOne(
             id === undefined
-                ? entityData?.findOne()
-                : entityData?.findOne({
-                      [entityMetadata?.PrimaryIdAttribute || entityMetadata?.LogicalName + 'id']: { $eq: id },
-                  });
-        delete row?.$loki;
-        delete row?.meta;
-        return { row, entityMetadata: entityMetadata as ShkoOnline.EntityMetadata };
+                ? undefined
+                : {
+                      [entityMetadata ? entityMetadata.PrimaryIdAttribute || entityMetadata.LogicalName + 'id' : 'id']:
+                          { $eq: id },
+                  },
+        );
+        if (!rowDB) {
+            console.warn('could not find row');
+            return { row: null, entityMetadata };
+        }
+        const { $loki, meta, ...row } = rowDB;
+        return { row, entityMetadata };
     }
 
     /**
@@ -223,11 +226,7 @@ export class MetadataDB {
      * @param id The target row
      */
     RemoveRow(entity: string, id: string) {
-        const entityMetadata = this.metadata.findOne({ LogicalName: entity }) as ShkoOnline.EntityMetadata &
-            Partial<LokiObj>;
-        if (entityMetadata === undefined && this._warnMissingInit) {
-            console.warn(`no metadata initialized for ${entity} table.`);
-        }
+        const entityMetadata = this.getTableMetadata(entity);
         const entityData = this.data[entity];
         if (entityData === undefined && this._warnMissingInit) {
             console.warn(`no data initialized for ${entity} table.`);
@@ -276,7 +275,7 @@ export class MetadataDB {
         rowid?: string,
     ) {
         const result = this.GetRow(entity, rowid);
-        const attributeMetadata = result.entityMetadata.Attributes?.find(
+        const attributeMetadata = result.entityMetadata?.Attributes?.find(
             (attribute) => attribute.LogicalName === attributeName,
         ) as TAttribute;
         const value = result.row?.[attributeName] as TValue;
@@ -301,12 +300,19 @@ export class MetadataDB {
      * @param attribute The target column
      * @param row The target row
      */
-    UpdateValue<T>(value: T, entity: string, attribute: string, row?: string) {
-        const update = this.GetRow(entity, row);
+    UpdateValue<T>(value: T, entity: string, attribute: string, rowId?: string) {
+        const update = this.GetRow(entity, rowId);
         update.row[attribute] = value;
-        this.data[entity].updateWhere(
-            (row) => row.id === row || row === undefined,
-            (row) => (row[attribute] = value),
+        this.data[entity].findAndUpdate(
+            (row) =>
+                row[
+                    update.entityMetadata
+                        ? update.entityMetadata.PrimaryIdAttribute || update.entityMetadata.LogicalName + 'id'
+                        : 'id'
+                ] === rowId || rowId ===undefined,
+            (row) => {
+                row[attribute] = value;
+            },
         );
     }
 }

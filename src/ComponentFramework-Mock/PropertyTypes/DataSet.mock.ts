@@ -62,8 +62,8 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             Attributes: [],
         } as ShkoOnline.EntityMetadata;
         const dataSetColumnsEntity = {
-            LogicalName: '!!' + propertyName + '$columns',
-            EntitySetName: '!!' + propertyName + '$columns',
+            LogicalName: '!!' + propertyName + '@columns',
+            EntitySetName: '!!' + propertyName + '@columns',
             PrimaryIdAttribute: 'name',
             PrimaryNameAttribute: 'displayName',
             Attributes: [],
@@ -79,6 +79,15 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
 
         this._InitItems = stub();
         this._InitItems.callsFake((items) => {
+            const tableMetadata = this._db.getTableMetadata(`${this._boundTable}`);
+            if (tableMetadata) {
+                items.forEach((item, i) => {
+                    if (item[tableMetadata?.PrimaryIdAttribute || 'id'] === undefined) {
+                        item[tableMetadata?.PrimaryIdAttribute || 'id'] = i + '';
+                    }
+                });
+            }
+           
             let i = 0;
             let columns: { [key: string]: number } = {};
             items.forEach((item) => {
@@ -95,15 +104,15 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     this._db.upsertAttributeMetadata(this._boundTable, attribute);
                 });
 
-            new AttributeMetadataGenerator(`${this._boundTable}$columns`)
+            new AttributeMetadataGenerator(`${this._boundTable}@columns`)
                 .AddString(['displayName', 'name', 'dataType', 'alias'])
                 .AddInteger(['order', 'visualSizeFactor'])
                 .Attributes.forEach((attribute) => {
-                    this._db.upsertAttributeMetadata(`${this._boundTable}$columns`, attribute);
+                    this._db.upsertAttributeMetadata(`${this._boundTable}@columns`, attribute);
                 });
 
             this._db.initItems({
-                '@odata.context': `#${this._boundTable}$columns`,
+                '@odata.context': `#${this._boundTable}@columns`,
                 value: Object.getOwnPropertyNames(columns).map((column) => {
                     return {
                         displayName: column as string,
@@ -116,15 +125,6 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                 }),
             });
 
-            const tableMetadata = this._db.getTableMetadata(this._boundTable);
-            if (tableMetadata) {
-                items.forEach((item, i) => {
-                    if (item[tableMetadata?.PrimaryIdAttribute || 'id'] === undefined) {
-                        item[tableMetadata?.PrimaryIdAttribute || 'id'] = i + '';
-                    }
-                });
-            }
-
             this._db.initItems({
                 '@odata.context': `#${this._boundTable}`,
                 value: items,
@@ -132,7 +132,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             this._Refresh();
         });
         this._Refresh.callsFake(() => {
-            const columnsResult = this._db.GetAllRows(`${this._boundTable}$columns`);
+            const columnsResult = this._db.GetAllRows(`${this._boundTable}@columns`);
             this.columns = columnsResult.rows;
             const rows = this._db.GetAllRows(this._boundTable);
             const records = rows.rows.map((item) => {
@@ -190,7 +190,18 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this.refresh = stub();
         this.setSelectedRecordIds = stub();
         this.setSelectedRecordIds.callsFake((ids) => {
-            this._SelectedRecordIds = ids ? [...ids] : [];
+            if(!ids){
+                this._SelectedRecordIds = [];
+                return;
+            }
+            // validate
+            for(let i=0;i<ids.length;i++){
+                const result = this._db.GetRow(this._boundTable, ids[i]);
+                if(!result.row){
+                    throw new Error(`Record with id '${ids[i]}' does not exist.`);
+                }
+            }
+            this._SelectedRecordIds = ids;
         });
     }
 }

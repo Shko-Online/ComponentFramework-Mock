@@ -43,14 +43,14 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
         this.getNamedReference = stub();
         this.getNamedReference.callsFake(() => {
             const { row, entityMetadata } = this._db.GetRow(this._boundTable, this._boundRow);
-            if (row === null) {
+            if (!row) {
                 return { id: { guid: '' }, name: '' };
             }
             const id = {
-                guid: row?.[entityMetadata.PrimaryIdAttribute || entityMetadata.LogicalName + 'id'] as string,
+                guid: row?.[entityMetadata ? entityMetadata.PrimaryIdAttribute || entityMetadata.LogicalName + 'id' : 'id'] as string,
             };
-            const etn = entityMetadata.LogicalName;
-            const name = row?.[entityMetadata.PrimaryNameAttribute || 'name'] as string;
+            const etn = entityMetadata?.LogicalName;
+            const name = row?.[entityMetadata?.PrimaryNameAttribute || 'name'] as string;
             return { id, etn, name };
         });
         this.getRecordId = stub();

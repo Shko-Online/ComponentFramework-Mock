@@ -113,7 +113,7 @@ describe('DataSetMock', () => {
         });
 
         it('columns definition can be updated', () => {
-            db.UpdateValue<string>('Record Id', `!!dataset$columns`, 'displayName', 'id');
+            db.UpdateValue<string>('Record Id', `!!dataset@columns`, 'displayName', 'id');
             dataset._Refresh();
             expect(dataset.columns).toEqual([
                 {

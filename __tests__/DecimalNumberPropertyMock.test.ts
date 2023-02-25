@@ -64,8 +64,8 @@ describe('DecimalNumberPropertyMock', () => {
             LogicalName: 'new_number',
             SchemaName: 'new_Number',
         } as ShkoOnline.DecimalNumberAttributeMetadata);
-        db.UpdateValue(202.05, LogicalName, 'new_number');
         decimalnumberproperty._Bind(LogicalName, 'new_number');
+        db.UpdateValue(202.05, LogicalName, 'new_number');
         decimalnumberproperty._Refresh();
         expect(decimalnumberproperty.raw).toEqual(202.05);
     });
