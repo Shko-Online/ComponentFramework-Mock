@@ -1,3 +1,10 @@
+## [0.1.20](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.19...v0.1.20) (2023-02-25)
+
+
+### Bug Fixes
+
+* Fixed some bugs with the in-memory DB ([ee2ef7a](https://github.com/shko-online/ComponentFramework-Mock/commit/ee2ef7a17156ba6cf86594271bab914d03a77574))
+
 ## [0.1.19](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.18...v0.1.19) (2023-02-24)
 
 
