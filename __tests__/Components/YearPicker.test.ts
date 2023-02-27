@@ -47,7 +47,7 @@ describe('YearPicker', () => {
         evt.initEvent('input', false, true);
         input.dispatchEvent(evt);
 
-        expect(mockGenerator.context.updatedProperties).toStrictEqual(['value']);
+        expect(mockGenerator.context.updatedProperties).toStrictEqual(['value', 'parameters']);
         expect(mockGenerator.onOutputChanged.called).toBeTruthy();
         expect(mockGenerator.context._parameters.value.raw).toEqual(new Date(2021, 0, 1));
         expect(document.body).toMatchSnapshot();

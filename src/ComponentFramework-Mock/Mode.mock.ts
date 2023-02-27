@@ -24,10 +24,7 @@ export class ModeMock implements ComponentFramework.Mode {
         this.label = 'Mocked with @shko.online/componentframework-mock';
         this.setControlState = stub(); // this is mocked in ComponentFrameworkMockGenerator
         this._FullScreen = false;
-        this.setFullScreen = stub();
-        this.setFullScreen.callsFake((value) => {
-            this._FullScreen = value;
-        });
+        this.setFullScreen = stub(); // this is mocked in mockNotifyOutputChanged
         this.trackContainerResize = stub(); // this is mocked in ComponentFrameworkMockGenerator
     }
 }

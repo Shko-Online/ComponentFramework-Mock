@@ -10,7 +10,6 @@ import { IInputs, IOutputs } from '../__sample-components__/OwnerLookup/generate
 import userMetadataJson from './data/systemUser.json';
 import userDataJson from './data/systemUserData.json';
 import betimBeja from './data/betimBeja.json';
-import { assert } from 'console';
 
 describe('WebApiMock', () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
