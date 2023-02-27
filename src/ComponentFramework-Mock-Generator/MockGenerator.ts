@@ -21,6 +21,13 @@ export interface MockGenerator<
     RefreshParameters: SinonStub<[], void>;
 
     /**
+     * Used to refresh the dataset parameters that might be still loading
+     * 
+     * This is called internally by the framework at each UpdateView.
+     */
+    RefreshDatasets: SinonStub<[], void>;
+
+    /**
      * Mocked context that will be passed to the component in the init or update calls.
      */
     context: ContextMock<TInputs>;

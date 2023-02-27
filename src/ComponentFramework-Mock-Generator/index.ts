@@ -8,6 +8,7 @@ export { ComponentFrameworkMockGenerator } from './ComponentFramework-Mock-Gener
 export { MetadataDB } from './Metadata.db';
 export type { MockGenerator } from './MockGenerator';
 export { mockGetEntityMetadata } from './mockGetEntityMetadata';
+export { mockRefreshDatasets } from './mockRefreshDatasets';
 export { mockRefreshParameters } from './mockRefreshParameters';
 export { mockSetControlResource } from './mockSetControlResource';
 export { mockSetControlState } from './mockSetControlState';

@@ -9,6 +9,7 @@ import type { ShkoOnline } from '../ShkoOnline';
 import { createElement, Fragment, useEffect, useRef, useState } from 'react';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
+import { mockRefreshDatasets } from './mockRefreshDatasets';
 
 export interface ReactResizeObserverProps<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -34,18 +35,24 @@ export const ReactResizeObserver = <
             componentFrameworkMockGeneratorReact,
             componentFrameworkMockGeneratorReact.control.getOutputs?.bind(componentFrameworkMockGeneratorReact.control),
             () => {
-                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(
-                    componentFrameworkMockGeneratorReact.context.parameters,
-                ).forEach((propertyName) => {
-                    componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
-                });
+                componentFrameworkMockGeneratorReact.RefreshParameters();
                 setComponent(
                     componentFrameworkMockGeneratorReact.control.updateView(
                         componentFrameworkMockGeneratorReact.context,
                     ),
                 );
-            });
-      
+                
+                componentFrameworkMockGeneratorReact.RefreshDatasets();
+                
+            },
+        );
+
+        mockRefreshDatasets(componentFrameworkMockGeneratorReact, () => {
+            setComponent(
+                componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
+            );
+        });
+
         componentFrameworkMockGeneratorReact.context.mode.trackContainerResize.callsFake((value) => {
             if (!containerRef.current) {
                 console.error('Container Ref is null');
@@ -55,11 +62,7 @@ export const ReactResizeObserver = <
                 const size = entries[0];
                 componentFrameworkMockGeneratorReact.context.mode.allocatedHeight = size.contentRect.height;
                 componentFrameworkMockGeneratorReact.context.mode.allocatedWidth = size.contentRect.width;
-                Object.getOwnPropertyNames<ShkoOnline.PropertyTypes<TInputs>>(
-                    componentFrameworkMockGeneratorReact.context.parameters,
-                ).forEach((propertyName) => {
-                    componentFrameworkMockGeneratorReact.context._parameters[propertyName]._Refresh();
-                });
+                componentFrameworkMockGeneratorReact.RefreshParameters();
                 setComponent(
                     componentFrameworkMockGeneratorReact.control.updateView(
                         componentFrameworkMockGeneratorReact.context,

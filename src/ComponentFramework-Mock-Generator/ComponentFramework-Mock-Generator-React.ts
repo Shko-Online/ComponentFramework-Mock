@@ -19,7 +19,6 @@ import { mockGetEntityMetadata } from './mockGetEntityMetadata';
 import { mockSetControlState } from './mockSetControlState';
 import { mockSetControlResource } from './mockSetControlResource';
 import { mockRefreshParameters } from './mockRefreshParameters';
-import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -27,6 +26,7 @@ export class ComponentFrameworkMockGeneratorReact<
 > implements MockGenerator<TInputs, TOutputs>
 {
     RefreshParameters: SinonStub<[], void>;
+    RefreshDatasets: SinonStub<[], void>;
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
@@ -47,6 +47,7 @@ export class ComponentFrameworkMockGeneratorReact<
         this.onOutputChanged = stub();
         this.RefreshParameters = stub();
         mockRefreshParameters(this);
+        this.RefreshDatasets = stub();
         this.SetControlResource = stub();
         mockSetControlResource(this);
         mockSetControlState(this);

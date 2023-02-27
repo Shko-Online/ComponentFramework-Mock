@@ -24,6 +24,9 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
     _Refresh: SinonStub<[], void>;
     _InitItems: SinonStub<[items: { [column: string]: any }[]], void>;
+    _loading: boolean;
+    _onLoaded: SinonStub<[], void>;
+    _delay: number;
     _SelectedRecordIds: string[];
     addColumn?: SinonStub<[name: string, entityAlias?: string], void>;
     columns: Column[];
@@ -51,6 +54,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this._boundColumn = propertyName;
         this._db = db;
         this._SelectedRecordIds = [];
+        this._onLoaded = stub();
         this.error = false;
         this.errorMessage = '';
         this.linking = new LinkingMock();
@@ -87,7 +91,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     }
                 });
             }
-           
+
             let i = 0;
             let columns: { [key: string]: number } = {};
             items.forEach((item) => {
@@ -135,18 +139,22 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             const columnsResult = this._db.GetAllRows(`${this._boundTable}@columns`);
             this.columns = columnsResult.rows;
             const rows = this._db.GetAllRows(this._boundTable);
-            const records = rows.rows.map((item) => {
-                const row = new EntityRecordMock(
-                    db,
-                    this._boundTable,
-                    item[rows.entityMetadata?.PrimaryIdAttribute || 'id'],
-                );
-                return row;
-            });
+            const records = this._loading
+                ? []
+                : rows.rows.map((item) => {
+                      const row = new EntityRecordMock(
+                          db,
+                          this._boundTable,
+                          item[rows.entityMetadata?.PrimaryIdAttribute || 'id'],
+                      );
+                      return row;
+                  });
             this.records = {};
+            this.loading = this._loading;
             records.forEach((record) => {
                 this.records[record.getRecordId()] = record;
             });
+
             this.paging.pageSize = this.paging._pageSize;
             this.paging.totalResultCount = records.length;
             if (this.sorting.length > 0) {
@@ -166,7 +174,9 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     .map((record) => record.getRecordId());
             }
         });
-        this.loading = false;
+        this.loading = true;
+        this._loading = true;
+        this._delay = 200;
         this.sortedRecordIds = [];
         this.sorting = [];
         this.columns = [];
@@ -190,14 +200,14 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this.refresh = stub();
         this.setSelectedRecordIds = stub();
         this.setSelectedRecordIds.callsFake((ids) => {
-            if(!ids){
+            if (!ids) {
                 this._SelectedRecordIds = [];
                 return;
             }
             // validate
-            for(let i=0;i<ids.length;i++){
+            for (let i = 0; i < ids.length; i++) {
                 const result = this._db.GetRow(this._boundTable, ids[i]);
-                if(!result.row){
+                if (!result.row) {
                     throw new Error(`Record with id '${ids[i]}' does not exist.`);
                 }
             }

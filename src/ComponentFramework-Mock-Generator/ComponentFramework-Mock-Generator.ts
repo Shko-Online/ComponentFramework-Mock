@@ -16,17 +16,21 @@ import { mockRefreshParameters } from './mockRefreshParameters';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 import { ContextMock } from '../ComponentFramework-Mock';
 import { showBanner } from '../utils';
+import { MockGenerator } from './MockGenerator';
+import { mockRefreshDatasets } from './mockRefreshDatasets';
 
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
-> {
+> implements MockGenerator<TInputs, TOutputs>
+{
     RefreshParameters: SinonStub<[], void>;
+    RefreshDatasets: SinonStub<[], void>;
     container: HTMLDivElement;
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
-    onOutputChanged: SinonStub<[],void>; 
+    onOutputChanged: SinonStub<[], void>;
     state: ComponentFramework.Dictionary;
     SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
@@ -60,6 +64,8 @@ export class ComponentFrameworkMockGenerator<
         this.onOutputChanged = stub();
         this.RefreshParameters = stub();
         mockRefreshParameters(this);
+        this.RefreshDatasets = stub();
+        mockRefreshDatasets(this, this.ExecuteUpdateView.bind(this));
         this.SetControlResource = stub();
         mockSetControlResource(this);
         mockSetControlState(this);
@@ -74,5 +80,6 @@ export class ComponentFrameworkMockGenerator<
     ExecuteUpdateView() {
         this.RefreshParameters();
         this.control.updateView(this.context);
+        this.RefreshDatasets();
     }
 }

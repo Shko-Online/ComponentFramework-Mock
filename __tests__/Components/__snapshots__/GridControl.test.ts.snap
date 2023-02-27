@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GridControl Should render count 1`] = `
+<div>
+  1
+</div>
+`;

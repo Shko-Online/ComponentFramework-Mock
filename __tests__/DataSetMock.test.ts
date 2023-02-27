@@ -53,6 +53,7 @@ describe('DataSetMock', () => {
         });
 
         dataset = new DataSetMock('dataset', db);
+        dataset._loading = false;
     });
 
     describe('with id', () => {
@@ -79,7 +80,7 @@ describe('DataSetMock', () => {
             expect(dataset.getSelectedRecordIds()).toEqual([]);
         });
 
-        it('sortedRecordIds should contain the right data', () => {
+        it('sortedRecordIds should contain the right data', () => {         
             expect(dataset.sortedRecordIds).toEqual(['1', '2']);
         });
 

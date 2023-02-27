@@ -56,6 +56,7 @@ export {
     MetadataDB,
     ReactResizeObserver,
     mockGetEntityMetadata,
+    mockRefreshDatasets,
     mockRefreshParameters,
     mockSetControlResource,
     mockSetControlState,
