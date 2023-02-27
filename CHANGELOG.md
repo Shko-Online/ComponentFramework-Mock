@@ -1,3 +1,11 @@
+## [0.1.21](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.20...v0.1.21) (2023-02-27)
+
+
+### Bug Fixes
+
+* Changing fullscreen correctly calls updateView ([76eaf02](https://github.com/shko-online/ComponentFramework-Mock/commit/76eaf02bec7a0a3390556d138eb5b0110e079b3d))
+* Dataset should load with a delay ([cee23dd](https://github.com/shko-online/ComponentFramework-Mock/commit/cee23dde3425ff88787d64d1e2f1b8197e2ce16d))
+
 ## [0.1.20](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.19...v0.1.20) (2023-02-25)
 
 
