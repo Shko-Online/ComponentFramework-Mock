@@ -18,6 +18,15 @@ export const mockNotifyOutputChanged = <
     getOutputs: SinonSpy<[], TOutputs> | undefined,
     executeUpdateView: () => void,
 ) => {
+    mockGenerator.context.mode.setFullScreen.callsFake((value) => {
+        mockGenerator.context.updatedProperties = [];
+        if (mockGenerator.context.mode._FullScreen != value) {
+            mockGenerator.context.updatedProperties.push(value ? 'fullscreen_open' : 'fullscreen_close');
+        }
+        mockGenerator.context.mode._FullScreen = value;
+        executeUpdateView();
+    });
+
     mockGenerator.notifyOutputChanged.callsFake(() => {
         const updates = getOutputs?.();
         if (!updates) return;
@@ -45,7 +54,7 @@ export const mockNotifyOutputChanged = <
                         mockGenerator.context.updatedProperties.push(k);
                     }
                 } else {
-                /*else if (typeof updates[k] === 'object') {
+                    /*else if (typeof updates[k] === 'object') {
                     // ToDo
                 }*/
                     if (
@@ -75,6 +84,7 @@ export const mockNotifyOutputChanged = <
             }
         }
         if (mockGenerator.context.updatedProperties.length > 0) {
+            mockGenerator.context.updatedProperties.push('parameters');
             executeUpdateView();
             mockGenerator.onOutputChanged?.();
         }

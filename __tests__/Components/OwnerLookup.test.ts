@@ -48,7 +48,7 @@ describe('OwnerLookup', () => {
         evt.initEvent('click', false, true);
         button.dispatchEvent(evt);
 
-        expect(mockGenerator.context.updatedProperties).toStrictEqual(['value']);
+        expect(mockGenerator.context.updatedProperties).toStrictEqual(['value', 'parameters']);
         expect(document.body).toMatchSnapshot();
     });
 });
