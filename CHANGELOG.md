@@ -1,3 +1,10 @@
+## [0.1.22](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.21...v0.1.22) (2023-03-01)
+
+
+### Bug Fixes
+
+* Fixed an issue with dataset refresh being called multiple times ([c087351](https://github.com/shko-online/ComponentFramework-Mock/commit/c087351dae64ab1a0331b6b83c54ee3111a84052))
+
 ## [0.1.21](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.20...v0.1.21) (2023-02-27)
 
 
