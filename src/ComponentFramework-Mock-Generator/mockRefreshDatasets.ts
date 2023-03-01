@@ -24,15 +24,16 @@ export const mockRefreshDatasets = <
         Object.getOwnPropertyNames<PropertyToMock<TInputs>>(mockGenerator.context._parameters).forEach(
             (propertyName) => {
                 const mock = mockGenerator.context._parameters[propertyName];
-                if (!(mock instanceof DataSetMock) || !mock._loading) {
+                if (!(mock instanceof DataSetMock) || !mock._loading || mock._timeoutRef !== undefined) {
                     return;
                 }
-                setTimeout(() => {
+                mock._timeoutRef = setTimeout(() => {
                     mock._loading = !mock._loading;
                     mockGenerator.RefreshParameters();
                     mockGenerator.context.updatedProperties = [propertyName as string, 'dataset'];
                     callback();
                     mock._onLoaded();
+                    mock._timeoutRef = undefined;
                 }, mock._delay);
             },
         );

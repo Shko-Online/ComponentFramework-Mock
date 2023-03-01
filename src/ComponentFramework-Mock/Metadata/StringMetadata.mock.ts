@@ -12,10 +12,10 @@ export class StringMetadataMock
     Format: string;
     ImeMode: ComponentFramework.PropertyHelper.Types.ImeMode;
     MaxLength: number;
-	constructor(){
-		super();
-		this.Format = '';
-		this.ImeMode = 0;
-		this.MaxLength = 100;
-	}
+    constructor() {
+        super();
+        this.Format = '';
+        this.ImeMode = 0;
+        this.MaxLength = 100;
+    }
 }

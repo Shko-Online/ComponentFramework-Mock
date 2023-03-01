@@ -40,4 +40,14 @@ describe('GridControl', () => {
         mockGenerator.ExecuteInit();
         mockGenerator.ExecuteUpdateView();
     });
+
+    it('Should not call refresh dataset multiple times', (done) => {
+        mockGenerator.context._parameters.records._onLoaded.callsFake(() => {
+            expect(mockGenerator.context._parameters.records._onLoaded.calledOnce).toBeTruthy();
+            setTimeout(() => done(), 200); // waiting for other eventual calls
+        });
+        mockGenerator.ExecuteInit();
+        mockGenerator.ExecuteUpdateView();
+        mockGenerator.ExecuteUpdateView();
+    });
 });
