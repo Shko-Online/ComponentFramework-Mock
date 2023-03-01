@@ -25,6 +25,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     _Refresh: SinonStub<[], void>;
     _InitItems: SinonStub<[items: { [column: string]: any }[]], void>;
     _loading: boolean;
+    _timeoutRef?: NodeJS.Timeout;
     _onLoaded: SinonStub<[], void>;
     _delay: number;
     _SelectedRecordIds: string[];
