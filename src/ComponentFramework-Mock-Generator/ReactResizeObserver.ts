@@ -40,10 +40,8 @@ export const ReactResizeObserver = <
                     componentFrameworkMockGeneratorReact.control.updateView(
                         componentFrameworkMockGeneratorReact.context,
                     ),
-                );
-                
-                componentFrameworkMockGeneratorReact.RefreshDatasets();
-                
+                );                
+                componentFrameworkMockGeneratorReact.RefreshDatasets();            
             },
         );
 
@@ -79,6 +77,7 @@ export const ReactResizeObserver = <
         setComponent(
             componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
         );
+        componentFrameworkMockGeneratorReact.RefreshDatasets();
     }, [circuitBreaker]);
 
     return createElement(
