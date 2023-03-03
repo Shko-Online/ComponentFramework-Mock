@@ -1,3 +1,10 @@
+## [0.1.23](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.22...v0.1.23) (2023-03-03)
+
+
+### Bug Fixes
+
+* Fixed a bug with virtual componenents not refreshing datasets ([eaf43af](https://github.com/shko-online/ComponentFramework-Mock/commit/eaf43af5a06895c6033797e2c7f3204bf21fcacf))
+
 ## [0.1.22](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.21...v0.1.22) (2023-03-01)
 
 
