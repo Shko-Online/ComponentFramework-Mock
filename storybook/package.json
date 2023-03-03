@@ -1,0 +1,35 @@
+{
+    "name": "@shko.online/componentframework-mock-stories",
+    "version": "0.0.0-development",
+    "description": "Mocking library to help with testing PowerApps Component Framework Components",
+    "repository": "https://github.com/shko-online/ComponentFramework-Mock",
+    "author": "Shko Online <sales@shko.online> (https://shko.online)",
+    "license": "MIT",
+    "keywords": [
+        "componentframework",
+        "d365",
+        "pcf",
+        "mock",
+        "made-in-albania"
+    ],
+    "bugs": {
+        "url": "https://github.com/shko-online/ComponentFramework-Mock/issues"
+    },
+    "homepage": "https://shko-online.github.io/ComponentFramework-Mock",
+    "scripts": {
+        "storybook": "storybook dev -p 6006",
+        "build-storybook": "storybook build"
+    },
+    "devDependencies": {
+        "@storybook/addon-actions": "^7.0.0-beta.60",
+        "@storybook/addon-essentials": "^7.0.0-beta.60",
+        "@storybook/addon-links": "^7.0.0-beta.60",
+        "@storybook/client-api": "^7.0.0-beta.60",
+        "@storybook/jest": "^0.0.11-next.0",
+        "@storybook/react": "^7.0.0-beta.60",
+        "@storybook/react-webpack5": "^7.0.0-beta.60",
+        "eslint-plugin-storybook": "^0.6.10",
+        "storybook": "^7.0.0-beta.60",
+        "webpack": "^5.75.0"
+    }
+}
