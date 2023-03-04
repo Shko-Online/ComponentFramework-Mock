@@ -18,6 +18,11 @@ const config = {
       url: "https://betimbeja.github.io/drivardxrm__LookupDropdown.PCF",
       expanded: false // optional, true by default
     },
+    'totp-qr-generator': {
+      title: "TOTP QR Generator",
+      url: "https://shko-online.github.io/PCF.TOTP-QR-Generator",
+      expanded: false // optional, true by default
+    },
   },
   stories: ["../stories/**/*.stories.mdx", "../stories/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
