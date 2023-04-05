@@ -4,7 +4,7 @@
 */
 
 import { it, expect, describe, beforeEach } from '@jest/globals';
-import { ComponentFrameworkMockGenerator, DataSetMock } from '../../src';
+import { ComponentFrameworkMockGenerator, DataSetMock, NumberPropertyMock } from '../../src';
 import { GridControl } from '../../__sample-components__/GridControl';
 import { IInputs, IOutputs } from '../../__sample-components__/GridControl/generated/ManifestTypes';
 
@@ -16,6 +16,7 @@ describe('GridControl', () => {
             GridControl,
             {
                 records: DataSetMock,
+                FilteredRecordCount: NumberPropertyMock
             },
             container,
         );

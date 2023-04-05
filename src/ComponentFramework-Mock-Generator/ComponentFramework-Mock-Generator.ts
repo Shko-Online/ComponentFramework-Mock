@@ -37,7 +37,7 @@ export class ComponentFrameworkMockGenerator<
 
     constructor(
         control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
-        inputs: PropertyMap<TInputs>,
+        inputs: PropertyMap<TInputs, TOutputs>,
         container?: HTMLDivElement,
     ) {
         showBanner(control.name);

@@ -35,7 +35,7 @@ export class ComponentFrameworkMockGeneratorReact<
     SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
 
-    constructor(control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>, inputs: PropertyMap<TInputs>) {
+    constructor(control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>, inputs: PropertyMap<TInputs, TOutputs>) {
         showBanner(control.name);
         this.state = {};
         this.control = spy(new control());

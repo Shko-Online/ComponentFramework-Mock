@@ -17,6 +17,7 @@ import { DataSetMock } from './DataSet.mock';
 import { EnumPropertyMock } from './EnumProperty.mock';
 import { OptionSetPropertyMock } from './OptionSetProperty.mock';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
+import { MetadataMock } from '../Metadata';
 
 export type PropertyToMock<T extends ShkoOnline.PropertyTypes<T>> = {
     [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.DataSet
@@ -70,46 +71,82 @@ export type MockToRaw<TInput extends ShkoOnline.PropertyTypes<TInput>, T extends
         : never;
 };
 
-export type PropertyMap<T extends ShkoOnline.PropertyTypes<T>> = {
-    [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.DataSet
-        ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => DataSetMock
-        : T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty
+export type PropertyMap<T extends ShkoOnline.PropertyTypes<T>, O extends ShkoOnline.KnownTypes<O>> = {
+    [P in keyof Omit<O, keyof T> | keyof T]: P extends keyof T
+        ? T[P] extends ComponentFramework.PropertyTypes.DataSet
+            ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => DataSetMock
+            : T[P] extends ComponentFramework.PropertyTypes.DateTimeProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => DateTimePropertyMock
+            : T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => DecimalNumberPropertyMock
+            : T[P] extends ComponentFramework.PropertyTypes.LookupProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => LookupPropertyMock
+            : T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => MultiSelectOptionSetPropertyMock
+            : T[P] extends ComponentFramework.PropertyTypes.NumberProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => NumberPropertyMock
+            : T[P] extends ComponentFramework.PropertyTypes.OptionSetProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => OptionSetPropertyMock
+            : ComponentFramework.PropertyTypes.StringProperty extends T[P]
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => StringPropertyMock
+            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
+            ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => EnumPropertyMock<
+                  ShkoOnline.EnumType<T[P]>
+              >
+            : T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => TwoOptionsPropertyMock
+            : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
+            ? new (
+                  propertyName: string,
+                  db: MetadataDB,
+                  entityMetadata: ShkoOnline.EntityMetadata,
+              ) => WholeNumberPropertyMock
+            : never
+        : O[P] extends Date
         ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => DateTimePropertyMock
-        : T[P] extends ComponentFramework.PropertyTypes.DecimalNumberProperty
-        ? new (
-              propertyName: string,
-              db: MetadataDB,
-              entityMetadata: ShkoOnline.EntityMetadata,
-          ) => DecimalNumberPropertyMock
-        : T[P] extends ComponentFramework.PropertyTypes.LookupProperty
-        ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => LookupPropertyMock
-        : T[P] extends ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
-        ? new (
-              propertyName: string,
-              db: MetadataDB,
-              entityMetadata: ShkoOnline.EntityMetadata,
-          ) => MultiSelectOptionSetPropertyMock
-        : T[P] extends ComponentFramework.PropertyTypes.NumberProperty
+        : O[P] extends number
         ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => NumberPropertyMock
-        : T[P] extends ComponentFramework.PropertyTypes.OptionSetProperty
-        ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => OptionSetPropertyMock
-        : ComponentFramework.PropertyTypes.StringProperty extends T[P]
+        : O[P] extends ComponentFramework.LookupValue
+        ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => LookupPropertyMock
+        : O[P] extends string
         ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => StringPropertyMock
-        : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
-        ? new (propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) => EnumPropertyMock<
-              ShkoOnline.EnumType<T[P]>
-          >
-        : T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+        : O[P] extends boolean
         ? new (
               propertyName: string,
               db: MetadataDB,
               entityMetadata: ShkoOnline.EntityMetadata,
           ) => TwoOptionsPropertyMock
-        : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
-        ? new (
-              propertyName: string,
-              db: MetadataDB,
-              entityMetadata: ShkoOnline.EntityMetadata,
-          ) => WholeNumberPropertyMock
         : never;
 };
