@@ -18,6 +18,7 @@
     "homepage": "https://shko-online.github.io/ComponentFramework-Mock",
     "scripts": {
         "storybook": "storybook dev -p 6006",
+        "test-storybook": "test-storybook",
         "build-storybook": "storybook build"
     },
     "devDependencies": {
@@ -28,6 +29,7 @@
         "@storybook/jest": "^0.0.11-next.0",
         "@storybook/react": "^7.0.0-beta.60",
         "@storybook/react-webpack5": "^7.0.0-beta.60",
+        "chromatic": "^6.17.1",
         "eslint-plugin-storybook": "^0.6.10",
         "storybook": "^7.0.0-beta.60",
         "webpack": "^5.75.0"

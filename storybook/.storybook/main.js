@@ -20,7 +20,12 @@ const config = {
     },
     'totp-qr-generator': {
       title: "TOTP QR Generator",
-      url: "https://shko-online.github.io/PCF.TOTP-QR-Generator",
+      url: "https://main--64039e4a62440831fd847544.chromatic.com",
+      expanded: false // optional, true by default
+    },
+    'totp-verifier': {
+      title: "TOTP Verifier",
+      url: "https://main--6403b315f2b2d3b2c102b7c9.chromatic.com",
       expanded: false // optional, true by default
     },
   },
@@ -38,9 +43,6 @@ const config = {
       filename: '[file].map',
     }));
     return config;
-  },
-  features: {
-    storyStoreV7: true,
   }
 };
 
