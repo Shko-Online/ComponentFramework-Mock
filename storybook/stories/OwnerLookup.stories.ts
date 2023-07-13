@@ -88,4 +88,9 @@ const renderGenerator = () => {
 
 export const OwnerLookup = {
     render: renderGenerator(),
+    args: {
+        isDisabled: false,
+        isVisible: true,
+        value: { entityType: 'systemuser', id: 'start-id', name: 'Betim Beja' },
+    },
 } as StoryObj<StoryArgs>;
