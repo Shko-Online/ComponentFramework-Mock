@@ -5,9 +5,9 @@ exports[`OwnerLookup Should render lookup value 1`] = `
   <p>
     [team-guid1] Shko Online
   </p>
-  <button
-    value="Assign To Myself"
-  />
+  <button>
+    Assign To Myself
+  </button>
 </div>
 `;
 
@@ -17,9 +17,9 @@ exports[`OwnerLookup Should update value on click 1`] = `
     <p>
       [systemuser-] Assigned from PCF
     </p>
-    <button
-      value="Assign To Myself"
-    />
+    <button>
+      Assign To Myself
+    </button>
   </div>
 </body>
 `;

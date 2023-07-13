@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "target": "es5",
+        "lib": [
+            "es5",
+            "es6",
+            "dom"
+        ],
+        "module": "ES6",
+        "moduleResolution": "node",
+        "noEmit": false,
+        "outDir": "lib",
+        "resolveJsonModule": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,       
+        "baseUrl": ".",
+        "paths": {
+            "@shko.online/componentframework-mock*": [
+                "../src*"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "wwwroot",
+        "lib"
+    ],
+    "include": [
+        "./stories",
+        "../src",
+        "../__tests__",      
+        "../__test-components__"
+    ]
+}
