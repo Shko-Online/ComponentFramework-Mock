@@ -24,6 +24,11 @@ export default {
                 defaultValue: { summary: 'true' },
             },
         },
+        value: {
+            defaultValue: { entityType: 'systemuser', id: 'start-id', name: 'Betim Beja' },
+            name: 'Value',
+            control: 'object'
+        }
     },
     parameters: {
         // More on Story layout: https://storybook.js.org/docs/html/configure/story-layout
