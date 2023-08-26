@@ -1,4 +1,4 @@
-# ComponentFramework Mock
+# ComponentFramework Mock ![NPM Downloads](https://img.shields.io/npm/dt/@shko.online%2Fcomponentframework-mock)
 This library mocks the entire ComponentFramework library and enables users to write tests and stories for their PCF components.
 
 # Quick Start
