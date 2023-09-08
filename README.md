@@ -52,7 +52,7 @@ mockGenerator.context._SetCanvasItems({
 });
 ```
 
-You should call at excatly once `ExecuteInit` and at least once `ExecuteUpdate` which control the system updates:
+You should call excatly once `ExecuteInit` and at least once `ExecuteUpdate` which control the system updates:
 
 ```typescript
 mockGenerator.ExecuteInit();
