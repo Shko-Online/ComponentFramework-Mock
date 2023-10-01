@@ -31,6 +31,7 @@ export class ComponentFrameworkMockGenerator<
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
     onOutputChanged: SinonStub<[], void>;
+    resizeObserver: ResizeObserver;
     state: ComponentFramework.Dictionary;
     SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
@@ -46,16 +47,16 @@ export class ComponentFrameworkMockGenerator<
         this.control = spy(new control());
         this.metadata = new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
+        this.resizeObserver = new ResizeObserver((entries) => {
+            const size = entries[0];
+            this.context.mode.allocatedHeight = size.contentRect.height;
+            this.context.mode.allocatedWidth = size.contentRect.width;
+            this.ExecuteUpdateView();
+        });
 
         this.context.mode.trackContainerResize.callsFake((value) => {
-            const observer = new ResizeObserver((entries) => {
-                const size = entries[0];
-                this.context.mode.allocatedHeight = size.contentRect.height;
-                this.context.mode.allocatedWidth = size.contentRect.width;
-                this.ExecuteUpdateView();
-            });
-            if (value) observer.observe(this.container);
-            else observer.unobserve(this.container);
+            if (value) this.resizeObserver.observe(this.container);
+            else this.resizeObserver.unobserve(this.container);
         });
 
         mockGetEntityMetadata(this);

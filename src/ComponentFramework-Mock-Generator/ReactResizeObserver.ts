@@ -45,6 +45,18 @@ export const ReactResizeObserver = <
             },
         );
 
+        componentFrameworkMockGeneratorReact.resizeObserver = new ResizeObserver((entries) => {
+            const size = entries[0];
+            componentFrameworkMockGeneratorReact.context.mode.allocatedHeight = size.contentRect.height;
+            componentFrameworkMockGeneratorReact.context.mode.allocatedWidth = size.contentRect.width;
+            componentFrameworkMockGeneratorReact.RefreshParameters();
+            setComponent(
+                componentFrameworkMockGeneratorReact.control.updateView(
+                    componentFrameworkMockGeneratorReact.context,
+                ),
+            );
+        });
+
         mockRefreshDatasets(componentFrameworkMockGeneratorReact, () => {
             setComponent(
                 componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
@@ -56,19 +68,9 @@ export const ReactResizeObserver = <
                 console.error('Container Ref is null');
                 return;
             }
-            const observer = new ResizeObserver((entries) => {
-                const size = entries[0];
-                componentFrameworkMockGeneratorReact.context.mode.allocatedHeight = size.contentRect.height;
-                componentFrameworkMockGeneratorReact.context.mode.allocatedWidth = size.contentRect.width;
-                componentFrameworkMockGeneratorReact.RefreshParameters();
-                setComponent(
-                    componentFrameworkMockGeneratorReact.control.updateView(
-                        componentFrameworkMockGeneratorReact.context,
-                    ),
-                );
-            });
-            if (value) observer.observe(containerRef.current);
-            else observer.unobserve(containerRef.current);
+         
+            if (value) componentFrameworkMockGeneratorReact.resizeObserver.observe(containerRef.current);
+            else componentFrameworkMockGeneratorReact.resizeObserver.unobserve(containerRef.current);
         });
     }, []);
 

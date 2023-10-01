@@ -10,6 +10,15 @@ import type { ShkoOnline } from '../ShkoOnline';
 import { DateTimePropertyMock, MultiSelectOptionSetPropertyMock } from '../ComponentFramework-Mock/PropertyTypes';
 import { arrayEqual } from '../utils';
 
+/**
+ * Mocks the following APIs
+ * - {@link ComponentFramework.Mode.setFullScreen}
+ * - {@link ComponentFramework.Factory.requestRender}
+ * - notifyOutputChanged function
+ * @param mockGenerator The generator that controlls the context
+ * @param getOutputs The plugin getOutputs function
+ * @param executeUpdateView The callback function that triggers UpdateView from the framework
+ */
 export const mockNotifyOutputChanged = <
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
@@ -18,6 +27,10 @@ export const mockNotifyOutputChanged = <
     getOutputs: SinonSpy<[], TOutputs> | undefined,
     executeUpdateView: () => void,
 ) => {
+    mockGenerator.context.factory.requestRender.callsFake(() => {
+        setInterval(() => executeUpdateView(), 0);
+    });
+
     mockGenerator.context.mode.setFullScreen.callsFake((value) => {
         mockGenerator.context.updatedProperties = [];
         if (mockGenerator.context.mode._FullScreen != value) {

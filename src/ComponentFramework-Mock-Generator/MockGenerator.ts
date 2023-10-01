@@ -22,7 +22,7 @@ export interface MockGenerator<
 
     /**
      * Used to refresh the dataset parameters that might be still loading
-     * 
+     *
      * This is called internally by the framework at each UpdateView.
      */
     RefreshDatasets: SinonStub<[], void>;
@@ -38,19 +38,24 @@ export interface MockGenerator<
     metadata: MetadataDB;
 
     /**
-     * Mocked notifyOutputChanged that will be passed to the component on init 
+     * Mocked notifyOutputChanged that will be passed to the component on init
      * and that informs the framework that the component changed the outputs.
-     * 
+     *
      * Can be used in tests to assert if this method was called.
      */
     notifyOutputChanged: SinonStub<[], void>;
 
     /**
-     * Will be called by the platform after the output has changed. 
-     * 
+     * Will be called by the platform after the output has changed.
+     *
      * You can use this method to be notified by the platform that the outputs have changed.
      */
     onOutputChanged: SinonStub<[], void>;
+
+    /**
+     * Will be used by the track container when asked by {@link ComponentFramework.Mode.trackContainerResize}
+     */
+    resizeObserver: ResizeObserver;
 
     state: ComponentFramework.Dictionary;
 

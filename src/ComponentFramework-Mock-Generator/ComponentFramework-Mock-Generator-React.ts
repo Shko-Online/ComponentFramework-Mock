@@ -31,6 +31,7 @@ export class ComponentFrameworkMockGeneratorReact<
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
     onOutputChanged: SinonStub<[],void>; 
+    resizeObserver: ResizeObserver;
     state: ComponentFramework.Dictionary;
     SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
@@ -45,6 +46,7 @@ export class ComponentFrameworkMockGeneratorReact<
         mockGetEntityMetadata(this);
         this.notifyOutputChanged = stub(); // Mocked in ReactResizeObserver
         this.onOutputChanged = stub();
+        this.resizeObserver = new ResizeObserver(()=>undefined); // Defined in ReactResizeObserver
         this.RefreshParameters = stub();
         mockRefreshParameters(this);
         this.RefreshDatasets = stub();

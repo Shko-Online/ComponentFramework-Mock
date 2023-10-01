@@ -42,10 +42,12 @@ const config = {
 
   stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|ts|tsx)"],
   addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
+
   framework: {
     name: "@storybook/html-webpack5",
     options: {}
   },
+
   webpackFinal: async config => {
     config.resolve.fallback = config.resolve.fallback || {};
     config.resolve.fallback.fs = false;
@@ -103,6 +105,6 @@ const config = {
     }
 
     return config;
-  }
+  },
 };
 export default config;
