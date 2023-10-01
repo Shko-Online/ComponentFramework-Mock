@@ -1,3 +1,10 @@
+## [0.1.24](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.23...v0.1.24) (2023-10-01)
+
+
+### Bug Fixes
+
+* improve ResizeObserver ([33b806c](https://github.com/shko-online/ComponentFramework-Mock/commit/33b806ce4040fb5edc31c6ccfc1a143d110d23b4))
+
 ## [0.1.23](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.22...v0.1.23) (2023-03-03)
 
 
