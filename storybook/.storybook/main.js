@@ -21,7 +21,7 @@ const config = {
     },
     'gantt-view': {
       title: "Gantt View",
-      url: "https://betimbeja.github.io/ProjectManagementTools",
+      url: "https://main--651b27cd606191e4fd79881f.chromatic.com",
       expanded: false // optional, true by default
     },
     'lookup-dropdown': {
