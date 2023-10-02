@@ -14,25 +14,26 @@ const config = {
       url: "https://fluent-ui--643c1df35db0e46d50f8862d.chromatic.com",
       expanded: false // optional, true by default
     },
-
+    'styled-switch': {
+      title: "AlbanianXrm's StyledSwitch",
+      url: "https://main--651a740f7ae468592174dad8.chromatic.com",
+      expanded: false // optional, true by default
+    },
     'gantt-view': {
       title: "Gantt View",
       url: "https://betimbeja.github.io/ProjectManagementTools",
       expanded: false // optional, true by default
     },
-
     'lookup-dropdown': {
       title: "Lookup Dropdown",
       url: "https://main--64039da1132d2ebe19bd43c5.chromatic.com",
       expanded: false // optional, true by default
     },
-
     'totp-qr-generator': {
       title: "TOTP QR Generator",
       url: "https://main--64039e4a62440831fd847544.chromatic.com",
       expanded: false // optional, true by default
     },
-
     'totp-verifier': {
       title: "TOTP Verifier",
       url: "https://main--6403b315f2b2d3b2c102b7c9.chromatic.com",
