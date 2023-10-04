@@ -14,6 +14,11 @@ const config = {
       url: "https://fluent-ui--643c1df35db0e46d50f8862d.chromatic.com",
       expanded: false // optional, true by default
     },
+    'colorful-optionset': {
+      title: "Colorful Optionset",
+      url: "https://master--651dc11bd70620b3c0c57342.chromatic.com/",
+      expanded: false // optional, true by default
+    },
     'styled-switch': {
       title: "AlbanianXrm's StyledSwitch",
       url: "https://main--651a740f7ae468592174dad8.chromatic.com",
