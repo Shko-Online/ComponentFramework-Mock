@@ -1,3 +1,10 @@
+## [0.1.25](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.24...v0.1.25) (2023-10-04)
+
+
+### Bug Fixes
+
+* trackContainerResize for virtual components ([0ade007](https://github.com/shko-online/ComponentFramework-Mock/commit/0ade007462975e91ea0f302689df87f5b7476dcc))
+
 ## [0.1.24](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.23...v0.1.24) (2023-10-01)
 
 
