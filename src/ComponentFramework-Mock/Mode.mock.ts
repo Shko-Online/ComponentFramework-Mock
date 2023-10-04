@@ -14,6 +14,7 @@ export class ModeMock implements ComponentFramework.Mode {
     label: string;
     setControlState: SinonStub<[state: ComponentFramework.Dictionary], boolean>;
     _FullScreen: boolean;
+    _TrackingContainerResize: boolean;
     setFullScreen: SinonStub<[value: boolean], void>;
     trackContainerResize: SinonStub<[value: boolean], void>;
     constructor() {
@@ -26,5 +27,9 @@ export class ModeMock implements ComponentFramework.Mode {
         this._FullScreen = false;
         this.setFullScreen = stub(); // this is mocked in mockNotifyOutputChanged
         this.trackContainerResize = stub(); // this is mocked in ComponentFrameworkMockGenerator
+        this.trackContainerResize.callsFake((value)=>{
+            this._TrackingContainerResize = value;
+        })
+        this._TrackingContainerResize = false;
     }
 }

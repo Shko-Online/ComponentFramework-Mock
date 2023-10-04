@@ -72,6 +72,10 @@ export const ReactResizeObserver = <
             if (value) componentFrameworkMockGeneratorReact.resizeObserver.observe(containerRef.current);
             else componentFrameworkMockGeneratorReact.resizeObserver.unobserve(containerRef.current);
         });
+
+        if(componentFrameworkMockGeneratorReact.context.mode._TrackingContainerResize && containerRef.current){
+            componentFrameworkMockGeneratorReact.resizeObserver.observe(containerRef.current);
+        }
     }, []);
 
     useEffect(() => {

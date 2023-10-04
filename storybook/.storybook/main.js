@@ -52,6 +52,9 @@ const config = {
   webpackFinal: async config => {
     config.resolve.fallback = config.resolve.fallback || {};
     config.resolve.fallback.fs = false;
+    config.resolve.alias = config.resolve.alias || {};
+    config.resolve.alias['react'] = path.resolve('./node_modules/react');
+    config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
     config.resolve.plugins = config.resolve.plugins || [];
     config.plugins.push(new webpack.SourceMapDevToolPlugin({
       append: '\n//# sourceMappingURL=[url]',
