@@ -30,6 +30,7 @@
         "lib"
     ],
     "include": [
+        ".",
         "./stories",
         "../src",
         "../__tests__",      

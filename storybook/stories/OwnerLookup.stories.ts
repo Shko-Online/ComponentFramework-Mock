@@ -1,49 +1,25 @@
-import { Meta, StoryObj } from '@storybook/html';
-import { useArgs } from '@storybook/client-api';
-
-import { OwnerLookup as Component } from '../../__sample-components__/OwnerLookup';
+import type { Meta, StoryObj } from '@storybook/html';
 import type { IInputs, IOutputs } from '../../__sample-components__/OwnerLookup/generated/ManifestTypes';
+import type { PCFStoryArgs } from './PCFStoryArgs';
+
+import { useArgs } from '@storybook/preview-api';
+import { OwnerLookup as Component } from '../../__sample-components__/OwnerLookup';
 import { ComponentFrameworkMockGenerator, LookupPropertyMock } from '../../src';
+
+interface StoryArgs extends PCFStoryArgs {
+    value: ComponentFramework.LookupValue;
+}
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/OwnerLookup",
     argTypes: {
-        isDisabled: {
-            name: 'Disabled',
-            control: 'boolean',
-            table: {
-                category: 'Mode',
-                defaultValue: { summary: 'false' },
-            },
-        },
-        isVisible: {
-            name: 'Visible',
-            control: 'boolean',
-            table: {
-                category: 'Mode',
-                defaultValue: { summary: 'true' },
-            },
-        },
         value: {
             defaultValue: { entityType: 'systemuser', id: 'start-id', name: 'Betim Beja' },
             name: 'Value',
-            control: 'object'
-        }
-    },
-    parameters: {
-        // More on Story layout: https://storybook.js.org/docs/html/configure/story-layout
-        layout: 'fullscreen',
-        backgrounds: {
-            values: [{ name: 'white', value: '#fff' }],
+            control: 'object',
         },
     },
 } as Meta<StoryArgs>;
-
-interface StoryArgs {
-    isDisabled: boolean;
-    isVisible: boolean;
-    value: ComponentFramework.LookupValue;
-}
 
 const renderGenerator = () => {
     let container: HTMLDivElement;
@@ -86,7 +62,6 @@ const renderGenerator = () => {
 
             mockGenerator.ExecuteUpdateView();
         }
-
         return container;
     };
 };
@@ -94,8 +69,6 @@ const renderGenerator = () => {
 export const OwnerLookup = {
     render: renderGenerator(),
     args: {
-        isDisabled: false,
-        isVisible: true,
         value: { entityType: 'systemuser', id: 'start-id', name: 'Betim Beja' },
     },
 } as StoryObj<StoryArgs>;

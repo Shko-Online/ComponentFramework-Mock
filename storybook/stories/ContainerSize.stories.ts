@@ -1,29 +1,13 @@
-import { Meta, StoryObj } from '@storybook/html';
-import { useArgs } from '@storybook/client-api';
-
-import { ContainerSize as Component } from '../../__sample-components__/ContainerSize';
+import type { Meta, StoryObj } from '@storybook/html';
 import type { IInputs, IOutputs } from '../../__sample-components__/ContainerSize/generated/ManifestTypes';
-import { ComponentFrameworkMockGenerator, LookupPropertyMock, TwoOptionsPropertyMock } from '../../src';
+
+import { useArgs } from '@storybook/preview-api';
+import { ContainerSize as Component } from '../../__sample-components__/ContainerSize';
+import { ComponentFrameworkMockGenerator, TwoOptionsPropertyMock } from '../../src';
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/ContainerSize",
     argTypes: {
-        isDisabled: {
-            name: 'Disabled',
-            control: 'boolean',
-            table: {
-                category: 'Mode',
-                defaultValue: { summary: 'false' },
-            },
-        },
-        isVisible: {
-            name: 'Visible',
-            control: 'boolean',
-            table: {
-                category: 'Mode',
-                defaultValue: { summary: 'true' },
-            },
-        },
         trackContainer: {
             defaultValue: false,
             name: 'Track Container',
@@ -32,15 +16,8 @@ export default {
                 category: 'Parameters',
                 defaultValue: { summary: 'true' },
             },
-        }
-    },
-    parameters: {
-        // More on Story layout: https://storybook.js.org/docs/html/configure/story-layout
-        layout: 'fullscreen',
-        backgrounds: {
-            values: [{ name: 'white', value: '#fff' }],
         },
-    },
+    }
 } as Meta<StoryArgs>;
 
 interface StoryArgs {
@@ -54,7 +31,7 @@ const renderGenerator = () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
 
     return function () {
-        const [args, updateArgs] = useArgs<StoryArgs>();
+        const [args, ] = useArgs<StoryArgs>();
         if (!container) {
             container = document.createElement('div');
             mockGenerator = new ComponentFrameworkMockGenerator(
@@ -88,9 +65,7 @@ const renderGenerator = () => {
 
 export const ContainerSize = {
     render: renderGenerator(),
-    args: {
-        isDisabled: false,
-        isVisible: true,
+    args: {       
         trackContainer: true,
     },
 } as StoryObj<StoryArgs>;
