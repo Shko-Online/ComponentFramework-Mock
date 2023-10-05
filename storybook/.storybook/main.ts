@@ -29,6 +29,11 @@ const config = {
             url: 'https://main--6403b315f2b2d3b2c102b7c9.chromatic.com',
             expanded: false, // optional, true by default
         },
+        'creator-kit': {
+            title: 'PowerCAT Code Components',
+            url: 'https://tests-componentframework-mock--651ee649a8c91a1d06333c7e.chromatic.com',
+            expanded: false, // optional, true by default
+        },
         'colorful-optionset': {
             title: 'Colorful Optionset',
             url: 'https://master--651dc11bd70620b3c0c57342.chromatic.com/',
