@@ -58,7 +58,7 @@ const config = {
         name: '@storybook/html-webpack5',
         options: {},
     },
-
+    staticDirs: ['./public'],
     webpackFinal: async (config) => {
         config.resolve.fallback = config.resolve.fallback || {};
         config.resolve.fallback.fs = false;
