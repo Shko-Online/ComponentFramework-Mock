@@ -1,3 +1,10 @@
+## [0.1.26](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.25...v0.1.26) (2023-11-27)
+
+
+### Bug Fixes
+
+* Added support for dataset CUD operations ([80cdb09](https://github.com/shko-online/ComponentFramework-Mock/commit/80cdb09ee0d596dd5c03bb04e8cd35b339a31c4d))
+
 ## [0.1.25](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.24...v0.1.25) (2023-10-04)
 
 
