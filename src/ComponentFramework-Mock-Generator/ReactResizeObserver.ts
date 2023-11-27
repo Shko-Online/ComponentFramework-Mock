@@ -6,10 +6,11 @@
 import type { JSXElementConstructor, ReactElement } from 'react';
 import type { ShkoOnline } from '../ShkoOnline';
 
-import { createElement, Fragment, useEffect, useRef, useState } from 'react';
+import { createElement, Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 import { mockRefreshDatasets } from './mockRefreshDatasets';
+import { DataSetMock } from '../ComponentFramework-Mock/PropertyTypes';
 
 export interface ReactResizeObserverProps<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -30,18 +31,26 @@ export const ReactResizeObserver = <
     const [Component, setComponent] = useState<ReactElement<any, string | JSXElementConstructor<any>>>(
         createElement(Fragment),
     );
+    const updateView = useCallback(() => {
+        setComponent(
+            componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
+        );
+    }, [setComponent, componentFrameworkMockGeneratorReact]);
     useEffect(() => {
+        Object.getOwnPropertyNames(componentFrameworkMockGeneratorReact.context._parameters).forEach((p) => {
+            var parameter = componentFrameworkMockGeneratorReact.context._parameters[p];
+            if (parameter instanceof DataSetMock) {
+                parameter._updateView = updateView;
+            }
+        });
+
         mockNotifyOutputChanged(
             componentFrameworkMockGeneratorReact,
             componentFrameworkMockGeneratorReact.control.getOutputs?.bind(componentFrameworkMockGeneratorReact.control),
             () => {
                 componentFrameworkMockGeneratorReact.RefreshParameters();
-                setComponent(
-                    componentFrameworkMockGeneratorReact.control.updateView(
-                        componentFrameworkMockGeneratorReact.context,
-                    ),
-                );                
-                componentFrameworkMockGeneratorReact.RefreshDatasets();            
+                updateView();
+                componentFrameworkMockGeneratorReact.RefreshDatasets();
             },
         );
 
@@ -50,39 +59,29 @@ export const ReactResizeObserver = <
             componentFrameworkMockGeneratorReact.context.mode.allocatedHeight = size.contentRect.height;
             componentFrameworkMockGeneratorReact.context.mode.allocatedWidth = size.contentRect.width;
             componentFrameworkMockGeneratorReact.RefreshParameters();
-            setComponent(
-                componentFrameworkMockGeneratorReact.control.updateView(
-                    componentFrameworkMockGeneratorReact.context,
-                ),
-            );
+            updateView();
         });
 
-        mockRefreshDatasets(componentFrameworkMockGeneratorReact, () => {
-            setComponent(
-                componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
-            );
-        });
+        mockRefreshDatasets(componentFrameworkMockGeneratorReact, updateView);
 
         componentFrameworkMockGeneratorReact.context.mode.trackContainerResize.callsFake((value) => {
             if (!containerRef.current) {
                 console.error('Container Ref is null');
                 return;
             }
-         
+
             if (value) componentFrameworkMockGeneratorReact.resizeObserver.observe(containerRef.current);
             else componentFrameworkMockGeneratorReact.resizeObserver.unobserve(containerRef.current);
         });
 
-        if(componentFrameworkMockGeneratorReact.context.mode._TrackingContainerResize && containerRef.current){
+        if (componentFrameworkMockGeneratorReact.context.mode._TrackingContainerResize && containerRef.current) {
             componentFrameworkMockGeneratorReact.resizeObserver.observe(containerRef.current);
         }
     }, []);
 
     useEffect(() => {
         componentFrameworkMockGeneratorReact.RefreshParameters();
-        setComponent(
-            componentFrameworkMockGeneratorReact.control.updateView(componentFrameworkMockGeneratorReact.context),
-        );
+        updateView();
         componentFrameworkMockGeneratorReact.RefreshDatasets();
     }, [circuitBreaker]);
 

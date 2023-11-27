@@ -6,18 +6,21 @@
 import type { ShkoOnline } from '../src/ShkoOnline';
 import { it, expect, describe, beforeEach } from '@jest/globals';
 import { EntityRecordMock, MetadataDB } from '../src';
+import { SinonStub, stub } from 'sinon';
 
 describe('EntityRecordMock', () => {
     let db: MetadataDB;
     let entityRecord: EntityRecordMock;
     let LogicalName: string;
     let boundRow: string;
+    let updateView: SinonStub<[],void>;
 
     beforeEach(() => {
+
         db = new MetadataDB();
         LogicalName = '!!test';
         boundRow = 'TheRowId';
-
+        updateView = stub();
         db.initMetadata([
             {
                 LogicalName,
@@ -46,7 +49,7 @@ describe('EntityRecordMock', () => {
             value: [{ id: boundRow, name: 'Betim Beja' }],
         });
 
-        entityRecord = new EntityRecordMock(db, LogicalName, boundRow);
+        entityRecord = new EntityRecordMock(db, LogicalName, boundRow, updateView);
     });
 
     it('getNamedReference should return an entity reference', () => {
@@ -71,5 +74,10 @@ describe('EntityRecordMock', () => {
 
     it('getRecordId should return the bound row id', () => {
         expect(entityRecord.getRecordId()).toEqual(boundRow);
+    });
+
+    it('setValue should call updateView', async () => {
+        await entityRecord.setValue('name', 'Asllan Makaj');
+        expect(updateView.calledOnce).toEqual(true);
     });
 });

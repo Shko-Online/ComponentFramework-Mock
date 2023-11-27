@@ -150,6 +150,11 @@ describe('DataSetMock', () => {
             dataset.clearSelectedRecordIds();
             expect(dataset.getSelectedRecordIds()).toEqual([]);
         });
+
+        it('new record should work', () => {
+            var newRecord = dataset.newRecord();
+            expect(newRecord.getRecordId()).toEqual('Guid.NewGuid?');         
+        });
     });
 
     describe('without id', () => {

@@ -23,14 +23,24 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
     _db: MetadataDB;
     _boundRow: string;
     _boundTable: string;
+    _isDirty: boolean;
+    _isValid: boolean;
+    _updateView?: ()=>void;
     getFormattedValue: SinonStub<[columnName: string], string>;
     getRecordId: SinonStub<[], string>;
     getValue: SinonStub<[columnName: string], ColumnReturnValue>;
     getNamedReference: SinonStub<[], ComponentFramework.EntityReference>;
-    constructor(db: MetadataDB, etn: string, id: string) {
+    isDirty: SinonStub<[],boolean>;
+    isValid: SinonStub<[], boolean>;
+    save: SinonStub<[],Promise<void>>;
+    setValue: SinonStub<[columnName: string, value: ColumnReturnValue],Promise<void>>;
+    constructor(db: MetadataDB, etn: string, id: string, updateView?: ()=>void) {
+        this._updateView = updateView;
         this._db = db;
         this._boundTable = etn;
         this._boundRow = id;
+        this._isDirty = false;
+        this._isValid = true;
         this.getFormattedValue = stub();
         this.getFormattedValue.callsFake((columnName) => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.DateTimeAttributeMetadata>(
@@ -63,6 +73,35 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
                 this._boundRow,
             );
             return value;
+        });
+        this.isDirty = stub();
+        this.isDirty.callsFake(()=>this._isDirty);
+        this.isValid = stub();
+        this.isValid.callsFake(()=>this._isValid);
+        this.save = stub();
+        this.save.callsFake(()=>{
+            return new Promise((resolve)=>{
+                setTimeout(()=>{   
+                    this._isDirty = false;
+                    if(this._updateView){
+                        this._updateView();
+                    }
+                    resolve();
+                },10);
+            });
+        });
+        this.setValue = stub();
+        this.setValue.callsFake((columnName, value)=>{
+            return new Promise((resolve)=>{
+                setTimeout(()=>{                  
+                    this._db.UpdateValue(value, this._boundTable, columnName, this._boundRow);
+                    this._isDirty = true;
+                    if(this._updateView){
+                        this._updateView();
+                    }
+                    resolve();
+                },10);
+            });
         });
     }
 }

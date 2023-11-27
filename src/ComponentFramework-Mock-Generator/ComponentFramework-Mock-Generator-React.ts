@@ -55,7 +55,6 @@ export class ComponentFrameworkMockGeneratorReact<
         mockSetControlState(this);
     }
    
-
     ExecuteInit() {
         this.RefreshParameters();
         const state = this.state === undefined ? this.state : { ...this.state };

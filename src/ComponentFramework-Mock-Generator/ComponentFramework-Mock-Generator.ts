@@ -14,7 +14,7 @@ import { mockSetControlState } from './mockSetControlState';
 import { mockSetControlResource } from './mockSetControlResource';
 import { mockRefreshParameters } from './mockRefreshParameters';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
-import { ContextMock } from '../ComponentFramework-Mock';
+import { ContextMock, DataSetMock } from '../ComponentFramework-Mock';
 import { showBanner } from '../utils';
 import { MockGenerator } from './MockGenerator';
 import { mockRefreshDatasets } from './mockRefreshDatasets';
@@ -57,6 +57,13 @@ export class ComponentFrameworkMockGenerator<
         this.context.mode.trackContainerResize.callsFake((value) => {
             if (value) this.resizeObserver.observe(this.container);
             else this.resizeObserver.unobserve(this.container);
+        });
+
+        Object.getOwnPropertyNames(this.context._parameters).forEach((p) => {
+            var parameter = this.context._parameters[p];
+            if (parameter instanceof DataSetMock) {
+                parameter._updateView = this.ExecuteUpdateView.bind(this);
+            }
         });
 
         mockGetEntityMetadata(this);

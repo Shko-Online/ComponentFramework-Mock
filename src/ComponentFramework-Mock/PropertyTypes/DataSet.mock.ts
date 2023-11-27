@@ -20,6 +20,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     _boundColumn: string;
     _boundTable: string;
     _boundRow?: string;
+    _dataSetCapabilities: ComponentFramework.PropertyTypes.DataProviderCapabilities;
     _db: MetadataDB;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
     _Refresh: SinonStub<[], void>;
@@ -29,8 +30,10 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     _onLoaded: SinonStub<[], void>;
     _delay: number;
     _SelectedRecordIds: string[];
+    _updateView?: () => void;
     addColumn?: SinonStub<[name: string, entityAlias?: string], void>;
     columns: Column[];
+    delete: SinonStub<[ids: string[]], Promise<void>>;
     error: boolean;
     errorMessage: string;
     filtering: FilteringMock;
@@ -43,19 +46,30 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     sortedRecordIds: string[];
     sorting: ComponentFramework.PropertyHelper.DataSetApi.SortStatus[];
     clearSelectedRecordIds: SinonStub<[], void>;
+    getDataSetCapabilities: SinonStub<[], ComponentFramework.PropertyTypes.DataProviderCapabilities>;
     getSelectedRecordIds: SinonStub<[], string[]>;
     getTargetEntityType: SinonStub<[], string>;
     getTitle: SinonStub<[], string>;
     getViewId: SinonStub<[], string>;
+    newRecord: SinonStub<[], ComponentFramework.PropertyHelper.DataSetApi.EntityRecord>;
     openDatasetItem: SinonStub<[entityReference: ComponentFramework.EntityReference], void>;
     refresh: SinonStub<[], void>;
     setSelectedRecordIds: SinonStub<[ids: string[]], void>;
     constructor(propertyName: string, db: MetadataDB) {
         this._boundTable = `!!${propertyName}`;
         this._boundColumn = propertyName;
+        this._dataSetCapabilities = {
+            canCreateNewRecords: true,
+            canPaginate: true,
+            hasCellImageInfo: true,
+            hasRecordNavigation: true,
+            isEditable: true,
+            isFilterable: true,
+            isSortable: true,
+        };
         this._db = db;
         this._SelectedRecordIds = [];
-        this._onLoaded = stub();
+        this._onLoaded = stub();     
         this.error = false;
         this.errorMessage = '';
         this.linking = new LinkingMock();
@@ -147,6 +161,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                           db,
                           this._boundTable,
                           item[rows.entityMetadata?.PrimaryIdAttribute || 'id'],
+                          this._updateView,
                       );
                       return row;
                   });
@@ -188,6 +203,12 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this.clearSelectedRecordIds.callsFake(() => {
             this._SelectedRecordIds = [];
         });
+        this.delete = stub();
+        this.delete.callsFake((ids) => {
+            return new Promise((resolve) => resolve());
+        });
+        this.getDataSetCapabilities = stub();
+        this.getDataSetCapabilities.callsFake(() => ({ ...this._dataSetCapabilities }));
         this.getSelectedRecordIds = stub();
         this.getSelectedRecordIds.callsFake(() => [...this._SelectedRecordIds]);
         this.addColumn = stub();
@@ -197,6 +218,16 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         });
         this.getTitle = stub();
         this.getViewId = stub();
+        this.newRecord = stub();
+        this.newRecord.callsFake(() => {
+            const tableMetadata = this._db.getTableMetadata(`${this._boundTable}`);
+            if (!tableMetadata) {
+                throw new Error('Please initialize the metadata for this functionality');
+            }
+
+            const row = new EntityRecordMock(db, this._boundTable, 'Guid.NewGuid?', this._updateView);
+            return row;
+        });
         this.openDatasetItem = stub();
         this.refresh = stub();
         this.setSelectedRecordIds = stub();
