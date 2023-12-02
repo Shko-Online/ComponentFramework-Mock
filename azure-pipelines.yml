@@ -1,5 +1,6 @@
 trigger:
 - main
+- beta
 
 pool:
   vmImage: windows-latest
