@@ -1,3 +1,10 @@
+# [0.2.0-beta.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.26...v0.2.0-beta.1) (2023-12-02)
+
+
+### Features
+
+* use alasql instead of lokijs ([d6c5b72](https://github.com/shko-online/ComponentFramework-Mock/commit/d6c5b725234c884f104cfb6b1301f442c6fae9ba))
+
 ## [0.1.26](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.25...v0.1.26) (2023-11-27)
 
 
