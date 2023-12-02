@@ -26,6 +26,8 @@ describe('OwnerLookup', () => {
                 name: 'Shko Online',
             },
         });
+        mockGenerator.context.userSettings.userId = 'MyUserId';
+        mockGenerator.context.userSettings.userName = 'Betim Beja';
         document.body.appendChild(container);
     });
 
@@ -49,6 +51,7 @@ describe('OwnerLookup', () => {
         button.dispatchEvent(evt);
 
         expect(mockGenerator.context.updatedProperties).toStrictEqual(['value', 'parameters']);
+        console.log(mockGenerator.metadata.db.exec("SELECT * FROM _canvasapp"))
         expect(document.body).toMatchSnapshot();
     });
 });

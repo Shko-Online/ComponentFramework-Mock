@@ -40,18 +40,18 @@ export class EnumPropertyMock<EnumType extends string>
             this._db.UpdateValue<EnumType | null>(value, this._boundTable, this._boundColumn, this._boundRow);
         });
         this._Refresh.callsFake(() => {
-            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.PickListAttributeMetadata>(
+            const { value, attributeMetadata } = this._db.GetValueAndMetadata<ShkoOnline.EnumTypeAttributeMetadata>(
                 this._boundTable,
                 this._boundColumn,
                 this._boundRow,
             );
-            if (attributeMetadata.AttributeType !== AttributeType.Picklist) {
+            if (attributeMetadata.AttributeType !== AttributeType.String) {
                 throw new Error('Type Error');
             }
             this.raw = value;
         });
         const attribute = {
-            AttributeType: AttributeType.Picklist,
+            AttributeType: AttributeType.String,
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.EnumTypeAttributeMetadata;

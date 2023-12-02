@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-export { AttributeType } from './AttributeType';
+export { AttributeType, OptionSetType } from './AttributeType';
 export { DataSetMock } from './DataSet.mock';
 export { EntityRecordMock, FilteringMock, LinkingMock, PagingMock } from './DataSetApi';
 export { DateTimePropertyMock } from './DateTimeProperty.mock';

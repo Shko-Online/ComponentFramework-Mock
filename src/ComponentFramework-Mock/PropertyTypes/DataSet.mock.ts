@@ -69,7 +69,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         };
         this._db = db;
         this._SelectedRecordIds = [];
-        this._onLoaded = stub();     
+        this._onLoaded = stub();
         this.error = false;
         this.errorMessage = '';
         this.linking = new LinkingMock();
@@ -100,9 +100,10 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         this._InitItems.callsFake((items) => {
             const tableMetadata = this._db.getTableMetadata(`${this._boundTable}`);
             if (tableMetadata) {
+                const primaryIdAttribute = tableMetadata.PrimaryIdAttribute || '';
                 items.forEach((item, i) => {
-                    if (item[tableMetadata?.PrimaryIdAttribute || 'id'] === undefined) {
-                        item[tableMetadata?.PrimaryIdAttribute || 'id'] = i + '';
+                    if (item[primaryIdAttribute] === undefined) {
+                        item[primaryIdAttribute] = i + '';
                     }
                 });
             }
@@ -118,13 +119,17 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             });
 
             new AttributeMetadataGenerator(this._boundTable)
-                .AddString(Object.getOwnPropertyNames(columns) as string[])
+                .AddString(
+                    (Object.getOwnPropertyNames(columns) as string[]).filter(
+                        (att) => !(tableMetadata?.Attributes?.some((att2) => att2.LogicalName === att)),
+                    ),
+                )
                 .Attributes.forEach((attribute) => {
                     this._db.upsertAttributeMetadata(this._boundTable, attribute);
                 });
 
             new AttributeMetadataGenerator(`${this._boundTable}@columns`)
-                .AddString(['displayName', 'name', 'dataType', 'alias'])
+                .AddString(['displayName', /*'name',*/ 'dataType', 'alias'])
                 .AddInteger(['order', 'visualSizeFactor'])
                 .Attributes.forEach((attribute) => {
                     this._db.upsertAttributeMetadata(`${this._boundTable}@columns`, attribute);
@@ -152,9 +157,9 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
         });
         this._Refresh.callsFake(() => {
             const columnsResult = this._db.GetAllRows(`${this._boundTable}@columns`);
-            this.columns = columnsResult.rows;
+            this.columns = columnsResult.rows as Column[];
             const rows = this._db.GetAllRows(this._boundTable);
-            const records = this._loading
+            const records: EntityRecordMock[] = this._loading
                 ? []
                 : rows.rows.map((item) => {
                       const row = new EntityRecordMock(

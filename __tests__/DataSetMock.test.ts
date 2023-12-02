@@ -41,7 +41,6 @@ describe('DataSetMock', () => {
                         AttributeType: 17,
                         LogicalName: 'dataset',
                         SchemaName: 'dataset',
-                        IsPrimaryName: true,
                     } as ShkoOnline.AttributeMetadata,
                 ],
             },

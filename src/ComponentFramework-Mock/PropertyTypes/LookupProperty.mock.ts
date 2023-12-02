@@ -60,7 +60,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             if (attributeMetadata.AttributeType !== AttributeType.Lookup) {
                 throw new Error('Type Error');
             }
-            return attributeMetadata.Targets?.[0] || value.entityType;
+            return attributeMetadata.Targets?.[0] || value?.entityType;
         });
         this.getViewId = stub();
         this.getViewId.returns('00000000-0000-0000-0000-000000000000');

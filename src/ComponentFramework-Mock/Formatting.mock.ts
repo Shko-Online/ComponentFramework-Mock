@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 type DateTimeFieldBehavior = ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior;
 
@@ -49,29 +49,35 @@ export class FormattingMock implements ComponentFramework.Formatting {
         });
         this.formatDateAsFilterStringInUTC = stub();
         this.formatDateAsFilterStringInUTC.callsFake((value: Date, includeTime?: boolean) => {
-            throw new Error('Method not implemented.');
+            return value.toLocaleString(this.locale, {
+                day: '2-digit',
+                year: 'numeric',
+                month: '2-digit',
+            });
         });
         this.formatDateLong = stub();
         this.formatDateLong.callsFake((value: Date) => {
             return value.toLocaleString(this.locale, {
-                day: '2-digit',
-                weekday: 'short',
-                year: 'numeric',
-                month: 'long',
+                dateStyle: 'long',
             });
         });
         this.formatDateLongAbbreviated = stub();
         this.formatDateLongAbbreviated.callsFake((value: Date) => {
             return value.toLocaleString(this.locale, {
-                day: '2-digit',
-                weekday: 'short',
-                year: 'numeric',
-                month: 'long',
+                dateStyle: 'medium',
             });
         });
         this.formatDateShort = stub();
         this.formatDateShort.callsFake((value: Date, includeTime?: boolean) => {
-            throw new Error('Method not implemented.');
+            if (includeTime === true) {
+                return value.toLocaleString(this.locale, {
+                    dateStyle: 'short',
+                    timeStyle: 'short',
+                }).replace(',','');
+            }
+            return value.toLocaleDateString(this.locale, {
+                dateStyle: 'short',
+            });
         });
         this.formatDateYearMonth = stub();
         this.formatDateYearMonth.callsFake((value: Date) => {
@@ -82,7 +88,7 @@ export class FormattingMock implements ComponentFramework.Formatting {
         });
         this.formatInteger = stub();
         this.formatInteger.callsFake((value: number) => {
-            return `${value}`;
+            return value.toLocaleString(this.locale, {});
         });
         this.formatLanguage = stub();
         this.formatLanguage.callsFake((value: number) => {

@@ -15,7 +15,7 @@ exports[`OwnerLookup Should update value on click 1`] = `
 <body>
   <div>
     <p>
-      [systemuser-] Assigned from PCF
+      [systemuser-MyUserId] Assigned from PCF
     </p>
     <button>
       Assign To Myself

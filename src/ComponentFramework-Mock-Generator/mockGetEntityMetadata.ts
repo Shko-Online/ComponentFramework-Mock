@@ -14,9 +14,7 @@ export const mockGetEntityMetadata = <
 ) => {
     mockGenerator.context.utils.getEntityMetadata.callsFake((entityName: string, attributes?: string[]) => {
         return new Promise<ShkoOnline.EntityMetadata>((resolve, reject) => {
-            const result = mockGenerator.metadata.metadata.findOne({
-                LogicalName: { $eq: entityName },
-            }) as ShkoOnline.EntityMetadata & Partial<LokiObj>;
+            const result = mockGenerator.metadata.getTableMetadata(entityName);
             if (!result) {
                 reject(`Could not find entity metadata for '${entityName}'`);
                 return;
@@ -25,9 +23,7 @@ export const mockGetEntityMetadata = <
                 result.Attributes = result.Attributes?.filter((attribute) =>
                     attributes.some((attributeFilter) => attribute.LogicalName === attributeFilter),
                 );
-            }
-            delete result.$loki;
-            delete result.meta;
+            }         
             resolve(result as ShkoOnline.EntityMetadata);
         });
     });

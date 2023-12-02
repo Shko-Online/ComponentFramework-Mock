@@ -37,6 +37,7 @@ export {
     MultiSelectOptionSetPropertyMock,
     NumberPropertyMock,
     OptionSetPropertyMock,
+    OptionSetType,
     PagingMock,
     PropertyMock,
     StringPropertyMock,

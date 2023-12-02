@@ -5,7 +5,7 @@
 
 import type { ShkoOnline } from '../src/ShkoOnline';
 import { it, expect, describe, beforeEach } from '@jest/globals';
-import { AttributeType, MultiSelectOptionSetPropertyMock, MetadataDB } from '../src';
+import { AttributeType, MultiSelectOptionSetPropertyMock, MetadataDB, OptionSetType } from '../src';
 
 describe('MultiSelectOptionSetPropertyMock', () => {
     let db: MetadataDB;
@@ -47,7 +47,7 @@ describe('MultiSelectOptionSetPropertyMock', () => {
             MetadataId: '',
             IsCustomOptionSet: true,
             Name: 'test',
-            OptionSetType: AttributeType.Picklist,
+            OptionSetType: OptionSetType.Picklist,
             Options: {
                 '0': {
                     Label: 'First choice',

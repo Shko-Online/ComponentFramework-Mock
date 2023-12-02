@@ -382,7 +382,7 @@ declare module ShkoOnline {
 
     export interface EnumTypeAttributeMetadata extends ShkoOnline.AttributeMetadata {
         /** Type of a column. */
-        AttributeType: ShkoOnline.AttributeType;
+        AttributeType: ShkoOnline.AttributeType.String;
         /**Options for the column where each option is a key:value pair*/
         OptionSet: {
             [key: string]: string;
@@ -395,13 +395,14 @@ declare module ShkoOnline {
         /**Default form value for the column.*/
         DefaultFormValue: number;
         /**Options for the column where each option is a key:value pair.*/
-        OptionSet: ShkoOnline.OptionSet;
+        OptionSet: ShkoOnline.OptionSet<OptionSetType.Picklist>;
     }
-    export interface OptionSet {
+
+    export interface OptionSet<T extends OptionSetType> {
         MetadataId: string;
         IsCustomOptionSet: boolean;
         Name: string;
-        OptionSetType: ShkoOnline.AttributeType.Picklist;
+        OptionSetType: T;
         Options: {
             [value: number]: {
                 Value: number;
@@ -409,6 +410,20 @@ declare module ShkoOnline {
                 Color?: string;
             };
         };
+    }
+
+    /**
+     * https://learn.microsoft.com/en-us/dotnet/api/microsoft.xrm.sdk.metadata.optionsettype
+     */
+    export enum  OptionSetType {
+        /** The option set provides a list of options. */
+        Picklist = 0,
+        /** The option set represents state options for a StateAttributeMetadata attribute. */
+        State = 1,
+        /** The option set represents status options for a StatusAttributeMetadata attribute. */
+        Status = 2,
+        /** The option set provides two options for a BooleanAttributeMetadata attribute. */
+        Boolean = 3	       
     }
 
     export interface StateAttributeMetadata extends ShkoOnline.AttributeMetadata {

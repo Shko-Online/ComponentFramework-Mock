@@ -40,6 +40,8 @@ export class DecimalNumberPropertyMock
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.DecimalNumberAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+        if (!entityMetadata.Attributes?.some((att) => att.LogicalName === propertyName)) {
+            entityMetadata.Attributes?.push(attribute);
+        }
     }
 }

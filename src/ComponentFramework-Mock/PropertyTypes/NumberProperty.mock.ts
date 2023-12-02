@@ -52,6 +52,8 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             EntityLogicalName: entityMetadata.LogicalName,
             LogicalName: propertyName,
         } as ShkoOnline.NumberAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+        if (!entityMetadata.Attributes?.some((att) => att.LogicalName === propertyName)) {
+            entityMetadata.Attributes?.push(attribute);
+        }
     }
 }

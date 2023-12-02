@@ -25,13 +25,13 @@ describe('EnumPropertyMock', () => {
             PrimaryNameAttribute: 'name',
             Attributes: [
                 {
-                    AttributeType: 15,
+                    AttributeType: AttributeType.Uniqueidentifier,
                     LogicalName: 'id',
                     SchemaName: 'Id',
                     IsPrimaryId: true,
                 } as ShkoOnline.AttributeMetadata,
                 {
-                    AttributeType: 14,
+                    AttributeType: AttributeType.String,
                     LogicalName: 'name',
                     SchemaName: 'Name',
                     IsPrimaryName: true,
@@ -60,10 +60,10 @@ describe('EnumPropertyMock', () => {
 
     it('Can bind to a different column', () => {
         db.upsertAttributeMetadata(LogicalName, {
-            AttributeType: AttributeType.Picklist,
+            AttributeType: AttributeType.String,
             LogicalName: 'new_enum',
             SchemaName: 'new_Enum',
-        } as ShkoOnline.PickListAttributeMetadata);
+        } as ShkoOnline.EnumTypeAttributeMetadata);
         db.UpdateValue('0', LogicalName, 'new_enum');
         enumproperty._Bind(LogicalName, 'new_enum');
         enumproperty._Refresh();

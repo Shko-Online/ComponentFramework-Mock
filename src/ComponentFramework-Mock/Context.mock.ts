@@ -69,6 +69,6 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.resources = new ResourcesMock();
         this.userSettings = new UserSettingsMock();
         this.utils = new UtilityMock();
-        this.webAPI = new WebApiMock(db);
+        this.webAPI = new WebApiMock(db, this.formatting);
     }
 }

@@ -72,3 +72,14 @@ export const AttributeType = {
     /** An attribute that is created by the system at run time. Value = 0x11. */
     Virtual: 17,
 } as const;
+
+export const OptionSetType = {
+    /** The option set provides a list of options. */
+    Picklist : 0,
+    /** The option set represents state options for a StateAttributeMetadata attribute. */
+    State : 1,
+    /** The option set represents status options for a StatusAttributeMetadata attribute. */
+    Status : 2,
+    /** The option set provides two options for a BooleanAttributeMetadata attribute. */
+    Boolean : 3	       
+} as const;

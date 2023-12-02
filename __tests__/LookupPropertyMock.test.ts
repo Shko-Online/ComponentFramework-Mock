@@ -39,7 +39,8 @@ describe('LookupPropertyMock', () => {
             ],
         } as ShkoOnline.EntityMetadata;
         property = new LookupPropertyMock('property', db, entityMetadata);
-
+        const propertyMetadata = entityMetadata.Attributes.find(attr=>attr.LogicalName ==='property') as ShkoOnline.LookupAttributeMetadata;
+        propertyMetadata.Targets = ['contact'];
         db.initMetadata([entityMetadata]);
         db.initItems({
             '@odata.context': '#' + LogicalName,
