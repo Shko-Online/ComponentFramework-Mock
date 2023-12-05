@@ -1,8 +1,13 @@
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import alasql from 'alasql';
 
 export const CREATE_TABLE_METADATA_ENTITY = `
     CREATE TABLE Metadata__Entity(
-        EntityId UniqueIdentifier, 
+        EntityId UniqueIdentifier PRIMARY KEY, 
         LogicalName string, 
         EntitySetName string, 
         PrimaryIdAttribute string, 

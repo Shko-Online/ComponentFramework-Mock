@@ -51,7 +51,6 @@ describe('OwnerLookup', () => {
         button.dispatchEvent(evt);
 
         expect(mockGenerator.context.updatedProperties).toStrictEqual(['value', 'parameters']);
-        console.log(mockGenerator.metadata.db.exec("SELECT * FROM _canvasapp"))
         expect(document.body).toMatchSnapshot();
     });
 });

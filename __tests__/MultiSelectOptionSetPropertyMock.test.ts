@@ -92,20 +92,21 @@ describe('MultiSelectOptionSetPropertyMock', () => {
                 Name: 'test',
                 OptionSetType: AttributeType.Picklist,
                 Options: {
-                    '0': {
-                        Label: 'First choice',
-                        Value: 0,
+                    10: {
+                        Label: 'Tenth Choice',
+                        Value: 10,
                     },
-                    '1': {
-                        Label: 'Second Choice',
-                        Value: 1,
+                    11: {
+                        Label: 'Eleventh Choice',
+                        Value: 11,
                     },
                 },
             },
         } as unknown as ShkoOnline.PickListAttributeMetadata);
-        db.UpdateValue(['0'], LogicalName, 'new_enum');
+        db.UpdateValue([10], LogicalName, 'new_enum');
         property._Bind(LogicalName, 'new_enum');
         property._Refresh();
-        expect(property.raw).toEqual(['0']);
+        expect(property.raw).toEqual([10]);
+        expect(property.formatted).toEqual('Tenth Choice');
     });
 });

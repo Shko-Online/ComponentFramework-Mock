@@ -1,88 +1,18 @@
 /*
-    Copyright (c) 2022 Betim Beja and Shko Online LLC
-    Licensed under the MIT license.
+Copyright (c) 2022 Betim Beja and Shko Online LLC
+Licensed under the MIT license.
 */
 
-import { ShkoOnline } from '../ShkoOnline';
+import type { SinonStub } from 'sinon';
+import type { ShkoOnline } from '../../ShkoOnline';
 
 import alasql from 'alasql';
+import { stub } from 'sinon';
 
-import { AttributeMetadataSQL } from './SQLQueries/Metadata.Attribute';
-import { EntityMetadataSQL } from './SQLQueries/Metadata.Entity';
-import { OptionSetMetadataSQL } from './SQLQueries/Metadata.Optionset';
-import { AttributeType, OptionSetType } from '../ComponentFramework-Mock';
-
-const getSqlTypeForAttribute = (attributeType: ShkoOnline.AttributeType) => {
-    switch (attributeType) {
-        case AttributeType.Boolean:
-            return 'bit';
-        case AttributeType.DateTime:
-            return 'datetime';
-        case AttributeType.Decimal:
-            return 'decimal';
-        case AttributeType.Double:
-            return 'double';
-        case AttributeType.Integer:
-            return 'int';
-        case AttributeType.Picklist:
-        default:
-            return 'string';
-    }
-};
-
-const getAttributeTypeFromString = (attributeType: ShkoOnline.AttributeType | string) => {
-    if (typeof attributeType === 'number') {
-        return attributeType;
-    }
-    switch (attributeType) {
-        case 'Lookup':
-            return AttributeType.Lookup;
-        case 'BigInt':
-            return AttributeType.BigInt;
-        case 'Boolean':
-            return AttributeType.Boolean;
-        case 'CalendarRules':
-            return AttributeType.CalendarRules;
-        case 'Customer':
-            return AttributeType.Customer;
-        case 'DateTime':
-            return AttributeType.DateTime;
-        case 'Decimal':
-            return AttributeType.Decimal;
-        case 'Double':
-            return AttributeType.Double;
-        case 'EntityName':
-            return AttributeType.EntityName;
-        case 'Integer':
-            return AttributeType.Integer;
-        case 'Lookup':
-            return AttributeType.Lookup;
-        case 'ManagedProperty':
-            return AttributeType.ManagedProperty;
-        case 'Memo':
-            return AttributeType.Memo;
-        case 'Money':
-            return AttributeType.Money;
-        case 'Owner':
-            return AttributeType.Owner;
-        case 'PartyList':
-            return AttributeType.PartyList;
-        case 'Picklist':
-            return AttributeType.Picklist;
-        case 'State':
-            return AttributeType.State;
-        case 'Status':
-            return AttributeType.Status;
-        case 'String':
-            return AttributeType.String;
-        case 'Uniqueidentifier':
-            return AttributeType.Uniqueidentifier;
-        case 'Virtual':
-            return AttributeType.Virtual;
-        default:
-            return AttributeType.Virtual;
-    }
-};
+import { AttributeMetadataSQL, EntityMetadataSQL, OptionSetMetadataSQL } from './SQLQueries';
+import { getAttributeTypeFromString } from './getAttributeTypeFromString';
+import { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
+import { AttributeType, OptionSetType } from '../../ComponentFramework-Mock';
 
 export class MetadataDB {
     /**
@@ -90,7 +20,7 @@ export class MetadataDB {
      */
     _warnMissingInit: boolean;
     db: { databaseid: string; exec: typeof alasql };
-    _newId: () => string;
+    _newId: SinonStub<[], string>;
     EntityMetadataSQL: EntityMetadataSQL;
     OptionSetMetadataSQL: OptionSetMetadataSQL;
     AttributeMetadataSQL: AttributeMetadataSQL;
@@ -101,7 +31,8 @@ export class MetadataDB {
         this.EntityMetadataSQL = new EntityMetadataSQL(this.db.exec.bind(this.db));
         this.OptionSetMetadataSQL = new OptionSetMetadataSQL(this.db.exec.bind(this.db));
 
-        this._newId = () => this.db.exec('SELECT NEWID() as ID')[0]['ID'];
+        this._newId = stub();
+        this._newId.callsFake(() => this.db.exec('SELECT NEWID() as ID')[0]['ID']);
     }
 
     createAttribute(entityId: string, attribute: ShkoOnline.AttributeMetadata) {
@@ -128,6 +59,17 @@ export class MetadataDB {
                 OptionSetId: optionsetAttribute.OptionSet.MetadataId,
                 OptionSetType: optionsetAttribute.OptionSet.OptionSetType,
             });
+            for (let optionValue in optionsetAttribute.OptionSet.Options) {
+                const option = optionsetAttribute.OptionSet.Options[optionValue];
+                const optionId = this._newId();
+                this.OptionSetMetadataSQL.AddOptionMetadata({
+                    OptionId: optionId,
+                    OptionSetId: optionsetAttribute.OptionSet.MetadataId,
+                    Color: option.Color,
+                    Label: option.Label,
+                    Value: option.Value,
+                });
+            }
         }
 
         this.AttributeMetadataSQL.AddAttributeMetadata({
@@ -320,6 +262,16 @@ export class MetadataDB {
                     OptionSetType: optionsetDB[0].OptionSetType,
                     Options: {},
                 };
+                const optionsDB = this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(
+                    attributeDB.OptionSetId || '',
+                );
+                optionsDB.forEach((option) => {
+                    (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet.Options[option.Value] = {
+                        Label: option.Label,
+                        Value: option.Value,
+                        Color: option.Color,
+                    };
+                });
             }
             tableMetadata.Attributes?.push(attribute);
         });
@@ -339,43 +291,96 @@ export class MetadataDB {
             return;
         }
         const safeTableName = tableDB[0].LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
-        const attributeDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attributeMetadata.LogicalName, entity);
-        if (!attributeDB || attributeDB.length == 0) {
-            const virtualAttribute = attributeMetadata.LogicalName + 'name';
 
-            if (
-                attributeMetadata.AttributeType === AttributeType.Boolean ||
-                attributeMetadata.AttributeType === AttributeType.Lookup ||
-                attributeMetadata.AttributeType === AttributeType.Picklist
-            ) {
-                this.createAttribute(tableDB[0].EntityId, {
-                    AttributeOf: attributeMetadata.LogicalName,
-                    AttributeType: AttributeType.Virtual,
-                    LogicalName: virtualAttribute,
-                    SchemaName: (attributeMetadata.SchemaName || attributeMetadata.LogicalName) + 'Name',
-                } as ShkoOnline.AttributeMetadata);
-                this.db.exec('ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + virtualAttribute + '] string');
-            }
-
-            this.createAttribute(tableDB[0].EntityId, attributeMetadata);
-
-            this.db.exec(
-                'ALTER TABLE ' +
-                    safeTableName +
-                    ' ADD COLUMN [' +
-                    attributeMetadata.LogicalName +
-                    '] ' +
-                    getSqlTypeForAttribute(attributeMetadata.AttributeType),
+        let attributeDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attributeMetadata.LogicalName, entity);
+        if (attributeMetadata.MetadataId) {
+            attributeDB = attributeDB.concat(
+                this.AttributeMetadataSQL.SelectAttributeMetadataById(attributeMetadata.MetadataId),
             );
+        }
 
-            if (attributeMetadata.AttributeType === AttributeType.Lookup) {
-                this.db.exec(
-                    'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'type] string',
-                );
-                this.db.exec(
-                    'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'navigation] string',
-                );
+        if (attributeDB && attributeDB.length > 0) {
+            attributeDB.forEach((attribute) => {
+                if (
+                    attributeMetadata.AttributeType === AttributeType.Boolean ||
+                    attributeMetadata.AttributeType === AttributeType.Lookup ||
+                    attributeMetadata.AttributeType === AttributeType.Picklist ||
+                    attributeMetadata.AttributeType === AttributeType.State ||
+                    attributeMetadata.AttributeType == AttributeType.Status
+                ) {
+                    this.db.exec('DELETE FROM Metadata__Optionset WHERE OptionSetId = ?', [attribute.OptionSetId]);
+                    this.db.exec('DELETE FROM Metadata__Optionset_Option WHERE OptionSetId = ?', [
+                        attribute.OptionSetId,
+                    ]);
+                }
+                this.db.exec('DELETE FROM Metadata__Attributes WHERE AttributeId = ?', [attribute.AttributeId]);
+            });
+        }
+
+        const virtualAttribute = attributeMetadata.LogicalName + 'name';
+        this.createAttribute(tableDB[0].EntityId, attributeMetadata);
+
+        if (
+            attributeMetadata.AttributeType === AttributeType.Boolean ||
+            attributeMetadata.AttributeType === AttributeType.Lookup ||
+            attributeMetadata.AttributeType === AttributeType.Picklist ||
+            attributeMetadata.AttributeType === AttributeType.State ||
+            attributeMetadata.AttributeType == AttributeType.Status
+        ) {
+            let optionsetMetadata = attributeMetadata as ShkoOnline.PickListAttributeMetadata;
+            if (optionsetMetadata.OptionSet && optionsetMetadata.OptionSet.MetadataId) {
+                this.db.exec('DELETE FROM Metadata__Optionset WHERE OptionSetId = ?', [
+                    optionsetMetadata.OptionSet.MetadataId,
+                ]);
+                this.db.exec('DELETE FROM Metadata__Optionset_Option WHERE OptionSetId = ?', [
+                    optionsetMetadata.OptionSet.MetadataId,
+                ]);
             }
+            this.createAttribute(tableDB[0].EntityId, {
+                AttributeOf: attributeMetadata.LogicalName,
+                AttributeType: AttributeType.Virtual,
+                LogicalName: virtualAttribute,
+                SchemaName: (attributeMetadata.SchemaName || attributeMetadata.LogicalName) + 'Name',
+            } as ShkoOnline.AttributeMetadata);
+            this.db.exec('ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + virtualAttribute + '] string');
+
+            if (optionsetMetadata.OptionSet) {
+                this.OptionSetMetadataSQL.AddOptionSetMetadata({
+                    IsCustomOptionSet: optionsetMetadata.OptionSet.IsCustomOptionSet,
+                    LogicalName: optionsetMetadata.OptionSet.Name,
+                    OptionSetId: optionsetMetadata.OptionSet.MetadataId,
+                    OptionSetType: optionsetMetadata.OptionSet.OptionSetType,
+                });
+                for (let optionValue in optionsetMetadata.OptionSet.Options) {
+                    const option = optionsetMetadata.OptionSet.Options[optionValue];
+                    const optionId = this._newId();
+                    this.OptionSetMetadataSQL.AddOptionMetadata({
+                        OptionId: optionId,
+                        OptionSetId: optionsetMetadata.OptionSet.MetadataId,
+                        Color: option.Color,
+                        Label: option.Label,
+                        Value: option.Value,
+                    });
+                }
+            }
+        }
+
+        this.db.exec(
+            'ALTER TABLE ' +
+                safeTableName +
+                ' ADD COLUMN [' +
+                attributeMetadata.LogicalName +
+                '] ' +
+                getSqlTypeForAttribute(attributeMetadata.AttributeType),
+        );
+
+        if (attributeMetadata.AttributeType === AttributeType.Lookup) {
+            this.db.exec(
+                'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'type] string',
+            );
+            this.db.exec(
+                'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'navigation] string',
+            );
         }
     }
 

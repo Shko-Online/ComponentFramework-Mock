@@ -10,7 +10,7 @@ import {stub} from 'sinon';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
 import { DateTimeMetadataMock } from '../Metadata/DateTimeMetadata.mock';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/Metadata.db';
 
 export class DateTimePropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.DateTimeProperty {
     _SetValue: SinonStub<[value: Date | null], void>;

@@ -8,7 +8,7 @@ import type { ShkoOnline } from '../../ShkoOnline';
 import { AttributeType } from './AttributeType';
 import { NumberPropertyMock } from './NumberProperty.mock';
 import { DecimalNumberMetadataMock } from '../Metadata/DecimalNumberMetadata.mock';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/Metadata.db';
 
 export class DecimalNumberPropertyMock
     extends NumberPropertyMock

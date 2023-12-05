@@ -11,7 +11,7 @@ import { EntityRecordMock } from './DataSetApi/EntityRecord.mock';
 import { FilteringMock } from './DataSetApi/Filtering.mock';
 import { LinkingMock } from './DataSetApi/Linking.mock';
 import { PagingMock } from './DataSetApi/Paging.mock';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/Metadata.db';
 import { AttributeMetadataGenerator } from '../../utils/AttributeMetadataGenerator';
 
 type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;

@@ -10,7 +10,7 @@ import { stub } from 'sinon';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
 import { OptionMetadataMock, TwoOptionMetadataMock } from '../Metadata';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/Metadata.db';
 
 export class TwoOptionsPropertyMock
     extends PropertyMock

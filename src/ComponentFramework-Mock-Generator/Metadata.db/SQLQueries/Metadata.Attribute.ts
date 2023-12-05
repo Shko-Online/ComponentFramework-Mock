@@ -1,15 +1,20 @@
-import { ShkoOnline } from '@shko.online/componentframework-mock/ShkoOnline';
+/*
+    Copyright (c) 2022 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
+import type { ShkoOnline } from '@shko.online/componentframework-mock/ShkoOnline';
 import alasql from 'alasql';
 
 export const CREATE_TABLE_METADATA_ATTRIBUTE = `
     CREATE TABLE Metadata__Attribute(
         EntityId UniqueIdentifier, 
-        AttributeId UniqueIdentifier, 
+        AttributeId UniqueIdentifier PRIMARY KEY, 
         LogicalName string, 
         AttributeType int,
-        DefaultFormValue int,
+        DefaultFormValue int NULL,
         OptionSetId UniqueIdentifier,
-        AttributeOf string,
+        AttributeOf string NULL,
         AttributeTypeName string
     )
 `;
@@ -42,6 +47,23 @@ export const SELECT_METADATA_ATTRIBUTE = `
             INNER JOIN
         Metadata__Entity E ON A.EntityId=E.EntityId
     WHERE A.LogicalName = ? AND E.LogicalName = ?
+`;
+
+export const SELECT_METADATA_ATTRIBUTE_BY_ID = `
+    SELECT
+        E.LogicalName as EntityLogicalName, 
+        AttributeId, 
+        A.LogicalName as LogicalName, 
+        AttributeType,
+        DefaultFormValue,
+        OptionSetId,
+        AttributeOf,
+        AttributeTypeName
+    FROM 
+        Metadata__Attribute A 
+            INNER JOIN
+        Metadata__Entity E ON A.EntityId=E.EntityId
+    WHERE A.AttributeId = ?
 `;
 
 export const SELECT_METADATA_ATTRIBUTES = `
@@ -87,11 +109,14 @@ export class AttributeMetadataSQL {
             metadata.DefaultFormValue,
             metadata.OptionSetId,
             metadata.AttributeOf,
-            metadata.AttributeTypeName
+            metadata.AttributeTypeName,
         ]);
     }
-    SelectAttributeMetadata(AttributeLogicalName: string, EntityLogicalName: string ) {
-        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeLogicalName, EntityLogicalName ]) as Attribute[];
+    SelectAttributeMetadata(AttributeLogicalName: string, EntityLogicalName: string) {
+        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeLogicalName, EntityLogicalName]) as Attribute[];
+    }
+    SelectAttributeMetadataById(AttributeId: string){
+        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeId]) as Attribute[];
     }
     SelectAttributeMetadataForTable(EntityLogicalName: string) {
         return this.sql(SELECT_METADATA_ATTRIBUTES, [EntityLogicalName]) as Attribute[];
