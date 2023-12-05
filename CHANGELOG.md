@@ -1,3 +1,10 @@
+# [0.2.0-beta.2](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.2.0-beta.1...v0.2.0-beta.2) (2023-12-05)
+
+
+### Bug Fixes
+
+* improved metadata for optionsets ([c153c7e](https://github.com/shko-online/ComponentFramework-Mock/commit/c153c7e8ab968cd976d4a6231f03db07d93975e7))
+
 # [0.2.0-beta.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.26...v0.2.0-beta.1) (2023-12-02)
 
 
