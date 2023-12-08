@@ -43,42 +43,43 @@ describe('MultiSelectOptionSetPropertyMock', () => {
         var metadata = entityMetadata.Attributes.filter(
             (a) => a.LogicalName === 'property',
         )[0] as ShkoOnline.PickListAttributeMetadata;
-        metadata.OptionSet = {
-            MetadataId: '',
+        metadata.OptionSet = {    
+            MetadataId: undefined,        
             IsCustomOptionSet: true,
             Name: 'test',
             OptionSetType: OptionSetType.Picklist,
             Options: {
-                '0': {
+                0: {
                     Label: 'First choice',
                     Value: 0,
                 },
-                '1': {
+                1: {
                     Label: 'Second Choice',
                     Value: 1,
                 },
-                '2': {
+                2: {
                     Label: 'Third Choice',
                     Value: 2,
                 },
             },
         };
+      
         db.initMetadata([entityMetadata]);
         db.initItems({
             '@odata.context': '#' + LogicalName,
-            value: [{ id: boundRow, name: 'Betim Beja', property: ['1', '2'] }],
+            value: [{ id: boundRow, name: 'Betim Beja', property: [1, 2] }],
         });
     });
 
     it('Should have the data from init', () => {
         property._Refresh();
-        expect(property.raw).toEqual(['1', '2']);
+        expect(property.raw).toEqual([1, 2]);
     });
 
     it('_Refresh should refresh the data', () => {
-        db.UpdateValue(['2'], LogicalName, 'property');
+        db.UpdateValue([2], LogicalName, 'property');
         property._Refresh();
-        expect(property.raw).toEqual(['2']);
+        expect(property.raw).toEqual([2]);
     });
 
     it('Can bind to a different column', () => {
@@ -109,4 +110,18 @@ describe('MultiSelectOptionSetPropertyMock', () => {
         expect(property.raw).toEqual([10]);
         expect(property.formatted).toEqual('Tenth Choice');
     });
+
+    it('can update existing metadata',()=>{
+        const optionsetMetadata =  db.getAttributeMetadata(
+            '!!test',
+            'property',
+        ) as ShkoOnline.PickListAttributeMetadata;
+      
+        optionsetMetadata.OptionSet.Options[1].Label = 'Betim\'s Choice';
+        db.upsertAttributeMetadata(LogicalName, optionsetMetadata);
+      
+        property._Refresh();
+        expect(property.raw).toEqual([1,2]);
+        expect(property.formatted).toEqual('Betim\'s Choice,Third Choice');
+    })
 });

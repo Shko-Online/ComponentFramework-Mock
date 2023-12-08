@@ -83,7 +83,7 @@ export const SELECT_METADATA_ATTRIBUTES = `
     WHERE E.LogicalName = ?
 `;
 
-interface Attribute {
+export interface AttributeDB {
     EntityId: string;
     AttributeId: string;
     LogicalName: string;
@@ -100,7 +100,7 @@ export class AttributeMetadataSQL {
         this.sql = sql;
         sql(CREATE_TABLE_METADATA_ATTRIBUTE);
     }
-    AddAttributeMetadata(metadata: Attribute) {
+    AddAttributeMetadata(metadata: AttributeDB) {
         this.sql(INSERT_METADATA_ATTRIBUTE, [
             metadata.EntityId,
             metadata.AttributeId,
@@ -113,12 +113,12 @@ export class AttributeMetadataSQL {
         ]);
     }
     SelectAttributeMetadata(AttributeLogicalName: string, EntityLogicalName: string) {
-        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeLogicalName, EntityLogicalName]) as Attribute[];
+        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeLogicalName, EntityLogicalName]) as AttributeDB[];
     }
     SelectAttributeMetadataById(AttributeId: string){
-        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeId]) as Attribute[];
+        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeId]) as AttributeDB[];
     }
     SelectAttributeMetadataForTable(EntityLogicalName: string) {
-        return this.sql(SELECT_METADATA_ATTRIBUTES, [EntityLogicalName]) as Attribute[];
+        return this.sql(SELECT_METADATA_ATTRIBUTES, [EntityLogicalName]) as AttributeDB[];
     }
 }

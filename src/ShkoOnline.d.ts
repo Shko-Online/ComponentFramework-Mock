@@ -318,17 +318,17 @@ declare module ShkoOnline {
         MetadataId: string;
         IsCustomOptionSet: boolean;
         Name: string;
-        OptionSetType: ShkoOnline.AttributeType.Boolean;
+        OptionSetType: OptionSetType.Boolean;
         DisplayName: string;
         TrueOption: {
             Value: number;
             Label: string;
-            Color: string | null;
+            Color?: string;
         };
         FalseOption: {
             Value: number;
             Label: string;
-            Color: string | null;
+            Color?: string;
         };
     }
     export interface BooleanManagedProperty {

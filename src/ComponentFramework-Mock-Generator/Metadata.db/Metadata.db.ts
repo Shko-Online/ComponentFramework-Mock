@@ -5,6 +5,7 @@ Licensed under the MIT license.
 
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../../ShkoOnline';
+import type { AttributeDB } from './SQLQueries';
 
 import alasql from 'alasql';
 import { stub } from 'sinon';
@@ -56,20 +57,92 @@ export class MetadataDB {
             this.OptionSetMetadataSQL.AddOptionSetMetadata({
                 IsCustomOptionSet: optionsetAttribute.OptionSet.IsCustomOptionSet,
                 LogicalName: optionsetAttribute.OptionSet.Name,
-                OptionSetId: optionsetAttribute.OptionSet.MetadataId,
+                OptionSetId,
                 OptionSetType: optionsetAttribute.OptionSet.OptionSetType,
             });
             for (let optionValue in optionsetAttribute.OptionSet.Options) {
                 const option = optionsetAttribute.OptionSet.Options[optionValue];
                 const optionId = this._newId();
+                console.log({
+                    OptionId: optionId,
+                    OptionSetId,
+                    Color: option.Color,
+                    Label: option.Label,
+                    Value: option.Value,
+                });
+
                 this.OptionSetMetadataSQL.AddOptionMetadata({
                     OptionId: optionId,
-                    OptionSetId: optionsetAttribute.OptionSet.MetadataId,
+                    OptionSetId,
                     Color: option.Color,
                     Label: option.Label,
                     Value: option.Value,
                 });
             }
+        } else if (attribute.AttributeType === AttributeType.Boolean) {
+            const booleanAttribute = attribute as ShkoOnline.BooleanAttributeMetadata;
+            if (!booleanAttribute.OptionSet) {
+                booleanAttribute.OptionSet = {
+                    MetadataId: '',
+                    IsCustomOptionSet: false,
+                    Name: booleanAttribute.LogicalName,
+                    OptionSetType: OptionSetType.Boolean,
+                    DisplayName: '',
+                    FalseOption: {
+                        Color: '',
+                        Label: 'No',
+                        Value: 0,
+                    },
+                    TrueOption: {
+                        Color: '',
+                        Label: 'Yes',
+                        Value: 1,
+                    },
+                };
+            }
+            if (!booleanAttribute.OptionSet.FalseOption) {
+                booleanAttribute.OptionSet.FalseOption = {
+                    Color: '',
+                    Label: 'No',
+                    Value: 0,
+                };
+            }
+            if (!booleanAttribute.OptionSet.TrueOption) {
+                booleanAttribute.OptionSet.TrueOption = {
+                    Color: '',
+                    Label: 'Yes',
+                    Value: 1,
+                };
+            }
+            if (!booleanAttribute.OptionSet.MetadataId) {
+                booleanAttribute.OptionSet.MetadataId = this._newId();
+            }
+            OptionSetId = booleanAttribute.OptionSet.MetadataId;
+            this.OptionSetMetadataSQL.AddOptionSetMetadata({
+                IsCustomOptionSet: booleanAttribute.OptionSet.IsCustomOptionSet,
+                LogicalName: booleanAttribute.OptionSet.Name,
+                OptionSetId,
+                OptionSetType: booleanAttribute.OptionSet.OptionSetType,
+            });
+            
+            let OptionId = this._newId();
+            let option = booleanAttribute.OptionSet.FalseOption;
+            this.OptionSetMetadataSQL.AddOptionMetadata({
+                OptionId,
+                OptionSetId,
+                Color: option.Color,
+                Label: option.Label,
+                Value: option.Value,
+            });
+            OptionId = this._newId();
+            option = booleanAttribute.OptionSet.TrueOption;
+            this.OptionSetMetadataSQL.AddOptionMetadata({
+                OptionId,
+                OptionSetId,
+                Color: option.Color,
+                Label: option.Label,
+                Value: option.Value,
+            });
         }
 
         this.AttributeMetadataSQL.AddAttributeMetadata({
@@ -183,36 +256,31 @@ export class MetadataDB {
      * @param attribute The target attribute
      */
     getAttributeMetadata(entity: string, attribute: string) {
+        const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadata(entity);
+        if (!tableMetadataDB || tableMetadataDB.length === 0) {
+            if (this._warnMissingInit) {
+                console.warn(`Missing init for ${entity}`);
+            }
+            return;
+        }
+        const tableMetadata = {
+            LogicalName: tableMetadataDB[0].LogicalName,
+            EntitySetName: tableMetadataDB[0].EntitySetName,
+            Attributes: [],
+            PrimaryIdAttribute: tableMetadataDB[0].PrimaryIdAttribute,
+            PrimaryNameAttribute: tableMetadataDB[0].PrimaryNameAttribute,
+            PrimaryImageAttribute: tableMetadataDB[0].PrimaryNameAttribute,
+        } as ShkoOnline.EntityMetadata;
+
         var resultDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attribute, entity);
-        if (!resultDB) {
+        if (!resultDB || resultDB.length === 0) {
             if (this._warnMissingInit) {
                 console.warn(`Missing init for ${entity} ${attribute}`);
             }
             return null;
         }
 
-        const result = {
-            AttributeType: resultDB[0].AttributeType,
-            LogicalName: resultDB[0].LogicalName,
-            EntityLogicalName: entity,
-            MetadataId: resultDB[0].AttributeId,
-            AttributeOf: resultDB[0].AttributeOf,
-            AttributeTypeName: {
-                value: resultDB[0].AttributeTypeName,
-            },
-        } as ShkoOnline.AttributeMetadata;
-
-        if (result.AttributeType === AttributeType.Picklist) {
-            const optionsetDB = this.OptionSetMetadataSQL.SelectOptionSetMetadata(resultDB[0].OptionSetId || '');
-            (result as ShkoOnline.PickListAttributeMetadata).OptionSet = {
-                IsCustomOptionSet: optionsetDB[0].IsCustomOptionSet,
-                MetadataId: optionsetDB[0].OptionSetId,
-                Name: optionsetDB[0].LogicalName,
-                OptionSetType: optionsetDB[0].OptionSetType,
-                Options: {},
-            };
-        }
-        return result;
+        return this.mapAttributeFromAttributeDB(tableMetadata, resultDB[0]);
     }
 
     /**
@@ -238,44 +306,76 @@ export class MetadataDB {
 
         const attributesDB = this.AttributeMetadataSQL.SelectAttributeMetadataForTable(entity);
         attributesDB.forEach((attributeDB) => {
-            const attribute = {
-                AttributeType: attributeDB.AttributeType,
-                EntityLogicalName: entity,
-                MetadataId: attributeDB.AttributeId,
-                LogicalName: attributeDB.LogicalName,
-                AttributeOf: attributeDB.AttributeOf,
-                AttributeTypeName: {
-                    value: attributeDB.AttributeTypeName,
-                },
-                IsPrimaryId: attributeDB.LogicalName === tableMetadata.PrimaryIdAttribute,
-                IsPrimaryName: attributeDB.LogicalName === tableMetadata.PrimaryNameAttribute,
-            } as ShkoOnline.AttributeMetadata;
-
-            if (attribute.AttributeType === AttributeType.Picklist) {
-                const optionsetDB = this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId || '');
-                (attribute as ShkoOnline.PickListAttributeMetadata).DefaultFormValue =
-                    attributeDB.DefaultFormValue as number;
-                (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet = {
-                    IsCustomOptionSet: optionsetDB[0].IsCustomOptionSet,
-                    MetadataId: optionsetDB[0].OptionSetId,
-                    Name: optionsetDB[0].LogicalName,
-                    OptionSetType: optionsetDB[0].OptionSetType,
-                    Options: {},
-                };
-                const optionsDB = this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(
-                    attributeDB.OptionSetId || '',
-                );
-                optionsDB.forEach((option) => {
-                    (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet.Options[option.Value] = {
-                        Label: option.Label,
-                        Value: option.Value,
-                        Color: option.Color,
-                    };
-                });
-            }
+            const attribute = this.mapAttributeFromAttributeDB(tableMetadata, attributeDB);
             tableMetadata.Attributes?.push(attribute);
         });
         return tableMetadata;
+    }
+
+    private mapAttributeFromAttributeDB(tableMetadata: ShkoOnline.EntityMetadata, attributeDB: AttributeDB) {
+        const attribute = {
+            AttributeType: attributeDB.AttributeType,
+            EntityLogicalName: tableMetadata.LogicalName,
+            MetadataId: attributeDB.AttributeId,
+            LogicalName: attributeDB.LogicalName,
+            AttributeOf: attributeDB.AttributeOf,
+            AttributeTypeName: {
+                value: attributeDB.AttributeTypeName,
+            },
+            IsPrimaryId: attributeDB.LogicalName === tableMetadata.PrimaryIdAttribute,
+            IsPrimaryName: attributeDB.LogicalName === tableMetadata.PrimaryNameAttribute,
+        } as ShkoOnline.AttributeMetadata;
+
+        if (attribute.AttributeType === AttributeType.Picklist) {
+            const optionsetDB = this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId || '');
+            (attribute as ShkoOnline.PickListAttributeMetadata).DefaultFormValue =
+                attributeDB.DefaultFormValue as number;
+            (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet = {
+                IsCustomOptionSet: optionsetDB[0].IsCustomOptionSet,
+                MetadataId: optionsetDB[0].OptionSetId,
+                Name: optionsetDB[0].LogicalName,
+                OptionSetType: optionsetDB[0].OptionSetType,
+                Options: {},
+            };
+            const optionsDB = this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(attributeDB.OptionSetId || '');
+            optionsDB.forEach((option) => {
+                (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet.Options[option.Value] = {
+                    Label: option.Label,
+                    Value: option.Value,
+                    Color: option.Color,
+                };
+            });
+        } else if (attribute.AttributeType === AttributeType.Boolean) {
+            const optionsetDB = this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId || '');
+            (attribute as ShkoOnline.BooleanAttributeMetadata).OptionSet = {
+                IsCustomOptionSet: optionsetDB[0].IsCustomOptionSet,
+                MetadataId: optionsetDB[0].OptionSetId,
+                Name: optionsetDB[0].LogicalName,
+                OptionSetType: optionsetDB[0].OptionSetType,
+                DisplayName: '',
+                FalseOption: {
+                    Color: '',
+                    Label: 'No',
+                    Value: 0,
+                },
+                TrueOption: {
+                    Color: '',
+                    Label: 'Yes',
+                    Value: 1,
+                },
+            };
+            const optionsDB = this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(attributeDB.OptionSetId || '');
+            optionsDB.forEach((option) => {
+                (attribute as ShkoOnline.BooleanAttributeMetadata).OptionSet[
+                    option.Value ? 'TrueOption' : 'FalseOption'
+                ] = {
+                    Label: option.Label,
+                    Value: option.Value,
+                    Color: option.Color,
+                };
+            });
+        }
+        return attribute;
     }
 
     /**
@@ -302,18 +402,21 @@ export class MetadataDB {
         if (attributeDB && attributeDB.length > 0) {
             attributeDB.forEach((attribute) => {
                 if (
-                    attributeMetadata.AttributeType === AttributeType.Boolean ||
-                    attributeMetadata.AttributeType === AttributeType.Lookup ||
-                    attributeMetadata.AttributeType === AttributeType.Picklist ||
-                    attributeMetadata.AttributeType === AttributeType.State ||
-                    attributeMetadata.AttributeType == AttributeType.Status
+                    (attributeMetadata.AttributeType === AttributeType.Boolean ||
+                        attributeMetadata.AttributeType === AttributeType.Lookup ||
+                        attributeMetadata.AttributeType === AttributeType.Picklist ||
+                        attributeMetadata.AttributeType === AttributeType.State ||
+                        attributeMetadata.AttributeType == AttributeType.Status) &&
+                    attribute.OptionSetId
                 ) {
                     this.db.exec('DELETE FROM Metadata__Optionset WHERE OptionSetId = ?', [attribute.OptionSetId]);
                     this.db.exec('DELETE FROM Metadata__Optionset_Option WHERE OptionSetId = ?', [
                         attribute.OptionSetId,
                     ]);
                 }
-                this.db.exec('DELETE FROM Metadata__Attributes WHERE AttributeId = ?', [attribute.AttributeId]);
+                console.log(attribute);
+                if (attribute.AttributeId)
+                    this.db.exec('DELETE FROM Metadata__Attribute WHERE AttributeId = ?', [attribute.AttributeId]);
             });
         }
 
@@ -342,7 +445,8 @@ export class MetadataDB {
                 LogicalName: virtualAttribute,
                 SchemaName: (attributeMetadata.SchemaName || attributeMetadata.LogicalName) + 'Name',
             } as ShkoOnline.AttributeMetadata);
-            this.db.exec('ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + virtualAttribute + '] string');
+            if (!(attributeDB && attributeDB.length > 0))
+                this.db.exec('ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + virtualAttribute + '] string');
 
             if (optionsetMetadata.OptionSet) {
                 this.OptionSetMetadataSQL.AddOptionSetMetadata({
@@ -365,22 +469,28 @@ export class MetadataDB {
             }
         }
 
-        this.db.exec(
-            'ALTER TABLE ' +
-                safeTableName +
-                ' ADD COLUMN [' +
-                attributeMetadata.LogicalName +
-                '] ' +
-                getSqlTypeForAttribute(attributeMetadata.AttributeType),
-        );
+        if (!(attributeDB && attributeDB.length > 0)) {
+            this.db.exec(
+                'ALTER TABLE ' +
+                    safeTableName +
+                    ' ADD COLUMN [' +
+                    attributeMetadata.LogicalName +
+                    '] ' +
+                    getSqlTypeForAttribute(attributeMetadata.AttributeType),
+            );
 
-        if (attributeMetadata.AttributeType === AttributeType.Lookup) {
-            this.db.exec(
-                'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'type] string',
-            );
-            this.db.exec(
-                'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'navigation] string',
-            );
+            if (attributeMetadata.AttributeType === AttributeType.Lookup) {
+                this.db.exec(
+                    'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'type] string',
+                );
+                this.db.exec(
+                    'ALTER TABLE ' +
+                        safeTableName +
+                        ' ADD COLUMN [' +
+                        attributeMetadata.LogicalName +
+                        'navigation] string',
+                );
+            }
         }
     }
 
