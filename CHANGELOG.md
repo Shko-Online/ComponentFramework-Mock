@@ -1,3 +1,16 @@
+# [0.2.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.1.26...v0.2.0) (2023-12-08)
+
+
+### Bug Fixes
+
+* improved get attribute metadata and booleanattribute ([847c97e](https://github.com/shko-online/ComponentFramework-Mock/commit/847c97eef4741c2d13f66db0379b5b4a6cd20e59))
+* improved metadata for optionsets ([c153c7e](https://github.com/shko-online/ComponentFramework-Mock/commit/c153c7e8ab968cd976d4a6231f03db07d93975e7))
+
+
+### Features
+
+* use alasql instead of lokijs ([d6c5b72](https://github.com/shko-online/ComponentFramework-Mock/commit/d6c5b725234c884f104cfb6b1301f442c6fae9ba))
+
 # [0.2.0-beta.2](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.2.0-beta.1...v0.2.0-beta.2) (2023-12-05)
 
 
