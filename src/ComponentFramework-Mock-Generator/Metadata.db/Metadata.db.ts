@@ -63,14 +63,7 @@ export class MetadataDB {
             for (let optionValue in optionsetAttribute.OptionSet.Options) {
                 const option = optionsetAttribute.OptionSet.Options[optionValue];
                 const optionId = this._newId();
-                console.log({
-                    OptionId: optionId,
-                    OptionSetId,
-                    Color: option.Color,
-                    Label: option.Label,
-                    Value: option.Value,
-                });
-
+              
                 this.OptionSetMetadataSQL.AddOptionMetadata({
                     OptionId: optionId,
                     OptionSetId,
@@ -414,7 +407,6 @@ export class MetadataDB {
                         attribute.OptionSetId,
                     ]);
                 }
-                console.log(attribute);
                 if (attribute.AttributeId)
                     this.db.exec('DELETE FROM Metadata__Attribute WHERE AttributeId = ?', [attribute.AttributeId]);
             });

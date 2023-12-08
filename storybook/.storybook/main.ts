@@ -49,6 +49,11 @@ const config = {
             url: 'https://main--64039da1132d2ebe19bd43c5.chromatic.com',
             expanded: false, // optional, true by default
         },
+        'choices-stages': {
+            title: 'Choices Stages',
+            url: 'https://main--65715372704fbe523e328798.chromatic.com/',
+            expanded: false, // optional, true by default
+        },
     },
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -61,7 +66,6 @@ const config = {
     staticDirs: ['./public'],
     webpackFinal: async (config) => {
         config.resolve.fallback = config.resolve.fallback || {};
-        config.resolve.fallback.fs = false;
         config.resolve.alias = config.resolve.alias || {};
         config.resolve.alias['react'] = path.resolve('./node_modules/react');
         config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');

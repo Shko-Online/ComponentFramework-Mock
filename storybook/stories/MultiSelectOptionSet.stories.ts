@@ -41,7 +41,7 @@ const renderGenerator = () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
 
     return function () {
-        const [args] = useArgs<StoryArgs>();
+        const [args, updateArgs] = useArgs<StoryArgs>();
         if (!container) {
             container = document.createElement('div');
             mockGenerator = new ComponentFrameworkMockGenerator(
@@ -69,6 +69,10 @@ const renderGenerator = () => {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context._SetCanvasItems({
                 selection: args.selection,
+            });
+
+            mockGenerator.onOutputChanged.callsFake(()=>{
+                updateArgs({selection: mockGenerator.context._parameters.selection.raw});
             });
 
             mockGenerator.ExecuteInit();
