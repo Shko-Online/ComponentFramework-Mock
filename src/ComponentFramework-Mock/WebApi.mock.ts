@@ -6,7 +6,7 @@
 import type { SinonStub } from 'sinon';
 
 import { stub } from 'sinon';
-import { parseOData } from '@shko.online/dataverse-odata';
+import { ODataQuery, parseOData } from '@shko.online/dataverse-odata';
 import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 import { FormattingMock } from './Formatting.mock';
 import { ShkoOnline } from '../ShkoOnline';
@@ -73,18 +73,61 @@ export class WebApiMock implements ComponentFramework.WebApi {
         });
         this.updateRecord = stub();
         this.updateRecord.callsFake((entityType: string, id: string, data: ComponentFramework.WebApi.Entity) => {
-            return new Promise<ComponentFramework.LookupValue>((resolve) => {
-                resolve({
-                    id,
-                    name: 'Any',
-                    entityType,
-                });
+            return new Promise<ComponentFramework.LookupValue>((resolve, reject) => {
+                setTimeout(() => {
+                    const metadata = db.getTableMetadata(entityType);
+                    if (!metadata) {
+                        return reject({ message: `Entity ${entityType} does not exist.` });
+                    }
+
+                    metadata.Attributes?.forEach(attribute=>{
+                        if(attribute.AttributeOf || attribute.AttributeType === AttributeType.Virtual){
+                            return;
+                        }
+
+                        const key = attribute.AttributeType === AttributeType.Lookup ? `_${attribute.LogicalName}_value` : attribute.LogicalName;
+
+                        if(key in data){
+                            db.UpdateValue(data[key], entityType, key, id);
+                            console.log('updated ' + key);
+                        }
+                    })
+
+                    var result = db.GetRow(entityType, id);
+
+                    resolve({
+                        id,
+                        name: result.row?.[metadata.PrimaryNameAttribute || 'name'],
+                        entityType,
+                    });
+                }, this._Delay);
             });
         });
 
         this.retrieveMultipleRecords = stub();
         this.retrieveMultipleRecords.callsFake((entityType: string, options?: string, maxPageSize?: number) => {
-            return new Promise<ComponentFramework.WebApi.RetrieveMultipleResponse>((resolve) => {
+            return new Promise<ComponentFramework.WebApi.RetrieveMultipleResponse>((resolve, reject) => {
+                const parsed = options ? parseOData(options) : ({} as ODataQuery);
+
+                if (parsed.error) {
+                    reject(parsed.error);
+                }
+
+                var entityMetadata = db.getTableMetadata(entityType);
+
+                if (!entityMetadata) {
+                    reject(`Table ${entityType} does not exist`);
+                }
+
+                if (parsed.fetchXml) {
+                    var entities = db.SelectUsingFetchXml(parsed.fetchXml);
+                    resolve({
+                        entities,
+                        nextLink: 'next'
+                    });
+                    return;
+                }
+
                 resolve({
                     entities: [],
                     nextLink: 'string',
@@ -126,20 +169,20 @@ export class WebApiMock implements ComponentFramework.WebApi {
                                 }
                             } else if (attribute.AttributeType === AttributeType.Lookup) {
                                 const key = `_${attribute.LogicalName}_value`;
-                                
+
                                 const lookupValue = oldRow[key] as ComponentFramework.LookupValue;
                                 if (key in result.row) {
                                     result.row[key] = lookupValue && lookupValue.id ? lookupValue.id : null;
                                     if (lookupValue && lookupValue.id) {
                                         result.row[`${key}@Microsoft.Dynamics.CRM.lookuplogicalname`] =
-                                        lookupValue.entityType;
+                                            lookupValue.entityType;
                                         if (lookupValue.name != null) {
                                             result.row[`${key}@OData.Community.Display.V1.FormattedValue`] =
-                                            lookupValue.name;
+                                                lookupValue.name;
                                         }
                                         if (oldRow[`${attribute.LogicalName}navigation`]) {
                                             result.row[`${key}@Microsoft.Dynamics.CRM.associatednavigationproperty`] =
-                                            oldRow[`${attribute.LogicalName}navigation`];
+                                                oldRow[`${attribute.LogicalName}navigation`];
                                         }
                                     }
                                 }

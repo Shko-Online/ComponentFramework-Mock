@@ -63,7 +63,7 @@ export class MetadataDB {
             for (let optionValue in optionsetAttribute.OptionSet.Options) {
                 const option = optionsetAttribute.OptionSet.Options[optionValue];
                 const optionId = this._newId();
-              
+
                 this.OptionSetMetadataSQL.AddOptionMetadata({
                     OptionId: optionId,
                     OptionSetId,
@@ -117,7 +117,7 @@ export class MetadataDB {
                 OptionSetId,
                 OptionSetType: booleanAttribute.OptionSet.OptionSetType,
             });
-            
+
             let OptionId = this._newId();
             let option = booleanAttribute.OptionSet.FalseOption;
             this.OptionSetMetadataSQL.AddOptionMetadata({
@@ -274,6 +274,22 @@ export class MetadataDB {
         }
 
         return this.mapAttributeFromAttributeDB(tableMetadata, resultDB[0]);
+    }
+
+    /**
+     * Get the metadata for a table
+     * @param entity The target table
+     */
+    getTableMetadataByEntitySet(entitySetName: string) {
+        const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadataByEntitySet(entitySetName);
+        if (!tableMetadataDB || tableMetadataDB.length === 0) {
+            if (this._warnMissingInit) {
+                console.warn(`Missing init for entitySet ${entitySetName}`);
+            }
+            return;
+        }
+
+        return this.getTableMetadata(tableMetadataDB[0].LogicalName);
     }
 
     /**
@@ -819,5 +835,20 @@ export class MetadataDB {
         }
 
         this.db.exec(`UPDATE ${safeTableName} ${statements.join(' ')}`, params);
+    }
+
+    SelectUsingFetchXml(fetchXml: XMLDocument) {
+        var fetchNode = fetchXml.documentElement;
+        var entityNode = fetchNode.firstElementChild;
+        if(!entityNode){
+            throw new Error('Fetch does not contain the entity node');
+        }
+
+        var attributesX = entityNode.getElementsByTagName('attribute');
+        const attributes: string[] = [];
+        for (let i = 0; i < attributesX.length; i++) {
+            attributes.push(attributesX[i].getAttribute('name') as string);
+        }
+        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${entityNode.getAttribute('name')}`);
     }
 }

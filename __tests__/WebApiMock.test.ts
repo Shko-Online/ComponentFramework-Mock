@@ -122,4 +122,40 @@ describe('WebApiMock', () => {
         const userData = mockGenerator.metadata.GetRow('systemuser', createdUser.id);
         expect(userData.row['firstname']).toEqual('Betim');
     });
+
+    it('Should retrieve multiple records using FetchXml', async () => {
+        const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
+            'systemuser',
+            '?fetchXml=' +
+                encodeURIComponent(`
+            <fetch>
+                <entity name="systemuser">
+                    <attribute name="systemuserid" />
+                    <attribute name="firstname" />
+                    <attribute name="lastname" />
+                </entity>
+            </fetch>
+        `),
+        );
+
+        const betimBeja = result.entities.find((e) => e['systemuserid'] === '682d1eb3-0ba4-ed11-aad1-000d3add5311');
+        expect(betimBeja).toEqual({
+            systemuserid: '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+            firstname: 'Betim',
+            lastname: 'Beja',
+        });
+    });
+
+    it('Should update record', async () => {
+        const updated = await mockGenerator.context.webAPI.updateRecord(
+            'systemuser',
+            '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+            {
+                firstname: 'Betim2',
+            },
+        );
+
+        const userData = mockGenerator.metadata.GetRow('systemuser', updated.id);
+        expect(userData.row['firstname']).toEqual('Betim2');
+    });
 });
