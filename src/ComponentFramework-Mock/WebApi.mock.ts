@@ -92,7 +92,6 @@ export class WebApiMock implements ComponentFramework.WebApi {
 
                         if (key in data) {
                             db.UpdateValue(data[key], entityType, key, id);
-                            console.log('updated ' + key);
                         }
                     });
 
