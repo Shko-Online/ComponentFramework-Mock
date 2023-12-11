@@ -80,18 +80,21 @@ export class WebApiMock implements ComponentFramework.WebApi {
                         return reject({ message: `Entity ${entityType} does not exist.` });
                     }
 
-                    metadata.Attributes?.forEach(attribute=>{
-                        if(attribute.AttributeOf || attribute.AttributeType === AttributeType.Virtual){
+                    metadata.Attributes?.forEach((attribute) => {
+                        if (attribute.AttributeOf || attribute.AttributeType === AttributeType.Virtual) {
                             return;
                         }
 
-                        const key = attribute.AttributeType === AttributeType.Lookup ? `_${attribute.LogicalName}_value` : attribute.LogicalName;
+                        const key =
+                            attribute.AttributeType === AttributeType.Lookup
+                                ? `_${attribute.LogicalName}_value`
+                                : attribute.LogicalName;
 
-                        if(key in data){
+                        if (key in data) {
                             db.UpdateValue(data[key], entityType, key, id);
                             console.log('updated ' + key);
                         }
-                    })
+                    });
 
                     var result = db.GetRow(entityType, id);
 
@@ -113,17 +116,78 @@ export class WebApiMock implements ComponentFramework.WebApi {
                     reject(parsed.error);
                 }
 
-                var entityMetadata = db.getTableMetadata(entityType);
+                const entityMetadata = db.getTableMetadata(entityType);
 
                 if (!entityMetadata) {
                     reject(`Table ${entityType} does not exist`);
+                    return;
+                }
+
+                if (parsed.userQuery) {
+                    const userQuery = db.GetRow('userquery', parsed.userQuery);
+                    if (!userQuery.row) {
+                        reject({
+                            code: '0x80040217',
+                            message: `Entity 'userquery' With Id = ${parsed.userQuery} Does Not Exist`,
+                        });
+                        return;
+                    }
+
+                    if (userQuery.row['returnedtypecode'] !== entityMetadata.LogicalName) {
+                        reject({
+                            code: '0x80060888',
+                            message: 'No Query View exists with the Given Query Id on the Entity Set.',
+                        });
+                        return;
+                    }
+
+                    const parsedUserQuery = parseOData('?fetchXml=' + encodeURIComponent(userQuery.row['fetchxml']));
+                    if(!parsedUserQuery.fetchXml){
+                        throw new Error(`User Query with id ${parsed.userQuery} contains wrong data`);
+                    }
+                    const entities = db.SelectUsingFetchXml(parsedUserQuery.fetchXml);
+                    resolve({
+                        entities,
+                        nextLink: 'next',
+                    });
+                    return;
+                }
+
+                if (parsed.savedQuery) {
+                    const savedQuery = db.GetRow('savedquery', parsed.savedQuery);
+                    if (!savedQuery.row) {
+                        reject({
+                            code: '0x80040217',
+                            message: `Entity 'savedquery' With Id = ${parsed.savedQuery} Does Not Exist`,
+                        });
+                        return;
+                    }
+
+                    if (savedQuery.row['returnedtypecode'] !== entityMetadata.LogicalName) {
+                        reject({
+                            code: '0x80060888',
+                            message: 'No Query View exists with the Given Query Id on the Entity Set.',
+                        });
+                        return;
+                    }
+
+                    const parsedSavedQuery = parseOData('?fetchXml=' + encodeURIComponent(savedQuery.row['fetchxml']));
+                    if(!parsedSavedQuery.fetchXml){
+                        throw new Error(`Saved Query with id ${parsed.savedQuery} contains wrong data`);
+                    }
+                    const entities = db.SelectUsingFetchXml(parsedSavedQuery.fetchXml);
+                    resolve({
+                        entities,
+                        nextLink: 'next',
+                    });
+                    return;
                 }
 
                 if (parsed.fetchXml) {
-                    var entities = db.SelectUsingFetchXml(parsed.fetchXml);
+                    const entities = db.SelectUsingFetchXml(parsed.fetchXml);
                     resolve({
                         entities,
-                        nextLink: 'next'
+                        nextLink: 'next',
                     });
                     return;
                 }

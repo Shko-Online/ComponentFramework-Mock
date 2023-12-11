@@ -14,6 +14,8 @@ import { AttributeMetadataSQL, EntityMetadataSQL, OptionSetMetadataSQL } from '.
 import { getAttributeTypeFromString } from './getAttributeTypeFromString';
 import { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
 import { AttributeType, OptionSetType } from '../../ComponentFramework-Mock';
+import { SavedQueryMetadata } from './PlatformMetadata/SavedQuery.Metadata';
+import { UserQueryMetadata } from './PlatformMetadata/UserQuery.Metadata';
 
 export class MetadataDB {
     /**
@@ -534,10 +536,18 @@ export class MetadataDB {
             tableMetadata = this.getTableMetadata(entity);
         }
         if (!tableMetadata) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for entitySet ${entity}`);
+            if (entity === 'savedquery') {
+                tableMetadata = SavedQueryMetadata;
+                this.initMetadata([tableMetadata]);
+            } else if (entity === 'userquery') {
+                tableMetadata = UserQueryMetadata;
+                this.initMetadata([tableMetadata]);
+            } else {
+                if (this._warnMissingInit) {
+                    console.warn(`Missing init for entitySet ${entity}`);
+                }
+                return;
             }
-            return;
         }
 
         const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
@@ -840,7 +850,7 @@ export class MetadataDB {
     SelectUsingFetchXml(fetchXml: XMLDocument) {
         var fetchNode = fetchXml.documentElement;
         var entityNode = fetchNode.firstElementChild;
-        if(!entityNode){
+        if (!entityNode) {
             throw new Error('Fetch does not contain the entity node');
         }
 

@@ -11,6 +11,16 @@ import userMetadataJson from './data/systemUser.json';
 import userDataJson from './data/systemUserData.json';
 import betimBeja from './data/betimBeja.json';
 
+const userFetch = `
+<fetch>
+    <entity name="systemuser">
+        <attribute name="systemuserid" />
+        <attribute name="firstname" />
+        <attribute name="lastname" />
+    </entity>
+</fetch>
+`;
+
 describe('WebApiMock', () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
     beforeEach(() => {
@@ -123,26 +133,145 @@ describe('WebApiMock', () => {
         expect(userData.row['firstname']).toEqual('Betim');
     });
 
-    it('Should retrieve multiple records using FetchXml', async () => {
-        const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
-            'systemuser',
-            '?fetchXml=' +
-                encodeURIComponent(`
-            <fetch>
-                <entity name="systemuser">
-                    <attribute name="systemuserid" />
-                    <attribute name="firstname" />
-                    <attribute name="lastname" />
-                </entity>
-            </fetch>
-        `),
-        );
+    describe('RetrieveMultipleRecords', () => {
+        describe('FetchXML', () => {
+            it('Should retrieve multiple records using FetchXml', async () => {
+                const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
+                    'systemuser',
+                    '?fetchXml=' + encodeURIComponent(userFetch),
+                );
 
-        const betimBeja = result.entities.find((e) => e['systemuserid'] === '682d1eb3-0ba4-ed11-aad1-000d3add5311');
-        expect(betimBeja).toEqual({
-            systemuserid: '682d1eb3-0ba4-ed11-aad1-000d3add5311',
-            firstname: 'Betim',
-            lastname: 'Beja',
+                const betimBeja = result.entities.find(
+                    (e) => e['systemuserid'] === '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                );
+                expect(betimBeja).toEqual({
+                    systemuserid: '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                    firstname: 'Betim',
+                    lastname: 'Beja',
+                });
+            });
+        });
+
+        describe('SavedQuery', () => {
+            it('Should reject if savedquery does not exist', async () => {
+                mockGenerator.metadata.AddRow('savedquery', {
+                    savedqueryid: mockGenerator.metadata._newId(),
+                    name: 'Saved Query',
+                    returnedtypecode: 'systemuser',
+                    fetchxml: userFetch,
+                });
+
+                const savedQueryId = mockGenerator.metadata._newId();
+
+                await expect(
+                    mockGenerator.context.webAPI.retrieveMultipleRecords('systemuser', `?savedQuery=${savedQueryId}`),
+                ).rejects.toEqual({
+                    code: '0x80040217',
+                    message: `Entity 'savedquery' With Id = ${savedQueryId} Does Not Exist`,
+                });
+            });
+
+            it("Should reject if return type doesn't match", async () => {
+                const savedQueryId = mockGenerator.metadata._newId();
+                mockGenerator.metadata.AddRow('savedquery', {
+                    savedqueryid: savedQueryId,
+                    name: 'Saved Query',
+                    returnedtypecode: 'contact',
+                    fetchxml: userFetch,
+                });
+
+                await expect(
+                    mockGenerator.context.webAPI.retrieveMultipleRecords('systemuser', `?savedQuery=${savedQueryId}`),
+                ).rejects.toEqual({
+                    code: '0x80060888',
+                    message: 'No Query View exists with the Given Query Id on the Entity Set.',
+                });
+            });
+
+            it('Should retrieve multiple records using savedQuery', async () => {
+                const savedQueryId = mockGenerator.metadata._newId();
+                mockGenerator.metadata.AddRow('savedquery', {
+                    savedqueryid: savedQueryId,
+                    name: 'Saved Query',
+                    returnedtypecode: 'systemuser',
+                    fetchxml: userFetch,
+                });
+
+                const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
+                    'systemuser',
+                    `?savedQuery=${savedQueryId}`,
+                );
+
+                const betimBeja = result.entities.find(
+                    (e) => e['systemuserid'] === '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                );
+                expect(betimBeja).toEqual({
+                    systemuserid: '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                    firstname: 'Betim',
+                    lastname: 'Beja',
+                });
+            });
+        });
+
+        describe('UserQuery', () => {
+            it('Should reject if userquery does not exist', async () => {
+                mockGenerator.metadata.AddRow('userquery', {
+                    userqueryid: mockGenerator.metadata._newId(),
+                    name: 'User Query',
+                    returnedtypecode: 'systemuser',
+                    fetchxml: userFetch,
+                });
+
+                const userQueryId = mockGenerator.metadata._newId();
+
+                await expect(
+                    mockGenerator.context.webAPI.retrieveMultipleRecords('systemuser', `?userQuery=${userQueryId}`),
+                ).rejects.toEqual({
+                    code: '0x80040217',
+                    message: `Entity 'userquery' With Id = ${userQueryId} Does Not Exist`,
+                });
+            });
+
+            it("Should reject if return type doesn't match", async () => {
+                const userQueryId = mockGenerator.metadata._newId();
+                mockGenerator.metadata.AddRow('userquery', {
+                    userqueryid: userQueryId,
+                    name: 'User Query',
+                    returnedtypecode: 'contact',
+                    fetchxml: userFetch,
+                });
+
+                await expect(
+                    mockGenerator.context.webAPI.retrieveMultipleRecords('systemuser', `?userQuery=${userQueryId}`),
+                ).rejects.toEqual({
+                    code: '0x80060888',
+                    message: 'No Query View exists with the Given Query Id on the Entity Set.',
+                });
+            });
+
+            it('Should retrieve multiple records using userQuery', async () => {
+                const userQueryId = mockGenerator.metadata._newId();
+                mockGenerator.metadata.AddRow('userquery', {
+                    userqueryid: userQueryId,
+                    name: 'User Query',
+                    returnedtypecode: 'systemuser',
+                    fetchxml: userFetch,
+                });
+
+                const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
+                    'systemuser',
+                    `?userQuery=${userQueryId}`,
+                );
+
+                const betimBeja = result.entities.find(
+                    (e) => e['systemuserid'] === '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                );
+                expect(betimBeja).toEqual({
+                    systemuserid: '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                    firstname: 'Betim',
+                    lastname: 'Beja',
+                });
+            });
         });
     });
 
