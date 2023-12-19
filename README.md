@@ -63,7 +63,9 @@ mockGenerator.ExecuteInit();
 mockGenerator.ExecuteUpdateView();
 ```
 
-`*` Check our sample tests in the ComponentFramework-Mock/\_\_tests\_\_/Components folder for more details and inspiration.
+`*` Check our sample tests in the \_\_tests\_\_/Components folder for more details and inspiration.
+
+`*` Check our sample stories in the Storybook/stories folder for more details and inspiration.
 
 `*` Also check https://github.com/Shko-Online/ComponentFramework-Mock-Tests and https://github.com/Shko-Online/ComponentFramework-Mock-React-Tests for tests and stories written against PowerApps samples and PowerCAT code components.
 
