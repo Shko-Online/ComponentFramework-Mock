@@ -98,8 +98,8 @@ export const mockNotifyOutputChanged = <
         }
         if (mockGenerator.context.updatedProperties.length > 0) {
             mockGenerator.context.updatedProperties.push('parameters');
-            executeUpdateView();
-            mockGenerator.onOutputChanged?.();
         }
+        executeUpdateView();
+        mockGenerator.onOutputChanged?.();
     });
 };
