@@ -1,3 +1,17 @@
+# [0.3.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.2.0...v0.3.0) (2023-12-19)
+
+
+### Bug Fixes
+
+* retrieve multiple by savedquery and userquery ([51103b7](https://github.com/shko-online/ComponentFramework-Mock/commit/51103b7d9fd2513a4a0a94cc49438adee0082c8d))
+* simple retrieve multiple with fetchXml ([a7b9ef6](https://github.com/shko-online/ComponentFramework-Mock/commit/a7b9ef691118e128ef03f9df67c9396a2bf6835b))
+
+
+### Features
+
+* improved retrieveMultiple ([2b7bd6e](https://github.com/shko-online/ComponentFramework-Mock/commit/2b7bd6e1672bc0b43475557a6855faab68871eef))
+* raising onOutputChanged even if outputs don't change ([49cac5d](https://github.com/shko-online/ComponentFramework-Mock/commit/49cac5ddc86ccea78104a30258d6c86caf7a2b58))
+
 ## [0.2.1-beta.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.2.0...v0.2.1-beta.1) (2023-12-11)
 
 
