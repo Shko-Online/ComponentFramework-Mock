@@ -273,6 +273,24 @@ describe('WebApiMock', () => {
                 });
             });
         });
+
+        describe('OData', ()=>{
+            it('Should retrieve multiple records using OData', async () => {
+                const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
+                    'systemuser',
+                    '?$select=systemuserid,firstname,lastname',
+                );
+
+                const betimBeja = result.entities.find(
+                    (e) => e['systemuserid'] === '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                );
+                expect(betimBeja).toEqual({
+                    systemuserid: '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                    firstname: 'Betim',
+                    lastname: 'Beja',
+                });
+            });
+        });
     });
 
     it('Should update record', async () => {

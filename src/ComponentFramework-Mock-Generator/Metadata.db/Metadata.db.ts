@@ -16,6 +16,7 @@ import { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
 import { AttributeType, OptionSetType } from '../../ComponentFramework-Mock';
 import { SavedQueryMetadata } from './PlatformMetadata/SavedQuery.Metadata';
 import { UserQueryMetadata } from './PlatformMetadata/UserQuery.Metadata';
+import { ODataQuery } from '@shko.online/dataverse-odata';
 
 export class MetadataDB {
     /**
@@ -732,7 +733,7 @@ export class MetadataDB {
             return result;
         }
         if (result.entityMetadata && result.entityMetadata.Attributes && result.row) {
-            result.entityMetadata.Attributes?.filter((attr) => attr.AttributeType === AttributeType.Lookup).forEach(
+            result.entityMetadata.Attributes.filter((attr) => attr.AttributeType === AttributeType.Lookup).forEach(
                 (lookupAttribute) => {
                     const key = lookupAttribute.LogicalName;
                     const lookupValue = result.row[key] as ComponentFramework.LookupValue;
@@ -856,9 +857,52 @@ export class MetadataDB {
 
         var attributesX = entityNode.getElementsByTagName('attribute');
         const attributes: string[] = [];
-        for (let i = 0; i < attributesX.length; i++) {
-            attributes.push(attributesX[i].getAttribute('name') as string);
+        
+
+        if(fetchNode.getAttribute('aggregate') === 'true'){
+            for (let i = 0; i < attributesX.length; i++) {
+                const attribute = attributesX[i].getAttribute('name') as string;
+                const aggregate = attributesX[i].getAttribute('aggregate') as string;
+                const alias = attributesX[i].getAttribute('alias') as string;
+                attributes.push(`${aggregate}(${attribute}) as [${alias}]`);
+            }
+        }else{
+            for (let i = 0; i < attributesX.length; i++) {
+                attributes.push(attributesX[i].getAttribute('name') as string);
+            }            
         }
+
         return this.db.exec(`SELECT ${attributes.join(',')} FROM ${entityNode.getAttribute('name')}`);
+    }
+
+    SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
+        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+
+        const attributes: string[] = [];
+
+        if (query.$select && tableMetadata.Attributes) {
+            tableMetadata.Attributes.forEach((attribute) => {
+                if (
+                    attribute.AttributeType === AttributeType.Lookup &&
+                    query.$select?.find((a) => a === `_${attribute.LogicalName}_value`)
+                ) {
+                    attributes.push(attribute.LogicalName);
+                    attributes.push(attribute.LogicalName + 'name');
+                    attributes.push(attribute.LogicalName + 'type');
+                } else if (query.$select?.find((a) => a === attribute.LogicalName)) {
+                    attributes.push(attribute.LogicalName);
+                    if (
+                        attribute.AttributeType === AttributeType.Boolean ||
+                        attribute.AttributeType === AttributeType.Picklist ||
+                        attribute.AttributeType === AttributeType.State ||
+                        attribute.AttributeType === AttributeType.Status
+                    ) {
+                        attributes.push(attribute.LogicalName + 'name');
+                    }
+                }
+            });
+        }
+
+        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${safeTableName}`);
     }
 }
