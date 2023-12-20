@@ -9,6 +9,7 @@ export { ContextMock } from './Context.mock';
 export { DeviceMock } from './Device.mock';
 export { FactoryMock } from './Factory.mocks';
 export { PopupServiceMock } from './FactoryApi';
+export { FluentDesignStateMock } from './FluentDesignState.mock';
 export { FormattingMock } from './Formatting.mock';
 export {
     DateTimeMetadataMock,

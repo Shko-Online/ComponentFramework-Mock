@@ -8,6 +8,7 @@ import type { ShkoOnline } from '../ShkoOnline';
 import type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
 
 import { stub } from 'sinon';
+import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 import { ClientMock } from './Client.mock';
 import { DeviceMock } from './Device.mock';
 import { FactoryMock } from './Factory.mocks';
@@ -18,7 +19,7 @@ import { ResourcesMock } from './Resources.mock';
 import { UserSettingsMock } from './UserSettings.mock';
 import { UtilityMock } from './Utility.mock';
 import { WebApiMock } from './WebApi.mock';
-import { MetadataDB } from '../ComponentFramework-Mock-Generator';
+import { FluentDesignStateMock } from './FluentDesignState.mock';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs>
@@ -37,13 +38,14 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     utils: UtilityMock;
     webAPI: WebApiMock;
     updatedProperties: string[];
-
+    fluentDesignLanguage?: FluentDesignStateMock;
     constructor(inputs: PropertyMap<IInputs>, db: MetadataDB) {
         this.updatedProperties = [];
         this.client = new ClientMock();
         this.device = new DeviceMock();
         this.factory = new FactoryMock();
         this.formatting = new FormattingMock();
+        this.fluentDesignLanguage = new FluentDesignStateMock();
         this.mode = new ModeMock();
         this.navigation = new NavigationMock();
         this.parameters = {} as IInputs;

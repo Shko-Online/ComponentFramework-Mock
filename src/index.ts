@@ -22,6 +22,7 @@ export {
     EnumPropertyMock,
     FactoryMock,
     FilteringMock,
+    FluentDesignStateMock,
     FormattingMock,
     LinkingMock,
     LookupMetadataMock,

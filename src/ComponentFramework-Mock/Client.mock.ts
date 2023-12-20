@@ -10,6 +10,7 @@ export class ClientMock implements ComponentFramework.Client {
     disableScroll: boolean;
     getClient: SinonStub<[], string>;
     getFormFactor: SinonStub<[], number>;
+    isNetworkAvailable: SinonStub<[], boolean>;
     isOffline: SinonStub<[], boolean>;
     constructor() {
         this.disableScroll = false;
@@ -17,6 +18,8 @@ export class ClientMock implements ComponentFramework.Client {
         this.getClient.returns('Web');
         this.getFormFactor = stub();
         this.getFormFactor.returns(1);
+        this.isNetworkAvailable = stub();
+        this.isNetworkAvailable.returns(true);
         this.isOffline = stub();
         this.isOffline.returns(false);
     }
