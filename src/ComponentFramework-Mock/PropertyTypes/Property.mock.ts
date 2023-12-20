@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
@@ -17,7 +17,7 @@ export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
      */
     _Refresh: SinonStub<[], void>;
     _Bind: SinonStub<[boundTable: string, boundColumn: string, boundRow?: string], void>;
-    /** 
+    /**
      * Shortcut to update the value in the database using the binding information of the property.
      */
     _SetValue: SinonStub<[value: any], void>;
@@ -32,7 +32,7 @@ export class PropertyMock implements ComponentFramework.PropertyTypes.Property {
         this._db = db;
         this._boundTable = boundTable;
         this._boundColumn = boundColumn;
-        this._boundRow = undefined;     
+        this._boundRow = undefined;
         this._Refresh = stub();
         this._SetValue = stub();
         this._Bind = stub();

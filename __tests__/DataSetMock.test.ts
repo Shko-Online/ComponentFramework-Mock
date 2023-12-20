@@ -79,7 +79,7 @@ describe('DataSetMock', () => {
             expect(dataset.getSelectedRecordIds()).toEqual([]);
         });
 
-        it('sortedRecordIds should contain the right data', () => {         
+        it('sortedRecordIds should contain the right data', () => {
             expect(dataset.sortedRecordIds).toEqual(['1', '2']);
         });
 
@@ -152,7 +152,7 @@ describe('DataSetMock', () => {
 
         it('new record should work', () => {
             var newRecord = dataset.newRecord();
-            expect(newRecord.getRecordId()).toEqual('Guid.NewGuid?');         
+            expect(newRecord.getRecordId()).toEqual('Guid.NewGuid?');
         });
     });
 

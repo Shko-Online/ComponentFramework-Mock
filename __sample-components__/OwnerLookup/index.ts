@@ -31,7 +31,7 @@ export class OwnerLookup implements ComponentFramework.StandardControl<IInputs, 
     ): void {
         // Add control initialization code
         this.container = container;
-        this.myself = [{entityType:'systemuser', id: context.userSettings.userId, name: 'Assigned from PCF'}];
+        this.myself = [{ entityType: 'systemuser', id: context.userSettings.userId, name: 'Assigned from PCF' }];
         const name = document.createElement('p');
         this.updateName(context, name);
         container.appendChild(name);

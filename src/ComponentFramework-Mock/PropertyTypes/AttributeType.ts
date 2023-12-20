@@ -75,11 +75,11 @@ export const AttributeType = {
 
 export const OptionSetType = {
     /** The option set provides a list of options. */
-    Picklist : 0,
+    Picklist: 0,
     /** The option set represents state options for a StateAttributeMetadata attribute. */
-    State : 1,
+    State: 1,
     /** The option set represents status options for a StatusAttributeMetadata attribute. */
-    Status : 2,
+    Status: 2,
     /** The option set provides two options for a BooleanAttributeMetadata attribute. */
-    Boolean : 3	       
+    Boolean: 3,
 } as const;

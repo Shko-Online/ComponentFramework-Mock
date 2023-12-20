@@ -14,7 +14,7 @@ import { ShkoOnline } from '../ShkoOnline';
 
 export class WebApiMock implements ComponentFramework.WebApi {
     _Delay: number;
-    _ConvertRowToOData: SinonStub<[row:any, entityMetadata: ShkoOnline.EntityMetadata],void>;
+    _ConvertRowToOData: SinonStub<[row: any, entityMetadata: ShkoOnline.EntityMetadata], void>;
     createRecord: SinonStub<
         [entityType: string, data: ComponentFramework.WebApi.Entity],
         Promise<ComponentFramework.LookupValue>
@@ -35,8 +35,8 @@ export class WebApiMock implements ComponentFramework.WebApi {
     constructor(db: MetadataDB, formatting: FormattingMock) {
         this._Delay = 200;
         this._ConvertRowToOData = stub();
-        this._ConvertRowToOData.callsFake((row:any, entityMetadata: ShkoOnline.EntityMetadata)=>{
-            const oldRow = row;   
+        this._ConvertRowToOData.callsFake((row: any, entityMetadata: ShkoOnline.EntityMetadata) => {
+            const oldRow = row;
             if (entityMetadata.Attributes) {
                 entityMetadata.Attributes.forEach((attribute) => {
                     const key = attribute.LogicalName;
@@ -54,11 +54,9 @@ export class WebApiMock implements ComponentFramework.WebApi {
                         if (key in row) {
                             row[key] = lookupValue && lookupValue.id ? lookupValue.id : null;
                             if (lookupValue && lookupValue.id) {
-                                row[`${key}@Microsoft.Dynamics.CRM.lookuplogicalname`] =
-                                    lookupValue.entityType;
+                                row[`${key}@Microsoft.Dynamics.CRM.lookuplogicalname`] = lookupValue.entityType;
                                 if (lookupValue.name != null) {
-                                    row[`${key}@OData.Community.Display.V1.FormattedValue`] =
-                                        lookupValue.name;
+                                    row[`${key}@OData.Community.Display.V1.FormattedValue`] = lookupValue.name;
                                 }
                                 if (oldRow[`${attribute.LogicalName}navigation`]) {
                                     row[`${key}@Microsoft.Dynamics.CRM.associatednavigationproperty`] =
@@ -101,8 +99,9 @@ export class WebApiMock implements ComponentFramework.WebApi {
                         attribute.AttributeType === AttributeType.BigInt
                     ) {
                         if (row[key] !== null && row[key] !== undefined) {
-                            row[key + '@OData.Community.Display.V1.FormattedValue'] =
-                                formatting.formatInteger(row[key]);
+                            row[key + '@OData.Community.Display.V1.FormattedValue'] = formatting.formatInteger(
+                                row[key],
+                            );
                         }
                     }
 
@@ -118,8 +117,7 @@ export class WebApiMock implements ComponentFramework.WebApi {
                             oldRow[key] !== undefined &&
                             (original?.LogicalName as string) in row
                         ) {
-                            row[original?.LogicalName + '@OData.Community.Display.V1.FormattedValue'] =
-                                oldRow[key];
+                            row[original?.LogicalName + '@OData.Community.Display.V1.FormattedValue'] = oldRow[key];
                         }
                         delete row[key];
                     }
@@ -241,7 +239,7 @@ export class WebApiMock implements ComponentFramework.WebApi {
                     }
 
                     const parsedUserQuery = parseOData('?fetchXml=' + encodeURIComponent(userQuery.row['fetchxml']));
-                    if(!parsedUserQuery.fetchXml){
+                    if (!parsedUserQuery.fetchXml) {
                         throw new Error(`User Query with id ${parsed.userQuery} contains wrong data`);
                     }
                     const entities = db.SelectUsingFetchXml(parsedUserQuery.fetchXml);
@@ -271,7 +269,7 @@ export class WebApiMock implements ComponentFramework.WebApi {
                     }
 
                     const parsedSavedQuery = parseOData('?fetchXml=' + encodeURIComponent(savedQuery.row['fetchxml']));
-                    if(!parsedSavedQuery.fetchXml){
+                    if (!parsedSavedQuery.fetchXml) {
                         throw new Error(`Saved Query with id ${parsed.savedQuery} contains wrong data`);
                     }
                     const entities = db.SelectUsingFetchXml(parsedSavedQuery.fetchXml);
@@ -293,9 +291,9 @@ export class WebApiMock implements ComponentFramework.WebApi {
 
                 const entities = db.SelectUsingOData(entityMetadata, parsed) as any[];
 
-                entities.forEach(row=>{
+                entities.forEach((row) => {
                     this._ConvertRowToOData(row, entityMetadata);
-                })
+                });
 
                 resolve({
                     entities,

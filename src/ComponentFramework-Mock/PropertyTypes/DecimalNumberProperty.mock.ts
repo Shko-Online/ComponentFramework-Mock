@@ -16,11 +16,11 @@ export class DecimalNumberPropertyMock
 {
     attributes?: DecimalNumberMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(propertyName, db, entityMetadata);       
+        super(propertyName, db, entityMetadata);
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } =
                 this._db.GetValueAndMetadata<ShkoOnline.DecimalNumberAttributeMetadata>(
-                    this._boundTable,                  
+                    this._boundTable,
                     this._boundColumn,
                     this._boundRow,
                 );

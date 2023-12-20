@@ -415,7 +415,7 @@ declare module ShkoOnline {
     /**
      * https://learn.microsoft.com/en-us/dotnet/api/microsoft.xrm.sdk.metadata.optionsettype
      */
-    export enum  OptionSetType {
+    export enum OptionSetType {
         /** The option set provides a list of options. */
         Picklist = 0,
         /** The option set represents state options for a StateAttributeMetadata attribute. */
@@ -423,7 +423,7 @@ declare module ShkoOnline {
         /** The option set represents status options for a StatusAttributeMetadata attribute. */
         Status = 2,
         /** The option set provides two options for a BooleanAttributeMetadata attribute. */
-        Boolean = 3	       
+        Boolean = 3,
     }
 
     export interface StateAttributeMetadata extends ShkoOnline.AttributeMetadata {

@@ -857,19 +857,18 @@ export class MetadataDB {
 
         var attributesX = entityNode.getElementsByTagName('attribute');
         const attributes: string[] = [];
-        
 
-        if(fetchNode.getAttribute('aggregate') === 'true'){
+        if (fetchNode.getAttribute('aggregate') === 'true') {
             for (let i = 0; i < attributesX.length; i++) {
                 const attribute = attributesX[i].getAttribute('name') as string;
                 const aggregate = attributesX[i].getAttribute('aggregate') as string;
                 const alias = attributesX[i].getAttribute('alias') as string;
                 attributes.push(`${aggregate}(${attribute}) as [${alias}]`);
             }
-        }else{
+        } else {
             for (let i = 0; i < attributesX.length; i++) {
                 attributes.push(attributesX[i].getAttribute('name') as string);
-            }            
+            }
         }
 
         return this.db.exec(`SELECT ${attributes.join(',')} FROM ${entityNode.getAttribute('name')}`);

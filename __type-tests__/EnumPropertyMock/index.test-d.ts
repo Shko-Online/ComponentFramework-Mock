@@ -31,7 +31,7 @@ namespace EnumPropertyMock_Tests {
     }
 
     const mockGenerator = new ComponentFrameworkMockGenerator(MultiSwitch, {
-        controlType: EnumPropertyMock<"0" | "1">
+        controlType: EnumPropertyMock<'0' | '1'>,
     });
-    expectType< ComponentFrameworkMockGenerator<IInputs, IOutputs>>(mockGenerator);
+    expectType<ComponentFrameworkMockGenerator<IInputs, IOutputs>>(mockGenerator);
 }

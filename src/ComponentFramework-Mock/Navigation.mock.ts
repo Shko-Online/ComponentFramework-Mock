@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 type AlertDialogStrings = ComponentFramework.NavigationApi.AlertDialogStrings;
 type AlertDialogOptions = ComponentFramework.NavigationApi.AlertDialogOptions;

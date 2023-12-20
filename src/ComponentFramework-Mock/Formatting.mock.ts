@@ -70,10 +70,12 @@ export class FormattingMock implements ComponentFramework.Formatting {
         this.formatDateShort = stub();
         this.formatDateShort.callsFake((value: Date, includeTime?: boolean) => {
             if (includeTime === true) {
-                return value.toLocaleString(this.locale, {
-                    dateStyle: 'short',
-                    timeStyle: 'short',
-                }).replace(',','');
+                return value
+                    .toLocaleString(this.locale, {
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                    })
+                    .replace(',', '');
             }
             return value.toLocaleDateString(this.locale, {
                 dateStyle: 'short',

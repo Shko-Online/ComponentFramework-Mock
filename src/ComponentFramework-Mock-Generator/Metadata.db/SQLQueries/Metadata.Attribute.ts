@@ -115,7 +115,7 @@ export class AttributeMetadataSQL {
     SelectAttributeMetadata(AttributeLogicalName: string, EntityLogicalName: string) {
         return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeLogicalName, EntityLogicalName]) as AttributeDB[];
     }
-    SelectAttributeMetadataById(AttributeId: string){
+    SelectAttributeMetadataById(AttributeId: string) {
         return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeId]) as AttributeDB[];
     }
     SelectAttributeMetadataForTable(EntityLogicalName: string) {

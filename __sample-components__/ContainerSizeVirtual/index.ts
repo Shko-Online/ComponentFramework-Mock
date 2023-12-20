@@ -5,7 +5,7 @@
 
 import { IInputs, IOutputs } from './generated/ManifestTypes';
 
-import {createElement} from 'react';
+import { createElement } from 'react';
 
 export class ContainerSize implements ComponentFramework.ReactControl<IInputs, IOutputs> {
     private trackContainer: boolean;
@@ -38,7 +38,7 @@ export class ContainerSize implements ComponentFramework.ReactControl<IInputs, I
      * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to names defined in the manifest, as well as utility functions
      */
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
-       var component =    createElement('div', null,  `${context.mode.allocatedWidth}x${context.mode.allocatedHeight}` );
+        var component = createElement('div', null, `${context.mode.allocatedWidth}x${context.mode.allocatedHeight}`);
         if (this.trackContainer === context.parameters.trackContainer.raw) {
             return component;
         }

@@ -75,7 +75,7 @@ export class EntityMetadataSQL {
             metadata.EntitySetName,
             metadata.PrimaryIdAttribute,
             metadata.PrimaryNameAttribute,
-            metadata.PrimaryImageAttribute
+            metadata.PrimaryImageAttribute,
         ]);
     }
     SelectTableMetadata(LogicalName: string) {

@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 import { PopupServiceMock } from './FactoryApi';
 export class FactoryMock implements ComponentFramework.Factory {
     _popupService = new PopupServiceMock();

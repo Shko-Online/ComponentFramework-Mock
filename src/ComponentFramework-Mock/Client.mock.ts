@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 export class ClientMock implements ComponentFramework.Client {
     disableScroll: boolean;

@@ -12,10 +12,10 @@ export class DateTimeMetadataMock
     Behavior: ComponentFramework.FormattingApi.Types.DateTimeFieldBehavior;
     Format: string;
     ImeMode: ComponentFramework.PropertyHelper.Types.ImeMode;
-	constructor(){
-		super();
-		this.Behavior = 0;
-		this.Format = '';
-		this.ImeMode = 0;
-	}
+    constructor() {
+        super();
+        this.Behavior = 0;
+        this.Format = '';
+        this.ImeMode = 0;
+    }
 }

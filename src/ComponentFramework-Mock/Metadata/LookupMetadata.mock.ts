@@ -9,8 +9,8 @@ export class LookupMetadataMock
     implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.LookupMetadata
 {
     Targets: string[];
-	constructor(){
-		super();
-		this.Targets = [];
-	}
+    constructor() {
+        super();
+        this.Targets = [];
+    }
 }

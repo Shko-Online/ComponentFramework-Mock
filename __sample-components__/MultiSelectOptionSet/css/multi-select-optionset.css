@@ -27,7 +27,7 @@
 
 .ShkoOnline\.Checkbox:checked {
     background-color: #07d410;
-    box-shadow: 0 2px 5px #92ff97
+    box-shadow: 0 2px 5px #92ff97;
 }
 
 .ShkoOnline\.Checkbox:checked::before {

@@ -23,7 +23,7 @@ export const mockGetEntityMetadata = <
                 result.Attributes = result.Attributes?.filter((attribute) =>
                     attributes.some((attributeFilter) => attribute.LogicalName === attributeFilter),
                 );
-            }         
+            }
             resolve(result as ShkoOnline.EntityMetadata);
         });
     });

@@ -25,16 +25,16 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
     _boundTable: string;
     _isDirty: boolean;
     _isValid: boolean;
-    _updateView?: ()=>void;
+    _updateView?: () => void;
     getFormattedValue: SinonStub<[columnName: string], string>;
     getRecordId: SinonStub<[], string>;
     getValue: SinonStub<[columnName: string], ColumnReturnValue>;
     getNamedReference: SinonStub<[], ComponentFramework.EntityReference>;
-    isDirty: SinonStub<[],boolean>;
+    isDirty: SinonStub<[], boolean>;
     isValid: SinonStub<[], boolean>;
-    save: SinonStub<[],Promise<void>>;
-    setValue: SinonStub<[columnName: string, value: ColumnReturnValue],Promise<void>>;
-    constructor(db: MetadataDB, etn: string, id: string, updateView?: ()=>void) {
+    save: SinonStub<[], Promise<void>>;
+    setValue: SinonStub<[columnName: string, value: ColumnReturnValue], Promise<void>>;
+    constructor(db: MetadataDB, etn: string, id: string, updateView?: () => void) {
         this._updateView = updateView;
         this._db = db;
         this._boundTable = etn;
@@ -57,7 +57,9 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
                 return { id: { guid: '' }, name: '' };
             }
             const id = {
-                guid: row?.[entityMetadata ? entityMetadata.PrimaryIdAttribute || entityMetadata.LogicalName + 'id' : 'id'] as string,
+                guid: row?.[
+                    entityMetadata ? entityMetadata.PrimaryIdAttribute || entityMetadata.LogicalName + 'id' : 'id'
+                ] as string,
             };
             const etn = entityMetadata?.LogicalName;
             const name = row?.[entityMetadata?.PrimaryNameAttribute || 'name'] as string;
@@ -75,32 +77,32 @@ export class EntityRecordMock implements ComponentFramework.PropertyHelper.DataS
             return value;
         });
         this.isDirty = stub();
-        this.isDirty.callsFake(()=>this._isDirty);
+        this.isDirty.callsFake(() => this._isDirty);
         this.isValid = stub();
-        this.isValid.callsFake(()=>this._isValid);
+        this.isValid.callsFake(() => this._isValid);
         this.save = stub();
-        this.save.callsFake(()=>{
-            return new Promise((resolve)=>{
-                setTimeout(()=>{   
+        this.save.callsFake(() => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
                     this._isDirty = false;
-                    if(this._updateView){
+                    if (this._updateView) {
                         this._updateView();
                     }
                     resolve();
-                },10);
+                }, 10);
             });
         });
         this.setValue = stub();
-        this.setValue.callsFake((columnName, value)=>{
-            return new Promise((resolve)=>{
-                setTimeout(()=>{                  
+        this.setValue.callsFake((columnName, value) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
                     this._db.UpdateValue(value, this._boundTable, columnName, this._boundRow);
                     this._isDirty = true;
-                    if(this._updateView){
+                    if (this._updateView) {
                         this._updateView();
                     }
                     resolve();
-                },10);
+                }, 10);
             });
         });
     }

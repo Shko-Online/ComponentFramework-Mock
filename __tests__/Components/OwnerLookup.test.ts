@@ -33,7 +33,7 @@ describe('OwnerLookup', () => {
 
     afterEach(() => {
         document.body.innerHTML = null;
-    })
+    });
 
     it('Should render lookup value', () => {
         mockGenerator.ExecuteInit();

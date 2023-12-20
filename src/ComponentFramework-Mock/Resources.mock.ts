@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 export class ResourcesMock implements ComponentFramework.Resources {
     getResource: SinonStub<[id: string, success: (data: string) => void, failure: () => void], void>;

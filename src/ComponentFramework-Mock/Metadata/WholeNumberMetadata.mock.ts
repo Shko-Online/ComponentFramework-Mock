@@ -13,7 +13,7 @@ export class WholeNumberMetadataMock
     LanguageByCode?: ComponentFramework.Dictionary | undefined;
     TimeZoneByCode?: ComponentFramework.Dictionary | undefined;
     constructor() {
-		super();
+        super();
         this.Format = '#';
     }
 }

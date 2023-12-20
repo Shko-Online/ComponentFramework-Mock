@@ -13,10 +13,9 @@ describe('EntityRecordMock', () => {
     let entityRecord: EntityRecordMock;
     let LogicalName: string;
     let boundRow: string;
-    let updateView: SinonStub<[],void>;
+    let updateView: SinonStub<[], void>;
 
     beforeEach(() => {
-
         db = new MetadataDB();
         LogicalName = '!!test';
         boundRow = 'TheRowId';

@@ -121,7 +121,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             new AttributeMetadataGenerator(this._boundTable)
                 .AddString(
                     (Object.getOwnPropertyNames(columns) as string[]).filter(
-                        (att) => !(tableMetadata?.Attributes?.some((att2) => att2.LogicalName === att)),
+                        (att) => !tableMetadata?.Attributes?.some((att2) => att2.LogicalName === att),
                     ),
                 )
                 .Attributes.forEach((attribute) => {

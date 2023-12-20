@@ -11,24 +11,24 @@ declare namespace ComponentFramework {
          * The structure of a dataset property as it would be passed to a control
          */
         interface DataSet {
-          /**
-           * Delete the records from data source.
-           * @param ids Array of IDs to be deleted.
-           * @todo Overloaded by Shko Online
-           */
-          delete: (ids: string[]) => Promise<void>;
+            /**
+             * Delete the records from data source.
+             * @param ids Array of IDs to be deleted.
+             * @todo Overloaded by Shko Online
+             */
+            delete: (ids: string[]) => Promise<void>;
 
-          /**
-           * The capabilities for the dataset.
-           * @todo Overloaded by Shko Online
-           */
-          getDataSetCapabilities: ()=> DataProviderCapabilities;
+            /**
+             * The capabilities for the dataset.
+             * @todo Overloaded by Shko Online
+             */
+            getDataSetCapabilities: () => DataProviderCapabilities;
 
-          /**
-           * Initialize a local record object for control to set the value. The control needs to invoke the {@link ComponentFramework.PropertyHelper.DataSetApi.EntityRecord.save save()} method on the newly created record to persist the change.
-           * @todo Overloaded by Shko Online
-           */
-          newRecord: ()=> ComponentFramework.PropertyHelper.DataSetApi.EntityRecord;
+            /**
+             * Initialize a local record object for control to set the value. The control needs to invoke the {@link ComponentFramework.PropertyHelper.DataSetApi.EntityRecord.save save()} method on the newly created record to persist the change.
+             * @todo Overloaded by Shko Online
+             */
+            newRecord: () => ComponentFramework.PropertyHelper.DataSetApi.EntityRecord;
         }
 
         /**
@@ -36,34 +36,34 @@ declare namespace ComponentFramework {
          * @todo Overloaded by Shko Online
          */
         interface DataProviderCapabilities {
-          /**
-           * Whether adding new records is supported or not.
-           */
-          canCreateNewRecords: boolean;
-          /**
-           * If the dataset records can be paged.
-           */
-          canPaginate: boolean;
-          /**
-           * Whether image info for record columns can be retrieved.
-           */
-          hasCellImageInfo: boolean;
-          /**
-           * Whether the dataset supports record navigation for lookup and primary fields.
-           */
-          hasRecordNavigation: boolean;
-          /**
-           * If the data provider has edit capabilities.
-           */
-          isEditable: boolean;
-          /**
-           * If the dataset can be filtered.
-           */
-          isFilterable: boolean;
-          /**
-           * If the dataset can be sorted.
-           */
-          isSortable: boolean;
+            /**
+             * Whether adding new records is supported or not.
+             */
+            canCreateNewRecords: boolean;
+            /**
+             * If the dataset records can be paged.
+             */
+            canPaginate: boolean;
+            /**
+             * Whether image info for record columns can be retrieved.
+             */
+            hasCellImageInfo: boolean;
+            /**
+             * Whether the dataset supports record navigation for lookup and primary fields.
+             */
+            hasRecordNavigation: boolean;
+            /**
+             * If the data provider has edit capabilities.
+             */
+            isEditable: boolean;
+            /**
+             * If the dataset can be filtered.
+             */
+            isFilterable: boolean;
+            /**
+             * If the dataset can be sorted.
+             */
+            isSortable: boolean;
         }
     }
     namespace PropertyHelper {

@@ -23,7 +23,12 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
         this.raw = [];
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
-            this._db.UpdateValue<ComponentFramework.LookupValue | null>(value, this._boundTable, this._boundColumn, this._boundRow);
+            this._db.UpdateValue<ComponentFramework.LookupValue | null>(
+                value,
+                this._boundTable,
+                this._boundColumn,
+                this._boundRow,
+            );
         });
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } = this._db.GetValueAndMetadata<

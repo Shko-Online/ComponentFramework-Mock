@@ -39,7 +39,7 @@ describe('DecimalNumberPropertyMock', () => {
             ],
         } as ShkoOnline.EntityMetadata;
         decimalnumberproperty = new DecimalNumberPropertyMock('number', db, entityMetadata);
-        
+
         db.initMetadata([entityMetadata]);
         db.initItems({
             '@odata.context': '#' + LogicalName,

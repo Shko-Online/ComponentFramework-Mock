@@ -6,7 +6,7 @@
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../../ShkoOnline';
 
-import {stub} from 'sinon';
+import { stub } from 'sinon';
 import { AttributeType } from './AttributeType';
 import { PropertyMock } from './Property.mock';
 import { DateTimeMetadataMock } from '../Metadata/DateTimeMetadata.mock';

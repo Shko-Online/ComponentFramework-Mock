@@ -3,9 +3,7 @@
     Licensed under the MIT license.
 */
 
-export type {
-    AttributeDB
-} from './Metadata.Attribute'
+export type { AttributeDB } from './Metadata.Attribute';
 
 export {
     EntityMetadataSQL,

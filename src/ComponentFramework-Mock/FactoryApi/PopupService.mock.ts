@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 import { stub } from 'sinon';
 

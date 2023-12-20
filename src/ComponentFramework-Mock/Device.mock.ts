@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 export class DeviceMock implements ComponentFramework.Device {
     captureAudio: SinonStub<[], Promise<ComponentFramework.FileObject>>;

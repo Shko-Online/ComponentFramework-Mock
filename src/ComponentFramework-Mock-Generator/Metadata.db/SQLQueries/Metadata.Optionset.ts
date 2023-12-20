@@ -103,7 +103,7 @@ export class OptionSetMetadataSQL {
         sql(CREATE_TABLE_METADATA_OPTIONSET_OPTION);
     }
     AddOptionSetMetadata(metadata: OptionSet) {
-       return this.sql(INSERT_METADATA_OPTIONSET, [
+        return this.sql(INSERT_METADATA_OPTIONSET, [
             metadata.OptionSetId,
             metadata.LogicalName,
             metadata.IsCustomOptionSet,
@@ -114,7 +114,7 @@ export class OptionSetMetadataSQL {
         return this.sql(SELECT_METADATA_OPTIONSET, [OptionSetId]) as OptionSet[];
     }
     AddOptionMetadata(metadata: OptionSetOption) {
-       return this.sql(INSERT_METADATA_OPTIONSET_OPTION, [
+        return this.sql(INSERT_METADATA_OPTIONSET_OPTION, [
             metadata.OptionId,
             metadata.OptionSetId,
             metadata.Color,

@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 export class UserSettingsMock implements ComponentFramework.UserSettings {
     dateFormattingInfo: ComponentFramework.UserSettingApi.DateFormattingInfo;
@@ -52,8 +52,8 @@ export class UserSettingsMock implements ComponentFramework.UserSettings {
             ],
             calendarWeekRule: 0,
             calendar: {
-                minSupportedDateTime: new Date(1753,0,1),
-                maxSupportedDateTime: new Date(9999,11,31),
+                minSupportedDateTime: new Date(1753, 0, 1),
+                maxSupportedDateTime: new Date(9999, 11, 31),
                 algorithmType: 1,
                 calendarType: 1,
                 twoDigitYearMax: 2029,
@@ -113,7 +113,7 @@ export class UserSettingsMock implements ComponentFramework.UserSettings {
             currencyGroupSizes: [3],
             currencyNegativePattern: 0,
             currencyPositivePattern: 0,
-            currencySymbol: "$",
+            currencySymbol: '$',
             nanSymbol: 'NaN',
             nativeDigits: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
             negativeInfinitySymbol: '-Infinity',

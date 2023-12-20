@@ -274,7 +274,7 @@ describe('WebApiMock', () => {
             });
         });
 
-        describe('OData', ()=>{
+        describe('OData', () => {
             it('Should retrieve multiple records using OData', async () => {
                 const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
                     'systemuser',

@@ -4,7 +4,7 @@
 */
 
 import { stub } from 'sinon';
-import type { SinonStub }from 'sinon';
+import type { SinonStub } from 'sinon';
 
 type LinkEntityExposedExpression = ComponentFramework.PropertyHelper.DataSetApi.LinkEntityExposedExpression;
 

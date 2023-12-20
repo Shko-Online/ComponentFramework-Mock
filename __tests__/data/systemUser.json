@@ -1861,9 +1861,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "systemuser"
-            ],
+            "Targets": ["systemuser"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -2654,9 +2652,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "calendar"
-            ],
+            "Targets": ["calendar"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -3301,9 +3297,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "transactioncurrency"
-            ],
+            "Targets": ["transactioncurrency"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -9171,9 +9165,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "mailbox"
-            ],
+            "Targets": ["mailbox"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -10110,9 +10102,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "businessunit"
-            ],
+            "Targets": ["businessunit"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -11361,9 +11351,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "position"
-            ],
+            "Targets": ["position"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -11830,9 +11818,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "systemuser"
-            ],
+            "Targets": ["systemuser"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -12812,9 +12798,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "mobileofflineprofile"
-            ],
+            "Targets": ["mobileofflineprofile"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -13926,9 +13910,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "systemuser"
-            ],
+            "Targets": ["systemuser"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -14050,9 +14032,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "systemuser"
-            ],
+            "Targets": ["systemuser"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -19345,9 +19325,7 @@
             "ModifiedOn": "2023-02-03T23:12:05Z",
             "SourceType": null,
             "AutoNumberFormat": null,
-            "Targets": [
-                "territory"
-            ],
+            "Targets": ["territory"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -19947,9 +19925,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "queue"
-            ],
+            "Targets": ["queue"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
@@ -20321,9 +20297,7 @@
             "ModifiedOn": "1900-01-01T00:00:00Z",
             "SourceType": null,
             "AutoNumberFormat": "",
-            "Targets": [
-                "systemuser"
-            ],
+            "Targets": ["systemuser"],
             "Format": "None",
             "AttributeTypeName": {
                 "Value": "LookupType"
