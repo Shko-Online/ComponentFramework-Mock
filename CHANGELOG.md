@@ -1,3 +1,10 @@
+## [0.3.1-beta.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.3.0...v0.3.1-beta.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* added FluentDesignStateMock ([b166807](https://github.com/shko-online/ComponentFramework-Mock/commit/b166807ff8c9b7e0a1c456ec14ed87533d31b866))
+
 # [0.3.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.2.0...v0.3.0) (2023-12-19)
 
 
