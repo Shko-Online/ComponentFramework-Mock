@@ -4,6 +4,7 @@ import type { IInputs, IOutputs } from '../../__sample-components__/ContainerSiz
 import { useArgs } from '@storybook/preview-api';
 import { ContainerSize as Component } from '../../__sample-components__/ContainerSize';
 import { ComponentFrameworkMockGenerator, TwoOptionsPropertyMock } from '../../src';
+import { useEffect } from '@storybook/client-api';
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/ContainerSize",
@@ -32,6 +33,13 @@ const renderGenerator = () => {
 
     return function () {
         const [args, ] = useArgs<StoryArgs>();
+        useEffect(
+            () => () => {
+                container = null;
+                mockGenerator.control.destroy();
+            },
+            [],
+        );
         if (!container) {
             container = document.createElement('div');
             mockGenerator = new ComponentFrameworkMockGenerator(

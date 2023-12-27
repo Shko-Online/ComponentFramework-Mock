@@ -30,7 +30,8 @@ export class ComponentFrameworkMockGenerator<
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
-    onOutputChanged: SinonStub<[], void>;
+    onOutputChanged: SinonStub<[updates:Partial<TOutputs>], void>;
+    outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
     resizeObserver: ResizeObserver;
     state: ComponentFramework.Dictionary;
     SetControlResource: SinonStub<[resource: string], void>;
@@ -40,9 +41,11 @@ export class ComponentFrameworkMockGenerator<
         control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
         container?: HTMLDivElement,
+        outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
     ) {
         showBanner(control.name);
         this.state = {};
+        this.outputOnlyProperties = {} as ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
         this.container = container ?? document.createElement('div');
         this.control = spy(new control());
         this.metadata = new MetadataDB();
@@ -59,12 +62,23 @@ export class ComponentFrameworkMockGenerator<
             else this.resizeObserver.unobserve(this.container);
         });
 
-        Object.getOwnPropertyNames(this.context._parameters).forEach((p) => {
-            var parameter = this.context._parameters[p];
+        const inputProperties = Object.getOwnPropertyNames(this.context._parameters);
+
+        inputProperties.forEach((p) => {
+            const parameter = this.context._parameters[p];
             if (parameter instanceof DataSetMock) {
                 parameter._updateView = this.ExecuteUpdateView.bind(this);
             }
         });
+
+        if(outputs){
+            Object.getOwnPropertyNames(outputs).forEach(p=>{
+                if(inputProperties.includes(p)){
+                    return;
+                }
+                this.outputOnlyProperties[p] = outputs[p] as any;
+            });
+        }
 
         mockGetEntityMetadata(this);
         this.notifyOutputChanged = stub();

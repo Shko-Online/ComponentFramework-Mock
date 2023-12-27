@@ -94,12 +94,14 @@ export const mockNotifyOutputChanged = <
                     property._boundColumn,
                     property._boundRow,
                 );
+            }else if (k in mockGenerator.outputOnlyProperties){
+                mockGenerator.context.updatedProperties.push(k);                
             }
         }
         if (mockGenerator.context.updatedProperties.length > 0) {
             mockGenerator.context.updatedProperties.push('parameters');
         }
         executeUpdateView();
-        mockGenerator.onOutputChanged?.();
+        mockGenerator.onOutputChanged?.(updates);
     });
 };

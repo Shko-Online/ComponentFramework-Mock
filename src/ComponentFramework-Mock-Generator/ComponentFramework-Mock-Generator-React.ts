@@ -30,18 +30,35 @@ export class ComponentFrameworkMockGeneratorReact<
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
-    onOutputChanged: SinonStub<[], void>;
+    onOutputChanged: SinonStub<[updates:Partial<TOutputs>], void>;
+    outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
     resizeObserver: ResizeObserver;
     state: ComponentFramework.Dictionary;
     SetControlResource: SinonStub<[resource: string], void>;
     metadata: MetadataDB;
 
-    constructor(control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>, inputs: PropertyMap<TInputs>) {
+    constructor(
+        control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>,
+        inputs: PropertyMap<TInputs>,
+        outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
+    ) {
         showBanner(control.name);
         this.state = {};
+        this.outputOnlyProperties = {} as ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
         this.control = spy(new control());
         this.metadata = new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
+
+        const inputProperties = Object.getOwnPropertyNames(this.context._parameters);
+
+        if (outputs) {
+            Object.getOwnPropertyNames(outputs).forEach((p) => {
+                if (inputProperties.includes(p)) {
+                    return;
+                }
+                this.outputOnlyProperties[p] = outputs[p] as any;
+            });
+        }
 
         mockGetEntityMetadata(this);
         this.notifyOutputChanged = stub(); // Mocked in ReactResizeObserver

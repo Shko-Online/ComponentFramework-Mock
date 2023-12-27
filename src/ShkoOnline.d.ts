@@ -36,6 +36,28 @@ declare module ShkoOnline {
             ? TOutput[P]
             : TOutput[P] extends number[] | undefined
             ? TOutput[P]
+            : 0 extends 1 & TOutput[P] // any trick copied from here https://stackoverflow.com/a/55541672
+            ? any
+            : never;
+    };
+
+    export type OutputOnlyTypes<TInput extends PropertyTypes<TInput>, TOutput extends KnownTypes<TOutput>> = {
+        [P in keyof TOutput]: P extends keyof TInput
+            ? never
+            : 0 extends 1 & TOutput[P] // any trick copied from here https://stackoverflow.com/a/55541672
+            ? 'any'
+            : TOutput[P] extends string | undefined
+            ? 'string'
+            : TOutput[P] extends number | undefined
+            ? 'number'
+            : TOutput[P] extends Date | undefined
+            ? 'Date'
+            : TOutput[P] extends boolean | undefined
+            ? 'boolean'
+            : TOutput[P] extends ComponentFramework.LookupValue[] | undefined
+            ? 'Lookup'
+            : TOutput[P] extends number[] | undefined
+            ? 'number'
             : never;
     };
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import type { IInputs, IOutputs } from '../../__sample-components__/ContainerSizeVirtual/generated/ManifestTypes';
-import { useArgs } from '@storybook/client-api';
+import { useArgs, useEffect } from '@storybook/client-api';
 import ReactDOM from 'react-dom';
 
 import { ContainerSize as Component } from '../../__sample-components__/ContainerSizeVirtual';
@@ -33,6 +33,13 @@ const renderGenerator = () => {
 
     return function () {
         const [args] = useArgs<StoryArgs>();
+        useEffect(
+            () => () => {
+                container = null;
+                mockGenerator.control.destroy();
+            },
+            [],
+        );
         if (!container) {
             container = document.createElement('div');
             mockGenerator = new ComponentFrameworkMockGeneratorReact(Component, {

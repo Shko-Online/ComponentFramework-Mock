@@ -38,6 +38,11 @@ export interface MockGenerator<
     metadata: MetadataDB;
 
     /**
+     * Properties defined as output only. Specific any type allowed.
+     */
+    outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
+
+    /**
      * Mocked notifyOutputChanged that will be passed to the component on init
      * and that informs the framework that the component changed the outputs.
      *
@@ -50,7 +55,7 @@ export interface MockGenerator<
      *
      * You can use this method to be notified by the platform that the outputs have changed.
      */
-    onOutputChanged: SinonStub<[], void>;
+    onOutputChanged: SinonStub<[updates:Partial<TOutputs>], void>;
 
     /**
      * Will be used by the track container when asked by {@link ComponentFramework.Mode.trackContainerResize}

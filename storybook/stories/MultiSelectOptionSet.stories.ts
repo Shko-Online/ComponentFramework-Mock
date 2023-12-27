@@ -6,6 +6,7 @@ import { ContainerSize as Component } from '../../__sample-components__/MultiSel
 import { ComponentFrameworkMockGenerator, MultiSelectOptionSetPropertyMock, ShkoOnline } from '../../src';
 
 import '../../__sample-components__/MultiSelectOptionSet/css/multi-select-optionset.css';
+import { useEffect } from '@storybook/client-api';
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/MultiSelectOptionSet",
@@ -42,6 +43,13 @@ const renderGenerator = () => {
 
     return function () {
         const [args, updateArgs] = useArgs<StoryArgs>();
+        useEffect(
+            () => () => {
+                container = null;
+                mockGenerator.control.destroy();
+            },
+            [],
+        );
         if (!container) {
             container = document.createElement('div');
             mockGenerator = new ComponentFrameworkMockGenerator(

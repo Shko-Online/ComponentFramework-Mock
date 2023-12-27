@@ -1,23 +1,30 @@
 import type { Meta, StoryObj } from '@storybook/html';
-import type { IInputs, IOutputs } from '../../__sample-components__/OwnerLookup/generated/ManifestTypes';
+import type { IInputs, IOutputs } from '../../__sample-components__/ComplexControl/generated/ManifestTypes';
 import type { PCFStoryArgs } from './PCFStoryArgs';
 
 import { useArgs } from '@storybook/preview-api';
-import { OwnerLookup as Component } from '../../__sample-components__/OwnerLookup';
-import { ComponentFrameworkMockGenerator, LookupPropertyMock } from '../../src';
+import { action } from '@storybook/addon-actions';
+import { ComplexControl as Component } from '../../__sample-components__/ComplexControl';
+import { ComponentFrameworkMockGenerator, TwoOptionsPropertyMock } from '../../src';
 import { useEffect } from '@storybook/client-api';
 
 interface StoryArgs extends PCFStoryArgs {
-    value: ComponentFramework.LookupValue;
+    inputProperty: boolean;
+    boundProperty: boolean;
 }
 
 export default {
-    title: "Shko Online's ComponentFramework-Mock/OwnerLookup",
+    title: "Shko Online's ComponentFramework-Mock/ComplexControl",
     argTypes: {
-        value: {
-            defaultValue: { entityType: 'systemuser', id: 'start-id', name: 'Betim Beja' },
-            name: 'Value',
-            control: 'object',
+        inputProperty: {
+            defaultValue: false,
+            name: 'Input Property',
+            control: 'boolean',
+        },
+        boundProperty: {
+            defaultValue: false,
+            name: 'Bound Property',
+            control: 'boolean',
         },
     },
 } as Meta<StoryArgs>;
@@ -40,23 +47,27 @@ const renderGenerator = () => {
             mockGenerator = new ComponentFrameworkMockGenerator(
                 Component,
                 {
-                    value: LookupPropertyMock,
+                    boundProperty: TwoOptionsPropertyMock,
+                    inputProperty: TwoOptionsPropertyMock,
                 },
                 container,
+                {
+                    boundProperty: 'boolean',
+                    outputProperty: 'any',
+                },
             );
 
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context._SetCanvasItems({
-                value: { entityType: 'account', id: 'my-id' },
+                inputProperty: args.inputProperty,
+                boundProperty: args.boundProperty,
             });
 
-            mockGenerator.onOutputChanged.callsFake(() => {
-                mockGenerator.context._parameters.value._Refresh();
+            mockGenerator.onOutputChanged.callsFake(({ boundProperty, outputProperty }) => {
+                action('Output Changed')(outputProperty);
                 updateArgs({
-                    value: mockGenerator.context._parameters.value.raw
-                        ? mockGenerator.context._parameters.value.raw[0]
-                        : undefined,
+                    boundProperty: boundProperty,
                 });
             });
 
@@ -66,7 +77,8 @@ const renderGenerator = () => {
         if (mockGenerator) {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
-            mockGenerator.context._parameters.value._SetValue(args.value);
+            mockGenerator.context._parameters.boundProperty._SetValue(args.boundProperty);
+            mockGenerator.context._parameters.inputProperty._SetValue(args.inputProperty);
 
             mockGenerator.ExecuteUpdateView();
         }
@@ -74,9 +86,10 @@ const renderGenerator = () => {
     };
 };
 
-export const OwnerLookup = {
+export const ComplexControl = {
     render: renderGenerator(),
     args: {
-        value: { entityType: 'systemuser', id: 'start-id', name: 'Betim Beja' },
+        inputProperty: false,
+        boundProperty: true,
     },
 } as StoryObj<StoryArgs>;
