@@ -29,6 +29,11 @@ const config = {
             url: 'https://main--6403b315f2b2d3b2c102b7c9.chromatic.com',
             expanded: false, // optional, true by default
         },
+        'audio-player': {
+            title: 'Audio Player',
+            url: 'https://main--6559cb12bce5150811879c95.chromatic.com',
+            expanded: false, // optional, true by default
+        },
         'creator-kit': {
             title: 'PowerCAT Code Components',
             url: 'https://tests-componentframework-mock--651ee649a8c91a1d06333c7e.chromatic.com',
@@ -58,7 +63,6 @@ const config = {
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)'],
     addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
-
     framework: {
         name: '@storybook/html-webpack5',
         options: {},
