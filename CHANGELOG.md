@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.4.0...v0.4.1) (2023-12-29)
+
+
+### Bug Fixes
+
+* properly managed metadata for number properties ([f9d07a3](https://github.com/shko-online/ComponentFramework-Mock/commit/f9d07a398ce1bee5f7fb149fa344dc175dace48d))
+
 # [0.4.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.3.0...v0.4.0) (2023-12-27)
 
 
