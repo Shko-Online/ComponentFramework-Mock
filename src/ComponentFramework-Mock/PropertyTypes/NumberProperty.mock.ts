@@ -16,7 +16,7 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
     _SetValue: SinonStub<[value: number | null], void>;
     attributes?: NumberMetadataMock;
     raw: number | null;
-    constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
+    constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata, skipMetadata: boolean = false ) {
         super(db, entityMetadata.LogicalName, propertyName);
         this.raw = null;
         this._SetValue = stub();
@@ -47,12 +47,13 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             this.raw = value;
             this.formatted = value === null || value === undefined ? '' : '' + value;
         });
-        const attribute = {
-            AttributeType: AttributeType.Decimal,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.NumberAttributeMetadata;
-        if (!entityMetadata.Attributes?.some((att) => att.LogicalName === propertyName)) {
+    
+        if (!skipMetadata && !entityMetadata.Attributes?.some((att) => att.LogicalName === propertyName)) {
+            const attribute = {
+                AttributeType: AttributeType.Decimal,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: propertyName,
+            } as ShkoOnline.NumberAttributeMetadata;
             entityMetadata.Attributes?.push(attribute);
         }
     }

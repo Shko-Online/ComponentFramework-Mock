@@ -15,7 +15,7 @@ export class WholeNumberPropertyMock
 {
     attributes?: WholeNumberMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(propertyName, db, entityMetadata);
+        super(propertyName, db, entityMetadata, true);
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
         this._Refresh.callsFake(() => {
@@ -42,11 +42,14 @@ export class WholeNumberPropertyMock
             this.raw = value;
             this.formatted = value === undefined || value === null ? '' : '' + value;
         });
-        const attribute = {
-            AttributeType: AttributeType.Integer,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.IntegerNumberAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+      
+        if (!entityMetadata.Attributes?.some((att) => att.LogicalName === propertyName)) {
+            const attribute = {
+                AttributeType: AttributeType.Integer,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: propertyName,
+            } as ShkoOnline.IntegerNumberAttributeMetadata;
+            entityMetadata.Attributes?.push(attribute);
+        }
     }
 }

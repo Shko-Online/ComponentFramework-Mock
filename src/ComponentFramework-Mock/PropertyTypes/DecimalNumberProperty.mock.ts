@@ -16,7 +16,7 @@ export class DecimalNumberPropertyMock
 {
     attributes?: DecimalNumberMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(propertyName, db, entityMetadata);
+        super(propertyName, db, entityMetadata, true);
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } =
                 this._db.GetValueAndMetadata<ShkoOnline.DecimalNumberAttributeMetadata>(
@@ -35,12 +35,12 @@ export class DecimalNumberPropertyMock
             this.attributes.ImeMode = attributeMetadata.ImeMode;
             this.raw = value;
         });
-        const attribute = {
-            AttributeType: AttributeType.Decimal,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.DecimalNumberAttributeMetadata;
         if (!entityMetadata.Attributes?.some((att) => att.LogicalName === propertyName)) {
+            const attribute = {
+                AttributeType: AttributeType.Decimal,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: propertyName,
+            } as ShkoOnline.DecimalNumberAttributeMetadata;
             entityMetadata.Attributes?.push(attribute);
         }
     }
