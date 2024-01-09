@@ -62,7 +62,7 @@ const config = {
     },
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)', '../stories/**/*.mdx'],
-    addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-mdx-gfm'],
+    addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
     framework: {
         name: '@storybook/html-webpack5',
         options: {},
@@ -74,6 +74,7 @@ const config = {
         config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
         config.resolve.fallback = config.resolve.fallback || {};
         config.resolve.fallback['react/jsx-dev-runtime'] = path.resolve('./.storybook/jsx.runtime.js');
+        config.resolve.fallback['react/jsx-runtime'] = path.resolve('./.storybook/jsx.runtime.js');
 
         config.plugins.push(
             new webpack.SourceMapDevToolPlugin({
