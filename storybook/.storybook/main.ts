@@ -61,19 +61,20 @@ const config = {
         },
     },
 
-    stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)'],
-    addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
+    stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)', '../stories/**/*.mdx'],
+    addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-mdx-gfm'],
     framework: {
         name: '@storybook/html-webpack5',
         options: {},
     },
     staticDirs: ['./public'],
     webpackFinal: async (config) => {
-        config.resolve.fallback = config.resolve.fallback || {};
         config.resolve.alias = config.resolve.alias || {};
         config.resolve.alias['react'] = path.resolve('./node_modules/react');
         config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
-        config.resolve.plugins = config.resolve.plugins || [];
+        config.resolve.fallback = config.resolve.fallback || {};
+        config.resolve.fallback['react/jsx-dev-runtime'] = path.resolve('./.storybook/jsx.runtime.js');
+
         config.plugins.push(
             new webpack.SourceMapDevToolPlugin({
                 append: '\n//# sourceMappingURL=[url]',

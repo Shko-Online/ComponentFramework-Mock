@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "jsx": "preserve",
+        "jsx": "react",
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "target": "es5",
@@ -21,6 +21,9 @@
         "paths": {
             "@shko.online/componentframework-mock*": [
                 "../src*"
+            ],
+            "react/jsx-dev-runtime": [
+                "./.storybook/jsx.runtime.js"
             ]
         }
     },
@@ -35,5 +38,5 @@
         "../src",
         "../__tests__",      
         "../__test-components__"
-    ]
+, ".storybook/jsx.runtime.js"    ]
 }
