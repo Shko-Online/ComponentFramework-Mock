@@ -265,7 +265,7 @@ export class MetadataDB {
             Attributes: [],
             PrimaryIdAttribute: tableMetadataDB[0].PrimaryIdAttribute,
             PrimaryNameAttribute: tableMetadataDB[0].PrimaryNameAttribute,
-            PrimaryImageAttribute: tableMetadataDB[0].PrimaryNameAttribute,
+            PrimaryImageAttribute: tableMetadataDB[0].PrimaryImageAttribute,
         } as ShkoOnline.EntityMetadata;
 
         var resultDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attribute, entity);
@@ -313,7 +313,7 @@ export class MetadataDB {
             Attributes: [],
             PrimaryIdAttribute: tableMetadataDB[0].PrimaryIdAttribute,
             PrimaryNameAttribute: tableMetadataDB[0].PrimaryNameAttribute,
-            PrimaryImageAttribute: tableMetadataDB[0].PrimaryNameAttribute,
+            PrimaryImageAttribute: tableMetadataDB[0].PrimaryImageAttribute,
         } as ShkoOnline.EntityMetadata;
 
         const attributesDB = this.AttributeMetadataSQL.SelectAttributeMetadataForTable(entity);
