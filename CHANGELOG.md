@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.4.1...v0.4.2) (2024-01-14)
+
+
+### Bug Fixes
+
+* Correctly set PrimaryImageAttribute ([92bdbb6](https://github.com/shko-online/ComponentFramework-Mock/commit/92bdbb6a03cbdadb7a091f5d90700169b9b3e09f))
+
 ## [0.4.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.4.0...v0.4.1) (2023-12-29)
 
 
