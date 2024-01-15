@@ -6,7 +6,6 @@
 import '.';
 import { expectType } from 'tsd';
 import { EnumPropertyMock } from '../../src';
-import { MetadataDB } from '../../src';
 import { ComponentFrameworkMockGenerator } from '../../src';
 
 namespace EnumPropertyMock_Tests {
