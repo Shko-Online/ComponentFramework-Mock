@@ -14,12 +14,19 @@ import { AttributeType } from './AttributeType';
 
 export class LookupPropertyMock extends PropertyMock implements ComponentFramework.PropertyTypes.LookupProperty {
     _SetValue: SinonStub<[value: ComponentFramework.LookupValue | null], void>;
+    _boundViewId: string;
     attributes?: LookupMetadataMock;
     raw: ComponentFramework.LookupValue[];
     getTargetEntityType: SinonStub<[], string>;
     getViewId: SinonStub<[], string>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db, entityMetadata.LogicalName, propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Lookup) {
+            super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
+        } else {
+            super(db, entityMetadata.LogicalName, propertyName);
+        }
+        this._boundViewId = '00000000-0000-0000-0000-000000000000';
         this.raw = [];
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
@@ -49,12 +56,15 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
                 this.formatted = '';
             }
         });
-        const attribute = {
-            AttributeType: AttributeType.Lookup,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.LookupAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+        
+        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Lookup) {
+            const attribute = {
+                AttributeType: AttributeType.Lookup,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: this._boundColumn,
+            } as ShkoOnline.LookupAttributeMetadata;
+            entityMetadata.Attributes?.push(attribute);
+        }
 
         this.getTargetEntityType = stub();
         this.getTargetEntityType.callsFake(() => {
@@ -68,6 +78,6 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             return attributeMetadata.Targets?.[0] || value?.entityType;
         });
         this.getViewId = stub();
-        this.getViewId.returns('00000000-0000-0000-0000-000000000000');
+        this.getViewId.callsFake(() => this._boundViewId);
     }
 }

@@ -8,6 +8,7 @@ import { expectType } from 'tsd';
 import {
     ComponentFrameworkMockGenerator,
     ComponentFrameworkMockGeneratorReact,
+    MockGeneratorOverrides,
     PropertyMap,
     ShkoOnline,
     StringPropertyMock,
@@ -50,6 +51,7 @@ namespace Standard_Control_Input_Tests {
                 inputs: PropertyMap<IInputs>,
                 container?: HTMLDivElement,
                 outputs?: ShkoOnline.OutputOnlyTypes<{}, IOutputs>,
+                overrides?: MockGeneratorOverrides
             ],
         ]
     >(T.controls);
@@ -92,6 +94,7 @@ namespace React_Control_Input_Tests {
                 control: new () => ComponentFramework.ReactControl<IInputs, IOutputs>,
                 inputs: PropertyMap<IInputs>,
                 outputs?: ShkoOnline.OutputOnlyTypes<{}, IOutputs>,
+                overrides?: MockGeneratorOverrides
             ],
         ]
     >(T.controls);
@@ -158,6 +161,7 @@ namespace Two_Controls_Input_Tests {
                 inputs: PropertyMap<IInputs1>,
                 container?: HTMLDivElement,
                 outputs?: ShkoOnline.OutputOnlyTypes<{}, IOutputs1>,
+                overrides?: MockGeneratorOverrides
             ],
             [
                 control: new () => ComponentFramework.ReactControl<IInputs2, IOutputs2>,
@@ -261,6 +265,7 @@ namespace Three_Controls_Input_Tests {
                 inputs: PropertyMap<IInputs1>,
                 container?: HTMLDivElement,
                 outputs?: ShkoOnline.OutputOnlyTypes<{}, IOutputs1>,
+                overrides?: MockGeneratorOverrides
             ],
             [
                 control: new () => ComponentFramework.ReactControl<IInputs2, IOutputs2>,

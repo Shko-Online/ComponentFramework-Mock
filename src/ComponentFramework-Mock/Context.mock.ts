@@ -8,10 +8,10 @@ import type { ShkoOnline } from '../ShkoOnline';
 import type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
 
 import { stub } from 'sinon';
-import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 import { ClientMock } from './Client.mock';
 import { DeviceMock } from './Device.mock';
 import { FactoryMock } from './Factory.mocks';
+import { FluentDesignStateMock } from './FluentDesignState.mock';
 import { FormattingMock } from './Formatting.mock';
 import { ModeMock } from './Mode.mock';
 import { NavigationMock } from './Navigation.mock';
@@ -19,7 +19,7 @@ import { ResourcesMock } from './Resources.mock';
 import { UserSettingsMock } from './UserSettings.mock';
 import { UtilityMock } from './Utility.mock';
 import { WebApiMock } from './WebApi.mock';
-import { FluentDesignStateMock } from './FluentDesignState.mock';
+import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     implements ComponentFramework.Context<IInputs>
@@ -52,18 +52,25 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this._parameters = {} as PropertyToMock<IInputs>;
         this._SetCanvasItems = stub();
         this._SetCanvasItems.callsFake((parameters) => {
-            db.initCanvasItems([parameters]);
+            const mappedParameters: { [key: string]: any } = {};
+            Object.getOwnPropertyNames<PropertyToMock<IInputs>>(this._parameters).forEach((propertyName) => {
+                const parameter = this._parameters[propertyName];
+                if (propertyName in parameters) {
+                    mappedParameters[parameter._boundColumn] = parameters[propertyName as unknown as keyof typeof parameters];
+                }
+            });
+            db.initCanvasItems([mappedParameters]);
         });
-        const CanvasEntity = {
-            LogicalName: '!CanvasApp',
-            EntitySetName: '!CanvasApp',
+        const CanvasEntity = db.getTableMetadata(MetadataDB.CanvasLogicalName) ?? {
+            LogicalName: MetadataDB.CanvasLogicalName,
+            EntitySetName: MetadataDB.CanvasLogicalName,
             Attributes: [],
         } as ShkoOnline.EntityMetadata;
 
         Object.getOwnPropertyNames<PropertyMap<IInputs>>(inputs).forEach((propertyName) => {
             const parameter = new inputs[propertyName](propertyName as string, db, CanvasEntity);
-            parameter._boundColumn = propertyName as string;
-            parameter._db = db;
+            // parameter._boundColumn = propertyName as string;
+            // parameter._db = db;
             this._parameters[propertyName] = parameter as unknown as PropertyToMock<IInputs>[keyof IInputs];
             this.parameters[propertyName] = parameter as unknown as IInputs[keyof IInputs];
         });

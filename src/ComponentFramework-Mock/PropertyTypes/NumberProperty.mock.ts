@@ -16,8 +16,13 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
     _SetValue: SinonStub<[value: number | null], void>;
     attributes?: NumberMetadataMock;
     raw: number | null;
-    constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata, skipMetadata: boolean = false ) {
-        super(db, entityMetadata.LogicalName, propertyName);
+    constructor(db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata, propertyName: string, skipMetadata: boolean = false) {
+        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        if (!skipMetadata && existingAttribute && existingAttribute.AttributeType !== AttributeType.Decimal) {
+            super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
+        } else {
+            super(db, entityMetadata.LogicalName, propertyName);
+        }
         this.raw = null;
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
@@ -47,12 +52,12 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             this.raw = value;
             this.formatted = value === null || value === undefined ? '' : '' + value;
         });
-    
-        if (!skipMetadata && !entityMetadata.Attributes?.some((att) => att.LogicalName === propertyName)) {
+
+        if (!skipMetadata && (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Decimal)) {
             const attribute = {
                 AttributeType: AttributeType.Decimal,
                 EntityLogicalName: entityMetadata.LogicalName,
-                LogicalName: propertyName,
+                LogicalName: this._boundColumn,
             } as ShkoOnline.NumberAttributeMetadata;
             entityMetadata.Attributes?.push(attribute);
         }

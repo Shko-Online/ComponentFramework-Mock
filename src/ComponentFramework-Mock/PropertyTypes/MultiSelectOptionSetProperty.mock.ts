@@ -14,13 +14,17 @@ import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class MultiSelectOptionSetPropertyMock
     extends PropertyMock
-    implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
-{
+    implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty {
     _SetValue: SinonStub<[value: number[] | null], void>;
     attributes?: OptionSetMetadataMock;
     raw: number[] | null;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db, entityMetadata.LogicalName, propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Picklist) {
+            super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
+        } else {
+            super(db, entityMetadata.LogicalName, propertyName);
+        }
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
             this._db.UpdateValue<number[] | null>(value, this._boundTable, this._boundColumn, this._boundRow);
@@ -47,12 +51,14 @@ export class MultiSelectOptionSetPropertyMock
                 .join(',');
             this.attributes = attributes;
         });
-        const attribute = {
-            AttributeType: AttributeType.Picklist,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.PickListAttributeMetadata; // ToDO: Find right metadata
-        entityMetadata.Attributes?.push(attribute);
+        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Picklist) {
+            const attribute = {
+                AttributeType: AttributeType.Picklist,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: this._boundColumn,
+            } as ShkoOnline.PickListAttributeMetadata; // ToDO: Find right metadata
+            entityMetadata.Attributes?.push(attribute);
+        }
         this.attributes = new OptionSetMetadataMock();
         this.raw = null;
     }

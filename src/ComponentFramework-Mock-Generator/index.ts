@@ -30,7 +30,7 @@ export {
     getAttributeTypeFromString,
     getSqlTypeForAttribute,
 } from './Metadata.db';
-export type { MockGenerator } from './MockGenerator';
+export type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
 export { mockGetEntityMetadata } from './mockGetEntityMetadata';
 export { mockRefreshDatasets } from './mockRefreshDatasets';
 export { mockRefreshParameters } from './mockRefreshParameters';

@@ -18,7 +18,12 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
     raw: number | null;
 
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db, entityMetadata.LogicalName, propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Picklist) {
+            super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
+        } else {
+            super(db, entityMetadata.LogicalName, propertyName);
+        }
         this.raw = null;
         this.attributes = new OptionSetMetadataMock();
         this._SetValue = stub();
@@ -42,11 +47,13 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
             this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
             this.raw = value;
         });
-        const attribute = {
-            AttributeType: AttributeType.Picklist,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.PickListAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Picklist) {
+            const attribute = {
+                AttributeType: AttributeType.Picklist,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: this._boundColumn,
+            } as ShkoOnline.PickListAttributeMetadata;
+            entityMetadata.Attributes?.push(attribute);
+        }
     }
 }

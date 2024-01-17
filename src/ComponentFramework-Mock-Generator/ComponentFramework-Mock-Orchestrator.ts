@@ -5,29 +5,57 @@
 
 import type { PropertyMap } from '../ComponentFramework-Mock';
 import type { ShkoOnline } from '../ShkoOnline';
+import type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
+import type { OrchestratorGenerators, OrchestratorInput } from './ComponentFramework-Mock-Orchestrator.types';
 import { ComponentFrameworkMockGenerator } from './ComponentFramework-Mock-Generator';
 import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
-import type { OrchestratorGenerators, OrchestratorInput } from './ComponentFramework-Mock-Orchestrator.types';
+import { MetadataDB } from './Metadata.db';
+
+type IInputs = { [key: string]: any };
+type IOutputs = IInputs;
+type IOutputOnly = ShkoOnline.OutputOnlyTypes<{}, IOutputs>;
+type StandardMock = [
+    control: new () => ComponentFramework.StandardControl<IInputs, IOutputs>,
+    inputs: PropertyMap<IInputs>,
+    container?: HTMLDivElement,
+    outputs?: IOutputOnly,
+    overrides?: MockGeneratorOverrides
+];
+type VirtualMock = [
+    control: new () => ComponentFramework.ReactControl<IInputs, IOutputs>,
+    inputs: PropertyMap<IInputs>,
+    outputs?: IOutputOnly,
+    overrides?: MockGeneratorOverrides
+];
+
 
 export class ComponentFrameworkMockOrchestrator<T> {
     constructor(controls: OrchestratorInput<T>) {
         this.controls = controls;
         this.mockGenerators = [] as OrchestratorGenerators<T>;
-            (controls as ([
-                control: new () => ComponentFramework.StandardControl<{ [key: string]: any }, { [key: string]: any }>,
-                inputs: PropertyMap<{ [key: string]: any }>,
-                container?: HTMLDivElement,
-                outputs?: ShkoOnline.OutputOnlyTypes<{}, { [key: string]: any }>
-            ]|[
-                control: new () => ComponentFramework.ReactControl<{ [key: string]: any }, { [key: string]: any }>,
-                inputs: PropertyMap<{ [key: string]: any }>,
-                outputs?: ShkoOnline.OutputOnlyTypes<{}, { [key: string]: any }>
-            ])[]).forEach((element) => {
-            
-            if(element[2] instanceof HTMLDivElement){
-                (this.mockGenerators as any[]).push(new ComponentFrameworkMockGenerator(element[0], element[1], element[2], element[3]));
-            }else {
-                (this.mockGenerators as any[]).push(new ComponentFrameworkMockGeneratorReact(element[0] as new () => ComponentFramework.ReactControl<{ [key: string]: any }, { [key: string]: any }>, element[1], element[2]));
+        let overrides: MockGeneratorOverrides | undefined;
+        (controls as (StandardMock | VirtualMock)[]).forEach((element) => {
+            if (element[2] instanceof HTMLDivElement) {
+                if (!overrides) {
+                    overrides = element[4] ?? { metadata: new MetadataDB() }
+                }
+                (this.mockGenerators as any[]).push(
+                    new ComponentFrameworkMockGenerator(
+                        element[0],
+                        element[1],
+                        element[2],
+                        element[3] as IOutputOnly,
+                        overrides));
+            } else {
+                if (!overrides) {
+                    overrides = element[3] ?? { metadata: new MetadataDB() }
+                }
+                (this.mockGenerators as any[]).push(
+                    new ComponentFrameworkMockGeneratorReact(
+                        element[0] as VirtualMock[0],
+                        element[1],
+                        element[2],
+                        overrides));
             }
         });
     }
@@ -35,4 +63,10 @@ export class ComponentFrameworkMockOrchestrator<T> {
     controls: OrchestratorInput<T>;
 
     mockGenerators: OrchestratorGenerators<T>;
+
+    ExecuteInit(){
+        (this.mockGenerators as MockGenerator<IInputs,IOutputs>[]).forEach(mockGenerator=>{
+            mockGenerator.ExecuteInit();
+        });
+    }
 }

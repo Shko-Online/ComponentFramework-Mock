@@ -19,6 +19,9 @@ import { UserQueryMetadata } from './PlatformMetadata/UserQuery.Metadata';
 import { ODataQuery } from '@shko.online/dataverse-odata';
 
 export class MetadataDB {
+    static readonly CanvasLogicalName = '!CanvasApp';
+    static Collisions = 0;
+
     /**
      * Setting this to `true` will warn for missing metadata when doing operations.
      */
@@ -222,28 +225,34 @@ export class MetadataDB {
 
         metadata.Attributes = attributes.concat(virtualAttributes);
         attributes = metadata.Attributes;
-        this.EntityMetadataSQL.AddEntityMetadata({
-            EntityId: entityId,
-            EntitySetName: metadata.EntitySetName,
-            LogicalName: metadata.LogicalName,
-            PrimaryIdAttribute: metadata.PrimaryIdAttribute,
-            PrimaryNameAttribute: metadata.PrimaryNameAttribute,
-            PrimaryImageAttribute: metadata.PrimaryImageAttribute,
-        });
+        if (this.EntityMetadataSQL.SelectTableMetadata(metadata.LogicalName).length == 0) {
+            this.EntityMetadataSQL.AddEntityMetadata({
+                EntityId: entityId,
+                EntitySetName: metadata.EntitySetName,
+                LogicalName: metadata.LogicalName,
+                PrimaryIdAttribute: metadata.PrimaryIdAttribute,
+                PrimaryNameAttribute: metadata.PrimaryNameAttribute,
+                PrimaryImageAttribute: metadata.PrimaryImageAttribute,
+            });
 
-        const columns: string[] = [];
-        attributes.forEach((attribute) => {
-            this.createAttribute(entityId, attribute);
-            columns.push(' [' + attribute.LogicalName + '] ' + getSqlTypeForAttribute(attribute.AttributeType));
-            if (attribute.AttributeType === AttributeType.Lookup) {
-                columns.push(' [' + attribute.LogicalName + 'type] string');
-                columns.push(' [' + attribute.LogicalName + 'navigation] string');
-            }
-        });
+            const columns: string[] = [];
+            attributes.forEach((attribute) => {
+                this.createAttribute(entityId, attribute);
+                columns.push(' [' + attribute.LogicalName + '] ' + getSqlTypeForAttribute(attribute.AttributeType));
+                if (attribute.AttributeType === AttributeType.Lookup) {
+                    columns.push(' [' + attribute.LogicalName + 'type] string');
+                    columns.push(' [' + attribute.LogicalName + 'navigation] string');
+                }
+            });
 
-        // Create Table
-        const createTableQuery = `CREATE TABLE ${safeTableName} (${columns.join(',')})`;
-        this.db.exec(createTableQuery);
+            // Create Table
+            const createTableQuery = `CREATE TABLE ${safeTableName} (${columns.join(',')})`;
+            this.db.exec(createTableQuery);
+        } else {
+            attributes.forEach((attribute) => {
+                this.upsertAttributeMetadata(metadata.LogicalName, attribute);
+            });
+        }
     }
 
     /**
@@ -522,7 +531,22 @@ export class MetadataDB {
         const tableMetadata = this.getTableMetadata(tableMetadataDB[0].LogicalName);
 
         items.value.forEach((item) => {
-            this.AddRow(tableMetadataDB[0].LogicalName, item, tableMetadata);
+            if (
+                tableMetadataDB[0].LogicalName === MetadataDB.CanvasLogicalName &&
+                this.db.exec('SELECT Count(1) as Records FROM _canvasapp')[0].Records > 0
+            ) {
+                tableMetadata?.Attributes?.forEach((attribute) => {
+                    if (attribute.LogicalName in item) {
+                        this.UpdateValue(
+                            item[attribute.LogicalName as unknown as keyof typeof item],
+                            MetadataDB.CanvasLogicalName,
+                            attribute.LogicalName,
+                        );
+                    }
+                });
+            } else {
+                this.AddRow(tableMetadataDB[0].LogicalName, item, tableMetadata);
+            }
         });
     }
 

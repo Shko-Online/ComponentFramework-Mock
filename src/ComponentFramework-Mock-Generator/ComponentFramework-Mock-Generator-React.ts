@@ -5,7 +5,7 @@
 
 import type { SinonSpiedInstance, SinonStub } from 'sinon';
 import type { ReactElement } from 'react';
-import type { MockGenerator } from './MockGenerator';
+import type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
 import type { PropertyMap } from '../ComponentFramework-Mock';
 import type { ShkoOnline } from '../ShkoOnline';
 
@@ -41,6 +41,7 @@ export class ComponentFrameworkMockGeneratorReact<
         control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
         outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
+        overrides?: MockGeneratorOverrides
     ) {
         showBanner(control.name);
         this.state = {};

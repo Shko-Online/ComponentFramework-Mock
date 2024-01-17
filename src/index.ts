@@ -4,7 +4,7 @@ Licensed under the MIT license.
 */
 
 export type { MockToRaw, PropertyMap, PropertyToMock } from './ComponentFramework-Mock';
-export type { MockGenerator, OrchestratorInput, OrchestratorGenerators } from './ComponentFramework-Mock-Generator';
+export type { MockGenerator, MockGeneratorOverrides, OrchestratorInput, OrchestratorGenerators } from './ComponentFramework-Mock-Generator';
 export type { ShkoOnline } from './ShkoOnline';
 
 export {

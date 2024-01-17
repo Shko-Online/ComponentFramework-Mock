@@ -3,10 +3,11 @@
     Licensed under the MIT license.
 */
 
+import type { ComponentFrameworkMockGeneratorReact } from "./ComponentFramework-Mock-Generator-React";
+import type { ComponentFrameworkMockGenerator } from "./ComponentFramework-Mock-Generator";
+import type { MockGeneratorOverrides } from "./MockGenerator";
 import type { PropertyMap } from "../ComponentFramework-Mock";
 import type { ShkoOnline } from "../ShkoOnline";
-import type { ComponentFrameworkMockGenerator } from "./ComponentFramework-Mock-Generator";
-import type { ComponentFrameworkMockGeneratorReact } from "./ComponentFramework-Mock-Generator-React";
 
 export type OrchestratorInput<T> =
     T extends [...infer Previous, infer TInputs, infer TOutputs, infer Virtual] ? (
@@ -21,13 +22,15 @@ export type OrchestratorInput<T> =
                                     control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
                                     inputs: PropertyMap<TInputs>,
                                     container?: HTMLDivElement,
-                                    outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>
+                                    outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
+                                    overrides?: MockGeneratorOverrides
                                 ]] :
                                 Virtual extends true ?
                                 [[
                                     control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>,
                                     inputs: PropertyMap<TInputs>,
-                                    outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>
+                                    outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
+                                    overrides?: MockGeneratorOverrides
                                 ]] :
                                 never
                             ) : never
@@ -60,7 +63,7 @@ export type OrchestratorInput<T> =
         )
     ) : never;
 
-    export type OrchestratorGenerators<T> =
+export type OrchestratorGenerators<T> =
     T extends [...infer Previous, infer TInputs, infer TOutputs, infer Virtual] ? (
         0 extends 1 & Virtual ?
         never : (

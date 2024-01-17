@@ -17,7 +17,12 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
     attributes: StringMetadataMock;
     raw: string | null;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db, entityMetadata.LogicalName, propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        if (existingAttribute && existingAttribute.AttributeType !== AttributeType.String) {
+            super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
+        } else {
+            super(db, entityMetadata.LogicalName, propertyName);
+        }
         this.raw = null;
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
@@ -39,12 +44,14 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
             this.attributes.ImeMode = attributeMetadata.ImeMode;
             this.raw = value;
         });
-        const attribute = {
-            AttributeType: AttributeType.String,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.StringAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.String) {
+            const attribute = {
+                AttributeType: AttributeType.String,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: this._boundColumn,
+            } as ShkoOnline.StringAttributeMetadata;
+            entityMetadata.Attributes?.push(attribute);
+        }
         this.attributes = new StringMetadataMock();
     }
 }

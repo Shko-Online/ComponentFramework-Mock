@@ -64,18 +64,17 @@ describe('Orchestrator', () => {
         });
 
         it('Should render lookup value and date year', () => {
-            orchestrator.mockGenerators[0].ExecuteInit();
+            orchestrator.ExecuteInit();
+
             orchestrator.mockGenerators[0].ExecuteUpdateView();
-            orchestrator.mockGenerators[1].ExecuteInit();
             orchestrator.mockGenerators[1].ExecuteUpdateView();
 
             expect(document.body).toMatchSnapshot();
         });
 
         it('Should update value on click', () => {
-            orchestrator.mockGenerators[0].ExecuteInit();
+            orchestrator.ExecuteInit();
             orchestrator.mockGenerators[0].ExecuteUpdateView();
-            orchestrator.mockGenerators[1].ExecuteInit();
             orchestrator.mockGenerators[1].ExecuteUpdateView();
 
             const button = orchestrator.mockGenerators[0].container.getElementsByTagName('button')[0];

@@ -4,6 +4,7 @@
 */
 
 import type { SinonSpiedInstance, SinonStub } from 'sinon';
+import type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
 import type { PropertyMap } from '../ComponentFramework-Mock';
 import type { ShkoOnline } from '../ShkoOnline';
 
@@ -16,7 +17,6 @@ import { mockRefreshParameters } from './mockRefreshParameters';
 import { mockNotifyOutputChanged } from './mockNotifyOutputChanged';
 import { ContextMock, DataSetMock } from '../ComponentFramework-Mock';
 import { showBanner } from '../utils';
-import { MockGenerator } from './MockGenerator';
 import { mockRefreshDatasets } from './mockRefreshDatasets';
 
 export class ComponentFrameworkMockGenerator<
@@ -30,7 +30,7 @@ export class ComponentFrameworkMockGenerator<
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
-    onOutputChanged: SinonStub<[updates:Partial<TOutputs>], void>;
+    onOutputChanged: SinonStub<[updates: Partial<TOutputs>], void>;
     outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
     resizeObserver: ResizeObserver;
     state: ComponentFramework.Dictionary;
@@ -42,13 +42,14 @@ export class ComponentFrameworkMockGenerator<
         inputs: PropertyMap<TInputs>,
         container?: HTMLDivElement,
         outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
+        overrides?: MockGeneratorOverrides
     ) {
         showBanner(control.name);
         this.state = {};
         this.outputOnlyProperties = {} as ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
         this.container = container ?? document.createElement('div');
         this.control = spy(new control());
-        this.metadata = new MetadataDB();
+        this.metadata = overrides?.metadata ?? new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
         this.resizeObserver = new ResizeObserver((entries) => {
             const size = entries[0];
@@ -71,9 +72,9 @@ export class ComponentFrameworkMockGenerator<
             }
         });
 
-        if(outputs){
-            Object.getOwnPropertyNames(outputs).forEach(p=>{
-                if(inputProperties.includes(p)){
+        if (outputs) {
+            Object.getOwnPropertyNames(outputs).forEach(p => {
+                if (inputProperties.includes(p)) {
                     return;
                 }
                 this.outputOnlyProperties[p] = outputs[p] as any;

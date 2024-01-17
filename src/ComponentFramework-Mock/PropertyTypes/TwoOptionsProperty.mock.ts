@@ -14,13 +14,17 @@ import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/
 
 export class TwoOptionsPropertyMock
     extends PropertyMock
-    implements ComponentFramework.PropertyTypes.TwoOptionsProperty
-{
+    implements ComponentFramework.PropertyTypes.TwoOptionsProperty {
     _SetValue: SinonStub<[value: boolean | null], void>;
     attributes?: TwoOptionMetadataMock;
     raw: boolean;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db, entityMetadata.LogicalName, propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Boolean) {
+            super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
+        } else {
+            super(db, entityMetadata.LogicalName, propertyName);
+        }
         this.raw = false;
         this.attributes = new TwoOptionMetadataMock();
         this._SetValue = stub();
@@ -54,21 +58,23 @@ export class TwoOptionsPropertyMock
             this.formatted = attributes.Options[value ? 1 : 0].Label;
             this.attributes = attributes;
         });
-        const attribute = {
-            AttributeType: AttributeType.Boolean,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-            OptionSet: {
-                FalseOption: {
-                    Value: 0,
-                    Label: 'No',
+        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Boolean) {
+            const attribute = {
+                AttributeType: AttributeType.Boolean,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: this._boundColumn,
+                OptionSet: {
+                    FalseOption: {
+                        Value: 0,
+                        Label: 'No',
+                    },
+                    TrueOption: {
+                        Value: 1,
+                        Label: 'Yes',
+                    },
                 },
-                TrueOption: {
-                    Value: 1,
-                    Label: 'Yes',
-                },
-            },
-        } as ShkoOnline.BooleanAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+            } as ShkoOnline.BooleanAttributeMetadata;
+            entityMetadata.Attributes?.push(attribute);
+        }
     }
 }

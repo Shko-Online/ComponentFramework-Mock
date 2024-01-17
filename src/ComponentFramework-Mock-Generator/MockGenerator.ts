@@ -9,6 +9,10 @@ import type { ShkoOnline } from '../ShkoOnline';
 import type { ContextMock } from '../ComponentFramework-Mock';
 import type { MetadataDB } from './Metadata.db';
 
+export interface MockGeneratorOverrides {
+    metadata?: MetadataDB
+}
+
 export interface MockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
@@ -31,6 +35,8 @@ export interface MockGenerator<
      * Mocked context that will be passed to the component in the init or update calls.
      */
     context: ContextMock<TInputs>;
+
+    ExecuteInit: () =>void;
 
     /**
      * In-Memory database for data and metadata

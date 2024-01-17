@@ -18,14 +18,21 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
     raw: Date | null;
 
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        super(db, entityMetadata.LogicalName, propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        if (existingAttribute && existingAttribute.AttributeType !== AttributeType.DateTime) {
+            super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
+        } else {
+            super(db, entityMetadata.LogicalName, propertyName);
+        }
         this.raw = null;
-        const attribute = {
-            AttributeType: AttributeType.DateTime,
-            EntityLogicalName: entityMetadata.LogicalName,
-            LogicalName: propertyName,
-        } as ShkoOnline.DateTimeAttributeMetadata;
-        entityMetadata.Attributes?.push(attribute);
+        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.DateTime) {
+            const attribute = {
+                AttributeType: AttributeType.DateTime,
+                EntityLogicalName: entityMetadata.LogicalName,
+                LogicalName: this._boundColumn,
+            } as ShkoOnline.DateTimeAttributeMetadata;
+            entityMetadata.Attributes?.push(attribute);
+        }
         this.attributes = new DateTimeMetadataMock();
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
