@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Orchestrator Owner Should render lookup value 1`] = `
+<div>
+  <p>
+    [team-guid1] Shko Online
+  </p>
+  <button>
+    Assign To Myself
+  </button>
+</div>
+`;
+
+exports[`Orchestrator Owner Should update value on click 1`] = `
+<body>
+  <div>
+    <p>
+      [systemuser-MyUserId] Assigned from PCF
+    </p>
+    <button>
+      Assign To Myself
+    </button>
+  </div>
+</body>
+`;

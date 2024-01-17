@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Orchestrator Owner and YearPicker Should render lookup value and date year 1`] = `
+<body>
+  <div>
+    <p>
+      [team-guid1] Shko Online
+    </p>
+    <button>
+      Assign To Myself
+    </button>
+  </div>
+  <div>
+    <input
+      type="number"
+      value="2023"
+    />
+  </div>
+</body>
+`;
+
+exports[`Orchestrator Owner and YearPicker Should update value on click 1`] = `
+<body>
+  <div>
+    <p>
+      [systemuser-MyUserId] Assigned from PCF
+    </p>
+    <button>
+      Assign To Myself
+    </button>
+  </div>
+  <div>
+    <input
+      type="number"
+      value="2021"
+    />
+  </div>
+</body>
+`;

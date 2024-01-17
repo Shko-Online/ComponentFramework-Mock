@@ -1,10 +1,16 @@
+/*
+    Copyright (c) 2024 Betim Beja and Shko Online LLC
+    Licensed under the MIT license.
+*/
+
 import type { PropertyMap } from "../ComponentFramework-Mock";
 import type { ShkoOnline } from "../ShkoOnline";
+import type { ComponentFrameworkMockGenerator } from "./ComponentFramework-Mock-Generator";
+import type { ComponentFrameworkMockGeneratorReact } from "./ComponentFramework-Mock-Generator-React";
 
 export type OrchestratorInput<T> =
     T extends [...infer Previous, infer TInputs, infer TOutputs, infer Virtual] ? (
-        0 extends 1 & Virtual ?
-        never : (
+        0 extends 1 & Virtual ? never : (
             [] extends Previous ? (
                 Virtual extends boolean ? (
                     TInputs extends { [key: string]: any } ? (
@@ -46,6 +52,41 @@ export type OrchestratorInput<T> =
                                 inputs: PropertyMap<TInputs>,
                                 outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>
                             ]] :
+                            never
+                        ) : never
+                    ) : never
+                ) : never
+            ) : never
+        )
+    ) : never;
+
+    export type OrchestratorGenerators<T> =
+    T extends [...infer Previous, infer TInputs, infer TOutputs, infer Virtual] ? (
+        0 extends 1 & Virtual ?
+        never : (
+            [] extends Previous ? (
+                Virtual extends boolean ? (
+                    TInputs extends { [key: string]: any } ? (
+                        TInputs extends ShkoOnline.PropertyTypes<TInputs> ? (
+                            TOutputs extends ShkoOnline.KnownTypes<TOutputs> ? (
+                                Virtual extends false ?
+                                [ComponentFrameworkMockGenerator<TInputs, TOutputs>] :
+                                Virtual extends true ?
+                                [ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>] :
+                                never
+                            ) : never
+                        ) : never
+                    ) : never
+                ) : never
+            ) :
+            Previous extends [...infer Previous2, infer TInputs2, infer TOutputs2, infer Virtual2] ? (
+                TInputs extends { [key: string]: any } ? (
+                    TInputs extends ShkoOnline.PropertyTypes<TInputs> ? (
+                        TOutputs extends ShkoOnline.KnownTypes<TOutputs> ? (
+                            Virtual extends false ?
+                            [...OrchestratorGenerators<Previous>, ComponentFrameworkMockGenerator<TInputs, TOutputs>] :
+                            Virtual extends true ?
+                            [...OrchestratorGenerators<Previous>, ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>] :
                             never
                         ) : never
                     ) : never

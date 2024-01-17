@@ -6,8 +6,8 @@
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../ShkoOnline';
 
-import { ContextMock } from '../ComponentFramework-Mock';
-import { MetadataDB } from './Metadata.db';
+import type { ContextMock } from '../ComponentFramework-Mock';
+import type { MetadataDB } from './Metadata.db';
 
 export interface MockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
@@ -55,7 +55,7 @@ export interface MockGenerator<
      *
      * You can use this method to be notified by the platform that the outputs have changed.
      */
-    onOutputChanged: SinonStub<[updates:Partial<TOutputs>], void>;
+    onOutputChanged: SinonStub<[updates: Partial<TOutputs>], void>;
 
     /**
      * Will be used by the track container when asked by {@link ComponentFramework.Mode.trackContainerResize}

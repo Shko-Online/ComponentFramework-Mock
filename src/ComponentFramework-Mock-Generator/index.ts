@@ -5,6 +5,8 @@
 
 export { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-Generator-React';
 export { ComponentFrameworkMockGenerator } from './ComponentFramework-Mock-Generator';
+export { ComponentFrameworkMockOrchestrator } from './ComponentFramework-Mock-Orchestrator';
+export type { OrchestratorGenerators, OrchestratorInput } from './ComponentFramework-Mock-Orchestrator.types';
 export {
     MetadataDB,
     AttributeMetadataSQL,
