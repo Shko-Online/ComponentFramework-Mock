@@ -16,7 +16,7 @@
         "resolveJsonModule": true,
         "declaration": true,
         "declarationMap": true,
-        "sourceMap": true,       
+        "sourceMap": true,
         "baseUrl": ".",
         "paths": {
             "@shko.online/componentframework-mock*": [
@@ -36,7 +36,8 @@
         ".",
         "./stories",
         "../src",
-        "../__tests__",      
-        "../__test-components__"
-, ".storybook/jsx.runtime.js"    ]
+        "../__tests__",
+        "../__test-components__",
+        ".storybook/react-jsx-dev-runtime.development.js"
+    ]
 }

@@ -1292,7 +1292,5 @@ var jsxDEV$1 =  jsxWithValidation ;
 
 exports.Fragment = REACT_FRAGMENT_TYPE;
 exports.jsxDEV = jsxDEV$1;
-exports.jsx = jsxDEV$1;
-exports.jsxs = jsxDEV$1;
   })();
 }
