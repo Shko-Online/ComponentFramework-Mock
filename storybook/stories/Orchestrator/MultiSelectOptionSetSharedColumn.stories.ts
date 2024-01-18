@@ -1,39 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/html';
-import type { IInputs, IOutputs } from '../../__sample-components__/MultiSelectOptionSet/generated/ManifestTypes';
+import type { IInputs, IOutputs } from '../../../__sample-components__/MultiSelectOptionSet/generated/ManifestTypes';
 
 import { useArgs } from '@storybook/preview-api';
-import { ContainerSize as Component } from '../../__sample-components__/MultiSelectOptionSet';
+import { ContainerSize as Component } from '../../../__sample-components__/MultiSelectOptionSet';
 import {
     ComponentFrameworkMockOrchestrator,
     MetadataDB,
     MultiSelectOptionSetPropertyMock,
     ShkoOnline,
-} from '../../src';
+} from '../../../src';
 
-import '../../__sample-components__/MultiSelectOptionSet/css/multi-select-optionset.css';
+import '../../../__sample-components__/MultiSelectOptionSet/css/multi-select-optionset.css';
 import { useEffect } from '@storybook/client-api';
 
 export default {
-    title: "Shko Online's ComponentFramework-Mock/DoubleComponent",
+    title: "Shko Online's ComponentFramework-Mock/Orchestrator/MultiSelectOptionSet Shared Column",
     argTypes: {
-        selection1: {
-            defaultValue: [],
-            name: 'Selection',
-            options: [0, 1, 2],
-            control: {
-                type: 'multi-select',
-                labels: {
-                    0: 'Betim Beja',
-                    1: 'Asllan Makaj',
-                    2: 'Shko Online',
-                },
-            },
-            table: {
-                category: 'Parameters',
-                defaultValue: { summary: '[]' },
-            },
-        },
-        selection2: {
+        selection: {
             defaultValue: [],
             name: 'Selection',
             options: [0, 1, 2],
@@ -56,8 +39,7 @@ export default {
 interface StoryArgs {
     isDisabled: boolean;
     isVisible: boolean;
-    selection1: number[];
-    selection2: number[];
+    selection: number[];
 }
 
 const renderGenerator = () => {
@@ -111,23 +93,6 @@ const renderGenerator = () => {
 
             orchestrator.db.upsertAttributeMetadata(MetadataDB.CanvasLogicalName, optionsetMetadata);
 
-            const optionsetMetadata2 = orchestrator.db.getAttributeMetadata(
-                MetadataDB.CanvasLogicalName,
-                'selection',
-            ) as ShkoOnline.PickListAttributeMetadata;
-
-            optionsetMetadata2.LogicalName = 'selection2';
-            optionsetMetadata2.SchemaName = 'selection2';
-            delete optionsetMetadata2.MetadataId;
-            delete optionsetMetadata2.OptionSet.MetadataId;
-
-            orchestrator.db.upsertAttributeMetadata(MetadataDB.CanvasLogicalName, optionsetMetadata2);
-
-            orchestrator.mockGenerators[1].context._parameters.selection._Bind(
-                MetadataDB.CanvasLogicalName,
-                'selection2',
-            );
-
             orchestrator.mockGenerators[0].context.mode.isControlDisabled = args.isDisabled;
             orchestrator.mockGenerators[0].context.mode.isVisible = args.isVisible;
 
@@ -135,19 +100,19 @@ const renderGenerator = () => {
             orchestrator.mockGenerators[1].context.mode.isVisible = args.isVisible;
 
             orchestrator.mockGenerators[0].context._SetCanvasItems({
-                selection: args.selection1,
+                selection: args.selection,
             });
 
             orchestrator.mockGenerators[1].context._SetCanvasItems({
-                selection: args.selection2,
+                selection: args.selection,
             });
 
             orchestrator.mockGenerators[0].onOutputChanged.callsFake(({ selection }) => {
-                updateArgs({ selection1: selection });
+                updateArgs({ selection: selection });
             });
 
             orchestrator.mockGenerators[1].onOutputChanged.callsFake(({ selection }) => {
-                updateArgs({ selection2: selection });
+                updateArgs({ selection: selection });
             });
 
             orchestrator.ExecuteInit();
@@ -156,11 +121,11 @@ const renderGenerator = () => {
         if (orchestrator) {
             orchestrator.mockGenerators[0].context.mode.isVisible = args.isVisible;
             orchestrator.mockGenerators[0].context.mode.isControlDisabled = args.isDisabled;
-            orchestrator.mockGenerators[0].context._parameters.selection._SetValue(args.selection1);
+            orchestrator.mockGenerators[0].context._parameters.selection._SetValue(args.selection);
 
             orchestrator.mockGenerators[1].context.mode.isVisible = args.isVisible;
             orchestrator.mockGenerators[1].context.mode.isControlDisabled = args.isDisabled;
-            orchestrator.mockGenerators[1].context._parameters.selection._SetValue(args.selection2);
+            orchestrator.mockGenerators[1].context._parameters.selection._SetValue(args.selection);
 
             orchestrator.mockGenerators[0].ExecuteUpdateView();
             orchestrator.mockGenerators[1].ExecuteUpdateView();
@@ -170,10 +135,9 @@ const renderGenerator = () => {
     };
 };
 
-export const MultiSelectOptionSet = {
+export const MultiSelectOptionSetSharedColumn = {
     render: renderGenerator(),
     args: {
-        selection1: [],
-        selection2: [],
+        selection: [],
     },
 } as StoryObj<StoryArgs>;
