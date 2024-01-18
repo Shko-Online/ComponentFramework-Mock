@@ -1,3 +1,17 @@
+# [0.5.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.4.2...v0.5.0) (2024-01-18)
+
+
+### Bug Fixes
+
+* Multiple Components sharing the same properties ([6699727](https://github.com/shko-online/ComponentFramework-Mock/commit/66997277d11a724f0fa5a7ada90bf0024de20453))
+
+
+### Features
+
+* ComponentFrameworkMockOrchestrator ([cfa9e9f](https://github.com/shko-online/ComponentFramework-Mock/commit/cfa9e9f0410fc29c1314fa4b6d7ca7bb7ad5d78f))
+* Exposed shared db on Orchestrator ([8dae1de](https://github.com/shko-online/ComponentFramework-Mock/commit/8dae1debe33c0e9f5db3fd694eaf6740eb5643bd))
+* OrchestratorInput type ([e05a062](https://github.com/shko-online/ComponentFramework-Mock/commit/e05a06248ef164f344af6476c18c97531bbe6242))
+
 ## [0.4.2](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.4.1...v0.4.2) (2024-01-14)
 
 
