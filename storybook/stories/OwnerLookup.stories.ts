@@ -51,11 +51,11 @@ const renderGenerator = () => {
                 value: { entityType: 'account', id: 'my-id' },
             });
 
-            mockGenerator.onOutputChanged.callsFake(() => {
+            mockGenerator.onOutputChanged.callsFake(({value}) => {
                 mockGenerator.context._parameters.value._Refresh();
                 updateArgs({
-                    value: mockGenerator.context._parameters.value.raw
-                        ? mockGenerator.context._parameters.value.raw[0]
+                    value: value
+                        ? value[0]
                         : undefined,
                 });
             });

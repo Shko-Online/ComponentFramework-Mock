@@ -1,0 +1,27 @@
+name: SonarCloud
+on:
+    push:
+        branches: ['main', 'beta']
+    pull_request:
+        types: [opened, synchronize, reopened]
+jobs:
+    sonarcloud:
+        name: SonarCloud
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - name: Setup NodeJs
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 18
+                  cache: 'npm'
+            - name: Install Dependencies
+              run: npm install
+            - name: Test and coverage
+              run: npm run test -- --coverage
+            - name: SonarCloud Scan
+              uses: SonarSource/sonarcloud-github-action@master
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
