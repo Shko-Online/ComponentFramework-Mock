@@ -97,6 +97,6 @@
         "tsc": "tsc --project tsconfig.build.json",
         "test": "npm run test:types && npm run test:jest",
         "test:jest": "jest --coverage --maxWorkers=4",
-        "test:types": "tsd --files ./__type-tests__/**/*.test-d.ts"
+        "test:types": "tsd --typings src/ShkoOnline.d.ts --files __type-tests__/**/*.test-d.ts"
     }
 }
