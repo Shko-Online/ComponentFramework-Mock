@@ -16,17 +16,12 @@ module.exports = {
     transform: {
         // transform files with ts-jest
         '^.+\\.(jsx?|tsx?)$': [
-            'ts-jest',
-            {
-                tsconfig: {
-                    // allow js in typescript
-                    allowJs: true,
-                },
-            },
+            'ts-jest'
         ],
     },
     coveragePathIgnorePatterns: ['/node_modules/'],
     testMatch: ['<rootDir>/__tests__/**/*.[jt]s?(x)', '<rootDir>/?(*.)+(spec|test).[jt]s?(x)'],
     setupFiles: [path.resolve(path.join(__dirname, 'setup-tests.ts'))],
     coverageReporters: ['cobertura', 'lcov', 'text', 'html'],
+    transformIgnorePatterns: ["node_modules/(?!(sinon))"]
 };
