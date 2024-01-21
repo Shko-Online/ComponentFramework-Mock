@@ -11,7 +11,7 @@ const config = {
     refs: {
         'multi-switch': {
             title: "AlbanianXrm's MultiSwitch",
-            url: 'https://fluent-ui--643c1df35db0e46d50f8862d.chromatic.com',
+            url: 'https://fluent-ui--65ad6e3fa84fde3601f6d6c0.chromatic.com',
             expanded: false, // optional, true by default
         },
         'styled-switch': {
@@ -36,12 +36,12 @@ const config = {
         },
         'creator-kit': {
             title: 'PowerCAT Code Components',
-            url: 'https://tests-componentframework-mock--651ee649a8c91a1d06333c7e.chromatic.com',
+            url: 'https://tests-componentframework-mock--65ad64221dfbbf94ab5a13c7.chromatic.com',
             expanded: false, // optional, true by default
         },
         'colorful-optionset': {
             title: 'Colorful Optionset',
-            url: 'https://master--651dc11bd70620b3c0c57342.chromatic.com/',
+            url: 'https://feat-storybook--65ad5a00f2c6d7287526f1b8.chromatic.com/',
             expanded: false, // optional, true by default
         },
         'gantt-view': {
@@ -51,14 +51,20 @@ const config = {
         },
         'lookup-dropdown': {
             title: 'Lookup Dropdown',
-            url: 'https://main--64039da1132d2ebe19bd43c5.chromatic.com',
+            url: 'https://main--65ad48f306645670d75e0731.chromatic.com',
             expanded: false, // optional, true by default
         },
         'choices-stages': {
             title: 'Choices Stages',
-            url: 'https://main--65715372704fbe523e328798.chromatic.com/',
+            url: 'https://main--65ad40f30449340f55124229.chromatic.com/',
             expanded: false, // optional, true by default
         },
+        'json-viewer': {
+            title: 'JSON Viewer',
+            url: 'https://feat-storybook--65ad57676f9ec654cd67dc65.chromatic.com/',
+            expanded: false, // optional, true by default
+        },
+        
     },
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)', '../stories/**/*.mdx'],

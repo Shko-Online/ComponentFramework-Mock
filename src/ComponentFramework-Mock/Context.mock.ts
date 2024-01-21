@@ -5,7 +5,7 @@
 
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../ShkoOnline';
-import type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
+import type { MockToRaw, PropertyMap, PropertyMock, PropertyToMock } from './PropertyTypes';
 
 import { stub } from 'sinon';
 import { ClientMock } from './Client.mock';
@@ -56,22 +56,30 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
             Object.getOwnPropertyNames<PropertyToMock<IInputs>>(this._parameters).forEach((propertyName) => {
                 const parameter = this._parameters[propertyName];
                 if (propertyName in parameters) {
-                    mappedParameters[parameter._boundColumn] = parameters[propertyName as unknown as keyof typeof parameters];
+                    mappedParameters[parameter._boundColumn] =
+                        parameters[propertyName as unknown as keyof typeof parameters];
                 }
             });
             db.initCanvasItems([mappedParameters]);
         });
-        const CanvasEntity = db.getTableMetadata(MetadataDB.CanvasLogicalName) ?? {
-            LogicalName: MetadataDB.CanvasLogicalName,
-            EntitySetName: MetadataDB.CanvasLogicalName,
-            Attributes: [],
-        } as ShkoOnline.EntityMetadata;
+        const CanvasEntity =
+            db.getTableMetadata(MetadataDB.CanvasLogicalName) ??
+            ({
+                LogicalName: MetadataDB.CanvasLogicalName,
+                EntitySetName: MetadataDB.CanvasLogicalName,
+                Attributes: [],
+            } as ShkoOnline.EntityMetadata);
 
         Object.getOwnPropertyNames<PropertyMap<IInputs>>(inputs).forEach((propertyName) => {
-            const parameter = new inputs[propertyName](propertyName as string, db, CanvasEntity);
+            const parameterClass = inputs[propertyName] as unknown as new (
+                propertyName: string,
+                db: MetadataDB,
+                CanvasEntity: ShkoOnline.EntityMetadata,
+            ) => PropertyToMock<IInputs>[keyof IInputs];
+            const parameter = new parameterClass(propertyName as string, db, CanvasEntity);
             // parameter._boundColumn = propertyName as string;
             // parameter._db = db;
-            this._parameters[propertyName] = parameter as unknown as PropertyToMock<IInputs>[keyof IInputs];
+            this._parameters[propertyName] = parameter;
             this.parameters[propertyName] = parameter as unknown as IInputs[keyof IInputs];
         });
         db.initMetadata([CanvasEntity]);

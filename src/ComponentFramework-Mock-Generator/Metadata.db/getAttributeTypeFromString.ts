@@ -31,8 +31,6 @@ export const getAttributeTypeFromString = (attributeType: ShkoOnline.AttributeTy
             return AttributeType.EntityName as ShkoOnline.AttributeType.EntityName;
         case 'Integer':
             return AttributeType.Integer as ShkoOnline.AttributeType.Integer;
-        case 'Lookup':
-            return AttributeType.Lookup as ShkoOnline.AttributeType.Lookup;
         case 'ManagedProperty':
             return AttributeType.ManagedProperty as ShkoOnline.AttributeType.ManagedProperty;
         case 'Memo':
