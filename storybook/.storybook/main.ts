@@ -54,6 +54,11 @@ const config = {
             url: 'https://main--65ad48f306645670d75e0731.chromatic.com',
             expanded: false, // optional, true by default
         },
+        'country-picker': {
+            title: 'Country Picker',
+            url: 'https://feat-storybook--65b3b205d4d48903e0ca9dc4.chromatic.com',
+            expanded: false, // optional, true by default
+        },
         'choices-stages': {
             title: 'Choices Stages',
             url: 'https://main--65ad40f30449340f55124229.chromatic.com/',
