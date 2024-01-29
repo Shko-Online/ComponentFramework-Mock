@@ -59,6 +59,11 @@ const config = {
             url: 'https://feat-storybook--65b3b205d4d48903e0ca9dc4.chromatic.com',
             expanded: false, // optional, true by default
         },
+        'fluentui-slider': {
+            title: 'FluentUI Slider',
+            url: 'https://feat-storybook--65b77198c12b58aaf4c05d69.chromatic.com',
+            expanded: false, // optional, true by default
+        },
         'choices-stages': {
             title: 'Choices Stages',
             url: 'https://main--65ad40f30449340f55124229.chromatic.com/',
@@ -69,7 +74,6 @@ const config = {
             url: 'https://feat-storybook--65ad57676f9ec654cd67dc65.chromatic.com/',
             expanded: false, // optional, true by default
         },
-        
     },
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)', '../stories/**/*.mdx'],
@@ -84,7 +88,9 @@ const config = {
         config.resolve.alias['react'] = path.resolve('./node_modules/react');
         config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
         config.resolve.fallback = config.resolve.fallback || {};
-        config.resolve.fallback['react/jsx-dev-runtime'] = path.resolve('./.storybook/react-jsx-dev-runtime.development.js');
+        config.resolve.fallback['react/jsx-dev-runtime'] = path.resolve(
+            './.storybook/react-jsx-dev-runtime.development.js',
+        );
         config.resolve.fallback['react/jsx-runtime'] = path.resolve('./.storybook/react-jsx-runtime.production.min.js');
 
         config.plugins.push(
