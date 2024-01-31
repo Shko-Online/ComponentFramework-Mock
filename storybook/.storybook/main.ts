@@ -64,6 +64,11 @@ const config = {
             url: 'https://feat-storybook--65b77198c12b58aaf4c05d69.chromatic.com',
             expanded: false, // optional, true by default
         },
+        'fluentui-tagList': {
+            title: 'FluentUI TagList',
+            url: 'https://feat-storybook--65ba4bd1c04dfc47f5543ee4.chromatic.com',
+            expanded: false, // optional, true by default
+        },
         'choices-stages': {
             title: 'Choices Stages',
             url: 'https://main--65ad40f30449340f55124229.chromatic.com/',
