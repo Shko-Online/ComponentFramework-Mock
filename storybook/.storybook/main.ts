@@ -64,7 +64,7 @@ const config = {
             url: 'https://feat-storybook--65b77198c12b58aaf4c05d69.chromatic.com',
             expanded: false, // optional, true by default
         },
-        'fluentui-tagList': {
+        'fluentui-tag-list': {
             title: 'FluentUI TagList',
             url: 'https://feat-storybook--65ba4bd1c04dfc47f5543ee4.chromatic.com',
             expanded: false, // optional, true by default
