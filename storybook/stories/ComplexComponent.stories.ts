@@ -2,11 +2,10 @@ import type { Meta, StoryObj } from '@storybook/html';
 import type { IInputs, IOutputs } from '../../__sample-components__/ComplexControl/generated/ManifestTypes';
 import type { PCFStoryArgs } from './PCFStoryArgs';
 
-import { useArgs } from '@storybook/preview-api';
+import { useArgs, useEffect } from '@storybook/preview-api';
 import { action } from '@storybook/addon-actions';
 import { ComplexControl as Component } from '../../__sample-components__/ComplexControl';
 import { ComponentFrameworkMockGenerator, TwoOptionsPropertyMock } from '../../src';
-import { useEffect } from '@storybook/client-api';
 
 interface StoryArgs extends PCFStoryArgs {
     inputProperty: boolean;

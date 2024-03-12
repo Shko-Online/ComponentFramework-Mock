@@ -82,7 +82,11 @@ const config = {
     },
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)', '../stories/**/*.mdx'],
-    addons: ['@storybook/addon-links', '@storybook/addon-essentials'],
+    addons: [
+        '@storybook/addon-links',
+        '@storybook/addon-essentials',
+        '@storybook/addon-webpack5-compiler-babel'
+    ],
     framework: {
         name: '@storybook/html-webpack5',
         options: {},
@@ -106,8 +110,9 @@ const config = {
             }),
         );
         for (var i = 0; i < config.module.rules.length; i++) {
-            if ('a.ts'.match(config.module.rules[i].test)) {
+            if (config.module.rules[i].test && 'a.ts'.match(config.module.rules[i].test)) {
                 // Ensure shared component of stories are transpiled.
+                config.module.rules[i].include = config.module.rules[i].include || [];
                 config.module.rules[i].include.push(path.resolve('../src'));
                 config.module.rules[i].include.push(path.resolve('../__sample-components__'));
                 config.module.rules[i].use[0].options.presets = [

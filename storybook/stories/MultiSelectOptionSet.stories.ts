@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import type { IInputs, IOutputs } from '../../__sample-components__/MultiSelectOptionSet/generated/ManifestTypes';
 
-import { useArgs } from '@storybook/preview-api';
+import { useArgs, useEffect } from '@storybook/preview-api';
 import { ContainerSize as Component } from '../../__sample-components__/MultiSelectOptionSet';
 import { ComponentFrameworkMockGenerator, MultiSelectOptionSetPropertyMock, ShkoOnline } from '../../src';
 
 import '../../__sample-components__/MultiSelectOptionSet/css/multi-select-optionset.css';
-import { useEffect } from '@storybook/client-api';
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/MultiSelectOptionSet",

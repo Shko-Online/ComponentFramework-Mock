@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/html';
 import type { IInputs, IOutputs } from '../../__sample-components__/WebAPIControl/generated/ManifestTypes';
 
-import { useArgs } from '@storybook/preview-api';
+import { useArgs, useEffect } from '@storybook/preview-api';
 import { WebAPIControl as Component } from '../../__sample-components__/WebAPIControl';
 import { AttributeType, ComponentFrameworkMockGenerator, ShkoOnline, StringPropertyMock } from '../../src';
 import '../../__sample-components__/WebAPIControl/css/WebAPIControl.css';
-import { useEffect } from '@storybook/client-api';
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/WebAPI Control",

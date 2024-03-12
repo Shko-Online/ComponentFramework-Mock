@@ -2,10 +2,9 @@ import type { Meta, StoryObj } from '@storybook/html';
 import type { IInputs, IOutputs } from '../../__sample-components__/OwnerLookup/generated/ManifestTypes';
 import type { PCFStoryArgs } from './PCFStoryArgs';
 
-import { useArgs } from '@storybook/preview-api';
+import { useArgs, useEffect } from '@storybook/preview-api';
 import { OwnerLookup as Component } from '../../__sample-components__/OwnerLookup';
 import { ComponentFrameworkMockGenerator, LookupPropertyMock } from '../../src';
-import { useEffect } from '@storybook/client-api';
 
 interface StoryArgs extends PCFStoryArgs {
     value: ComponentFramework.LookupValue;
