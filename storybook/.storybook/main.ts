@@ -16,7 +16,7 @@ const config = {
         },
         'styled-switch': {
             title: "AlbanianXrm's StyledSwitch",
-            url: 'https://main--651a740f7ae468592174dad8.chromatic.com',
+            url: 'https://main--65f1703ff42d71335647f9f3.chromatic.com',
             expanded: false, // optional, true by default
         },
         'totp-qr-generator': {
