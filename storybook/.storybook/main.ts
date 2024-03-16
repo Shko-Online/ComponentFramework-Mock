@@ -39,6 +39,11 @@ const config = {
             url: 'https://tests-componentframework-mock--65ad64221dfbbf94ab5a13c7.chromatic.com',
             expanded: false, // optional, true by default
         },
+        'powerapps-samples': {
+            title: 'PowerApps Samples',
+            url: 'https://feat-storybook--65f524946c74a15b217bd867.chromatic.com/',
+            expanded: false, // optional, true by default
+        },
         'colorful-optionset': {
             title: 'Colorful Optionset',
             url: 'https://feat-storybook--65ad5a00f2c6d7287526f1b8.chromatic.com/',
