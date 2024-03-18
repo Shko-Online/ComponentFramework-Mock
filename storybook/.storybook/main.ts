@@ -31,7 +31,7 @@ const config = {
         },
         'audio-player': {
             title: 'Audio Player',
-            url: 'https://main--6559cb12bce5150811879c95.chromatic.com',
+            url: 'https://main--65f7f896cf79be63cf78bbb7.chromatic.com',
             expanded: false, // optional, true by default
         },
         'creator-kit': {
@@ -82,11 +82,7 @@ const config = {
     },
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)', '../stories/**/*.mdx'],
-    addons: [
-        '@storybook/addon-links',
-        '@storybook/addon-essentials',
-        '@storybook/addon-webpack5-compiler-babel'
-    ],
+    addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-webpack5-compiler-babel'],
     framework: {
         name: '@storybook/html-webpack5',
         options: {},
