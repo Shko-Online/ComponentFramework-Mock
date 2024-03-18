@@ -21,7 +21,7 @@ const config = {
         },
         'totp-qr-generator': {
             title: 'TOTP QR Generator',
-            url: 'https://main--64039e4a62440831fd847544.chromatic.com',
+            url: 'https://main--65f82fbc4dd2925643848188.chromatic.com',
             expanded: false, // optional, true by default
         },
         'totp-verifier': {
