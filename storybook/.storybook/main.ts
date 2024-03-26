@@ -84,6 +84,11 @@ const config = {
             url: 'https://feat-storybook--65ad57676f9ec654cd67dc65.chromatic.com/',
             expanded: false, // optional, true by default
         },
+        'canvas-timeline': {
+            title: 'Canvas Timeline PCF',
+            url: 'https://feat-storybook--6602c72a503596ca661d1e9f.chromatic.com/',
+            expanded: false, // optional, true by default
+        },
     },
 
     stories: ['../stories/**/*.stories.@(js|jsx|ts|tsx)', '../stories/**/*.mdx'],
