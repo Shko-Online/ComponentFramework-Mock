@@ -58,7 +58,9 @@ const renderGenerator = () => {
         if (mockGenerator) {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
-            mockGenerator.context._parameters.trackContainer._SetValue(args.trackContainer);
+            mockGenerator.UpdateValues({
+                trackContainer: args.trackContainer,
+            });
             ReactDOM.render(mockGenerator.ExecuteUpdateView(), container);
         }
 

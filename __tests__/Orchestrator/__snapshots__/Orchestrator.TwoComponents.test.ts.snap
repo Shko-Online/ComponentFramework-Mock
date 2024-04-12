@@ -37,3 +37,79 @@ exports[`Orchestrator Owner and YearPicker Should update value on click 1`] = `
   </div>
 </body>
 `;
+
+exports[`Orchestrator Owner and YearPicker Should update values from platform 1`] = `
+<body>
+  <div>
+    <p>
+      [team-guid1] Shko Online
+    </p>
+    <button>
+      Assign To Myself
+    </button>
+  </div>
+  <div>
+    <input
+      type="number"
+      value="2023"
+    />
+  </div>
+</body>
+`;
+
+exports[`Orchestrator Owner and YearPicker Should update values from platform 2`] = `
+<body>
+  <div>
+    <p>
+      ---
+    </p>
+    <button>
+      Assign To Myself
+    </button>
+  </div>
+  <div>
+    <input
+      type="number"
+      value="2022"
+    />
+  </div>
+</body>
+`;
+
+exports[`Orchestrator Owner and YearPicker should not have updatedProperties if platform posts same values 1`] = `
+<body>
+  <div>
+    <p>
+      [team-guid1] Shko Online
+    </p>
+    <button>
+      Assign To Myself
+    </button>
+  </div>
+  <div>
+    <input
+      type="number"
+      value="2023"
+    />
+  </div>
+</body>
+`;
+
+exports[`Orchestrator Owner and YearPicker should not have updatedProperties if platform posts same values 2`] = `
+<body>
+  <div>
+    <p>
+      [team-guid1] Shko Online
+    </p>
+    <button>
+      Assign To Myself
+    </button>
+  </div>
+  <div>
+    <input
+      type="number"
+      value="2023"
+    />
+  </div>
+</body>
+`;

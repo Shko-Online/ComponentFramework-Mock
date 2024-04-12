@@ -4,8 +4,8 @@
 */
 
 import type { SinonSpiedInstance, SinonStub } from 'sinon';
-import type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
-import type { PropertyMap } from '../ComponentFramework-Mock';
+import type { ComponentValues, MockGenerator, MockGeneratorOverrides } from './MockGenerator';
+import type { MockToRaw, PropertyMap, PropertyToMock } from '../ComponentFramework-Mock';
 import type { ShkoOnline } from '../ShkoOnline';
 
 import { spy, stub } from 'sinon';
@@ -24,27 +24,35 @@ export class ComponentFrameworkMockGenerator<
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > implements MockGenerator<TInputs, TOutputs>
 {
-    RefreshParameters: SinonStub<[], void>;
+    _PendingUpdates: {
+        value: ComponentFramework.LookupValue | ComponentValues<TInputs>;
+        table: string;
+        column: string;
+        row?: string;
+    }[];
     RefreshDatasets: SinonStub<[], void>;
+    RefreshParameters: SinonStub<[], void>;
+    SetControlResource: SinonStub<[resource: string], void>;
+    UpdateValues: SinonStub<[items: Partial<MockToRaw<TInputs, PropertyToMock<TInputs>>>], void>;
     container: HTMLDivElement;
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.StandardControl<TInputs, TOutputs>>;
+    metadata: MetadataDB;
     notifyOutputChanged: SinonStub<[], void>;
     onOutputChanged: SinonStub<[updates: Partial<TOutputs>], void>;
     outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
     resizeObserver: ResizeObserver;
     state: ComponentFramework.Dictionary;
-    SetControlResource: SinonStub<[resource: string], void>;
-    metadata: MetadataDB;
 
     constructor(
         control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
         container?: HTMLDivElement,
         outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
-        overrides?: MockGeneratorOverrides
+        overrides?: MockGeneratorOverrides,
     ) {
         showBanner(control.name);
+        this._PendingUpdates = [];
         this.state = {};
         this.outputOnlyProperties = {} as ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
         this.container = container ?? document.createElement('div');
@@ -73,14 +81,14 @@ export class ComponentFrameworkMockGenerator<
         });
 
         if (outputs) {
-            Object.getOwnPropertyNames(outputs).forEach(p => {
+            Object.getOwnPropertyNames(outputs).forEach((p) => {
                 if (inputProperties.includes(p)) {
                     return;
                 }
                 this.outputOnlyProperties[p] = outputs[p] as any;
             });
         }
-
+        this.UpdateValues = stub();
         mockGetEntityMetadata(this);
         this.notifyOutputChanged = stub();
         mockNotifyOutputChanged(this, this.control.getOutputs?.bind(this.control), this.ExecuteUpdateView.bind(this));

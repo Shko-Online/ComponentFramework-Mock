@@ -97,6 +97,82 @@ describe('Orchestrator', () => {
             expect(document.body).toMatchSnapshot();
         });
 
+        it('Should update values from platform', () => {
+            orchestrator.ExecuteInit();
+            orchestrator.mockGenerators[0].ExecuteUpdateView();
+            orchestrator.mockGenerators[1].ExecuteUpdateView();
+
+            expect(document.body).toMatchSnapshot();
+
+            orchestrator.mockGenerators[0].UpdateValues({
+                value: {
+                    entityType: 'team',
+                    id: 'guid2',
+                    name: 'AlbanianXrm',
+                },
+            });
+
+            orchestrator.mockGenerators[1].UpdateValues({
+                enum: 'No',
+                value: new Date(2022, 0, 1),
+            });
+
+            orchestrator.mockGenerators[0].ExecuteUpdateView();
+            orchestrator.mockGenerators[1].ExecuteUpdateView();
+
+            expect(orchestrator.mockGenerators[0].context.updatedProperties).toStrictEqual(['value', 'parameters']);
+
+            expect(orchestrator.mockGenerators[1].context.updatedProperties).toStrictEqual([
+                'enum',
+                'value',
+                'parameters',
+            ]);
+
+            expect(orchestrator.mockGenerators[0]._PendingUpdates.length).toEqual(0);
+            expect(orchestrator.mockGenerators[1]._PendingUpdates.length).toEqual(0);
+
+            expect(orchestrator.mockGenerators[1].onOutputChanged.called).toBeFalsy();
+            expect(orchestrator.mockGenerators[1].context._parameters.value.raw).toEqual(new Date(2022, 0, 1));
+
+            expect(document.body).toMatchSnapshot();
+        });
+
+        it('should not have updatedProperties if platform posts same values', ()=>{
+            orchestrator.ExecuteInit();
+            orchestrator.mockGenerators[0].ExecuteUpdateView();
+            orchestrator.mockGenerators[1].ExecuteUpdateView();
+
+            expect(document.body).toMatchSnapshot();
+
+            orchestrator.mockGenerators[0].UpdateValues({
+                value: {
+                    entityType: 'team',
+                    id: 'guid1',
+                    name: 'Shko Online',
+                },
+            });
+
+            orchestrator.mockGenerators[1].UpdateValues({
+                enum: 'Yes',
+                value: new Date(2023, 0, 1),
+            });
+
+            orchestrator.mockGenerators[0].ExecuteUpdateView();
+            orchestrator.mockGenerators[1].ExecuteUpdateView();
+
+            expect(orchestrator.mockGenerators[0].context.updatedProperties).toStrictEqual([]);
+
+            expect(orchestrator.mockGenerators[1].context.updatedProperties).toStrictEqual([]);
+
+            expect(orchestrator.mockGenerators[0]._PendingUpdates.length).toEqual(0);
+            expect(orchestrator.mockGenerators[1]._PendingUpdates.length).toEqual(0);
+
+            expect(orchestrator.mockGenerators[1].onOutputChanged.called).toBeFalsy();
+            expect(orchestrator.mockGenerators[1].context._parameters.value.raw).toEqual(new Date(2023, 0, 1));
+
+            expect(document.body).toMatchSnapshot();
+        })
+
         afterEach(() => {
             document.body.innerHTML = null;
         });

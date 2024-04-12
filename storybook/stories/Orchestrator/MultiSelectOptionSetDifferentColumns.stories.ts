@@ -153,13 +153,14 @@ const renderGenerator = () => {
         }
 
         if (orchestrator) {
-            orchestrator.mockGenerators[0].context.mode.isVisible = args.isVisible;
             orchestrator.mockGenerators[0].context.mode.isControlDisabled = args.isDisabled;
-            orchestrator.mockGenerators[0].context._parameters.selection._SetValue(args.selection1);
+            orchestrator.mockGenerators[0].UpdateValues({ selection: args.selection1 });
 
             orchestrator.mockGenerators[1].context.mode.isVisible = args.isVisible;
             orchestrator.mockGenerators[1].context.mode.isControlDisabled = args.isDisabled;
-            orchestrator.mockGenerators[1].context._parameters.selection._SetValue(args.selection2);
+            orchestrator.mockGenerators[1].UpdateValues({
+                selection: args.selection2,
+            });
 
             orchestrator.mockGenerators[0].ExecuteUpdateView();
             orchestrator.mockGenerators[1].ExecuteUpdateView();

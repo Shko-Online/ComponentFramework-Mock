@@ -17,7 +17,7 @@ export default {
                 defaultValue: { summary: 'true' },
             },
         },
-    }
+    },
 } as Meta<StoryArgs>;
 
 interface StoryArgs {
@@ -31,7 +31,7 @@ const renderGenerator = () => {
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
 
     return function () {
-        const [args, ] = useArgs<StoryArgs>();
+        const [args] = useArgs<StoryArgs>();
         useEffect(
             () => () => {
                 container = null;
@@ -61,7 +61,9 @@ const renderGenerator = () => {
         if (mockGenerator) {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
-            mockGenerator.context._parameters.trackContainer._SetValue(args.trackContainer);
+            mockGenerator.UpdateValues({
+                trackContainer: args.trackContainer,
+            });
 
             mockGenerator.ExecuteUpdateView();
         }
@@ -72,7 +74,7 @@ const renderGenerator = () => {
 
 export const ContainerSize = {
     render: renderGenerator(),
-    args: {       
+    args: {
         trackContainer: true,
     },
 } as StoryObj<StoryArgs>;
