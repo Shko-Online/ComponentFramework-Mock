@@ -76,9 +76,11 @@ const renderGenerator = () => {
         if (mockGenerator) {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
-            mockGenerator.context._parameters.boundProperty._SetValue(args.boundProperty);
-            mockGenerator.context._parameters.inputProperty._SetValue(args.inputProperty);
-
+            mockGenerator.UpdateValues({
+                boundProperty: args.boundProperty,
+                inputProperty: args.inputProperty
+            });
+            
             mockGenerator.ExecuteUpdateView();
         }
         return container;

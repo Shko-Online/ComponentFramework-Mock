@@ -6,17 +6,31 @@
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../ShkoOnline';
 
-import type { ContextMock } from '../ComponentFramework-Mock';
+import type { ContextMock, MockToRaw, PropertyToMock } from '../ComponentFramework-Mock';
 import type { MetadataDB } from './Metadata.db';
 
+export type ComponentValues< TInputs extends ShkoOnline.PropertyTypes<TInputs>> = Partial<MockToRaw<TInputs, PropertyToMock<TInputs>>>[Extract<keyof MockToRaw<TInputs, PropertyToMock<TInputs>>, string>]; 
+
 export interface MockGeneratorOverrides {
-    metadata?: MetadataDB
+    metadata?: MetadataDB;
 }
 
 export interface MockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > {
+    _PendingUpdates: {
+        value: ComponentFramework.LookupValue | ComponentValues<TInputs>;
+        table: string;
+        column: string;
+        row?: string;
+    }[];
+
+    /**
+     * This method triggers the controls init method
+     */
+    ExecuteInit: () => void;
+
     /**
      * Used to refresh the context parameters values from the bound columns in the in-memory database.
      *
@@ -32,21 +46,22 @@ export interface MockGenerator<
     RefreshDatasets: SinonStub<[], void>;
 
     /**
+     * Sets the Control resource to a specific ResX that will be used to respond
+     * to {@link ComponentFramework.Resources.getString context.resources.getString() }
+     */
+    SetControlResource: SinonStub<[resource: string], void>;
+
+    UpdateValues: SinonStub<[items: Partial<MockToRaw<TInputs, PropertyToMock<TInputs>>>], void>;
+
+    /**
      * Mocked context that will be passed to the component in the init or update calls.
      */
     context: ContextMock<TInputs>;
-
-    ExecuteInit: () =>void;
 
     /**
      * In-Memory database for data and metadata
      */
     metadata: MetadataDB;
-
-    /**
-     * Properties defined as output only. Specific any type allowed.
-     */
-    outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
 
     /**
      * Mocked notifyOutputChanged that will be passed to the component on init
@@ -64,15 +79,17 @@ export interface MockGenerator<
     onOutputChanged: SinonStub<[updates: Partial<TOutputs>], void>;
 
     /**
+     * Properties defined as output only. Specific any type allowed.
+     */
+    outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
+
+    /**
      * Will be used by the track container when asked by {@link ComponentFramework.Mode.trackContainerResize}
      */
     resizeObserver: ResizeObserver;
 
-    state: ComponentFramework.Dictionary;
-
     /**
-     * Sets the Control resource to a specific ResX that will be used to respond
-     * to {@link ComponentFramework.Resources.getString context.resources.getString() }
+     * the state object that is passed to the component
      */
-    SetControlResource: SinonStub<[resource: string], void>;
+    state: ComponentFramework.Dictionary;
 }

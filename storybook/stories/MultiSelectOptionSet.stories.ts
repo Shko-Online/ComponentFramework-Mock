@@ -88,8 +88,10 @@ const renderGenerator = () => {
         if (mockGenerator) {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
-            mockGenerator.context._parameters.selection._SetValue(args.selection);
-
+            mockGenerator.UpdateValues({
+                selection: args.selection
+            });
+            
             mockGenerator.ExecuteUpdateView();
         }
 

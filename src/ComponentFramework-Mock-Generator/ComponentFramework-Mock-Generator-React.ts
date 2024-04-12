@@ -5,8 +5,8 @@
 
 import type { SinonSpiedInstance, SinonStub } from 'sinon';
 import type { ReactElement } from 'react';
-import type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
-import type { PropertyMap } from '../ComponentFramework-Mock';
+import type { ComponentValues, MockGenerator, MockGeneratorOverrides } from './MockGenerator';
+import type { MockToRaw, PropertyMap, PropertyToMock } from '../ComponentFramework-Mock';
 import type { ShkoOnline } from '../ShkoOnline';
 
 import { createElement } from 'react';
@@ -25,8 +25,15 @@ export class ComponentFrameworkMockGeneratorReact<
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > implements MockGenerator<TInputs, TOutputs>
 {
+    _PendingUpdates: {
+        value: ComponentFramework.LookupValue | ComponentValues<TInputs>;
+        table: string;
+        column: string;
+        row?: string;
+    }[];
     RefreshParameters: SinonStub<[], void>;
     RefreshDatasets: SinonStub<[], void>;
+    UpdateValues: SinonStub<[items: Partial<MockToRaw<TInputs, PropertyToMock<TInputs>>>], void>;
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
@@ -44,10 +51,11 @@ export class ComponentFrameworkMockGeneratorReact<
         overrides?: MockGeneratorOverrides
     ) {
         showBanner(control.name);
+        this._PendingUpdates = [];
         this.state = {};
         this.outputOnlyProperties = {} as ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
         this.control = spy(new control());
-        this.metadata = new MetadataDB();
+        this.metadata = overrides?.metadata ?? new MetadataDB();
         this.context = new ContextMock(inputs, this.metadata);
 
         const inputProperties = Object.getOwnPropertyNames(this.context._parameters);
@@ -62,6 +70,7 @@ export class ComponentFrameworkMockGeneratorReact<
         }
 
         mockGetEntityMetadata(this);
+        this.UpdateValues = stub();
         this.notifyOutputChanged = stub(); // Mocked in ReactResizeObserver
         this.onOutputChanged = stub();
         this.resizeObserver = new ResizeObserver(() => undefined); // Defined in ReactResizeObserver
