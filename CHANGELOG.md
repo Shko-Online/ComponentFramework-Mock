@@ -1,3 +1,10 @@
+# [0.6.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.5.0...v0.6.0) (2024-04-12)
+
+
+### Features
+
+* implement UpdateValues ([66cc1a7](https://github.com/shko-online/ComponentFramework-Mock/commit/66cc1a702fc6f30cb16d30aaf4ede5ce743aa8fe)), closes [Shko-Online/ComponentFramework-Mock#1](https://github.com/Shko-Online/ComponentFramework-Mock/issues/1)
+
 # [0.5.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.4.2...v0.5.0) (2024-01-18)
 
 
