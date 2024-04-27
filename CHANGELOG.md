@@ -1,3 +1,10 @@
+## [0.6.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.0...v0.6.1) (2024-04-27)
+
+
+### Bug Fixes
+
+* fixed minor typings issues ([e1625e9](https://github.com/shko-online/ComponentFramework-Mock/commit/e1625e9c3a991ce4a2f902e059ab046478bf3f61))
+
 # [0.6.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.5.0...v0.6.0) (2024-04-12)
 
 
