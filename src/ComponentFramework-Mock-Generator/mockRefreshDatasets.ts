@@ -3,8 +3,6 @@
     Licensed under the MIT license.
 */
 
-/// <reference path="../global.d.ts" />
-
 import type { PropertyToMock } from '../ComponentFramework-Mock';
 import type { MockGenerator } from './MockGenerator';
 import type { ShkoOnline } from '../ShkoOnline';

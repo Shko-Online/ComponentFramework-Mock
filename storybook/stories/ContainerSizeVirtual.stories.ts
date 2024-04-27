@@ -8,7 +8,7 @@ import { ComponentFrameworkMockGeneratorReact, TwoOptionsPropertyMock } from '..
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/ContainerSizeReact",
-    argTypes: {       
+    argTypes: {
         trackContainer: {
             defaultValue: false,
             name: 'Track Container',
@@ -28,11 +28,11 @@ interface StoryArgs {
 }
 
 const renderGenerator = () => {
-    let container: HTMLDivElement;
+    let container: HTMLDivElement | null;
     let mockGenerator: ComponentFrameworkMockGeneratorReact<IInputs, IOutputs>;
 
     return function () {
-        const [args] = useArgs<StoryArgs>();
+        const [args, updateArgs] = useArgs<StoryArgs>();
         useEffect(
             () => () => {
                 container = null;

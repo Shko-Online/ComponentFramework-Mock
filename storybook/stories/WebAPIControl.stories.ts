@@ -16,7 +16,7 @@ interface StoryArgs {
 }
 
 const renderGenerator = () => {
-    let container: HTMLDivElement;
+    let container: HTMLDivElement | null;
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
 
     return function () {
@@ -40,23 +40,29 @@ const renderGenerator = () => {
             );
 
             mockGenerator.metadata.initMetadata([
-                { LogicalName: 'account', EntitySetName: 'accounts', PrimaryIdAttribute: 'accountid', PrimaryNameAttribute: 'name', Attributes: [
-                    {
-                        AttributeType: AttributeType.Uniqueidentifier,
-                        LogicalName: 'accountid',
-                        SchemaName: 'AccountId'
-                    } as ShkoOnline.AttributeMetadata,
-                    {
-                        AttributeType: AttributeType.String,
-                        LogicalName: 'name',
-                        SchemaName: 'Name'
-                    } as ShkoOnline.StringAttributeMetadata,
-                    {
-                        AttributeType: AttributeType.Money,
-                        LogicalName: 'revenue',
-                        SchemaName: 'revenue'
-                    } as ShkoOnline.AttributeMetadata
-                ] },
+                {
+                    LogicalName: 'account',
+                    EntitySetName: 'accounts',
+                    PrimaryIdAttribute: 'accountid',
+                    PrimaryNameAttribute: 'name',
+                    Attributes: [
+                        {
+                            AttributeType: AttributeType.Uniqueidentifier,
+                            LogicalName: 'accountid',
+                            SchemaName: 'AccountId',
+                        } as ShkoOnline.AttributeMetadata,
+                        {
+                            AttributeType: AttributeType.String,
+                            LogicalName: 'name',
+                            SchemaName: 'Name',
+                        } as ShkoOnline.StringAttributeMetadata,
+                        {
+                            AttributeType: AttributeType.Money,
+                            LogicalName: 'revenue',
+                            SchemaName: 'revenue',
+                        } as ShkoOnline.AttributeMetadata,
+                    ],
+                },
             ]);
 
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
@@ -81,7 +87,5 @@ const renderGenerator = () => {
 
 export const WebAPIControl = {
     render: renderGenerator(),
-    args: {
-
-    },
+    args: {},
 } as StoryObj<StoryArgs>;

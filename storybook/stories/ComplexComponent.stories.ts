@@ -29,7 +29,7 @@ export default {
 } as Meta<StoryArgs>;
 
 const renderGenerator = () => {
-    let container: HTMLDivElement;
+    let container: HTMLDivElement | null;
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
 
     return function () {

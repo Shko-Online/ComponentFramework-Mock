@@ -22,7 +22,7 @@ export default {
 } as Meta<StoryArgs>;
 
 const renderGenerator = () => {
-    let container: HTMLDivElement;
+    let container: HTMLDivElement | null;
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
 
     return function () {
@@ -50,12 +50,10 @@ const renderGenerator = () => {
                 value: { entityType: 'account', id: 'my-id' },
             });
 
-            mockGenerator.onOutputChanged.callsFake(({value}) => {
+            mockGenerator.onOutputChanged.callsFake(({ value }) => {
                 mockGenerator.context._parameters.value._Refresh();
                 updateArgs({
-                    value: value
-                        ? value[0]
-                        : undefined,
+                    value: value ? value[0] : undefined,
                 });
             });
 
@@ -66,9 +64,9 @@ const renderGenerator = () => {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
             mockGenerator.UpdateValues({
-                value: args.value
+                value: args.value,
             });
-            
+
             mockGenerator.ExecuteUpdateView();
         }
         return container;

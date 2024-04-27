@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-import type { ShkoOnline } from '@shko.online/componentframework-mock/ShkoOnline';
+import type { ShkoOnline } from '../../../ShkoOnline';
 import alasql from 'alasql';
 
 export const CREATE_TABLE_METADATA_ATTRIBUTE = `

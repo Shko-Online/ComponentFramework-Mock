@@ -89,3 +89,9 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
         this.webAPI = new WebApiMock(db, this.formatting);
     }
 }
+
+declare global {
+    interface ObjectConstructor {
+        getOwnPropertyNames<T>(o: T): (keyof T)[];
+    }
+}

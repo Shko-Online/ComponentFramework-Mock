@@ -37,7 +37,7 @@ interface StoryArgs {
 }
 
 const renderGenerator = () => {
-    let container: HTMLDivElement;
+    let container: HTMLDivElement | null;
     let mockGenerator: ComponentFrameworkMockGenerator<IInputs, IOutputs>;
 
     return function () {
@@ -78,8 +78,8 @@ const renderGenerator = () => {
                 selection: args.selection,
             });
 
-            mockGenerator.onOutputChanged.callsFake(()=>{
-                updateArgs({selection: mockGenerator.context._parameters.selection.raw});
+            mockGenerator.onOutputChanged.callsFake(() => {
+                updateArgs({ selection: mockGenerator.context._parameters.selection.raw });
             });
 
             mockGenerator.ExecuteInit();
@@ -89,9 +89,9 @@ const renderGenerator = () => {
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
             mockGenerator.UpdateValues({
-                selection: args.selection
+                selection: args.selection,
             });
-            
+
             mockGenerator.ExecuteUpdateView();
         }
 
