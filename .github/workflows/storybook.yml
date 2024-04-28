@@ -26,7 +26,7 @@ jobs:
       - name: Setup NodeJs
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: 'npm'
       - name: Install Dependencies
         run: npm install && cd ./storybook && npm install && cd ..
