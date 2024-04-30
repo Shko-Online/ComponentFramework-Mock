@@ -1,3 +1,10 @@
+## [0.6.2](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.1...v0.6.2) (2024-04-30)
+
+
+### Bug Fixes
+
+* added more table metadata ([5f97640](https://github.com/shko-online/ComponentFramework-Mock/commit/5f976403214553c53400e66d7060577c6639af82))
+
 ## [0.6.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.0...v0.6.1) (2024-04-27)
 
 
