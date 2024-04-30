@@ -233,6 +233,10 @@ export class MetadataDB {
                 PrimaryIdAttribute: metadata.PrimaryIdAttribute,
                 PrimaryNameAttribute: metadata.PrimaryNameAttribute,
                 PrimaryImageAttribute: metadata.PrimaryImageAttribute,
+                DisplayName: metadata.DisplayName,
+                DisplayCollectionName: metadata.DisplayCollectionName,
+                LogicalCollectionName: metadata.LogicalCollectionName,
+                Description: metadata.Description,
             });
 
             const columns: string[] = [];
@@ -275,6 +279,10 @@ export class MetadataDB {
             PrimaryIdAttribute: tableMetadataDB[0].PrimaryIdAttribute,
             PrimaryNameAttribute: tableMetadataDB[0].PrimaryNameAttribute,
             PrimaryImageAttribute: tableMetadataDB[0].PrimaryImageAttribute,
+            DisplayName: tableMetadataDB[0].DisplayName,
+            DisplayCollectionName: tableMetadataDB[0].DisplayCollectionName,
+            LogicalCollectionName: tableMetadataDB[0].LogicalCollectionName,
+            Description: tableMetadataDB[0].Description,
         } as ShkoOnline.EntityMetadata;
 
         var resultDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attribute, entity);
@@ -323,6 +331,10 @@ export class MetadataDB {
             PrimaryIdAttribute: tableMetadataDB[0].PrimaryIdAttribute,
             PrimaryNameAttribute: tableMetadataDB[0].PrimaryNameAttribute,
             PrimaryImageAttribute: tableMetadataDB[0].PrimaryImageAttribute,
+            DisplayName: tableMetadataDB[0].DisplayName,
+            DisplayCollectionName: tableMetadataDB[0].DisplayCollectionName,
+            LogicalCollectionName: tableMetadataDB[0].LogicalCollectionName,
+            Description: tableMetadataDB[0].Description,
         } as ShkoOnline.EntityMetadata;
 
         const attributesDB = this.AttributeMetadataSQL.SelectAttributeMetadataForTable(entity);

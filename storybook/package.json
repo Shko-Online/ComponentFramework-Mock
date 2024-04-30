@@ -36,6 +36,7 @@
     "@babel/preset-typescript": "^7.23.3",
     "@emotion/babel-plugin": "^11.11.0",
     "@shko.online/dataverse-odata": "^0.1.4",
+    "@shko.online/lookupobjects-mock": "^0.2.0",
     "@storybook/addon-actions": "^8.0.8",
     "@storybook/addon-essentials": "^8.0.8",
     "@storybook/addon-links": "^8.0.8",

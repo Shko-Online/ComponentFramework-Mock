@@ -12,12 +12,20 @@ export const CREATE_TABLE_METADATA_ENTITY = `
         EntitySetName string, 
         PrimaryIdAttribute string, 
         PrimaryNameAttribute string,
-        PrimaryImageAttribute string
+        PrimaryImageAttribute string,
+        DisplayName string,
+        DisplayCollectionName string,
+        LogicalCollectionName string,
+        Description string
     )
 `;
 
 export const INSERT_METADATA_ENTITY = `
     INSERT INTO Metadata__Entity VALUES (
+        ?,
+        ?,
+        ?,
+        ?,
         ?,
         ?,
         ?,
@@ -34,7 +42,11 @@ export const SELECT_METADATA_ENTITY = `
         EntitySetName, 
         PrimaryIdAttribute, 
         PrimaryNameAttribute,
-        PrimaryImageAttribute
+        PrimaryImageAttribute,
+        DisplayName,
+        DisplayCollectionName,
+        LogicalCollectionName,
+        Description
     FROM
         Metadata__Entity
     WHERE LogicalName = ?
@@ -47,7 +59,11 @@ export const SELECT_METADATA_ENTITY_BY_ENTITYSET = `
         EntitySetName, 
         PrimaryIdAttribute, 
         PrimaryNameAttribute,
-        PrimaryImageAttribute
+        PrimaryImageAttribute,
+        DisplayName,
+        DisplayCollectionName,
+        LogicalCollectionName,
+        Description
     FROM
         Metadata__Entity
     WHERE EntitySetName = ?
@@ -60,6 +76,10 @@ export interface EntityMetadata {
     PrimaryIdAttribute: string;
     PrimaryNameAttribute: string;
     PrimaryImageAttribute?: string;
+    DisplayName?: string;
+    DisplayCollectionName?: string;
+    LogicalCollectionName?: string;
+    Description?: string;
 }
 
 export class EntityMetadataSQL {
@@ -76,6 +96,10 @@ export class EntityMetadataSQL {
             metadata.PrimaryIdAttribute,
             metadata.PrimaryNameAttribute,
             metadata.PrimaryImageAttribute,
+            metadata.DisplayName,
+            metadata.DisplayCollectionName,
+            metadata.LogicalCollectionName,
+            metadata.Description
         ]);
     }
     SelectTableMetadata(LogicalName: string) {

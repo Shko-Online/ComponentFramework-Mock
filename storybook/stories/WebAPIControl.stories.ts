@@ -5,6 +5,7 @@ import { useArgs, useEffect } from '@storybook/preview-api';
 import { WebAPIControl as Component } from '../../__sample-components__/WebAPIControl';
 import { AttributeType, ComponentFrameworkMockGenerator, ShkoOnline, StringPropertyMock } from '../../src';
 import '../../__sample-components__/WebAPIControl/css/WebAPIControl.css';
+import mockLookupObjects from '@shko.online/lookupobjects-mock';
 
 export default {
     title: "Shko Online's ComponentFramework-Mock/WebAPI Control",
@@ -45,6 +46,10 @@ const renderGenerator = () => {
                     EntitySetName: 'accounts',
                     PrimaryIdAttribute: 'accountid',
                     PrimaryNameAttribute: 'name',
+                    DisplayName: 'Account',
+                    DisplayCollectionName: 'Accounts',
+                    LogicalCollectionName: 'accounts',
+                    Description: 'Description of table Account',
                     Attributes: [
                         {
                             AttributeType: AttributeType.Uniqueidentifier,
@@ -70,7 +75,9 @@ const renderGenerator = () => {
             mockGenerator.context._SetCanvasItems({
                 stringProperty: '',
             });
-
+            console.log('', mockGenerator.metadata.getTableMetadata('account'));
+            // @ts-ignore
+            mockLookupObjects(mockGenerator);
             mockGenerator.ExecuteInit();
         }
 
