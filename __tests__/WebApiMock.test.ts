@@ -75,15 +75,15 @@ describe('WebApiMock', () => {
     });
 
     it('Should retrieve records selected attributes', async () => {
-        const { fullname } = JSON.parse(JSON.stringify(betimBeja));
+        const { systemuserid, fullname } = JSON.parse(JSON.stringify(betimBeja));
 
         await expect(
             mockGenerator.context.webAPI.retrieveRecord(
                 'systemuser',
-                '682d1eb3-0ba4-ed11-aad1-000d3add5311',
+                systemuserid,
                 '?$select=fullname',
             ),
-        ).resolves.toEqual({ fullname });
+        ).resolves.toEqual({ systemuserid, fullname });
     });
 
     it('Should reject delete if no metadata', async () => {
@@ -278,7 +278,7 @@ describe('WebApiMock', () => {
             it('Should retrieve multiple records using OData', async () => {
                 const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
                     'systemuser',
-                    '?$select=systemuserid,firstname,lastname',
+                    '?$select=firstname,lastname',
                 );
 
                 const betimBeja = result.entities.find(

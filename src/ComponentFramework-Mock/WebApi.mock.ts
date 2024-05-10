@@ -322,6 +322,13 @@ export class WebApiMock implements ComponentFramework.WebApi {
                             parsed.$select.forEach((attribute) => {
                                 result.row[attribute] = oldRow[attribute];
                             });
+                            if (
+                                result.entityMetadata.PrimaryIdAttribute !== undefined &&
+                                !parsed.$select.includes(result.entityMetadata.PrimaryIdAttribute)
+                            ) {
+                                result.row[result.entityMetadata.PrimaryIdAttribute] =
+                                    oldRow[result.entityMetadata.PrimaryIdAttribute];
+                            }
                         }
                     }
                     this._ConvertRowToOData(result.row, result.entityMetadata);

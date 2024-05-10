@@ -924,7 +924,10 @@ export class MetadataDB {
                     attributes.push(attribute.LogicalName);
                     attributes.push(attribute.LogicalName + 'name');
                     attributes.push(attribute.LogicalName + 'type');
-                } else if (query.$select?.find((a) => a === attribute.LogicalName)) {
+                } else if (
+                    query.$select?.find((a) => a === attribute.LogicalName) ||
+                    attribute.LogicalName === tableMetadata.PrimaryIdAttribute
+                ) {
                     attributes.push(attribute.LogicalName);
                     if (
                         attribute.AttributeType === AttributeType.Boolean ||
