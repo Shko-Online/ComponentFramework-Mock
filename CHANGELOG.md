@@ -1,3 +1,10 @@
+## [0.6.3](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.2...v0.6.3) (2024-05-10)
+
+
+### Bug Fixes
+
+* return primaryIdAttribute on webapi retrieve ([95da7f2](https://github.com/shko-online/ComponentFramework-Mock/commit/95da7f2ac5135c2e22889035fe45af00ef87a757))
+
 ## [0.6.2](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.1...v0.6.2) (2024-04-30)
 
 
