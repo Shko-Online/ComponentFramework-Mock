@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WebAPIControl Should render 1`] = `
+<div>
+  <div
+    class="WebAPIControl_Container"
+  >
+    <div
+      class="SampleControl_WebAPIControl_Header create_container_header"
+    />
+    <button
+      buttonvalue="100"
+      class="SampleControl_WebAPIControl_ButtonClass"
+      id="create_button_100"
+    >
+      Create record with annual revenue of 100
+    </button>
+    <button
+      buttonvalue="200"
+      class="SampleControl_WebAPIControl_ButtonClass"
+      id="create_button_200"
+    >
+      Create record with annual revenue of 200
+    </button>
+    <button
+      buttonvalue="300"
+      class="SampleControl_WebAPIControl_ButtonClass"
+      id="create_button_300"
+    >
+      Create record with annual revenue of 300
+    </button>
+    <div
+      class="SampleControl_WebAPIControl_Header delete_container_header"
+    />
+    <button
+      class="SampleControl_WebAPIControl_ButtonClass"
+      id="delete_button"
+    >
+      Select record to delete
+    </button>
+    <div
+      class="SampleControl_WebAPIControl_Header fetchxml_status_container_header"
+    />
+    <div
+      class="fetchxml_status_container"
+    />
+    <button
+      class="SampleControl_WebAPIControl_ButtonClass"
+      id="odata_refresh"
+    >
+      Calculate average value of annual revenue
+    </button>
+    <div
+      class="SampleControl_WebAPIControl_Header odata_status_container_header"
+    />
+    <div
+      class="odata_status_container"
+    />
+    <button
+      class="SampleControl_WebAPIControl_ButtonClass"
+      id="odata_refresh"
+    >
+      Refresh record count
+    </button>
+    <div
+      class="SampleControl_WebAPIControl_Header result_container_header"
+    />
+    <div
+      class="result_container"
+    >
+      Web API sample custom control loaded
+    </div>
+  </div>
+</div>
+`;

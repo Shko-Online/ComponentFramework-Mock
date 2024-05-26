@@ -16,7 +16,7 @@ describe('YearPicker', () => {
             YearPicker,
             {
                 value: DateTimePropertyMock,
-                enum: EnumPropertyMock<'Yes' | 'No'>,
+                enum: EnumPropertyMock,
             },
             container,
         );
