@@ -1,3 +1,10 @@
+## [0.6.4](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.3...v0.6.4) (2024-11-21)
+
+
+### Bug Fixes
+
+* Updated dependencies ([6fdb824](https://github.com/shko-online/ComponentFramework-Mock/commit/6fdb824f4c4c14b53bd38f2ce02860bd738a7091))
+
 ## [0.6.3](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.2...v0.6.3) (2024-05-10)
 
 
