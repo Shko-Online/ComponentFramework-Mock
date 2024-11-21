@@ -76,7 +76,7 @@ describe('EntityRecordMock', () => {
     });
 
     it('setValue should call updateView', async () => {
-        await entityRecord.setValue('name', 'Asllan Makaj');
+        await entityRecord.setValue('name', 'Hamza Kastrioti');
         expect(updateView.calledOnce).toEqual(true);
     });
 });

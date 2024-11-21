@@ -18,7 +18,7 @@ export default {
                 type: 'multi-select',
                 labels: {
                     0: 'Betim Beja',
-                    1: 'Asllan Makaj',
+                    1: 'Hamza Kastrioti',
                     2: 'Shko Online',
                 },
             },
@@ -66,7 +66,7 @@ const renderGenerator = () => {
 
             optionsetMetadata.OptionSet.Options = {
                 0: { Value: 0, Label: 'Betim Beja' },
-                1: { Value: 1, Label: 'Asllan Makaj' },
+                1: { Value: 1, Label: 'Hamza Kastrioti' },
                 2: { Value: 2, Label: 'Shko Online' },
             };
 

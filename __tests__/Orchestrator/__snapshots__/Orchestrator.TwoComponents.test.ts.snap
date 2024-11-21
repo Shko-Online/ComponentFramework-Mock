@@ -23,7 +23,7 @@ exports[`Orchestrator Owner and YearPicker Should update value on click 1`] = `
 <body>
   <div>
     <p>
-      [systemuser-MyUserId] Assigned from PCF
+      [systemuser-MyUserId] Betim Beja
     </p>
     <button>
       Assign To Myself

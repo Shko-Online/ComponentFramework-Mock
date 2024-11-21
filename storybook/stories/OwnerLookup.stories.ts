@@ -44,6 +44,8 @@ const renderGenerator = () => {
                 container,
             );
 
+            mockGenerator.context.userSettings.userId = 'context-id';
+            mockGenerator.context.userSettings.userName = 'PCF User';
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
             mockGenerator.context.mode.isVisible = args.isVisible;
             mockGenerator.context._SetCanvasItems({

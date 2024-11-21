@@ -5,7 +5,7 @@
 
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../ShkoOnline';
-import type { MockToRaw, PropertyMap, PropertyMock, PropertyToMock } from './PropertyTypes';
+import type { MockToRaw, PropertyMap, PropertyToMock } from './PropertyTypes';
 
 import { stub } from 'sinon';
 import { ClientMock } from './Client.mock';
@@ -21,8 +21,8 @@ import { UtilityMock } from './Utility.mock';
 import { WebApiMock } from './WebApi.mock';
 import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 
-export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
-    implements ComponentFramework.Context<IInputs>
+export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>,TEvents = ComponentFramework.IEventBag>
+    implements ComponentFramework.Context<IInputs, TEvents>
 {
     client: ClientMock;
     device: DeviceMock;
@@ -39,8 +39,10 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>>
     webAPI: WebApiMock;
     updatedProperties: string[];
     fluentDesignLanguage?: FluentDesignStateMock;
+    events: TEvents;
     constructor(inputs: PropertyMap<IInputs>, db: MetadataDB) {
         this.updatedProperties = [];
+        this.events = {} as TEvents;
         this.client = new ClientMock();
         this.device = new DeviceMock();
         this.factory = new FactoryMock();
