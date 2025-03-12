@@ -32,13 +32,13 @@ steps:
 - task: Npm@1
   inputs:
     command: 'custom'
-    customCommand: 'test:types'
+    customCommand: 'run test:types'
   displayName: "Test Types"
 
 - task: Npm@1
   inputs:
     command: 'custom'
-    customCommand: 'test:jest'
+    customCommand: 'run test:jest'
   displayName: "Test"
 
 - task: Npm@1
