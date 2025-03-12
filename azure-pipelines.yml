@@ -32,7 +32,13 @@ steps:
 - task: Npm@1
   inputs:
     command: 'custom'
-    customCommand: 'test'
+    customCommand: 'test:types'
+  displayName: "Test Types"
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    customCommand: 'test:jest'
   displayName: "Test"
 
 - task: Npm@1
@@ -47,9 +53,8 @@ steps:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
     NPM_TOKEN: $(NPM_TOKEN)
   
-- task: PublishCodeCoverageResults@1
+- task: PublishCodeCoverageResults@2
   displayName: "Publish code coverage results"
   condition: succeededOrFailed()
   inputs:
-    codeCoverageTool: Cobertura
     summaryFileLocation: "coverage/cobertura-coverage.xml"
