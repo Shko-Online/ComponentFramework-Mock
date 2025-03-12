@@ -32,4 +32,9 @@ describe('FormattingMock', () => {
         const result = formatting.formatCurrency(100100);
         expect(result).toEqual('100,100');
     });
+
+    it('Format Decimal works as expected with precision specified', () => {
+        const result = formatting.formatDecimal(10098, 2);
+        expect(result).toEqual('10,098.00');
+    });
 });

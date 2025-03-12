@@ -45,6 +45,7 @@ export class FormattingMock implements ComponentFramework.Formatting {
         this.formatDecimal.callsFake((value: number, precision?: number) => {
             return value.toLocaleString(this.locale, {
                 maximumFractionDigits: precision,
+                minimumFractionDigits: precision
             });
         });
         this.formatDateAsFilterStringInUTC = stub();
