@@ -1,3 +1,10 @@
+## [0.6.5](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.4...v0.6.5) (2025-03-12)
+
+
+### Bug Fixes
+
+* properly handling formatDecimal precision ([13a04b9](https://github.com/shko-online/ComponentFramework-Mock/commit/13a04b9777c8f37dd19776d6e78b20f28aac961a))
+
 ## [0.6.4](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.3...v0.6.4) (2024-11-21)
 
 
