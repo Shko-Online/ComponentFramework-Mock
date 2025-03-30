@@ -1,3 +1,10 @@
+# [0.7.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.5...v0.7.0) (2025-03-30)
+
+
+### Features
+
+* added mock for context.utils.loadDependency ([a779d6f](https://github.com/shko-online/ComponentFramework-Mock/commit/a779d6f904d2751b6fd5c255a68cb6beecb6e0ae))
+
 ## [0.6.5](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.4...v0.6.5) (2025-03-12)
 
 
