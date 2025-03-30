@@ -21,6 +21,7 @@ export class UtilityMock implements ComponentFramework.Utility {
         [lookupOptions: ComponentFramework.UtilityApi.LookupOptions],
         Promise<ComponentFramework.LookupValue[]>
     >;
+    loadDependency: SinonStub<[dependencyName: string], Promise<unknown>>;
     constructor() {
         this.getEntityMetadata = stub();
         this.hasEntityPrivilege = stub();
@@ -37,14 +38,24 @@ export class UtilityMock implements ComponentFramework.Utility {
         this.lookupObjects = stub();
         this.lookupObjects.callsFake((lookupOptions: ComponentFramework.UtilityApi.LookupOptions) => {
             return new Promise<ComponentFramework.LookupValue[]>((resolve) => {
-                resolve([
-                    {
-                        entityType: lookupOptions.entityTypes ? lookupOptions.entityTypes[0] : 'mocked_entity',
-                        id: '00000000-0000-0000-0000-000000000001',
-                        name: 'Fake Lookup Result',
-                    },
-                ]);
+                setTimeout(() =>
+                    resolve([
+                        {
+                            entityType: lookupOptions.entityTypes ? lookupOptions.entityTypes[0] : 'mocked_entity',
+                            id: '00000000-0000-0000-0000-000000000001',
+                            name: 'Fake Lookup Result',
+                        },
+                    ])
+                );
             });
         });
+        this.loadDependency = stub();
+        this.loadDependency.callsFake((dependencyName: string) => {
+            return new Promise((resolve) => {
+                setTimeout(() =>
+                    resolve({}) // the platform returns the control class when found or undefined when not found.
+                );
+            });
+        })
     }
 }
