@@ -12,15 +12,19 @@ import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/
 
 export class DecimalNumberPropertyMock
     extends NumberPropertyMock
-    implements ComponentFramework.PropertyTypes.DecimalNumberProperty {
+    implements ComponentFramework.PropertyTypes.DecimalNumberProperty
+{
     attributes?: DecimalNumberMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Decimal) {
             super(db, entityMetadata, `${propertyName}___${++MetadataDB.Collisions}`, true);
         } else {
             super(db, entityMetadata, propertyName, true);
         }
+        this.type = 'Decimal';
         this._Refresh.callsFake(() => {
             const { value, attributeMetadata } =
                 this._db.GetValueAndMetadata<ShkoOnline.DecimalNumberAttributeMetadata>(

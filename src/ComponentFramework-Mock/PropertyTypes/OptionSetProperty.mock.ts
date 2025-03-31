@@ -16,7 +16,6 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
     _SetValue: SinonStub<[value: number | null], void>;
     attributes: OptionSetMetadataMock;
     raw: number | null;
-
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
         const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Picklist) {
@@ -24,6 +23,7 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
         } else {
             super(db, entityMetadata.LogicalName, propertyName);
         }
+        this.type = 'OptionSet';
         this.raw = null;
         this.attributes = new OptionSetMetadataMock();
         this._SetValue = stub();

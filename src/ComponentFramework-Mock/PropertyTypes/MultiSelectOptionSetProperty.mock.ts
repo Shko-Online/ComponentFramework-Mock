@@ -14,17 +14,21 @@ import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 
 export class MultiSelectOptionSetPropertyMock
     extends PropertyMock
-    implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty {
+    implements ComponentFramework.PropertyTypes.MultiSelectOptionSetProperty
+{
     _SetValue: SinonStub<[value: number[] | null], void>;
     attributes?: OptionSetMetadataMock;
     raw: number[] | null;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Picklist) {
             super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
         } else {
             super(db, entityMetadata.LogicalName, propertyName);
         }
+        this.type = 'MultiSelectOptionSet';
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
             this._db.UpdateValue<number[] | null>(value, this._boundTable, this._boundColumn, this._boundRow);

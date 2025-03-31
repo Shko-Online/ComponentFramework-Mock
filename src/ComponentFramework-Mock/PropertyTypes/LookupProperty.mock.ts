@@ -20,12 +20,15 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
     getTargetEntityType: SinonStub<[], string>;
     getViewId: SinonStub<[], string>;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Lookup) {
             super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
         } else {
             super(db, entityMetadata.LogicalName, propertyName);
         }
+        this.type = 'Lookup.Simple';
         this._boundViewId = '00000000-0000-0000-0000-000000000000';
         this.raw = [];
         this._SetValue = stub();
@@ -56,7 +59,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
                 this.formatted = '';
             }
         });
-        
+
         if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Lookup) {
             const attribute = {
                 AttributeType: AttributeType.Lookup,

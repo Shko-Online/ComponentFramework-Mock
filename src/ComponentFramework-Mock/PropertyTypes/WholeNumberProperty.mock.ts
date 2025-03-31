@@ -11,15 +11,19 @@ import { WholeNumberMetadataMock } from '../Metadata';
 
 export class WholeNumberPropertyMock
     extends NumberPropertyMock
-    implements ComponentFramework.PropertyTypes.WholeNumberProperty {
+    implements ComponentFramework.PropertyTypes.WholeNumberProperty
+{
     attributes?: WholeNumberMetadataMock;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Integer) {
             super(db, entityMetadata, `${propertyName}___${++MetadataDB.Collisions}`, true);
         } else {
             super(db, entityMetadata, propertyName, true);
         }
+        this.type = 'Whole.None';
         this._db = db;
         this._Bind(entityMetadata.LogicalName, propertyName);
         this._Refresh.callsFake(() => {

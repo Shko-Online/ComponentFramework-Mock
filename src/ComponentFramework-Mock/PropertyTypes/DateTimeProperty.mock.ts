@@ -16,14 +16,16 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
     _SetValue: SinonStub<[value: Date | null], void>;
     attributes?: DateTimeMetadataMock;
     raw: Date | null;
-
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.DateTime) {
             super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
         } else {
             super(db, entityMetadata.LogicalName, propertyName);
         }
+        this.type = 'DateAndTime.DateAndTime';
         this.raw = null;
         if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.DateTime) {
             const attribute = {

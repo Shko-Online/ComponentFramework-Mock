@@ -14,17 +14,21 @@ import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/
 
 export class TwoOptionsPropertyMock
     extends PropertyMock
-    implements ComponentFramework.PropertyTypes.TwoOptionsProperty {
+    implements ComponentFramework.PropertyTypes.TwoOptionsProperty
+{
     _SetValue: SinonStub<[value: boolean | null], void>;
     attributes?: TwoOptionMetadataMock;
     raw: boolean;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.Boolean) {
             super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
         } else {
             super(db, entityMetadata.LogicalName, propertyName);
         }
+        this.type = 'TwoOptions';
         this.raw = false;
         this.attributes = new TwoOptionMetadataMock();
         this._SetValue = stub();

@@ -17,12 +17,15 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
     attributes: StringMetadataMock;
     raw: string | null;
     constructor(propertyName: string, db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (existingAttribute && existingAttribute.AttributeType !== AttributeType.String) {
             super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
         } else {
             super(db, entityMetadata.LogicalName, propertyName);
         }
+        this.type = 'SingleLine.Text';
         this.raw = null;
         this._SetValue = stub();
         this._SetValue.callsFake((value) => {
