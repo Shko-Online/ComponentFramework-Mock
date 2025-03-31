@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.7.0...v0.7.1) (2025-03-31)
+
+
+### Bug Fixes
+
+* specify default type for different property mocks ([7abe891](https://github.com/shko-online/ComponentFramework-Mock/commit/7abe891fe54865c59b75ec132ee8bc1fffbd45fd))
+
 # [0.7.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.6.5...v0.7.0) (2025-03-30)
 
 
