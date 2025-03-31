@@ -1,3 +1,10 @@
+# [0.8.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.7.1...v0.8.0) (2025-03-31)
+
+
+### Features
+
+* add support for PropertyMock (multiple types) ([2bc20c2](https://github.com/shko-online/ComponentFramework-Mock/commit/2bc20c23d9a3576cacf83e6f43ea5d0d29680bd9))
+
 ## [0.7.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.7.0...v0.7.1) (2025-03-31)
 
 
