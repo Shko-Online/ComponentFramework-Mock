@@ -1,3 +1,10 @@
+## [0.8.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.8.0...v0.8.1) (2025-04-23)
+
+
+### Bug Fixes
+
+* Generic property is typed properly ([5f0f0e5](https://github.com/shko-online/ComponentFramework-Mock/commit/5f0f0e5768bd4ddc8d2ffc19a27f1e47bd895a60))
+
 # [0.8.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.7.1...v0.8.0) (2025-03-31)
 
 
