@@ -1,3 +1,15 @@
+# [0.9.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.8.1...v0.9.0) (2025-10-12)
+
+
+### Bug Fixes
+
+* minor types fixes ([dd415e4](https://github.com/shko-online/ComponentFramework-Mock/commit/dd415e4c18f67e9bc14f719b556345ae9f5fca29))
+
+
+### Features
+
+* added CopilotMock ([83d23bb](https://github.com/shko-online/ComponentFramework-Mock/commit/83d23bbe365cd81fabc4a7348c5250341f7aeea3))
+
 ## [0.8.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.8.0...v0.8.1) (2025-04-23)
 
 
