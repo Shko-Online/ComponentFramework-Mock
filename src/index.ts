@@ -12,6 +12,7 @@ export {
     AttributeType,
     ClientMock,
     ContextMock,
+    CopilotMock,
     DataSetMock,
     DateTimeMetadataMock,
     DateTimePropertyMock,

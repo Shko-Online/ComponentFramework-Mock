@@ -884,7 +884,7 @@ export class MetadataDB {
         this.db.exec(`UPDATE ${safeTableName} ${statements.join(' ')}`, params);
     }
 
-    SelectUsingFetchXml(fetchXml: XMLDocument) {
+    SelectUsingFetchXml(fetchXml: XMLDocument) :ComponentFramework.WebApi.Entity[] {
         var fetchNode = fetchXml.documentElement;
         var entityNode = fetchNode.firstElementChild;
         if (!entityNode) {
