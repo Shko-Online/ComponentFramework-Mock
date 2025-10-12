@@ -39,7 +39,7 @@ export class MetadataDB {
         this.OptionSetMetadataSQL = new OptionSetMetadataSQL(this.db.exec.bind(this.db));
 
         this._newId = stub();
-        this._newId.callsFake(() => this.db.exec('SELECT NEWID() as ID')[0]['ID']);
+        this._newId.callsFake(() => this.db.exec<{ID:string}[]>('SELECT NEWID() as ID')[0]['ID']);
     }
 
     createAttribute(entityId: string, attribute: ShkoOnline.AttributeMetadata) {
@@ -166,7 +166,7 @@ export class MetadataDB {
 
     private initSingleTable(metadata: ShkoOnline.EntityMetadata) {
         const entityId = this._newId();
-        const safeTableName = metadata.LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+        const safeTableName = metadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
 
         if (!metadata.Attributes) {
             metadata.Attributes = [];
@@ -285,7 +285,7 @@ export class MetadataDB {
             Description: tableMetadataDB[0].Description,
         } as ShkoOnline.EntityMetadata;
 
-        var resultDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attribute, entity);
+        const resultDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attribute, entity);
         if (!resultDB || resultDB.length === 0) {
             if (this._warnMissingInit) {
                 console.warn(`Missing init for ${entity} ${attribute}`);
@@ -423,7 +423,7 @@ export class MetadataDB {
             console.warn(`Could not find metadata for ${entity}`);
             return;
         }
-        const safeTableName = tableDB[0].LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+        const safeTableName = tableDB[0].LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
 
         let attributeDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attributeMetadata.LogicalName, entity);
         if (attributeMetadata.MetadataId) {
@@ -545,7 +545,7 @@ export class MetadataDB {
         items.value.forEach((item) => {
             if (
                 tableMetadataDB[0].LogicalName === MetadataDB.CanvasLogicalName &&
-                this.db.exec('SELECT Count(1) as Records FROM _canvasapp')[0].Records > 0
+                this.db.exec<{Records:number}[]>('SELECT Count(1) as Records FROM _canvasapp')[0].Records > 0
             ) {
                 tableMetadata?.Attributes?.forEach((attribute) => {
                     if (attribute.LogicalName in item) {
@@ -587,7 +587,7 @@ export class MetadataDB {
             }
         }
 
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
         const params: string[] = [];
         const columns: string[] = [];
         let newID = null;
@@ -689,7 +689,7 @@ export class MetadataDB {
     GetRow(entity: string, id?: string) {
         const entityMetadata = this.getTableMetadata(entity);
         if (!entityMetadata) return { row: null, entityMetadata };
-        const safeTableName = entity.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+        const safeTableName = entity.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
 
         let selectQuery =
             'SELECT ' +
@@ -712,7 +712,7 @@ export class MetadataDB {
             selectQuery += ' WHERE [' + (entityMetadata?.PrimaryIdAttribute || 'id') + '] = ?';
         }
 
-        const rowDB = this.db.exec(selectQuery, [id]) as { [attribute: string]: any }[];
+        const rowDB = this.db.exec<{ [attribute: string]: any }[]>(selectQuery, [id]);
 
         if (!rowDB || rowDB.length == 0) {
             console.warn('could not find row');
@@ -750,7 +750,7 @@ export class MetadataDB {
      */
     RemoveRow(entity: string, id: string) {
         const entityMetadata = this.getTableMetadata(entity);
-        const safeTableName = entity.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+        const safeTableName = entity.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
         const selectQuery =
             'DELETE FROM ' + safeTableName + ' WHERE [' + (entityMetadata?.PrimaryIdAttribute || 'id') + '] = ?';
 
@@ -809,8 +809,8 @@ export class MetadataDB {
      */
     GetAllRows(entity: string) {
         const entityMetadata = this.getTableMetadata(entity);
-        const safeTableName = entity.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
-        const rows = this.db.exec('SELECT * FROM ' + safeTableName) as { [attr: string]: any }[];
+        const safeTableName = entity.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
+        const rows = this.db.exec<{ [attr: string]: any }[]>('SELECT * FROM ' + safeTableName);
         return { rows, entityMetadata };
     }
 
@@ -826,7 +826,7 @@ export class MetadataDB {
         if (!tableMetadata) {
             return;
         }
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
 
         const attributeMetadata = tableMetadata.Attributes?.find((attr) => attr.LogicalName === attribute);
         if (!attributeMetadata) {
@@ -911,7 +911,7 @@ export class MetadataDB {
     }
 
     SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/\!/g, '_').replace(/\@/g, '_');
+        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
 
         const attributes: string[] = [];
 
