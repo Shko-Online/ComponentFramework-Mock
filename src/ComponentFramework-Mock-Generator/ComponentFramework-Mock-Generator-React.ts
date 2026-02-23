@@ -20,6 +20,9 @@ import { mockSetControlState } from './mockSetControlState';
 import { mockSetControlResource } from './mockSetControlResource';
 import { mockRefreshParameters } from './mockRefreshParameters';
 
+/** 
+ * This class mocks the React version of the PowerApps Component Framework control.
+ */
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,

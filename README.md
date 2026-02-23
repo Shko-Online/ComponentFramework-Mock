@@ -1,14 +1,18 @@
-# ComponentFramework Mock ![NPM Downloads](https://img.shields.io/npm/dt/@shko.online%2Fcomponentframework-mock)
-This library mocks the entire ComponentFramework library and enables users to write tests and stories for their PCF components.
+# ComponentFramework Mock ![NPM Downloads](https://img.shields.io/npm/dt/@shko.online%2Fcomponentframework-mock) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Shko-Online_ComponentFramework-Mock&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Shko-Online_ComponentFramework-Mock)
+This library mocks the entire ComponentFramework library and enables users to write tests
+and stories for their PCF components.
 
-Explore the endless possibilities in the following Storybook [https://main--64b05f276a7d4d8ef73a9dd8.chromatic.com/](https://main--64b05f276a7d4d8ef73a9dd8.chromatic.com/)
+Explore the endless possibilities in the following Storybook:
+[https://main--64b05f276a7d4d8ef73a9dd8.chromatic.com/](https://main--64b05f276a7d4d8ef73a9dd8.chromatic.com/)
 ![ComponentFramework-Mock Storybook](https://github.com/Shko-Online/ComponentFramework-Mock/assets/11160171/04fa5e16-c43e-40bd-aa0f-c6683f99a2e5)
 
 
-# Quick Start
-First step is to add our package as a development dependency on your project. 
+## Quick Start
+First step is to add our package as a development dependency on your
+project.
 
-`* Examples will reference the OwnerLookup control in this repository.`
+- Examples reference the OwnerLookup control in this repository for
+    demonstration purposes.
 
 `npm`
 ```cmd
@@ -56,7 +60,8 @@ mockGenerator.context._SetCanvasItems({
 });
 ```
 
-You should call excatly once `ExecuteInit` and at least once `ExecuteUpdate` which control the system updates:
+You should call `ExecuteInit` exactly once and `ExecuteUpdate` at least once to drive
+the system updates:
 
 ```typescript
 mockGenerator.ExecuteInit();
