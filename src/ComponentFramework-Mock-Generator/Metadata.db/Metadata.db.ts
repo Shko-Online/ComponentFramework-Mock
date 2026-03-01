@@ -463,7 +463,7 @@ export class MetadataDB {
             attributeMetadata.AttributeType == AttributeType.Status
         ) {
             let optionsetMetadata = attributeMetadata as ShkoOnline.PickListAttributeMetadata;
-            if (optionsetMetadata.OptionSet && optionsetMetadata.OptionSet.MetadataId) {
+            if (optionsetMetadata.OptionSet?.MetadataId) {
                 this.db.exec('DELETE FROM Metadata__Optionset WHERE OptionSetId = ?', [
                     optionsetMetadata.OptionSet.MetadataId,
                 ]);
@@ -693,7 +693,7 @@ export class MetadataDB {
 
         let selectQuery =
             'SELECT ' +
-            (entityMetadata && entityMetadata.Attributes
+            (entityMetadata?.Attributes
                 ? entityMetadata?.Attributes?.map((attr) =>
                       attr.AttributeType === AttributeType.Lookup
                           ? '[' +
@@ -885,13 +885,13 @@ export class MetadataDB {
     }
 
     SelectUsingFetchXml(fetchXml: XMLDocument) :ComponentFramework.WebApi.Entity[] {
-        var fetchNode = fetchXml.documentElement;
-        var entityNode = fetchNode.firstElementChild;
+        const fetchNode = fetchXml.documentElement;
+        const entityNode = fetchNode.firstElementChild;
         if (!entityNode) {
             throw new Error('Fetch does not contain the entity node');
         }
 
-        var attributesX = entityNode.getElementsByTagName('attribute');
+        const attributesX = entityNode.getElementsByTagName('attribute');
         const attributes: string[] = [];
 
         if (fetchNode.getAttribute('aggregate') === 'true') {

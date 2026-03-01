@@ -21,6 +21,7 @@ export {
     DeviceMock,
     EntityRecordMock,
     EnumPropertyMock,
+    EventsBagMock,
     FactoryMock,
     FilteringMock,
     FluentDesignStateMock,

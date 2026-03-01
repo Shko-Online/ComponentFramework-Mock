@@ -8,6 +8,7 @@ export { ClientMock } from './Client.mock';
 export { ContextMock } from './Context.mock';
 export { CopilotMock } from './Copilot.mock';
 export { DeviceMock } from './Device.mock';
+export { EventsBagMock } from './EventsBag.mock';
 export { FactoryMock } from './Factory.mocks';
 export { PopupServiceMock } from './FactoryApi';
 export { FluentDesignStateMock } from './FluentDesignState.mock';

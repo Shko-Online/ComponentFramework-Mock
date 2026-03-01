@@ -21,6 +21,7 @@ import { ResourcesMock } from './Resources.mock';
 import { UserSettingsMock } from './UserSettings.mock';
 import { UtilityMock } from './Utility.mock';
 import { WebApiMock } from './WebApi.mock';
+import { EventsBagMock } from './EventsBag.mock';
 
 export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>,TEvents = ComponentFramework.IEventBag>
     implements ComponentFramework.Context<IInputs, TEvents>
@@ -44,7 +45,7 @@ export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>,TEven
     events: TEvents;
     constructor(inputs: PropertyMap<IInputs>, db: MetadataDB) {
         this.updatedProperties = [];
-        this.events = {} as TEvents;
+        this.events = new EventsBagMock() as TEvents;
         this.client = new ClientMock();
         this.copilot = new CopilotMock();
         this.device = new DeviceMock();
