@@ -1,3 +1,10 @@
+# [0.10.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.9.0...v0.10.0) (2026-03-01)
+
+
+### Features
+
+* Added EventsBagMock ([17cf76c](https://github.com/shko-online/ComponentFramework-Mock/commit/17cf76cf3fdff45e9629d14e09a43fcd29a183f9))
+
 # [0.9.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.8.1...v0.9.0) (2025-10-12)
 
 
