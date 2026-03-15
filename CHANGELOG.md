@@ -1,3 +1,10 @@
+## [0.10.2](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.10.1...v0.10.2) (2026-03-15)
+
+
+### Bug Fixes
+
+* sigstore provenance ([4632f37](https://github.com/Shko-Online/ComponentFramework-Mock/commit/4632f37dd585c9b9ceae07d11493417d2a7e7fcf))
+
 ## [0.10.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.10.0...v0.10.1) (2026-03-15)
 
 
