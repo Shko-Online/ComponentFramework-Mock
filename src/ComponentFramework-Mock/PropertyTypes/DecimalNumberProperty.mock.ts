@@ -44,7 +44,7 @@ export class DecimalNumberPropertyMock
             this.raw = value;
         });
 
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Decimal) {
+        if (existingAttribute?.AttributeType !== AttributeType.Decimal) {
             const attribute = {
                 AttributeType: AttributeType.Decimal,
                 EntityLogicalName: entityMetadata.LogicalName,

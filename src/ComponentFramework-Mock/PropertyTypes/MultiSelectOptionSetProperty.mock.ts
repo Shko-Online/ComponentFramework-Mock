@@ -39,7 +39,7 @@ export class MultiSelectOptionSetPropertyMock
                 this._boundColumn,
                 this._boundRow,
             );
-            if (attributeMetadata === null || attributeMetadata.AttributeType !== AttributeType.Picklist) {
+            if (attributeMetadata?.AttributeType !== AttributeType.Picklist) {
                 throw new Error('Type Error');
             }
             const attributes = new OptionSetMetadataMock();
@@ -55,7 +55,7 @@ export class MultiSelectOptionSetPropertyMock
                 .join(',');
             this.attributes = attributes;
         });
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Picklist) {
+        if (existingAttribute?.AttributeType !== AttributeType.Picklist) {
             const attribute = {
                 AttributeType: AttributeType.Picklist,
                 EntityLogicalName: entityMetadata.LogicalName,

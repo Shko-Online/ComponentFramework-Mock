@@ -21,51 +21,42 @@ export class DeviceMock implements ComponentFramework.Device {
     >;
     constructor() {
         this.captureAudio = stub();
-        this.captureAudio.callsFake(() => {
-            return new Promise<ComponentFramework.FileObject>((resolve) => {
-                resolve({
-                    fileContent: 'demo',
-                    fileName: 'fakeFile.wav',
-                    fileSize: 200,
-                    mimeType: 'audio/wav',
-                });
-            });
-        });
+        this.captureAudio.callsFake(() =>
+            Promise.resolve<ComponentFramework.FileObject>({
+                fileContent: 'demo',
+                fileName: 'fakeFile.wav',
+                fileSize: 200,
+                mimeType: 'audio/wav',
+            }),
+        );
 
         this.captureImage = stub();
         this.captureImage.callsFake((options?: ComponentFramework.DeviceApi.CaptureImageOptions) => {
-            return new Promise<ComponentFramework.FileObject>((resolve) => {
-                resolve({
-                    fileContent: 'demo',
-                    fileName: 'fakeFile.png',
-                    fileSize: 200,
-                    mimeType: 'image/png',
-                });
+            options = options ?? { allowEdit: false, width: 1024, height: 768, preferFrontCamera: false, quality: 100 };
+            return Promise.resolve({
+                fileContent: 'demo',
+                fileName: 'fakeFile.png',
+                fileSize: options.width * options.height * 4, // Rough estimation of file size based on dimensions (RGBA)
+                mimeType: 'image/png',
             });
         });
 
         this.captureVideo = stub();
-        this.captureVideo.callsFake(() => {
-            return new Promise<ComponentFramework.FileObject>((resolve) => {
-                resolve({
-                    fileContent: 'demo',
-                    fileName: 'fakeFile.mp4',
-                    fileSize: 2000,
-                    mimeType: 'video/mp4',
-                });
-            });
-        });
+        this.captureVideo.callsFake(() =>
+            Promise.resolve({
+                fileContent: 'demo',
+                fileName: 'fakeFile.mp4',
+                fileSize: 2000,
+                mimeType: 'video/mp4',
+            }),
+        );
 
         this.getBarcodeValue = stub();
-        this.getBarcodeValue.callsFake(() => {
-            return new Promise<string>((resolve) => {
-                resolve('SHKO-ONLINE');
-            });
-        });
+        this.getBarcodeValue.callsFake(() => Promise.resolve('SHKO-ONLINE'));
 
         this.getCurrentPosition = stub();
-        const currentPositionPromise = new Promise<ComponentFramework.DeviceApi.Position>((resolve) => {
-            resolve({
+        this.getCurrentPosition.callsFake(() =>
+            Promise.resolve({
                 coords: {
                     accuracy: 141,
                     latitude: 41.3415145,
@@ -76,28 +67,41 @@ export class DeviceMock implements ComponentFramework.Device {
                     speed: 0,
                 },
                 timestamp: new Date(),
-            });
-        });
-        this.getCurrentPosition.returns(currentPositionPromise);
+            }),
+        );
         this.pickFile = stub();
-        const pickFilePromise = new Promise<ComponentFramework.DeviceApi.PickFileOptions>((resolve) => {
-            resolve({
-                accept: ' ',
-                allowMultipleFiles: false,
-                maximumAllowedFileSize: 1,
-            });
-        });
         this.pickFile.callsFake((options?: ComponentFramework.DeviceApi.PickFileOptions) => {
-            return new Promise<ComponentFramework.FileObject[]>((resolve) => {
+            return new Promise<ComponentFramework.FileObject[]>((resolve, reject) => {
                 const configuredOptions = options || { accept: 'image' };
-                resolve([
-                    {
-                        fileContent: 'demo',
-                        fileName: 'fakeFile.png',
-                        fileSize: 200,
-                        mimeType: 'image/png',
-                    },
-                ]);
+                if (configuredOptions.accept === 'image') {
+                    return resolve([
+                        {
+                            fileContent: 'demo',
+                            fileName: 'fakeFile.png',
+                            fileSize: 200,
+                            mimeType: 'image/png',
+                        },
+                    ]);
+                } else if (configuredOptions.accept === 'audio') {
+                    return resolve([
+                        {
+                            fileContent: 'demo',
+                            fileName: 'fakeFile.wav',
+                            fileSize: 200,
+                            mimeType: 'audio/wav',
+                        },
+                    ]);
+                } else if (configuredOptions.accept === 'video') {
+                    return resolve([
+                        {
+                            fileContent: 'demo',
+                            fileName: 'fakeFile.mp4',
+                            fileSize: 2000,
+                            mimeType: 'video/mp4',
+                        },
+                    ]);
+                }
+                return reject(new Error('Unsupported file type'));
             });
         });
     }

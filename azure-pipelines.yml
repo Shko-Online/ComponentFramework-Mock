@@ -8,26 +8,12 @@ pool:
 steps:
 - task: UseNode@1
   inputs:
-    version: '20.x'
+    version: '24.x'
 
 - task: Npm@1
   inputs:
     command: 'install'
   displayName: "Install NPM Dependencies"
-
-# - task: dependency-check-build-task@6
-#   inputs:
-#     projectName: '@shko.online/componentframework-mock'
-#     scanPath: 'package-lock.json'
-#     format: 'HTML, JSON, JUNIT'
-#     additionalArguments: '--nvdApiKey $(NVDApiKey)'
-
-# - task: PublishTestResults@2
-#   inputs:
-#     testResultsFormat: 'JUnit'
-#     testResultsFiles: 'dependency-check/*junit.xml'
-#     searchFolder: '$(Common.TestResultsDirectory)'
-#     testRunTitle: 'Dependency Check'
 
 - task: Npm@1
   inputs:
@@ -46,12 +32,6 @@ steps:
     command: 'custom'
     customCommand: 'run build'
   displayName: "Build"
-
-- script: 'npx semantic-release'
-  displayName: 'Semantic Release'
-  env:
-    GITHUB_TOKEN: $(GITHUB_TOKEN)
-    NPM_TOKEN: $(NPM_TOKEN)
   
 - task: PublishCodeCoverageResults@2
   displayName: "Publish code coverage results"

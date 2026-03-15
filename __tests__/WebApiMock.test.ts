@@ -290,6 +290,15 @@ describe('WebApiMock', () => {
                     lastname: 'Beja',
                 });
             });
+
+            it('Should retrieve multiple records using OData with specified order', async () => {
+                const result = await mockGenerator.context.webAPI.retrieveMultipleRecords(
+                    'systemuser',
+                    '?$select=firstname,lastname&$orderby=firstname asc,lastname desc',
+                );
+
+                expect(result.entities).toEqual([{"firstname": "#", "lastname": "TPSProxyService", "systemuserid": "a4af1f8b-21a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "PpdfCDSClient", "systemuserid": "cf9e45ae-13a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "PowerVirtualAgentsProd", "systemuserid": "9f27a89b-17a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "PowerAutomate-MachineProvisioning", "systemuserid": "c2275283-16a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "PowerAutomate-MachineManagementRelay", "systemuserid": "a4275283-16a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "PowerAutomate-DesktopFlowRuntime", "systemuserid": "ce275283-16a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "Dynamics365Athena2", "systemuserid": "b8af1f8b-21a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "Dynamics365Athena", "systemuserid": "aeaf1f8b-21a4-ed11-aad1-000d3add5311"}, {"firstname": "#", "lastname": "D365OfficeDataSvc", "systemuserid": "9aaf1f8b-21a4-ed11-aad1-000d3add5311"}, {"firstname": "Betim", "lastname": "Beja", "systemuserid": "682d1eb3-0ba4-ed11-aad1-000d3add5311"}]);
+            });
         });
     });
 

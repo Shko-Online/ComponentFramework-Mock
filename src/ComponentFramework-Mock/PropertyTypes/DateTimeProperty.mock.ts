@@ -27,7 +27,7 @@ export class DateTimePropertyMock extends PropertyMock implements ComponentFrame
         }
         this.type = 'DateAndTime.DateAndTime';
         this.raw = null;
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.DateTime) {
+        if (existingAttribute?.AttributeType !== AttributeType.DateTime) {
             const attribute = {
                 AttributeType: AttributeType.DateTime,
                 EntityLogicalName: entityMetadata.LogicalName,

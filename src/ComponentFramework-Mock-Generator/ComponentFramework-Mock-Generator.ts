@@ -19,6 +19,9 @@ import { ContextMock, DataSetMock } from '../ComponentFramework-Mock';
 import { showBanner } from '../utils';
 import { mockRefreshDatasets } from './mockRefreshDatasets';
 
+/** 
+ * This class mocks the standard version of the PowerApps Component Framework control.
+ */
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,

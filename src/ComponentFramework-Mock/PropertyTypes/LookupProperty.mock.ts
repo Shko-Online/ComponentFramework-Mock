@@ -60,7 +60,7 @@ export class LookupPropertyMock extends PropertyMock implements ComponentFramewo
             }
         });
 
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Lookup) {
+        if (existingAttribute?.AttributeType !== AttributeType.Lookup) {
             const attribute = {
                 AttributeType: AttributeType.Lookup,
                 EntityLogicalName: entityMetadata.LogicalName,

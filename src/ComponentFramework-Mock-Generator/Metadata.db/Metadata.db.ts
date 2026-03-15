@@ -911,7 +911,7 @@ export class MetadataDB {
     }
 
     SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
+        const safeTableName = tableMetadata.LogicalName.toLowerCase().replaceAll('!', '_').replaceAll('@', '_');
 
         const attributes: string[] = [];
 
@@ -921,9 +921,7 @@ export class MetadataDB {
                     attribute.AttributeType === AttributeType.Lookup &&
                     query.$select?.find((a) => a === `_${attribute.LogicalName}_value`)
                 ) {
-                    attributes.push(attribute.LogicalName);
-                    attributes.push(attribute.LogicalName + 'name');
-                    attributes.push(attribute.LogicalName + 'type');
+                    attributes.push(attribute.LogicalName, attribute.LogicalName + 'name', attribute.LogicalName + 'type');
                 } else if (
                     query.$select?.find((a) => a === attribute.LogicalName) ||
                     attribute.LogicalName === tableMetadata.PrimaryIdAttribute
@@ -941,6 +939,17 @@ export class MetadataDB {
             });
         }
 
-        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${safeTableName}`);
+        let OrderByClause = '';
+
+        if(query.$orderby && query.$orderby.length > 0 && tableMetadata.Attributes) {
+            OrderByClause = ' ORDER BY ' + 
+                query.$orderby.map(element => {
+             return (tableMetadata.Attributes.find((x) => 
+                    x.AttributeType === AttributeType.Lookup && 
+                    element.column === `_${x.LogicalName}_value`)?.LogicalName ?? element.column) + " " + (element.asc ? 'ASC' : 'DESC');
+                }).join(',');
+        }   
+
+        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${safeTableName} ${OrderByClause}`);
     }
 }

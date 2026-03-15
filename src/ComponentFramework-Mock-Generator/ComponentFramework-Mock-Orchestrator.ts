@@ -39,7 +39,7 @@ export class ComponentFrameworkMockOrchestrator<T> {
                 if (!overrides) {
                     overrides = element[4] ?? { metadata: new MetadataDB() };
                 }
-                this.db = overrides.metadata as MetadataDB;
+                this.db = overrides.metadata;
                 (this.mockGenerators as any[]).push(
                     new ComponentFrameworkMockGenerator(
                         element[0],

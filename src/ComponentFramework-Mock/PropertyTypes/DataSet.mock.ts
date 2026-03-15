@@ -180,7 +180,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             this.paging.totalResultCount = records.length;
             if (this.sorting.length > 0) {
                 const sort = this.sorting[0];
-                this.sortedRecordIds = records
+                this.sortedRecordIds = records.map(x=>x)
                     .sort((record1, record2) =>
                         sort.sortDirection === 0
                             ? record1.getFormattedValue(sort.name)?.localeCompare(record2.getFormattedValue(sort.name))
@@ -188,7 +188,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     )
                     .map((record) => record.getRecordId());
             } else {
-                this.sortedRecordIds = records
+                this.sortedRecordIds = records.map(x=>x)
                     .sort((record1, record2) =>
                         record1.getNamedReference()?.name?.localeCompare(record2.getNamedReference()?.name),
                     )
@@ -242,10 +242,10 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                 return;
             }
             // validate
-            for (let i = 0; i < ids.length; i++) {
-                const result = this._db.GetRow(this._boundTable, ids[i]);
+            for (const element of ids) {
+                const result = this._db.GetRow(this._boundTable, element);
                 if (!result.row) {
-                    throw new Error(`Record with id '${ids[i]}' does not exist.`);
+                    throw new Error(`Record with id '${element}' does not exist.`);
                 }
             }
             this._SelectedRecordIds = ids;

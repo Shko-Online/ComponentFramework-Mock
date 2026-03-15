@@ -41,7 +41,7 @@ export class TwoOptionsPropertyMock
                 this._boundColumn,
                 this._boundRow,
             );
-            if (attributeMetadata === null || attributeMetadata.AttributeType !== AttributeType.Boolean) {
+            if (attributeMetadata?.AttributeType !== AttributeType.Boolean) {
                 throw new Error('Type Error');
             }
             const attributes = new TwoOptionMetadataMock();
@@ -62,7 +62,7 @@ export class TwoOptionsPropertyMock
             this.formatted = attributes.Options[value ? 1 : 0].Label;
             this.attributes = attributes;
         });
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Boolean) {
+        if (existingAttribute?.AttributeType !== AttributeType.Boolean) {
             const attribute = {
                 AttributeType: AttributeType.Boolean,
                 EntityLogicalName: entityMetadata.LogicalName,

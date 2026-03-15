@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-declare module ShkoOnline {
+declare namespace ShkoOnline {
     type EnumType<Type> = Type extends ComponentFramework.PropertyTypes.EnumProperty<infer X> ? X : never;
 
     export type PropertyTypes<T extends { [key: string]: any }> = {

@@ -53,7 +53,7 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             this.formatted = value === null || value === undefined ? '' : '' + value;
         });
 
-        if (!skipMetadata && (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Decimal)) {
+        if (!skipMetadata && (existingAttribute?.AttributeType !== AttributeType.Decimal)) {
             const attribute = {
                 AttributeType: AttributeType.Decimal,
                 EntityLogicalName: entityMetadata.LogicalName,

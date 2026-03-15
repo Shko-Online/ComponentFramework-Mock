@@ -47,7 +47,7 @@ export class StringPropertyMock extends PropertyMock implements ComponentFramewo
             this.attributes.ImeMode = attributeMetadata.ImeMode;
             this.raw = value;
         });
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.String) {
+        if (existingAttribute?.AttributeType !== AttributeType.String) {
             const attribute = {
                 AttributeType: AttributeType.String,
                 EntityLogicalName: entityMetadata.LogicalName,

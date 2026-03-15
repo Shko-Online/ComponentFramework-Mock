@@ -50,7 +50,7 @@ export class WholeNumberPropertyMock
             this.raw = value;
             this.formatted = value === undefined || value === null ? '' : '' + value;
         });
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Integer) {
+        if (existingAttribute?.AttributeType !== AttributeType.Integer) {
             const attribute = {
                 AttributeType: AttributeType.Integer,
                 EntityLogicalName: entityMetadata.LogicalName,

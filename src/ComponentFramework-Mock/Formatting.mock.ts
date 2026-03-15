@@ -25,9 +25,8 @@ export class FormattingMock implements ComponentFramework.Formatting {
     formatLanguage: SinonStub<[value: number], string>;
     formatTime: SinonStub<[value: Date, behavior: DateTimeFieldBehavior], string>;
     getWeekOfYear: SinonStub<[value: Date], number>;
-    locale: 'en-US' | 'it-IT';
+    locale: 'en-US' | 'it-IT' = 'en-US';
     constructor() {
-        this.locale = 'en-US';
         this.formatCurrency = stub();
         this.formatCurrency.callsFake((value: number, precision?: number, currencySymbol?: string) => {
             const currency = currencySymbol ? symbolToCurrency[currencySymbol] : undefined;

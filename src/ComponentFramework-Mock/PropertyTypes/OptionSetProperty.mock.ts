@@ -36,7 +36,7 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
                 this._boundColumn,
                 this._boundRow,
             );
-            if (attributeMetadata === null || attributeMetadata.AttributeType !== AttributeType.Picklist) {
+            if (attributeMetadata?.AttributeType !== AttributeType.Picklist) {
                 throw new Error('Type Error');
             }
             this.attributes.LogicalName = attributeMetadata.LogicalName;
@@ -47,7 +47,7 @@ export class OptionSetPropertyMock extends PropertyMock implements ComponentFram
             this.attributes.DefaultValue = attributeMetadata.DefaultFormValue;
             this.raw = value;
         });
-        if (!existingAttribute || existingAttribute.AttributeType !== AttributeType.Picklist) {
+        if (existingAttribute?.AttributeType !== AttributeType.Picklist) {
             const attribute = {
                 AttributeType: AttributeType.Picklist,
                 EntityLogicalName: entityMetadata.LogicalName,

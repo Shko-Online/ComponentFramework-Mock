@@ -11,9 +11,10 @@ import { MetadataDB } from '../ComponentFramework-Mock-Generator';
 import { FormattingMock } from './Formatting.mock';
 import { AttributeType } from './PropertyTypes';
 import { ShkoOnline } from '../ShkoOnline';
+import { DelayedPromise } from '../utils/DelayedPromise';
 
 export class WebApiMock implements ComponentFramework.WebApi {
-    _Delay: number;
+    _Delay: number = 200;
     _ConvertRowToOData: SinonStub<[row: any, entityMetadata: ShkoOnline.EntityMetadata], void>;
     createRecord: SinonStub<
         [entityType: string, data: ComponentFramework.WebApi.Entity],
@@ -33,7 +34,6 @@ export class WebApiMock implements ComponentFramework.WebApi {
         Promise<ComponentFramework.WebApi.Entity>
     >;
     constructor(db: MetadataDB, formatting: FormattingMock) {
-        this._Delay = 200;
         this._ConvertRowToOData = stub();
         this._ConvertRowToOData.callsFake((row: any, entityMetadata: ShkoOnline.EntityMetadata) => {
             const oldRow = row;
@@ -52,8 +52,8 @@ export class WebApiMock implements ComponentFramework.WebApi {
 
                         const lookupValue = oldRow[key] as ComponentFramework.LookupValue;
                         if (key in row) {
-                            row[key] = lookupValue && lookupValue.id ? lookupValue.id : null;
-                            if (lookupValue && lookupValue.id) {
+                            row[key] = lookupValue?.id ?? null;
+                            if (lookupValue?.id) {
                                 row[`${key}@Microsoft.Dynamics.CRM.lookuplogicalname`] = lookupValue.entityType;
                                 if (lookupValue.name != null) {
                                     row[`${key}@OData.Community.Display.V1.FormattedValue`] = lookupValue.name;
@@ -106,16 +106,16 @@ export class WebApiMock implements ComponentFramework.WebApi {
                     }
 
                     if (!!attribute.AttributeOf) {
-                        var original = entityMetadata.Attributes?.find(
+                        const original = entityMetadata.Attributes?.find(
                             (att) => att.LogicalName == attribute.AttributeOf,
                         );
                         if (
                             original?.AttributeType !== AttributeType.Lookup &&
-                            oldRow[original?.LogicalName as string] !== undefined &&
-                            oldRow[original?.LogicalName as string] !== null &&
+                            oldRow[original?.LogicalName] !== undefined &&
+                            oldRow[original?.LogicalName] !== null &&
                             oldRow[key] !== null &&
                             oldRow[key] !== undefined &&
-                            (original?.LogicalName as string) in row
+                            original?.LogicalName in row
                         ) {
                             row[original?.LogicalName + '@OData.Community.Display.V1.FormattedValue'] = oldRow[key];
                         }
@@ -133,20 +133,24 @@ export class WebApiMock implements ComponentFramework.WebApi {
 
         this.createRecord = stub();
         this.createRecord.callsFake((entityType: string, data: ComponentFramework.WebApi.Entity) => {
-            return new Promise<ComponentFramework.LookupValue>((resolve, reject) => {
-                setTimeout(() => {
-                    const metadata = db.getTableMetadata(entityType);
-                    if (!metadata) {
-                        return reject({ message: `Entity ${entityType} does not exist.` });
-                    }
-                    resolve({
-                        id: db.AddRow(entityType, data, metadata) || '',
-                        name: data[metadata.PrimaryNameAttribute || 'name'],
-                        entityType: entityType,
-                    });
-                }, this._Delay);
-            });
+            const metadata = db.getTableMetadata(entityType);
+            if (!metadata) {
+                return DelayedPromise.rejectAfterDelay<ComponentFramework.LookupValue>(
+                   { message:  `Entity ${entityType} does not exist.` },
+                    this._Delay,
+                );
+            }
+
+            return DelayedPromise.resolveAfterDelay<ComponentFramework.LookupValue>(
+                {
+                    id: db.AddRow(entityType, data, metadata) || '',
+                    name: data[metadata.PrimaryNameAttribute || 'name'],
+                    entityType: entityType,
+                },
+                this._Delay,
+            );
         });
+
         this.deleteRecord = stub();
         this.deleteRecord.callsFake((entityType: string, id: string) => {
             return new Promise<ComponentFramework.LookupValue>((resolve, reject) => {
@@ -156,9 +160,7 @@ export class WebApiMock implements ComponentFramework.WebApi {
                         return reject({ message: `Entity ${entityType} does not exist.` });
                     }
                     if (!result.row) {
-                        return reject({
-                            message: `Could not find record with id: '${id}' for entity: '${entityType}'.`,
-                        });
+                        return reject({ message: `Could not find record with id: '${id}' for entity: '${entityType}'.` });
                     }
                     db.RemoveRow(entityType, id);
                     resolve({
@@ -171,37 +173,39 @@ export class WebApiMock implements ComponentFramework.WebApi {
         });
         this.updateRecord = stub();
         this.updateRecord.callsFake((entityType: string, id: string, data: ComponentFramework.WebApi.Entity) => {
-            return new Promise<ComponentFramework.LookupValue>((resolve, reject) => {
-                setTimeout(() => {
-                    const metadata = db.getTableMetadata(entityType);
-                    if (!metadata) {
-                        return reject({ message: `Entity ${entityType} does not exist.` });
-                    }
+            const attributeHandler = (attribute: ShkoOnline.AttributeMetadata) => {
+                if (attribute.AttributeOf || attribute.AttributeType === AttributeType.Virtual) {
+                    return;
+                }
 
-                    metadata.Attributes?.forEach((attribute) => {
-                        if (attribute.AttributeOf || attribute.AttributeType === AttributeType.Virtual) {
-                            return;
-                        }
+                const key =
+                    attribute.AttributeType === AttributeType.Lookup
+                        ? `_${attribute.LogicalName}_value`
+                        : attribute.LogicalName;
 
-                        const key =
-                            attribute.AttributeType === AttributeType.Lookup
-                                ? `_${attribute.LogicalName}_value`
-                                : attribute.LogicalName;
+                if (key in data) {
+                    db.UpdateValue(data[key], entityType, key, id);
+                }
+            };
 
-                        if (key in data) {
-                            db.UpdateValue(data[key], entityType, key, id);
-                        }
-                    });
+            const metadata = db.getTableMetadata(entityType);
+            if (!metadata) {
+                return DelayedPromise.rejectAfterDelay<ComponentFramework.LookupValue>(
+                    `Entity ${entityType} does not exist.`,
+                    this._Delay,
+                );
+            }
+            metadata.Attributes?.forEach(attributeHandler);
+            const result = db.GetRow(entityType, id);
 
-                    var result = db.GetRow(entityType, id);
-
-                    resolve({
-                        id,
-                        name: result.row?.[metadata.PrimaryNameAttribute || 'name'],
-                        entityType,
-                    });
-                }, this._Delay);
-            });
+            return DelayedPromise.resolveAfterDelay<ComponentFramework.LookupValue>(
+                {
+                    id,
+                    name: result.row?.[metadata.PrimaryNameAttribute || 'name'],
+                    entityType,
+                },
+                this._Delay,
+            );
         });
 
         this.retrieveMultipleRecords = stub();
