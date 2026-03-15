@@ -911,8 +911,7 @@ export class MetadataDB {
     }
 
     SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replaceAll('!', '_').replaceAll('@', '_');
-
+        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
         const attributes: string[] = [];
 
         if (query.$select && tableMetadata.Attributes) {
