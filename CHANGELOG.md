@@ -1,3 +1,11 @@
+## [0.10.1](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.10.0...v0.10.1) (2026-03-15)
+
+
+### Bug Fixes
+
+* fixed regression ([e79286e](https://github.com/shko-online/ComponentFramework-Mock/commit/e79286e2b478317217f9aa867bc5dcbb8cc8d3b0))
+* odata support for $orderby ([2db9e4f](https://github.com/shko-online/ComponentFramework-Mock/commit/2db9e4fcbca94b5adb71b0a9a93036a09c7a5c58))
+
 # [0.10.0](https://github.com/shko-online/ComponentFramework-Mock/compare/v0.9.0...v0.10.0) (2026-03-01)
 
 
