@@ -1,3 +1,10 @@
+# [0.11.0](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.10.2...v0.11.0) (2026-04-17)
+
+
+### Features
+
+* added basic $filter support ([26efd10](https://github.com/Shko-Online/ComponentFramework-Mock/commit/26efd100a51106c56bd6fb88add816db8a833532))
+
 ## [0.10.2](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.10.1...v0.10.2) (2026-03-15)
 
 
