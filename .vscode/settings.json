@@ -1,7 +1,7 @@
 {
-    "typescript.tsdk": "ComponentFramework-Mock\\node_modules\\typescript\\lib",
     "sonarlint.connectedMode.project": {
         "connectionId": "shko-online",
         "projectKey": "Shko-Online_ComponentFramework-Mock"
-    }
+    },
+    "js/ts.tsdk.path": "node_modules/typescript/lib"
 }

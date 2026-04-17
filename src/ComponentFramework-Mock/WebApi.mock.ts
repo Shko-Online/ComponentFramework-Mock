@@ -111,13 +111,13 @@ export class WebApiMock implements ComponentFramework.WebApi {
                         );
                         if (
                             original?.AttributeType !== AttributeType.Lookup &&
-                            oldRow[original?.LogicalName] !== undefined &&
-                            oldRow[original?.LogicalName] !== null &&
+                            oldRow[original?.LogicalName ?? ''] !== undefined &&
+                            oldRow[original?.LogicalName ?? ''] !== null &&
                             oldRow[key] !== null &&
                             oldRow[key] !== undefined &&
-                            original?.LogicalName in row
+                            original?.LogicalName! in row
                         ) {
-                            row[original?.LogicalName + '@OData.Community.Display.V1.FormattedValue'] = oldRow[key];
+                            row[original?.LogicalName! + '@OData.Community.Display.V1.FormattedValue'] = oldRow[key];
                         }
                         delete row[key];
                     }

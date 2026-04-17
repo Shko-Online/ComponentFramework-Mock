@@ -3,6 +3,8 @@
     Licensed under the MIT license.
 */
 
+/// <reference types="powerapps-component-framework" />
+
 import type { SinonStub } from 'sinon';
 import type { ShkoOnline } from '../../ShkoOnline';
 

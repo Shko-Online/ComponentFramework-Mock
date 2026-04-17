@@ -17,6 +17,7 @@ import { AttributeType, OptionSetType } from '../../ComponentFramework-Mock';
 import { SavedQueryMetadata } from './PlatformMetadata/SavedQuery.Metadata';
 import { UserQueryMetadata } from './PlatformMetadata/UserQuery.Metadata';
 import { ODataQuery } from '@shko.online/dataverse-odata';
+import { FilterOperator } from '@shko.online/dataverse-odata/lib/ts3.9/OData.types';
 
 export class MetadataDB {
     static readonly CanvasLogicalName = '!CanvasApp';
@@ -938,17 +939,64 @@ export class MetadataDB {
             });
         }
 
+        if(attributes.length === 0) {
+            attributes.push('*');
+        }
+
+        let whereClause = '';
+        const params: string[] = [];
+        if (query.$filter) {
+            whereClause = ' WHERE ' + GetWhereClauseFromFilter(query.$filter, tableMetadata, params);
+        }
+
         let OrderByClause = '';
 
         if(query.$orderby && query.$orderby.length > 0 && tableMetadata.Attributes) {
             OrderByClause = ' ORDER BY ' + 
                 query.$orderby.map(element => {
-             return (tableMetadata.Attributes.find((x) => 
+             return (tableMetadata.Attributes!.find((x) => 
                     x.AttributeType === AttributeType.Lookup && 
                     element.column === `_${x.LogicalName}_value`)?.LogicalName ?? element.column) + " " + (element.asc ? 'ASC' : 'DESC');
                 }).join(',');
         }   
 
-        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${safeTableName} ${OrderByClause}`);
+        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${safeTableName} ${whereClause} ${OrderByClause}`, params);
+    }
+}
+function GetWhereClauseFromFilter(filter: FilterOperator, tableMetadata: ShkoOnline.EntityMetadata, params: string[]) {
+    if(filter.operator === 'and' || filter.operator === 'or') {
+        return `${GetWhereClauseFromFilter(filter.left, tableMetadata, params)} ${filter.operator.toUpperCase()} ${GetWhereClauseFromFilter(filter.right, tableMetadata, params)}`;
+    }else if(filter.operator === 'not') {
+        return `NOT (${GetWhereClauseFromFilter(filter.right, tableMetadata, params)})`;
+    }else if(filter.operator === 'eq' || filter.operator === 'ne' || filter.operator === 'gt' || filter.operator === 'ge' || filter.operator === 'lt' || filter.operator === 'le') {
+        if('isColumnOperation' in filter && filter.isColumnOperation) {
+            return `[${filter.left}] ${filter.operator} [${filter.right}]`;
+        }else if('isBooleanOperation' in filter && filter.isBooleanOperation) {
+            return `[${filter.left}] ${filter.operator} ${filter.right}`;
+        }else if('isNullOperation' in filter && filter.isNullOperation) {
+            return `[${filter.left}] IS ${filter.operator === 'eq' ? '' : 'NOT '}NULL`;
+        }else{
+            params.push(filter.right as string);
+            return `[${filter.left}] ${ODataOperatorToSqlOperator(filter.operator)} ?`;
+        }
+    }
+
+    function ODataOperatorToSqlOperator(operator: string) {
+        switch(operator) {
+            case 'eq':
+                return '=';
+            case 'ne':
+                return '<>';
+            case 'gt':
+                return '>';
+            case 'ge':
+                return '>=';
+            case 'lt':
+                return '<';
+            case 'le':      
+                return '<=';
+                default:
+                    return operator;
+        }
     }
 }
