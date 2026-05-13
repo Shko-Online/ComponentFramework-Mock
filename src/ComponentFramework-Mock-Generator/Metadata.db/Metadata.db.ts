@@ -16,8 +16,7 @@ import { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
 import { AttributeType, OptionSetType } from '../../ComponentFramework-Mock';
 import { SavedQueryMetadata } from './PlatformMetadata/SavedQuery.Metadata';
 import { UserQueryMetadata } from './PlatformMetadata/UserQuery.Metadata';
-import { ODataQuery } from '@shko.online/dataverse-odata';
-import { FilterOperator } from '@shko.online/dataverse-odata/lib/ts3.9/OData.types';
+import { ODataQuery, FilterOperator } from '@shko.online/dataverse-odata';
 
 export class MetadataDB {
     static readonly CanvasLogicalName = '!CanvasApp';

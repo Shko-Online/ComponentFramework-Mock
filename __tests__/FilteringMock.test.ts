@@ -4,7 +4,7 @@
 */
 
 import { it, expect, describe, beforeEach } from '@jest/globals';
-import { FilteringMock, MetadataDB } from '../src';
+import { FilteringMock } from '../src';
 
 type FilterExpression = ComponentFramework.PropertyHelper.DataSetApi.FilterExpression;
 
