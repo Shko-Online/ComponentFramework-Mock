@@ -1,3 +1,10 @@
+## [0.11.1](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.11.0...v0.11.1) (2026-05-13)
+
+
+### Bug Fixes
+
+* update [@shko](https://github.com/shko).online/dataverse-odata ([b491535](https://github.com/Shko-Online/ComponentFramework-Mock/commit/b49153530d4c0647311507173b5c822a44c1f4b0))
+
 # [0.11.0](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.10.2...v0.11.0) (2026-04-17)
 
 
