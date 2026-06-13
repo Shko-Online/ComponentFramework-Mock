@@ -962,22 +962,41 @@ export class MetadataDB {
         return this.db.exec(`SELECT ${attributes.join(',')} FROM ${safeTableName} ${whereClause} ${OrderByClause}`, params);
     }
 }
-function GetWhereClauseFromFilter(filter: FilterOperator, tableMetadata: ShkoOnline.EntityMetadata, params: string[]) {
-    if(filter.operator === 'and' || filter.operator === 'or') {
-        return `${GetWhereClauseFromFilter(filter.left, tableMetadata, params)} ${filter.operator.toUpperCase()} ${GetWhereClauseFromFilter(filter.right, tableMetadata, params)}`;
-    }else if(filter.operator === 'not') {
-        return `NOT (${GetWhereClauseFromFilter(filter.right, tableMetadata, params)})`;
-    }else if(filter.operator === 'eq' || filter.operator === 'ne' || filter.operator === 'gt' || filter.operator === 'ge' || filter.operator === 'lt' || filter.operator === 'le') {
-        if('isColumnOperation' in filter && filter.isColumnOperation) {
-            return `[${filter.left}] ${filter.operator} [${filter.right}]`;
-        }else if('isBooleanOperation' in filter && filter.isBooleanOperation) {
-            return `[${filter.left}] ${filter.operator} ${filter.right}`;
-        }else if('isNullOperation' in filter && filter.isNullOperation) {
-            return `[${filter.left}] IS ${filter.operator === 'eq' ? '' : 'NOT '}NULL`;
-        }else{
-            params.push(filter.right as string);
-            return `[${filter.left}] ${ODataOperatorToSqlOperator(filter.operator)} ?`;
-        }
+function GetWhereClauseFromFilter(filter: FilterOperator, tableMetadata: ShkoOnline.EntityMetadata, params: string[]):string {
+    switch (filter.operator) {
+        case 'and':
+        case 'or':
+            return `${GetWhereClauseFromFilter(filter.left, tableMetadata, params)} ${filter.operator.toUpperCase()} ${GetWhereClauseFromFilter(filter.right, tableMetadata, params)}`;
+        case 'not':
+            return `NOT (${GetWhereClauseFromFilter(filter.right, tableMetadata, params)})`;
+        case 'eq':
+        case 'ne':
+        case 'gt':
+        case 'ge':
+        case 'lt':
+        case 'le':
+            if('isColumnOperation' in filter && filter.isColumnOperation) {
+                return `[${filter.left}] ${filter.operator} [${filter.right}]`;
+            }else if('isBooleanOperation' in filter && filter.isBooleanOperation) {
+                return `[${filter.left}] ${filter.operator} ${filter.right}`;
+            }else if('isNullOperation' in filter && filter.isNullOperation) {
+                return `[${filter.left}] IS ${filter.operator === 'eq' ? '' : 'NOT '}NULL`;
+            }else{
+                params.push(filter.right as string);
+                return `[${filter.left}] ${ODataOperatorToSqlOperator(filter.operator)} ?`;
+            }
+        case 'contains':
+            params.push(`%${filter.right}%`);
+            return `[${filter.left}] LIKE ?`;
+        case 'startswith':
+            params.push(`${filter.right}%`);
+            return `[${filter.left}] LIKE ?`;
+        case 'endswith':
+            params.push(`%${filter.right}`);
+            return `[${filter.left}] LIKE ?`;
+        default:
+           console.error(`Operator ${(filter as any).operator as string} not supported`);
+           return '';
     }
 
     function ODataOperatorToSqlOperator(operator: string) {
