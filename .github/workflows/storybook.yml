@@ -29,7 +29,7 @@ jobs:
           node-version: 24
           cache: 'npm'
       - name: Install Dependencies
-        run: npm install && cd ./storybook && npm install && cd ..
+        run: npm ci && cd ./storybook && npm ci && cd ..
       - name: Publish to Chromatic
         uses: chromaui/action@v1
         # Chromatic GitHub Action options
