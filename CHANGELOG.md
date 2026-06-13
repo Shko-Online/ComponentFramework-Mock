@@ -1,3 +1,10 @@
+## [0.11.2](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.11.1...v0.11.2) (2026-06-13)
+
+
+### Bug Fixes
+
+* fixed OData filter mapping to SQL ([64c774e](https://github.com/Shko-Online/ComponentFramework-Mock/commit/64c774ee792ed27a05660057b292591658f0da71))
+
 ## [0.11.1](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.11.0...v0.11.1) (2026-05-13)
 
 
