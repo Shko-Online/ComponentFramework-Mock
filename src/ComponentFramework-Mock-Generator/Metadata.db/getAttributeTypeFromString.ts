@@ -4,7 +4,7 @@
 */
 
 import type { ShkoOnline } from '../../ShkoOnline';
-import { AttributeType } from '../../ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { AttributeType } from './AttributeType';
 
 export const getAttributeTypeFromString = (attributeType: ShkoOnline.AttributeType | string) => {
     if (typeof attributeType === 'number') {

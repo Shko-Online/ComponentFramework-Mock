@@ -5,8 +5,9 @@ Licensed under the MIT license.
 
 import type { FilterOperator } from '@shko.online/dataverse-odata';
 import type { ShkoOnline } from '../../../ShkoOnline';
-import { AttributeType } from '../../../ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { AttributeType } from '../AttributeType';
 import { compareColumnToParameter, sqlIdentifier } from '../SqlHelpers';
+import { invalidRequestError } from '../Errors';
 
 const ODATA_TO_SQL_OPERATOR: { [operator: string]: string } = {
     eq: '=',
@@ -20,7 +21,7 @@ const ODATA_TO_SQL_OPERATOR: { [operator: string]: string } = {
 const toSqlOperator = (operator: string) => {
     const sqlOperator = ODATA_TO_SQL_OPERATOR[operator];
     if (!sqlOperator) {
-        throw new Error(`Operator '${operator}' is not supported`);
+        throw invalidRequestError(`Operator '${operator}' is not supported`);
     }
     return sqlOperator;
 };
@@ -41,7 +42,7 @@ export const resolveODataAttribute = (tableMetadata: ShkoOnline.EntityMetadata, 
             (attr) => attr.LogicalName === property && attr.AttributeType !== AttributeType.Lookup,
         );
     if (!attribute) {
-        throw new Error(
+        throw invalidRequestError(
             `Could not find a property named '${property}' on type 'Microsoft.Dynamics.CRM.${tableMetadata.LogicalName}'.`,
         );
     }
@@ -90,7 +91,7 @@ export const getWhereClauseFromODataFilter = (
             return `${sqlIdentifier(attribute.LogicalName)} LIKE ?`;
         }
         default:
-            throw new Error(`Operator '${(filter as { operator: string }).operator}' is not supported`);
+            throw invalidRequestError(`Operator '${(filter as { operator: string }).operator}' is not supported`);
     }
 };
 

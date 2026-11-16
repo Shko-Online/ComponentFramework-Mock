@@ -5,6 +5,7 @@ Licensed under the MIT license.
 
 import type { LookupReference, WebApiEntity } from './Wire.types';
 import { ODataAnnotation } from './Wire.types';
+import { invalidRequestError } from '../Errors';
 
 /**
  * Parses a Web API `@odata.bind` reference, e.g. `/contacts(00000000-0000-0000-0000-000000000001)`.
@@ -13,7 +14,7 @@ import { ODataAnnotation } from './Wire.types';
 export const parseODataBind = (bind: string) => {
     const match = /([A-Za-z_][A-Za-z0-9_]*)\(([^)]+)\)\s*$/.exec(bind);
     if (!match) {
-        throw new Error(`Invalid @odata.bind value '${bind}'`);
+        throw invalidRequestError(`Invalid @odata.bind value '${bind}'`);
     }
     return { entitySetName: match[1], id: match[2].replace(/^\{|\}$/g, '') };
 };

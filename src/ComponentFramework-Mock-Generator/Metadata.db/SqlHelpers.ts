@@ -4,7 +4,8 @@ Licensed under the MIT license.
 */
 
 import type { ShkoOnline } from '../../ShkoOnline';
-import { AttributeType } from '../../ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { AttributeType } from './AttributeType';
+import { invalidRequestError } from './Errors';
 
 /**
  * Converts a table logical name to the name of the physical alasql table.
@@ -18,7 +19,7 @@ export const toSqlTableName = (logicalName: string) => logicalName.toLowerCase()
  */
 export const sqlIdentifier = (name: string) => {
     if (!name || /[[\]]/.test(name)) {
-        throw new Error(`Invalid column name '${name}'`);
+        throw invalidRequestError(`Invalid column name '${name}'`);
     }
     return `[${name}]`;
 };

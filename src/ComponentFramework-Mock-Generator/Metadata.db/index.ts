@@ -26,8 +26,11 @@ export {
 
 export { getAttributeTypeFromString } from './getAttributeTypeFromString';
 export { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
+export { AttributeType, OptionSetType } from './AttributeType';
+export { MetadataStore } from './MetadataStore';
+export type { LookupValueWithNavigation, MetadataStoreOptions } from './MetadataStore';
 export { MetadataDB } from './Metadata.db';
-export type { LookupValueWithNavigation, MetadataDBOptions } from './Metadata.db';
+export type { MetadataDBOptions } from './Metadata.db';
 export type { LookupReference, WebApiEntity, WebApiPage, WireFormatter } from './Wire';
 export {
     getPage,
@@ -37,3 +40,6 @@ export {
     readLookupFromItem,
     toWebApiEntity,
 } from './Wire';
+export { DataverseWebApi, getDataverseErrorCode, toDataverseError } from './Api/DataverseWebApi';
+export { DataverseErrorCode } from './Errors';
+export type { DataverseError, DataverseWebApiOptions, RecordReference } from './Api/DataverseWebApi';

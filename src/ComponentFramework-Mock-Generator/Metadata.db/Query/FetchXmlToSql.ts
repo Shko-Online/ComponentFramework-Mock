@@ -5,6 +5,7 @@ Licensed under the MIT license.
 
 import type { ShkoOnline } from '../../../ShkoOnline';
 import { coerceValueForAttribute, compareColumnToParameter, sqlIdentifier } from '../SqlHelpers';
+import { invalidRequestError } from '../Errors';
 
 const FETCH_TO_SQL_OPERATOR: { [operator: string]: string } = {
     eq: '=',
@@ -26,7 +27,9 @@ const childElements = (node: Element, tagName: string) =>
 export const resolveFetchAttribute = (tableMetadata: ShkoOnline.EntityMetadata, name: string | null) => {
     const attribute = tableMetadata.Attributes?.find((attr) => attr.LogicalName === name);
     if (!attribute) {
-        throw new Error(`'${tableMetadata.LogicalName}' entity doesn't contain attribute with Name = '${name}'.`);
+        throw invalidRequestError(
+            `'${tableMetadata.LogicalName}' entity doesn't contain attribute with Name = '${name}'.`,
+        );
     }
     return attribute;
 };
@@ -62,7 +65,7 @@ const getConditionClause = (condition: Element, tableMetadata: ShkoOnline.Entity
         case 'not-in': {
             const values = childElements(condition, 'value').map((v) => v.textContent);
             if (values.length === 0) {
-                throw new Error(
+                throw invalidRequestError(
                     `Condition for attribute '${attribute.LogicalName}': expected argument(s) of type 'value'.`,
                 );
             }
@@ -73,7 +76,7 @@ const getConditionClause = (condition: Element, tableMetadata: ShkoOnline.Entity
             return `${column} ${operator === 'in' ? '' : 'NOT '}IN (${placeholders.join(',')})`;
         }
         default:
-            throw new Error(`FetchXML condition operator '${operator}' is not supported`);
+            throw invalidRequestError(`FetchXML condition operator '${operator}' is not supported`);
     }
 };
 

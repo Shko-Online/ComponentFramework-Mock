@@ -5,7 +5,7 @@ Licensed under the MIT license.
 
 import type { ShkoOnline } from '../../../ShkoOnline';
 import type { LookupReference, WebApiEntity, WireFormatter } from './Wire.types';
-import { AttributeType } from '../../../ComponentFramework-Mock/PropertyTypes/AttributeType';
+import { AttributeType } from '../AttributeType';
 import { ODataAnnotation } from './Wire.types';
 
 const isDate = (value: unknown): value is Date => Object.prototype.toString.call(value) === '[object Date]';
