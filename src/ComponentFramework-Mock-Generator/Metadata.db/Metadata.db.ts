@@ -4,6 +4,7 @@ Licensed under the MIT license.
 */
 
 import type { SinonStub } from 'sinon';
+import type { ODataQuery } from '@shko.online/dataverse-odata';
 import type { ShkoOnline } from '../../ShkoOnline';
 import type { AttributeDB } from './SQLQueries';
 
@@ -13,10 +14,38 @@ import { stub } from 'sinon';
 import { AttributeMetadataSQL, EntityMetadataSQL, OptionSetMetadataSQL } from './SQLQueries';
 import { getAttributeTypeFromString } from './getAttributeTypeFromString';
 import { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
-import { AttributeType, OptionSetType } from '../../ComponentFramework-Mock';
+import { AttributeType, OptionSetType } from '../../ComponentFramework-Mock/PropertyTypes/AttributeType';
 import { SavedQueryMetadata } from './PlatformMetadata/SavedQuery.Metadata';
 import { UserQueryMetadata } from './PlatformMetadata/UserQuery.Metadata';
-import { ODataQuery, FilterOperator } from '@shko.online/dataverse-odata';
+import { cloneEntityMetadata, getNameAttribute, hasNameColumn, sqlIdentifier, toSqlTableName } from './SqlHelpers';
+import { getOrderByFromOData, getWhereClauseFromODataFilter, resolveODataAttribute } from './Query/ODataToSql';
+import {
+    getFetchChildElements,
+    getOrderByFromFetch,
+    getWhereClauseFromFetchFilter,
+    resolveFetchAttribute,
+} from './Query/FetchXmlToSql';
+
+export interface MetadataDBOptions {
+    /**
+     * Generates the ids of new rows and metadata items. Defaults to alasql `NEWID()`.
+     */
+    newId?: () => string;
+}
+
+/**
+ * A lookup value together with the navigation property used to set it.
+ */
+export type LookupValueWithNavigation = ComponentFramework.LookupValue & { navigation?: string };
+
+type Row = { [attribute: string]: any };
+
+const FORMATTED_VALUE = '@OData.Community.Display.V1.FormattedValue';
+const LOOKUP_LOGICAL_NAME = '@Microsoft.Dynamics.CRM.lookuplogicalname';
+const NAVIGATION_PROPERTY = '@Microsoft.Dynamics.CRM.associatednavigationproperty';
+
+const defaultFalseOption = () => ({ Color: '', Label: 'No', Value: 0 });
+const defaultTrueOption = () => ({ Color: '', Label: 'Yes', Value: 1 });
 
 export class MetadataDB {
     static readonly CanvasLogicalName = '!CanvasApp';
@@ -26,23 +55,46 @@ export class MetadataDB {
      * Setting this to `true` will warn for missing metadata when doing operations.
      */
     _warnMissingInit: boolean;
-    db: { databaseid: string; exec: typeof alasql };
+    db: {
+        databaseid: string;
+        exec: typeof alasql;
+        tables: { [table: string]: { columns: { columnid: string }[] } };
+    };
     _newId: SinonStub<[], string>;
     EntityMetadataSQL: EntityMetadataSQL;
     OptionSetMetadataSQL: OptionSetMetadataSQL;
     AttributeMetadataSQL: AttributeMetadataSQL;
-    constructor() {
+    private _metadataCache: Map<string, ShkoOnline.EntityMetadata>;
+
+    constructor(options?: MetadataDBOptions) {
         this._warnMissingInit = false;
+        this._metadataCache = new Map();
         this.db = new (alasql as any).Database();
         this.AttributeMetadataSQL = new AttributeMetadataSQL(this.db.exec.bind(this.db));
         this.EntityMetadataSQL = new EntityMetadataSQL(this.db.exec.bind(this.db));
         this.OptionSetMetadataSQL = new OptionSetMetadataSQL(this.db.exec.bind(this.db));
 
         this._newId = stub();
-        this._newId.callsFake(() => this.db.exec<{ID:string}[]>('SELECT NEWID() as ID')[0]['ID']);
+        this._newId.callsFake(
+            options?.newId ?? (() => this.db.exec<{ ID: string }[]>('SELECT NEWID() as ID')[0]['ID']),
+        );
+    }
+
+    /**
+     * Drops the cached table metadata. Call this if you modify the `Metadata__*` tables directly.
+     */
+    invalidateMetadataCache() {
+        this._metadataCache.clear();
+    }
+
+    private warn(message: string) {
+        if (this._warnMissingInit) {
+            console.warn(message);
+        }
     }
 
     createAttribute(entityId: string, attribute: ShkoOnline.AttributeMetadata) {
+        this.invalidateMetadataCache();
         if (!attribute.MetadataId) attribute.MetadataId = this._newId();
         let OptionSetId: string | undefined = undefined;
         if (attribute.AttributeType === AttributeType.Picklist) {
@@ -68,10 +120,8 @@ export class MetadataDB {
             });
             for (let optionValue in optionsetAttribute.OptionSet.Options) {
                 const option = optionsetAttribute.OptionSet.Options[optionValue];
-                const optionId = this._newId();
-
                 this.OptionSetMetadataSQL.AddOptionMetadata({
-                    OptionId: optionId,
+                    OptionId: this._newId(),
                     OptionSetId,
                     Color: option.Color,
                     Label: option.Label,
@@ -87,31 +137,15 @@ export class MetadataDB {
                     Name: booleanAttribute.LogicalName,
                     OptionSetType: OptionSetType.Boolean,
                     DisplayName: '',
-                    FalseOption: {
-                        Color: '',
-                        Label: 'No',
-                        Value: 0,
-                    },
-                    TrueOption: {
-                        Color: '',
-                        Label: 'Yes',
-                        Value: 1,
-                    },
+                    FalseOption: defaultFalseOption(),
+                    TrueOption: defaultTrueOption(),
                 };
             }
             if (!booleanAttribute.OptionSet.FalseOption) {
-                booleanAttribute.OptionSet.FalseOption = {
-                    Color: '',
-                    Label: 'No',
-                    Value: 0,
-                };
+                booleanAttribute.OptionSet.FalseOption = defaultFalseOption();
             }
             if (!booleanAttribute.OptionSet.TrueOption) {
-                booleanAttribute.OptionSet.TrueOption = {
-                    Color: '',
-                    Label: 'Yes',
-                    Value: 1,
-                };
+                booleanAttribute.OptionSet.TrueOption = defaultTrueOption();
             }
             if (!booleanAttribute.OptionSet.MetadataId) {
                 booleanAttribute.OptionSet.MetadataId = this._newId();
@@ -123,24 +157,14 @@ export class MetadataDB {
                 OptionSetId,
                 OptionSetType: booleanAttribute.OptionSet.OptionSetType,
             });
-
-            let OptionId = this._newId();
-            let option = booleanAttribute.OptionSet.FalseOption;
-            this.OptionSetMetadataSQL.AddOptionMetadata({
-                OptionId,
-                OptionSetId,
-                Color: option.Color,
-                Label: option.Label,
-                Value: option.Value,
-            });
-            OptionId = this._newId();
-            option = booleanAttribute.OptionSet.TrueOption;
-            this.OptionSetMetadataSQL.AddOptionMetadata({
-                OptionId,
-                OptionSetId,
-                Color: option.Color,
-                Label: option.Label,
-                Value: option.Value,
+            [booleanAttribute.OptionSet.FalseOption, booleanAttribute.OptionSet.TrueOption].forEach((option) => {
+                this.OptionSetMetadataSQL.AddOptionMetadata({
+                    OptionId: this._newId(),
+                    OptionSetId: OptionSetId as string,
+                    Color: option.Color,
+                    Label: option.Label,
+                    Value: option.Value,
+                });
             });
         }
 
@@ -165,8 +189,9 @@ export class MetadataDB {
     }
 
     private initSingleTable(metadata: ShkoOnline.EntityMetadata) {
+        this.invalidateMetadataCache();
         const entityId = this._newId();
-        const safeTableName = metadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
+        const safeTableName = toSqlTableName(metadata.LogicalName);
 
         if (!metadata.Attributes) {
             metadata.Attributes = [];
@@ -206,11 +231,7 @@ export class MetadataDB {
         attributes.forEach((attr) => {
             const virtualAttribute = attr.LogicalName + 'name';
             if (
-                !(
-                    attr.AttributeType === AttributeType.Boolean ||
-                    attr.AttributeType === AttributeType.Lookup ||
-                    attr.AttributeType === AttributeType.Picklist
-                ) ||
+                !hasNameColumn(attr.AttributeType) ||
                 attributes.some((attrv) => attrv.LogicalName === virtualAttribute)
             ) {
                 return;
@@ -242,16 +263,17 @@ export class MetadataDB {
             const columns: string[] = [];
             attributes.forEach((attribute) => {
                 this.createAttribute(entityId, attribute);
-                columns.push(' [' + attribute.LogicalName + '] ' + getSqlTypeForAttribute(attribute.AttributeType));
+                columns.push(
+                    `${sqlIdentifier(attribute.LogicalName)} ${getSqlTypeForAttribute(attribute.AttributeType)}`,
+                );
                 if (attribute.AttributeType === AttributeType.Lookup) {
-                    columns.push(' [' + attribute.LogicalName + 'type] string');
-                    columns.push(' [' + attribute.LogicalName + 'navigation] string');
+                    columns.push(`${sqlIdentifier(attribute.LogicalName + 'type')} string`);
+                    columns.push(`${sqlIdentifier(attribute.LogicalName + 'navigation')} string`);
                 }
             });
 
             // Create Table
-            const createTableQuery = `CREATE TABLE ${safeTableName} (${columns.join(',')})`;
-            this.db.exec(createTableQuery);
+            this.db.exec(`CREATE TABLE ${safeTableName} (${columns.join(',')})`);
         } else {
             attributes.forEach((attribute) => {
                 this.upsertAttributeMetadata(metadata.LogicalName, attribute);
@@ -263,49 +285,29 @@ export class MetadataDB {
      * Get the metadata for a specific attribute
      * @param entity The target table
      * @param attribute The target attribute
+     * @returns `undefined` when the table is missing, `null` when the attribute is missing
      */
     getAttributeMetadata(entity: string, attribute: string) {
-        const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadata(entity);
-        if (!tableMetadataDB || tableMetadataDB.length === 0) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for ${entity}`);
-            }
+        const tableMetadata = this.getTableMetadata(entity);
+        if (!tableMetadata) {
             return;
         }
-        const tableMetadata = {
-            LogicalName: tableMetadataDB[0].LogicalName,
-            EntitySetName: tableMetadataDB[0].EntitySetName,
-            Attributes: [],
-            PrimaryIdAttribute: tableMetadataDB[0].PrimaryIdAttribute,
-            PrimaryNameAttribute: tableMetadataDB[0].PrimaryNameAttribute,
-            PrimaryImageAttribute: tableMetadataDB[0].PrimaryImageAttribute,
-            DisplayName: tableMetadataDB[0].DisplayName,
-            DisplayCollectionName: tableMetadataDB[0].DisplayCollectionName,
-            LogicalCollectionName: tableMetadataDB[0].LogicalCollectionName,
-            Description: tableMetadataDB[0].Description,
-        } as ShkoOnline.EntityMetadata;
-
-        const resultDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attribute, entity);
-        if (!resultDB || resultDB.length === 0) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for ${entity} ${attribute}`);
-            }
+        const attributeMetadata = tableMetadata.Attributes?.find((attr) => attr.LogicalName === attribute);
+        if (!attributeMetadata) {
+            this.warn(`Missing init for ${entity} ${attribute}`);
             return null;
         }
-
-        return this.mapAttributeFromAttributeDB(tableMetadata, resultDB[0]);
+        return attributeMetadata;
     }
 
     /**
      * Get the metadata for a table
-     * @param entity The target table
+     * @param entitySetName The entity set name of the target table
      */
     getTableMetadataByEntitySet(entitySetName: string) {
         const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadataByEntitySet(entitySetName);
         if (!tableMetadataDB || tableMetadataDB.length === 0) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for entitySet ${entitySetName}`);
-            }
+            this.warn(`Missing init for entitySet ${entitySetName}`);
             return;
         }
 
@@ -313,15 +315,26 @@ export class MetadataDB {
     }
 
     /**
-     * Get the metadata for a table
+     * Get the metadata for a table.
+     * The result is a copy: changing it does not change the metadata stored in the database.
      * @param entity The target table
      */
     getTableMetadata(entity: string) {
+        let tableMetadata = this._metadataCache.get(entity);
+        if (!tableMetadata) {
+            tableMetadata = this.loadTableMetadata(entity);
+            if (!tableMetadata) {
+                this.warn(`Missing init for ${entity}`);
+                return;
+            }
+            this._metadataCache.set(entity, tableMetadata);
+        }
+        return cloneEntityMetadata(tableMetadata);
+    }
+
+    private loadTableMetadata(entity: string) {
         const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadata(entity);
         if (!tableMetadataDB || tableMetadataDB.length === 0) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for ${entity}`);
-            }
             return;
         }
         const tableMetadata = {
@@ -359,49 +372,40 @@ export class MetadataDB {
             IsPrimaryName: attributeDB.LogicalName === tableMetadata.PrimaryNameAttribute,
         } as ShkoOnline.AttributeMetadata;
 
-        if (attribute.AttributeType === AttributeType.Picklist) {
-            const optionsetDB = this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId || '');
-            (attribute as ShkoOnline.PickListAttributeMetadata).DefaultFormValue =
-                attributeDB.DefaultFormValue as number;
-            (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet = {
-                IsCustomOptionSet: optionsetDB[0].IsCustomOptionSet,
-                MetadataId: optionsetDB[0].OptionSetId,
-                Name: optionsetDB[0].LogicalName,
-                OptionSetType: optionsetDB[0].OptionSetType,
+        const optionsetDB = attributeDB.OptionSetId
+            ? this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId)[0]
+            : undefined;
+
+        if (attribute.AttributeType === AttributeType.Picklist && optionsetDB) {
+            const picklistAttribute = attribute as ShkoOnline.PickListAttributeMetadata;
+            picklistAttribute.DefaultFormValue = attributeDB.DefaultFormValue as number;
+            picklistAttribute.OptionSet = {
+                IsCustomOptionSet: optionsetDB.IsCustomOptionSet,
+                MetadataId: optionsetDB.OptionSetId,
+                Name: optionsetDB.LogicalName,
+                OptionSetType: optionsetDB.OptionSetType,
                 Options: {},
             };
-            const optionsDB = this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(attributeDB.OptionSetId || '');
-            optionsDB.forEach((option) => {
-                (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet.Options[option.Value] = {
+            this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(optionsetDB.OptionSetId).forEach((option) => {
+                picklistAttribute.OptionSet.Options[option.Value] = {
                     Label: option.Label,
                     Value: option.Value,
                     Color: option.Color,
                 };
             });
-        } else if (attribute.AttributeType === AttributeType.Boolean) {
-            const optionsetDB = this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId || '');
-            (attribute as ShkoOnline.BooleanAttributeMetadata).OptionSet = {
-                IsCustomOptionSet: optionsetDB[0].IsCustomOptionSet,
-                MetadataId: optionsetDB[0].OptionSetId,
-                Name: optionsetDB[0].LogicalName,
-                OptionSetType: optionsetDB[0].OptionSetType,
+        } else if (attribute.AttributeType === AttributeType.Boolean && optionsetDB) {
+            const booleanAttribute = attribute as ShkoOnline.BooleanAttributeMetadata;
+            booleanAttribute.OptionSet = {
+                IsCustomOptionSet: optionsetDB.IsCustomOptionSet,
+                MetadataId: optionsetDB.OptionSetId,
+                Name: optionsetDB.LogicalName,
+                OptionSetType: optionsetDB.OptionSetType,
                 DisplayName: '',
-                FalseOption: {
-                    Color: '',
-                    Label: 'No',
-                    Value: 0,
-                },
-                TrueOption: {
-                    Color: '',
-                    Label: 'Yes',
-                    Value: 1,
-                },
+                FalseOption: defaultFalseOption(),
+                TrueOption: defaultTrueOption(),
             };
-            const optionsDB = this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(attributeDB.OptionSetId || '');
-            optionsDB.forEach((option) => {
-                (attribute as ShkoOnline.BooleanAttributeMetadata).OptionSet[
-                    option.Value ? 'TrueOption' : 'FalseOption'
-                ] = {
+            this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(optionsetDB.OptionSetId).forEach((option) => {
+                booleanAttribute.OptionSet[option.Value ? 'TrueOption' : 'FalseOption'] = {
                     Label: option.Label,
                     Value: option.Value,
                     Color: option.Color,
@@ -412,6 +416,23 @@ export class MetadataDB {
     }
 
     /**
+     * Adds a column to a physical table, unless it is already there.
+     */
+    private ensureColumn(safeTableName: string, column: string, sqlType: string) {
+        if (this.db.tables[safeTableName]?.columns.some((c) => c.columnid === column)) {
+            return;
+        }
+        this.db.exec(`ALTER TABLE ${safeTableName} ADD COLUMN ${sqlIdentifier(column)} ${sqlType}`);
+    }
+
+    private deleteAttributeMetadata(attribute: AttributeDB) {
+        if (attribute.OptionSetId) {
+            this.OptionSetMetadataSQL.DeleteOptionSetMetadata(attribute.OptionSetId);
+        }
+        this.AttributeMetadataSQL.DeleteAttributeMetadata(attribute.AttributeId);
+    }
+
+    /**
      * Update or Insert the metadata for a specific column of a table
      * @param entity The target table
      * @param attributeMetadata The target column
@@ -419,110 +440,61 @@ export class MetadataDB {
      */
     upsertAttributeMetadata(entity: string, attributeMetadata: ShkoOnline.AttributeMetadata) {
         const tableDB = this.EntityMetadataSQL.SelectTableMetadata(entity);
-        if (!tableDB) {
+        if (!tableDB || tableDB.length === 0) {
             console.warn(`Could not find metadata for ${entity}`);
             return;
         }
-        const safeTableName = tableDB[0].LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
+        this.invalidateMetadataCache();
+        const table = tableDB[0];
+        const safeTableName = toSqlTableName(table.LogicalName);
+        attributeMetadata.AttributeType = getAttributeTypeFromString(attributeMetadata.AttributeType);
 
-        let attributeDB = this.AttributeMetadataSQL.SelectAttributeMetadata(attributeMetadata.LogicalName, entity);
+        // Remove the previous definition, matched by name or by id (within the same table)
+        const existing = this.AttributeMetadataSQL.SelectAttributeMetadata(attributeMetadata.LogicalName, entity);
         if (attributeMetadata.MetadataId) {
-            attributeDB = attributeDB.concat(
-                this.AttributeMetadataSQL.SelectAttributeMetadataById(attributeMetadata.MetadataId),
-            );
+            this.AttributeMetadataSQL.SelectAttributeMetadataById(attributeMetadata.MetadataId)
+                .filter(
+                    (byId) =>
+                        byId.EntityLogicalName === table.LogicalName &&
+                        !existing.some((byName) => byName.AttributeId === byId.AttributeId),
+                )
+                .forEach((byId) => existing.push(byId));
         }
+        existing.forEach((attribute) => this.deleteAttributeMetadata(attribute));
 
-        if (attributeDB && attributeDB.length > 0) {
-            attributeDB.forEach((attribute) => {
-                if (
-                    (attributeMetadata.AttributeType === AttributeType.Boolean ||
-                        attributeMetadata.AttributeType === AttributeType.Lookup ||
-                        attributeMetadata.AttributeType === AttributeType.Picklist ||
-                        attributeMetadata.AttributeType === AttributeType.State ||
-                        attributeMetadata.AttributeType == AttributeType.Status) &&
-                    attribute.OptionSetId
-                ) {
-                    this.db.exec('DELETE FROM Metadata__Optionset WHERE OptionSetId = ?', [attribute.OptionSetId]);
-                    this.db.exec('DELETE FROM Metadata__Optionset_Option WHERE OptionSetId = ?', [
-                        attribute.OptionSetId,
-                    ]);
-                }
-                if (attribute.AttributeId)
-                    this.db.exec('DELETE FROM Metadata__Attribute WHERE AttributeId = ?', [attribute.AttributeId]);
-            });
-        }
-
-        const virtualAttribute = attributeMetadata.LogicalName + 'name';
-        this.createAttribute(tableDB[0].EntityId, attributeMetadata);
-
+        // The caller may reuse the option set id of the previous definition
         if (
             attributeMetadata.AttributeType === AttributeType.Boolean ||
-            attributeMetadata.AttributeType === AttributeType.Lookup ||
-            attributeMetadata.AttributeType === AttributeType.Picklist ||
-            attributeMetadata.AttributeType === AttributeType.State ||
-            attributeMetadata.AttributeType == AttributeType.Status
+            attributeMetadata.AttributeType === AttributeType.Picklist
         ) {
-            let optionsetMetadata = attributeMetadata as ShkoOnline.PickListAttributeMetadata;
-            if (optionsetMetadata.OptionSet?.MetadataId) {
-                this.db.exec('DELETE FROM Metadata__Optionset WHERE OptionSetId = ?', [
-                    optionsetMetadata.OptionSet.MetadataId,
-                ]);
-                this.db.exec('DELETE FROM Metadata__Optionset_Option WHERE OptionSetId = ?', [
-                    optionsetMetadata.OptionSet.MetadataId,
-                ]);
-            }
-            this.createAttribute(tableDB[0].EntityId, {
-                AttributeOf: attributeMetadata.LogicalName,
-                AttributeType: AttributeType.Virtual,
-                LogicalName: virtualAttribute,
-                SchemaName: (attributeMetadata.SchemaName || attributeMetadata.LogicalName) + 'Name',
-            } as ShkoOnline.AttributeMetadata);
-            if (!(attributeDB && attributeDB.length > 0))
-                this.db.exec('ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + virtualAttribute + '] string');
-
-            if (optionsetMetadata.OptionSet) {
-                this.OptionSetMetadataSQL.AddOptionSetMetadata({
-                    IsCustomOptionSet: optionsetMetadata.OptionSet.IsCustomOptionSet,
-                    LogicalName: optionsetMetadata.OptionSet.Name,
-                    OptionSetId: optionsetMetadata.OptionSet.MetadataId,
-                    OptionSetType: optionsetMetadata.OptionSet.OptionSetType,
-                });
-                for (let optionValue in optionsetMetadata.OptionSet.Options) {
-                    const option = optionsetMetadata.OptionSet.Options[optionValue];
-                    const optionId = this._newId();
-                    this.OptionSetMetadataSQL.AddOptionMetadata({
-                        OptionId: optionId,
-                        OptionSetId: optionsetMetadata.OptionSet.MetadataId,
-                        Color: option.Color,
-                        Label: option.Label,
-                        Value: option.Value,
-                    });
-                }
+            const optionSetId = (attributeMetadata as ShkoOnline.PickListAttributeMetadata).OptionSet?.MetadataId;
+            if (optionSetId) {
+                this.OptionSetMetadataSQL.DeleteOptionSetMetadata(optionSetId);
             }
         }
 
-        if (!(attributeDB && attributeDB.length > 0)) {
-            this.db.exec(
-                'ALTER TABLE ' +
-                    safeTableName +
-                    ' ADD COLUMN [' +
-                    attributeMetadata.LogicalName +
-                    '] ' +
-                    getSqlTypeForAttribute(attributeMetadata.AttributeType),
-            );
+        this.createAttribute(table.EntityId, attributeMetadata);
+        this.ensureColumn(
+            safeTableName,
+            attributeMetadata.LogicalName,
+            getSqlTypeForAttribute(attributeMetadata.AttributeType),
+        );
+        if (attributeMetadata.AttributeType === AttributeType.Lookup) {
+            this.ensureColumn(safeTableName, attributeMetadata.LogicalName + 'type', 'string');
+            this.ensureColumn(safeTableName, attributeMetadata.LogicalName + 'navigation', 'string');
+        }
 
-            if (attributeMetadata.AttributeType === AttributeType.Lookup) {
-                this.db.exec(
-                    'ALTER TABLE ' + safeTableName + ' ADD COLUMN [' + attributeMetadata.LogicalName + 'type] string',
-                );
-                this.db.exec(
-                    'ALTER TABLE ' +
-                        safeTableName +
-                        ' ADD COLUMN [' +
-                        attributeMetadata.LogicalName +
-                        'navigation] string',
-                );
+        if (hasNameColumn(attributeMetadata.AttributeType)) {
+            const virtualAttribute = attributeMetadata.LogicalName + 'name';
+            if (this.AttributeMetadataSQL.SelectAttributeMetadata(virtualAttribute, entity).length === 0) {
+                this.createAttribute(table.EntityId, {
+                    AttributeOf: attributeMetadata.LogicalName,
+                    AttributeType: AttributeType.Virtual,
+                    LogicalName: virtualAttribute,
+                    SchemaName: (attributeMetadata.SchemaName || attributeMetadata.LogicalName) + 'Name',
+                } as ShkoOnline.AttributeMetadata);
             }
+            this.ensureColumn(safeTableName, virtualAttribute, 'string');
         }
     }
 
@@ -534,9 +506,7 @@ export class MetadataDB {
         const entitySetName = items['@odata.context']?.substring(items['@odata.context'].indexOf('#') + 1);
         const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadataByEntitySet(entitySetName);
         if (!tableMetadataDB || tableMetadataDB.length === 0) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for entitySet ${entitySetName}`);
-            }
+            this.warn(`Missing init for entitySet ${entitySetName}`);
             return;
         }
 
@@ -545,7 +515,7 @@ export class MetadataDB {
         items.value.forEach((item) => {
             if (
                 tableMetadataDB[0].LogicalName === MetadataDB.CanvasLogicalName &&
-                this.db.exec<{Records:number}[]>('SELECT Count(1) as Records FROM _canvasapp')[0].Records > 0
+                this.db.exec<{ Records: number }[]>('SELECT Count(1) as Records FROM _canvasapp')[0].Records > 0
             ) {
                 tableMetadata?.Attributes?.forEach((attribute) => {
                     if (attribute.LogicalName in item) {
@@ -563,107 +533,167 @@ export class MetadataDB {
     }
 
     /**
+     * Resolves a Web API `@odata.bind` reference (e.g. `/contacts(00000000-0000-0000-0000-000000000001)`)
+     * to a lookup value.
+     */
+    resolveODataBind(bind: string | null): LookupValueWithNavigation | null {
+        if (bind === null || bind === undefined) {
+            return null;
+        }
+        const match = /([A-Za-z_][A-Za-z0-9_]*)\(([^)]+)\)\s*$/.exec(bind);
+        if (!match) {
+            throw new Error(`Invalid @odata.bind value '${bind}'`);
+        }
+        const entitySetName = match[1];
+        const id = match[2].replace(/^\{|\}$/g, '');
+        const targetMetadata = this.getTableMetadataByEntitySet(entitySetName);
+        if (!targetMetadata) {
+            console.warn(`@odata.bind '${bind}' references the entity set '${entitySetName}' that was not initialized`);
+            return { id, entityType: undefined as unknown as string };
+        }
+        const target = this.GetRow(targetMetadata.LogicalName, id).row;
+        return {
+            id,
+            entityType: targetMetadata.LogicalName,
+            name: target?.[targetMetadata.PrimaryNameAttribute || 'name'] ?? undefined,
+        };
+    }
+
+    /**
+     * Reads the value of a lookup column from an item in any of the supported formats:
+     * * a `ComponentFramework.LookupValue` stored in `item[logicalName]`
+     * * a Web API `<navigation>@odata.bind` reference
+     * * the Web API `_<logicalName>_value` property with its annotations
+     * @returns `undefined` when the item doesn't contain the lookup
+     */
+    getLookupFromItem(item: Row, logicalName: string): LookupValueWithNavigation | null | undefined {
+        if (logicalName in item && typeof item[logicalName] === 'object') {
+            return item[logicalName];
+        }
+
+        const bindKey = Object.keys(item).find(
+            (key) => key.toLowerCase() === `${logicalName.toLowerCase()}@odata.bind`,
+        );
+        if (bindKey) {
+            return this.resolveODataBind(item[bindKey]);
+        }
+
+        const valueKey = `_${logicalName}_value`;
+        if (valueKey in item) {
+            const value = item[valueKey];
+            if (value === null || value === undefined) return null;
+            if (typeof value === 'object') return value;
+            return {
+                id: value,
+                entityType: item[valueKey + LOOKUP_LOGICAL_NAME],
+                name: item[valueKey + FORMATTED_VALUE],
+                navigation: item[valueKey + NAVIGATION_PROPERTY],
+            };
+        }
+        return undefined;
+    }
+
+    /**
+     * Computes the formatted value (label) of a Yes/No or Choice(s) column.
+     */
+    getFormattedValue(attribute: ShkoOnline.AttributeMetadata | undefined, value: unknown): string | undefined {
+        if (!attribute || value === null || value === undefined) {
+            return undefined;
+        }
+        if (attribute.AttributeType === AttributeType.Boolean) {
+            const optionSet = (attribute as ShkoOnline.BooleanAttributeMetadata).OptionSet;
+            return (value ? optionSet?.TrueOption : optionSet?.FalseOption)?.Label;
+        }
+        if (attribute.AttributeType === AttributeType.Picklist) {
+            const options = (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet?.Options ?? {};
+            if (Array.isArray(value)) {
+                return value.map((v) => options[v]?.Label ?? v).join('; ');
+            }
+            return options[value as number]?.Label;
+        }
+        return undefined;
+    }
+
+    /**
      * Add a new row to the table
      * @param entity The target table
      * @param item The data
      * @param tableMetadata The table metadata
+     * @returns The id of the new row
      */
     AddRow(entity: string, item: any, tableMetadata?: ShkoOnline.EntityMetadata) {
         if (!tableMetadata) {
             tableMetadata = this.getTableMetadata(entity);
         }
         if (!tableMetadata) {
-            if (entity === 'savedquery') {
-                tableMetadata = SavedQueryMetadata;
-                this.initMetadata([tableMetadata]);
-            } else if (entity === 'userquery') {
-                tableMetadata = UserQueryMetadata;
-                this.initMetadata([tableMetadata]);
-            } else {
-                if (this._warnMissingInit) {
-                    console.warn(`Missing init for entitySet ${entity}`);
-                }
+            const platformMetadata =
+                entity === 'savedquery' ? SavedQueryMetadata : entity === 'userquery' ? UserQueryMetadata : undefined;
+            if (!platformMetadata) {
+                this.warn(`Missing init for entitySet ${entity}`);
                 return;
             }
+            this.initMetadata([cloneEntityMetadata(platformMetadata)]);
+            tableMetadata = this.getTableMetadata(entity) as ShkoOnline.EntityMetadata;
         }
+        const metadata = tableMetadata;
 
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
-        const params: string[] = [];
+        const params: unknown[] = [];
         const columns: string[] = [];
+        const addColumn = (column: string, value: unknown) => {
+            columns.push(sqlIdentifier(column));
+            params.push(value);
+        };
         let newID = null;
-        tableMetadata.Attributes?.forEach((attribute) => {
+        metadata.Attributes?.forEach((attribute) => {
             const key = attribute.LogicalName;
 
             if (attribute.AttributeType === AttributeType.Uniqueidentifier) {
-                let value = item[attribute.LogicalName];
-                if (!value && tableMetadata?.PrimaryIdAttribute === attribute?.LogicalName) {
+                let value = item[key];
+                if (!value && metadata.PrimaryIdAttribute === key) {
                     value = this._newId();
                 }
-                if (tableMetadata?.PrimaryIdAttribute === attribute?.LogicalName) {
+                if (metadata.PrimaryIdAttribute === key) {
                     newID = value;
                 }
-                params.push(value);
+                addColumn(key, value);
             } else if (attribute.AttributeType === AttributeType.Lookup) {
-                const lookupNameAttribute = tableMetadata?.Attributes?.find(
-                    (attr) =>
-                        attr.AttributeOf === attribute.LogicalName &&
-                        attr.LogicalName !== attribute.LogicalName + 'yominame',
-                );
-                if (typeof item[key] === 'object') {
-                    const lookup = item[key] as ComponentFramework.LookupValue;
-                    params.push(lookup?.name as string);
-                    columns.push('[' + lookupNameAttribute?.LogicalName + ']');
-                    params.push(lookup?.entityType);
-                    columns.push('[' + key + 'type]');
-                    params.push(lookup?.id);
-                } else {
-                    params.push(item[`_${key}_value@OData.Community.Display.V1.FormattedValue`]);
-                    columns.push('[' + lookupNameAttribute?.LogicalName + ']');
-                    params.push(item[`_${key}_value@Microsoft.Dynamics.CRM.lookuplogicalname`]);
-                    columns.push('[' + key + 'type]');
-                    params.push(item[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`]);
-                    columns.push('[' + key + 'navigation]');
-                    params.push(item[`_${key}_value`]);
-                }
-            } else if (attribute.AttributeOf && attribute.LogicalName === attribute.AttributeOf + 'name') {
-                const parentAttribute = tableMetadata?.Attributes?.find(
-                    (attr) => attr.LogicalName === attribute.AttributeOf,
-                );
-                if (parentAttribute?.AttributeType === AttributeType.Lookup) {
+                const lookup = this.getLookupFromItem(item, key);
+                if (lookup === undefined) {
                     return;
                 }
-                params.push(item[`${attribute.AttributeOf}@OData.Community.Display.V1.FormattedValue`]);
-            }
-
-            // `_${key}_value` in item) {
-            //     row[key] = item[`_${key}_value`]
-            //         ? ({
-            //               entityType: item[`_${key}_value@Microsoft.Dynamics.CRM.lookuplogicalname`],
-            //               id: item[`_${key}_value`],
-            //               name: item[`_${key}_value@OData.Community.Display.V1.FormattedValue`],
-            //           } as ComponentFramework.LookupValue)
-            //         : null;
-            //     if (`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty` in item)
-            //         row[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`] =
-            //             item[`_${key}_value@Microsoft.Dynamics.CRM.associatednavigationproperty`]; // Temporary hack
-            else if (key in item) {
-                let value =
+                const nameAttribute = getNameAttribute(metadata, attribute);
+                if (nameAttribute) {
+                    addColumn(nameAttribute, lookup?.name ?? null);
+                }
+                addColumn(key + 'type', lookup?.entityType ?? null);
+                addColumn(key + 'navigation', lookup?.navigation ?? null);
+                addColumn(key, lookup?.id ?? null);
+            } else if (attribute.AttributeOf && key === attribute.AttributeOf + 'name') {
+                const parentAttribute = metadata.Attributes?.find((attr) => attr.LogicalName === attribute.AttributeOf);
+                if (parentAttribute?.AttributeType === AttributeType.Lookup) {
+                    return; // handled together with the lookup
+                }
+                const formattedValue =
+                    item[attribute.AttributeOf + FORMATTED_VALUE] ??
+                    this.getFormattedValue(parentAttribute, item[attribute.AttributeOf]);
+                if (formattedValue === undefined) {
+                    return;
+                }
+                addColumn(key, formattedValue);
+            } else if (key in item) {
+                const value =
                     attribute.AttributeType === AttributeType.DateTime && typeof item[key] === 'string'
                         ? new Date(item[key])
                         : item[key];
                 if (value === null || value === undefined) {
                     return;
                 }
-                params.push(value);
-            } else {
-                return;
+                addColumn(key, value);
             }
-
-            columns.push('[' + key + ']');
         });
 
-        const insertSql = `INSERT INTO ${safeTableName} (${columns.join(',')}) VALUES (${params
-            .map((p) => '?')
+        const insertSql = `INSERT INTO ${toSqlTableName(metadata.LogicalName)} (${columns.join(',')}) VALUES (${params
+            .map(() => '?')
             .join(',')})`;
         this.db.exec(insertSql, params);
         return newID;
@@ -689,43 +719,33 @@ export class MetadataDB {
     GetRow(entity: string, id?: string) {
         const entityMetadata = this.getTableMetadata(entity);
         if (!entityMetadata) return { row: null, entityMetadata };
-        const safeTableName = entity.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
 
-        let selectQuery =
-            'SELECT ' +
-            (entityMetadata?.Attributes
-                ? entityMetadata?.Attributes?.map((attr) =>
-                      attr.AttributeType === AttributeType.Lookup
-                          ? '[' +
-                            attr.LogicalName +
-                            '],[' +
-                            attr.LogicalName +
-                            'type],[' +
-                            attr.LogicalName +
-                            'navigation]'
-                          : '[' + attr.LogicalName + ']',
-                  ).join(',')
-                : '*') +
-            ' FROM ' +
-            safeTableName;
+        const columns = entityMetadata.Attributes?.length
+            ? entityMetadata.Attributes.map((attr) =>
+                  attr.AttributeType === AttributeType.Lookup
+                      ? [attr.LogicalName, attr.LogicalName + 'type', attr.LogicalName + 'navigation']
+                            .map(sqlIdentifier)
+                            .join(',')
+                      : sqlIdentifier(attr.LogicalName),
+              ).join(',')
+            : '*';
+        let selectQuery = `SELECT ${columns} FROM ${toSqlTableName(entityMetadata.LogicalName)}`;
         if (id) {
-            selectQuery += ' WHERE [' + (entityMetadata?.PrimaryIdAttribute || 'id') + '] = ?';
+            selectQuery += ` WHERE ${sqlIdentifier(entityMetadata.PrimaryIdAttribute || 'id')} = ?`;
         }
 
-        const rowDB = this.db.exec<{ [attribute: string]: any }[]>(selectQuery, [id]);
+        const rowDB = this.db.exec<Row[]>(selectQuery, [id]);
 
         if (!rowDB || rowDB.length == 0) {
-            console.warn('could not find row');
+            this.warn(`Could not find row '${id}' in table '${entity}'`);
             return { row: null, entityMetadata };
         }
 
         const row = rowDB[0];
-        entityMetadata?.Attributes?.forEach((attr) => {
+        entityMetadata.Attributes?.forEach((attr) => {
             if (attr.AttributeType === AttributeType.Lookup) {
                 if (row[attr.LogicalName]) {
-                    const nameAttribute =
-                        entityMetadata?.Attributes?.find((attrName) => attrName.AttributeOf === attr.LogicalName)
-                            ?.LogicalName || attr.LogicalName + 'name';
+                    const nameAttribute = getNameAttribute(entityMetadata, attr) || attr.LogicalName + 'name';
                     row[attr.LogicalName] = {
                         id: row[attr.LogicalName],
                         entityType: row[attr.LogicalName + 'type'],
@@ -750,11 +770,10 @@ export class MetadataDB {
      */
     RemoveRow(entity: string, id: string) {
         const entityMetadata = this.getTableMetadata(entity);
-        const safeTableName = entity.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
-        const selectQuery =
-            'DELETE FROM ' + safeTableName + ' WHERE [' + (entityMetadata?.PrimaryIdAttribute || 'id') + '] = ?';
-
-        this.db.exec(selectQuery, [id]);
+        this.db.exec(
+            `DELETE FROM ${toSqlTableName(entity)} WHERE ${sqlIdentifier(entityMetadata?.PrimaryIdAttribute || 'id')} = ?`,
+            [id],
+        );
     }
 
     /**
@@ -809,8 +828,7 @@ export class MetadataDB {
      */
     GetAllRows(entity: string) {
         const entityMetadata = this.getTableMetadata(entity);
-        const safeTableName = entity.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
-        const rows = this.db.exec<{ [attr: string]: any }[]>('SELECT * FROM ' + safeTableName);
+        const rows = this.db.exec<Row[]>('SELECT * FROM ' + toSqlTableName(entity));
         return { rows, entityMetadata };
     }
 
@@ -819,202 +837,239 @@ export class MetadataDB {
      * @param value The new value
      * @param entity The target table
      * @param attribute The target column
-     * @param row The target row
+     * @param rowId The target row. When omitted all the rows are updated.
      */
     UpdateValue<T>(value: T, entity: string, attribute: string, rowId?: string) {
         const tableMetadata = this.getTableMetadata(entity);
         if (!tableMetadata) {
             return;
         }
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
 
         const attributeMetadata = tableMetadata.Attributes?.find((attr) => attr.LogicalName === attribute);
         if (!attributeMetadata) {
-            if (this._warnMissingInit) {
-                console.warn(`Missing init for attribute '${attribute}' of table '${entity}'`);
-            }
+            this.warn(`Missing init for attribute '${attribute}' of table '${entity}'`);
             return;
         }
-        const statements: string[] = [];
-        const params: (string | null)[] = [];
+        const assignments: string[] = [];
+        const params: unknown[] = [];
+        const set = (column: string, columnValue: unknown) => {
+            assignments.push(`${sqlIdentifier(column)} = ?`);
+            params.push(columnValue);
+        };
+
         if (attributeMetadata.AttributeType === AttributeType.Lookup) {
-            const lookupNameAttribute =
-                tableMetadata.Attributes?.find((attr) => attr.AttributeOf === attributeMetadata.LogicalName)
-                    ?.LogicalName || attributeMetadata.LogicalName + 'name';
-            const lookupValue = value as ComponentFramework.LookupValue;
-            statements.push(` 
-            SET [${attributeMetadata.LogicalName}] = ?, 
-                [${attributeMetadata.LogicalName}type] = ?,
-                [${lookupNameAttribute}] = ? `);
-
-            params.push(lookupValue && lookupValue.id ? lookupValue.id : null);
-            params.push(lookupValue && lookupValue.id ? lookupValue.entityType : null);
-            params.push(lookupValue && lookupValue.id ? (lookupValue.name as string) : null);
-        } else if (attributeMetadata.AttributeType === AttributeType.Picklist) {
-            const picklistNameAttribute =
-                tableMetadata?.Attributes?.find((attr) => attr.AttributeOf === attributeMetadata.LogicalName)
-                    ?.LogicalName || attributeMetadata.LogicalName + 'name';
-            statements.push(` 
-            SET [${attributeMetadata.LogicalName}] = ?, 
-                [${picklistNameAttribute}] = ? `);
-
-            if (typeof value === 'object' && value instanceof Array) {
-                // multiselect
-                params.push(JSON.stringify(value));
-            } else {
-                params.push(value as string);
-                const label = (attributeMetadata as ShkoOnline.PickListAttributeMetadata)?.OptionSet.Options[
-                    value as number
-                ]?.Label;
-                if (!label) {
-                    console.warn(`Picklist column ${attributeMetadata?.LogicalName} is missing option ${value}}`);
-                }
-                params.push(label || '');
+            const lookupValue = value as unknown as ComponentFramework.LookupValue | null;
+            const hasValue = !!lookupValue?.id;
+            set(attributeMetadata.LogicalName, hasValue ? lookupValue?.id : null);
+            set(attributeMetadata.LogicalName + 'type', hasValue ? lookupValue?.entityType : null);
+            set(
+                getNameAttribute(tableMetadata, attributeMetadata) || attributeMetadata.LogicalName + 'name',
+                hasValue ? lookupValue?.name : null,
+            );
+        } else if (
+            attributeMetadata.AttributeType === AttributeType.Picklist ||
+            attributeMetadata.AttributeType === AttributeType.Boolean
+        ) {
+            set(attributeMetadata.LogicalName, Array.isArray(value) ? JSON.stringify(value) : value);
+            const label = this.getFormattedValue(attributeMetadata, value);
+            if (
+                attributeMetadata.AttributeType === AttributeType.Picklist &&
+                value !== null &&
+                value !== undefined &&
+                !Array.isArray(value) &&
+                label === undefined
+            ) {
+                console.warn(`Picklist column ${attributeMetadata.LogicalName} is missing option ${value}`);
+            }
+            const nameAttribute = getNameAttribute(tableMetadata, attributeMetadata);
+            if (nameAttribute) {
+                set(nameAttribute, label ?? null);
             }
         } else {
-            statements.push(` SET [${attributeMetadata.LogicalName}] = ? `);
-            params.push(value as string);
+            set(attributeMetadata.LogicalName, value);
         }
 
+        let updateSql = `UPDATE ${toSqlTableName(tableMetadata.LogicalName)} SET ${assignments.join(', ')}`;
         if (rowId) {
-            statements.push(` WHERE ${tableMetadata.PrimaryIdAttribute} = ? `);
+            updateSql += ` WHERE ${sqlIdentifier(tableMetadata.PrimaryIdAttribute)} = ?`;
             params.push(rowId);
         }
 
-        this.db.exec(`UPDATE ${safeTableName} ${statements.join(' ')}`, params);
+        this.db.exec(updateSql, params);
     }
 
-    SelectUsingFetchXml(fetchXml: XMLDocument) :ComponentFramework.WebApi.Entity[] {
+    /**
+     * Builds the column list for a SELECT statement.
+     * The primary id is always included, lookups bring their type, navigation and name columns along,
+     * choices bring their formatted value column along.
+     * @param requested The logical names of the columns to select. `undefined` selects all the columns.
+     */
+    private getSelectColumns(tableMetadata: ShkoOnline.EntityMetadata, requested?: string[]) {
+        if (!requested) {
+            return ['*'];
+        }
+        const columns: string[] = [];
+        const add = (column: string) => {
+            const identifier = sqlIdentifier(column);
+            if (!columns.includes(identifier)) columns.push(identifier);
+        };
+        tableMetadata.Attributes?.forEach((attribute) => {
+            if (
+                attribute.LogicalName !== tableMetadata.PrimaryIdAttribute &&
+                !requested.includes(attribute.LogicalName)
+            ) {
+                return;
+            }
+            add(attribute.LogicalName);
+            if (attribute.AttributeType === AttributeType.Lookup) {
+                add(attribute.LogicalName + 'type');
+                add(attribute.LogicalName + 'navigation');
+            }
+            if (hasNameColumn(attribute.AttributeType)) {
+                const nameAttribute = getNameAttribute(tableMetadata, attribute);
+                if (nameAttribute) add(nameAttribute);
+            }
+        });
+        return columns;
+    }
+
+    /**
+     * Converts the lookup columns of a query result to the shape returned by {@link GetRowForAPI}:
+     * `_<logicalname>_value` holding a `ComponentFramework.LookupValue`.
+     */
+    private shapeLookupsForAPI(row: Row, tableMetadata: ShkoOnline.EntityMetadata) {
+        tableMetadata.Attributes?.forEach((attribute) => {
+            const key = attribute.LogicalName;
+            if (attribute.AttributeType !== AttributeType.Lookup || !(key in row)) {
+                return;
+            }
+            const nameAttribute = getNameAttribute(tableMetadata, attribute);
+            row[`_${key}_value`] = row[key]
+                ? ({
+                      id: row[key],
+                      entityType: row[key + 'type'],
+                      name: nameAttribute ? row[nameAttribute] : undefined,
+                  } as ComponentFramework.LookupValue)
+                : null;
+            delete row[key];
+            delete row[key + 'type'];
+            if (nameAttribute) delete row[nameAttribute];
+        });
+        return row;
+    }
+
+    /**
+     * Executes a FetchXML query against the in-memory database.
+     * Supports attributes, all-attributes, filters (nested, and/or), order, top/count, distinct and aggregates.
+     * `link-entity` is not supported yet and is ignored.
+     * @throws when the table or one of the attributes doesn't exist or an operator isn't supported
+     */
+    SelectUsingFetchXml(fetchXml: XMLDocument): ComponentFramework.WebApi.Entity[] {
         const fetchNode = fetchXml.documentElement;
-        const entityNode = fetchNode.firstElementChild;
+        const entityNode = getFetchChildElements(fetchNode, 'entity')[0];
         if (!entityNode) {
             throw new Error('Fetch does not contain the entity node');
         }
-
-        const attributesX = entityNode.getElementsByTagName('attribute');
-        const attributes: string[] = [];
-
-        if (fetchNode.getAttribute('aggregate') === 'true') {
-            for (let i = 0; i < attributesX.length; i++) {
-                const attribute = attributesX[i].getAttribute('name') as string;
-                const aggregate = attributesX[i].getAttribute('aggregate') as string;
-                const alias = attributesX[i].getAttribute('alias') as string;
-                attributes.push(`${aggregate}(${attribute}) as [${alias}]`);
-            }
-        } else {
-            for (let i = 0; i < attributesX.length; i++) {
-                attributes.push(attributesX[i].getAttribute('name') as string);
-            }
+        const entityName = entityNode.getAttribute('name') ?? '';
+        const tableMetadata = this.getTableMetadata(entityName);
+        if (!tableMetadata) {
+            throw new Error(`Entity ${entityName} does not exist.`);
+        }
+        if (getFetchChildElements(entityNode, 'link-entity').length > 0) {
+            console.warn('link-entity is not supported by the mock and will be ignored');
         }
 
-        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${entityNode.getAttribute('name')}`);
-    }
-
-    SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
-        const safeTableName = tableMetadata.LogicalName.toLowerCase().replace(/!/g, '_').replace(/@/g, '_');
-        const attributes: string[] = [];
-
-        if (query.$select && tableMetadata.Attributes) {
-            tableMetadata.Attributes.forEach((attribute) => {
-                if (
-                    attribute.AttributeType === AttributeType.Lookup &&
-                    query.$select?.find((a) => a === `_${attribute.LogicalName}_value`)
-                ) {
-                    attributes.push(attribute.LogicalName, attribute.LogicalName + 'name', attribute.LogicalName + 'type');
-                } else if (
-                    query.$select?.find((a) => a === attribute.LogicalName) ||
-                    attribute.LogicalName === tableMetadata.PrimaryIdAttribute
-                ) {
-                    attributes.push(attribute.LogicalName);
-                    if (
-                        attribute.AttributeType === AttributeType.Boolean ||
-                        attribute.AttributeType === AttributeType.Picklist ||
-                        attribute.AttributeType === AttributeType.State ||
-                        attribute.AttributeType === AttributeType.Status
-                    ) {
-                        attributes.push(attribute.LogicalName + 'name');
-                    }
+        const attributeNodes = getFetchChildElements(entityNode, 'attribute');
+        const isAggregate = fetchNode.getAttribute('aggregate') === 'true';
+        let selectList: string[];
+        let groupBy = '';
+        if (isAggregate) {
+            const groups: string[] = [];
+            selectList = attributeNodes.map((node) => {
+                const attribute = resolveFetchAttribute(tableMetadata, node.getAttribute('name'));
+                const column = sqlIdentifier(attribute.LogicalName);
+                const alias = sqlIdentifier(node.getAttribute('alias') ?? attribute.LogicalName);
+                if (node.getAttribute('groupby') === 'true') {
+                    groups.push(column);
+                    return `${column} AS ${alias}`;
+                }
+                const distinct = node.getAttribute('distinct') === 'true' ? 'DISTINCT ' : '';
+                const aggregate = (node.getAttribute('aggregate') ?? '').toLowerCase();
+                switch (aggregate) {
+                    case 'count':
+                        return `COUNT(${distinct ? distinct + column : '*'}) AS ${alias}`;
+                    case 'countcolumn':
+                        return `COUNT(${distinct}${column}) AS ${alias}`;
+                    case 'sum':
+                    case 'avg':
+                    case 'min':
+                    case 'max':
+                        return `${aggregate.toUpperCase()}(${distinct}${column}) AS ${alias}`;
+                    default:
+                        throw new Error(`Aggregate '${aggregate}' is not supported`);
                 }
             });
-        }
-
-        if(attributes.length === 0) {
-            attributes.push('*');
-        }
-
-        let whereClause = '';
-        const params: string[] = [];
-        if (query.$filter) {
-            whereClause = ' WHERE ' + GetWhereClauseFromFilter(query.$filter, tableMetadata, params);
-        }
-
-        let OrderByClause = '';
-
-        if(query.$orderby && query.$orderby.length > 0 && tableMetadata.Attributes) {
-            OrderByClause = ' ORDER BY ' + 
-                query.$orderby.map(element => {
-             return (tableMetadata.Attributes!.find((x) => 
-                    x.AttributeType === AttributeType.Lookup && 
-                    element.column === `_${x.LogicalName}_value`)?.LogicalName ?? element.column) + " " + (element.asc ? 'ASC' : 'DESC');
-                }).join(',');
-        }   
-
-        return this.db.exec(`SELECT ${attributes.join(',')} FROM ${safeTableName} ${whereClause} ${OrderByClause}`, params);
-    }
-}
-function GetWhereClauseFromFilter(filter: FilterOperator, tableMetadata: ShkoOnline.EntityMetadata, params: string[]):string {
-    switch (filter.operator) {
-        case 'and':
-        case 'or':
-            return `${GetWhereClauseFromFilter(filter.left, tableMetadata, params)} ${filter.operator.toUpperCase()} ${GetWhereClauseFromFilter(filter.right, tableMetadata, params)}`;
-        case 'not':
-            return `NOT (${GetWhereClauseFromFilter(filter.right, tableMetadata, params)})`;
-        case 'eq':
-        case 'ne':
-        case 'gt':
-        case 'ge':
-        case 'lt':
-        case 'le':
-            if('isColumnOperation' in filter && filter.isColumnOperation) {
-                return `[${filter.left}] ${filter.operator} [${filter.right}]`;
-            }else if('isBooleanOperation' in filter && filter.isBooleanOperation) {
-                return `[${filter.left}] ${filter.operator} ${filter.right}`;
-            }else if('isNullOperation' in filter && filter.isNullOperation) {
-                return `[${filter.left}] IS ${filter.operator === 'eq' ? '' : 'NOT '}NULL`;
-            }else{
-                params.push(filter.right as string);
-                return `[${filter.left}] ${ODataOperatorToSqlOperator(filter.operator)} ?`;
+            if (groups.length > 0) {
+                groupBy = ' GROUP BY ' + groups.join(',');
             }
-        case 'contains':
-            params.push(`%${filter.right}%`);
-            return `[${filter.left}] LIKE ?`;
-        case 'startswith':
-            params.push(`${filter.right}%`);
-            return `[${filter.left}] LIKE ?`;
-        case 'endswith':
-            params.push(`%${filter.right}`);
-            return `[${filter.left}] LIKE ?`;
-        default:
-           console.error(`Operator ${(filter as any).operator as string} not supported`);
-           return '';
+        } else {
+            const requested =
+                getFetchChildElements(entityNode, 'all-attributes').length > 0
+                    ? undefined
+                    : attributeNodes.map(
+                          (node) => resolveFetchAttribute(tableMetadata, node.getAttribute('name')).LogicalName,
+                      );
+            selectList = this.getSelectColumns(tableMetadata, requested);
+        }
+
+        const params: unknown[] = [];
+        const conditions = getFetchChildElements(entityNode, 'filter')
+            .map((filter) => getWhereClauseFromFetchFilter(filter, tableMetadata, params))
+            .filter((condition) => condition !== '');
+        const where = conditions.length > 0 ? ' WHERE ' + conditions.map((c) => `(${c})`).join(' AND ') : '';
+        const orderBy = getOrderByFromFetch(entityNode, tableMetadata);
+        const top = parseInt(fetchNode.getAttribute('top') ?? fetchNode.getAttribute('count') ?? '', 10);
+        const limit = top > 0 ? ` LIMIT ${top}` : '';
+        const distinct = fetchNode.getAttribute('distinct') === 'true' ? 'DISTINCT ' : '';
+
+        const rows = this.db.exec<Row[]>(
+            `SELECT ${distinct}${selectList.join(',')} FROM ${toSqlTableName(
+                tableMetadata.LogicalName,
+            )}${where}${groupBy}${orderBy}${limit}`,
+            params,
+        );
+        return isAggregate ? rows : rows.map((row) => this.shapeLookupsForAPI(row, tableMetadata));
     }
 
-    function ODataOperatorToSqlOperator(operator: string) {
-        switch(operator) {
-            case 'eq':
-                return '=';
-            case 'ne':
-                return '<>';
-            case 'gt':
-                return '>';
-            case 'ge':
-                return '>=';
-            case 'lt':
-                return '<';
-            case 'le':      
-                return '<=';
-                default:
-                    return operator;
-        }
+    /**
+     * Executes a parsed OData query (`$select`, `$filter`, `$orderby`, `$top`) against the in-memory database.
+     * Lookups are returned as `_<logicalname>_value` holding a `ComponentFramework.LookupValue`.
+     * @throws when `$filter` or `$orderby` reference a column that doesn't exist or an operator isn't supported
+     */
+    SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
+        const requested = query.$select
+            ?.map((property) => {
+                try {
+                    return resolveODataAttribute(tableMetadata, property).LogicalName;
+                } catch (e) {
+                    this.warn((e as Error).message);
+                    return undefined;
+                }
+            })
+            .filter((logicalName): logicalName is string => !!logicalName);
+        const columns = this.getSelectColumns(tableMetadata, requested);
+
+        const params: unknown[] = [];
+        const where = query.$filter
+            ? ' WHERE ' + getWhereClauseFromODataFilter(query.$filter, tableMetadata, params)
+            : '';
+        const orderBy = getOrderByFromOData(query.$orderby, tableMetadata);
+        const limit = query.$top && query.$top > 0 ? ` LIMIT ${Math.floor(query.$top)}` : '';
+
+        const rows = this.db.exec<Row[]>(
+            `SELECT ${columns.join(',')} FROM ${toSqlTableName(tableMetadata.LogicalName)}${where}${orderBy}${limit}`,
+            params,
+        );
+        return rows.map((row) => this.shapeLookupsForAPI(row, tableMetadata));
     }
 }

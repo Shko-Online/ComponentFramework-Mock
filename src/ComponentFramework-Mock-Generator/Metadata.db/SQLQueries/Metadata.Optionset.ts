@@ -128,4 +128,11 @@ export class OptionSetMetadataSQL {
     SelectOptionSetOptionMetadata(OptionSetId: string) {
         return this.sql(SELECT_METADATA_OPTIONSET_OPTION, [OptionSetId]) as OptionSetOption[];
     }
+    /**
+     * Deletes the option set together with all of its options
+     */
+    DeleteOptionSetMetadata(OptionSetId: string) {
+        this.sql('DELETE FROM Metadata__Optionset_Option WHERE OptionSetId = ?', [OptionSetId]);
+        this.sql('DELETE FROM Metadata__Optionset WHERE OptionSetId = ?', [OptionSetId]);
+    }
 }

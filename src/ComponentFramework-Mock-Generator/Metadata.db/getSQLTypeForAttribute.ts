@@ -4,7 +4,7 @@
 */
 
 import type { ShkoOnline } from '../../ShkoOnline';
-import { AttributeType } from '../../ComponentFramework-Mock';
+import { AttributeType } from '../../ComponentFramework-Mock/PropertyTypes/AttributeType';
 
 export const getSqlTypeForAttribute = (attributeType: ShkoOnline.AttributeType) => {
     switch (attributeType) {

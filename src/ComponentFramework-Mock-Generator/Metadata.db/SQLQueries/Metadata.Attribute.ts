@@ -85,6 +85,8 @@ export const SELECT_METADATA_ATTRIBUTES = `
 
 export interface AttributeDB {
     EntityId: string;
+    /** Only populated by the SELECT queries */
+    EntityLogicalName?: string;
     AttributeId: string;
     LogicalName: string;
     AttributeType: ShkoOnline.AttributeType;
@@ -116,9 +118,12 @@ export class AttributeMetadataSQL {
         return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeLogicalName, EntityLogicalName]) as AttributeDB[];
     }
     SelectAttributeMetadataById(AttributeId: string) {
-        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeId]) as AttributeDB[];
+        return this.sql(SELECT_METADATA_ATTRIBUTE_BY_ID, [AttributeId]) as AttributeDB[];
     }
     SelectAttributeMetadataForTable(EntityLogicalName: string) {
         return this.sql(SELECT_METADATA_ATTRIBUTES, [EntityLogicalName]) as AttributeDB[];
+    }
+    DeleteAttributeMetadata(AttributeId: string) {
+        this.sql('DELETE FROM Metadata__Attribute WHERE AttributeId = ?', [AttributeId]);
     }
 }

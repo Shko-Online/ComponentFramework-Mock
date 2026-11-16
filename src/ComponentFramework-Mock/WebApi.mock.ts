@@ -13,6 +13,31 @@ import { AttributeType } from './PropertyTypes';
 import { ShkoOnline } from '../ShkoOnline';
 import { DelayedPromise } from '../utils/DelayedPromise';
 
+const MOCK_WEB_API_URL = 'https://localhost/api/data/v9.2/';
+const DEFAULT_PAGE_SIZE = 5000;
+
+/**
+ * Returns the page requested by the `$skiptoken` in `options`.
+ * `nextLink` is set only when there are more records, the same way Dataverse does.
+ * The query part of `nextLink` can be passed back as `options` to get the next page.
+ */
+const getPage = (
+    entities: ComponentFramework.WebApi.Entity[],
+    entityMetadata: ShkoOnline.EntityMetadata,
+    options?: string,
+    maxPageSize?: number,
+): ComponentFramework.WebApi.RetrieveMultipleResponse => {
+    const params = new URLSearchParams(options ?? '');
+    const skip = Math.max(parseInt(params.get('$skiptoken') ?? '0', 10) || 0, 0);
+    const pageSize = maxPageSize && maxPageSize > 0 ? maxPageSize : DEFAULT_PAGE_SIZE;
+    let nextLink: string | undefined;
+    if (skip + pageSize < entities.length) {
+        params.set('$skiptoken', String(skip + pageSize));
+        nextLink = `${MOCK_WEB_API_URL}${entityMetadata.EntitySetName || entityMetadata.LogicalName}?${params.toString()}`;
+    }
+    return { entities: entities.slice(skip, skip + pageSize), nextLink: nextLink as string };
+};
+
 export class WebApiMock implements ComponentFramework.WebApi {
     _Delay: number = 200;
     _ConvertRowToOData: SinonStub<[row: any, entityMetadata: ShkoOnline.EntityMetadata], void>;
@@ -136,14 +161,24 @@ export class WebApiMock implements ComponentFramework.WebApi {
             const metadata = db.getTableMetadata(entityType);
             if (!metadata) {
                 return DelayedPromise.rejectAfterDelay<ComponentFramework.LookupValue>(
-                   { message:  `Entity ${entityType} does not exist.` },
+                    { message: `Entity ${entityType} does not exist.` },
+                    this._Delay,
+                );
+            }
+
+            let id: string;
+            try {
+                id = db.AddRow(entityType, data, metadata) || '';
+            } catch (e) {
+                return DelayedPromise.rejectAfterDelay<ComponentFramework.LookupValue>(
+                    { message: (e as Error).message },
                     this._Delay,
                 );
             }
 
             return DelayedPromise.resolveAfterDelay<ComponentFramework.LookupValue>(
                 {
-                    id: db.AddRow(entityType, data, metadata) || '',
+                    id,
                     name: data[metadata.PrimaryNameAttribute || 'name'],
                     entityType: entityType,
                 },
@@ -160,7 +195,9 @@ export class WebApiMock implements ComponentFramework.WebApi {
                         return reject({ message: `Entity ${entityType} does not exist.` });
                     }
                     if (!result.row) {
-                        return reject({ message: `Could not find record with id: '${id}' for entity: '${entityType}'.` });
+                        return reject({
+                            message: `Could not find record with id: '${id}' for entity: '${entityType}'.`,
+                        });
                     }
                     db.RemoveRow(entityType, id);
                     resolve({
@@ -178,24 +215,38 @@ export class WebApiMock implements ComponentFramework.WebApi {
                     return;
                 }
 
-                const key =
-                    attribute.AttributeType === AttributeType.Lookup
-                        ? `_${attribute.LogicalName}_value`
-                        : attribute.LogicalName;
-
-                if (key in data) {
-                    db.UpdateValue(data[key], entityType, key, id);
+                if (attribute.AttributeType === AttributeType.Lookup) {
+                    // Supports `<navigation>@odata.bind`, `_<logicalname>_value` and LookupValue objects
+                    const lookup = db.getLookupFromItem(data, attribute.LogicalName);
+                    if (lookup !== undefined) {
+                        db.UpdateValue(lookup, entityType, attribute.LogicalName, id);
+                    }
+                } else if (attribute.LogicalName in data) {
+                    db.UpdateValue(data[attribute.LogicalName], entityType, attribute.LogicalName, id);
                 }
             };
 
             const metadata = db.getTableMetadata(entityType);
             if (!metadata) {
                 return DelayedPromise.rejectAfterDelay<ComponentFramework.LookupValue>(
-                    `Entity ${entityType} does not exist.`,
+                    { message: `Entity ${entityType} does not exist.` },
                     this._Delay,
                 );
             }
-            metadata.Attributes?.forEach(attributeHandler);
+            if (!db.GetRow(entityType, id).row) {
+                return DelayedPromise.rejectAfterDelay<ComponentFramework.LookupValue>(
+                    { message: `Could not find record with id: '${id}' for entity: '${entityType}'.` },
+                    this._Delay,
+                );
+            }
+            try {
+                metadata.Attributes?.forEach(attributeHandler);
+            } catch (e) {
+                return DelayedPromise.rejectAfterDelay<ComponentFramework.LookupValue>(
+                    { message: (e as Error).message },
+                    this._Delay,
+                );
+            }
             const result = db.GetRow(entityType, id);
 
             return DelayedPromise.resolveAfterDelay<ComponentFramework.LookupValue>(
@@ -215,94 +266,66 @@ export class WebApiMock implements ComponentFramework.WebApi {
 
                 if (parsed.error) {
                     reject(parsed.error);
+                    return;
                 }
 
                 const entityMetadata = db.getTableMetadata(entityType);
 
                 if (!entityMetadata) {
-                    reject(`Table ${entityType} does not exist`);
+                    reject({ message: `Entity ${entityType} does not exist.` });
                     return;
                 }
 
-                if (parsed.userQuery) {
-                    const userQuery = db.GetRow('userquery', parsed.userQuery);
-                    if (!userQuery.row) {
-                        reject({
-                            code: '0x80040217',
-                            message: `Entity 'userquery' With Id = ${parsed.userQuery} Does Not Exist`,
-                        });
-                        return;
+                try {
+                    let fetchXml = parsed.fetchXml;
+                    const storedQueryTable = parsed.userQuery
+                        ? 'userquery'
+                        : parsed.savedQuery
+                          ? 'savedquery'
+                          : undefined;
+                    if (storedQueryTable) {
+                        const queryId = (parsed.userQuery ?? parsed.savedQuery) as string;
+                        const storedQuery = db.GetRow(storedQueryTable, queryId);
+                        if (!storedQuery.row) {
+                            reject({
+                                code: '0x80040217',
+                                message: `Entity '${storedQueryTable}' With Id = ${queryId} Does Not Exist`,
+                            });
+                            return;
+                        }
+
+                        if (storedQuery.row['returnedtypecode'] !== entityMetadata.LogicalName) {
+                            reject({
+                                code: '0x80060888',
+                                message: 'No Query View exists with the Given Query Id on the Entity Set.',
+                            });
+                            return;
+                        }
+
+                        fetchXml = parseOData('?fetchXml=' + encodeURIComponent(storedQuery.row['fetchxml'])).fetchXml;
+                        if (!fetchXml) {
+                            reject({ message: `Entity '${storedQueryTable}' with id ${queryId} contains wrong data` });
+                            return;
+                        }
                     }
 
-                    if (userQuery.row['returnedtypecode'] !== entityMetadata.LogicalName) {
-                        reject({
-                            code: '0x80060888',
-                            message: 'No Query View exists with the Given Query Id on the Entity Set.',
-                        });
-                        return;
-                    }
+                    // FetchXML paging works with paging cookies, the Web API doesn't return a nextLink
+                    const entities = fetchXml
+                        ? db.SelectUsingFetchXml(fetchXml)
+                        : (db.SelectUsingOData(entityMetadata, parsed) as ComponentFramework.WebApi.Entity[]);
 
-                    const parsedUserQuery = parseOData('?fetchXml=' + encodeURIComponent(userQuery.row['fetchxml']));
-                    if (!parsedUserQuery.fetchXml) {
-                        throw new Error(`User Query with id ${parsed.userQuery} contains wrong data`);
-                    }
-                    const entities = db.SelectUsingFetchXml(parsedUserQuery.fetchXml);
-                    resolve({
-                        entities,
-                        nextLink: 'next',
+                    entities.forEach((row) => {
+                        this._ConvertRowToOData(row, entityMetadata);
                     });
-                    return;
+
+                    resolve(
+                        fetchXml
+                            ? { entities, nextLink: undefined as unknown as string }
+                            : getPage(entities, entityMetadata, options, maxPageSize),
+                    );
+                } catch (e) {
+                    reject({ message: (e as Error).message });
                 }
-
-                if (parsed.savedQuery) {
-                    const savedQuery = db.GetRow('savedquery', parsed.savedQuery);
-                    if (!savedQuery.row) {
-                        reject({
-                            code: '0x80040217',
-                            message: `Entity 'savedquery' With Id = ${parsed.savedQuery} Does Not Exist`,
-                        });
-                        return;
-                    }
-
-                    if (savedQuery.row['returnedtypecode'] !== entityMetadata.LogicalName) {
-                        reject({
-                            code: '0x80060888',
-                            message: 'No Query View exists with the Given Query Id on the Entity Set.',
-                        });
-                        return;
-                    }
-
-                    const parsedSavedQuery = parseOData('?fetchXml=' + encodeURIComponent(savedQuery.row['fetchxml']));
-                    if (!parsedSavedQuery.fetchXml) {
-                        throw new Error(`Saved Query with id ${parsed.savedQuery} contains wrong data`);
-                    }
-                    const entities = db.SelectUsingFetchXml(parsedSavedQuery.fetchXml);
-                    resolve({
-                        entities,
-                        nextLink: 'next',
-                    });
-                    return;
-                }
-
-                if (parsed.fetchXml) {
-                    const entities = db.SelectUsingFetchXml(parsed.fetchXml);
-                    resolve({
-                        entities,
-                        nextLink: 'next',
-                    });
-                    return;
-                }
-
-                const entities = db.SelectUsingOData(entityMetadata, parsed) as any[];
-
-                entities.forEach((row) => {
-                    this._ConvertRowToOData(row, entityMetadata);
-                });
-
-                resolve({
-                    entities,
-                    nextLink: 'string',
-                });
             });
         });
         this.retrieveRecord = stub();
@@ -323,8 +346,18 @@ export class WebApiMock implements ComponentFramework.WebApi {
                         if (parsed.$select) {
                             const oldRow = result.row;
                             result.row = {};
+                            const copy = (key: string) => {
+                                if (key in oldRow) result.row[key] = oldRow[key];
+                            };
                             parsed.$select.forEach((attribute) => {
                                 result.row[attribute] = oldRow[attribute];
+                                // Keep the hidden columns used to build the annotations
+                                const logicalName = /^_(.+)_value$/.exec(attribute)?.[1] ?? attribute;
+                                copy(logicalName + 'navigation');
+                                result.entityMetadata?.Attributes?.filter(
+                                    (attr) =>
+                                        attr.AttributeOf === logicalName && attr.LogicalName === logicalName + 'name',
+                                ).forEach((attr) => copy(attr.LogicalName));
                             });
                             if (
                                 result.entityMetadata.PrimaryIdAttribute !== undefined &&

@@ -27,3 +27,4 @@ export {
 export { getAttributeTypeFromString } from './getAttributeTypeFromString';
 export { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
 export { MetadataDB } from './Metadata.db';
+export type { LookupValueWithNavigation, MetadataDBOptions } from './Metadata.db';

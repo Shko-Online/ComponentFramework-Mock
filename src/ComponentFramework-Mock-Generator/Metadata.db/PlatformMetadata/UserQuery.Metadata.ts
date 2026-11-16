@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-import { AttributeType } from '../../../ComponentFramework-Mock/PropertyTypes';
+import { AttributeType } from '../../../ComponentFramework-Mock/PropertyTypes/AttributeType';
 import { ShkoOnline } from '../../../ShkoOnline';
 
 export const UserQueryMetadata = {
