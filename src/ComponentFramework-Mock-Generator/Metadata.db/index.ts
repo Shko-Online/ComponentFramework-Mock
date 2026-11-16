@@ -27,6 +27,8 @@ export {
 export { getAttributeTypeFromString } from './getAttributeTypeFromString';
 export { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
 export { AttributeType, OptionSetType } from './AttributeType';
+import type * as DataverseMetadata from './Metadata.types';
+export type { DataverseMetadata };
 export { MetadataStore } from './MetadataStore';
 export type { LookupValueWithNavigation, MetadataStoreOptions } from './MetadataStore';
 export { MetadataDB } from './Metadata.db';

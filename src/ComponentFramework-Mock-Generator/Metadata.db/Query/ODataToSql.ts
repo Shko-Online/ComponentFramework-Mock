@@ -4,7 +4,7 @@ Licensed under the MIT license.
 */
 
 import type { FilterOperator } from '@shko.online/dataverse-odata';
-import type { ShkoOnline } from '../../../ShkoOnline';
+import type { EntityMetadata } from '../Metadata.types';
 import { AttributeType } from '../AttributeType';
 import { compareColumnToParameter, sqlIdentifier } from '../SqlHelpers';
 import { invalidRequestError } from '../Errors';
@@ -31,7 +31,7 @@ const toSqlOperator = (operator: string) => {
  * Lookups are exposed by the Web API as `_<logicalname>_value`.
  * @throws when the property doesn't exist, the same way Dataverse does.
  */
-export const resolveODataAttribute = (tableMetadata: ShkoOnline.EntityMetadata, property: string) => {
+export const resolveODataAttribute = (tableMetadata: EntityMetadata, property: string) => {
     const lookupMatch = /^_(.+)_value$/.exec(property);
     const attribute =
         (lookupMatch &&
@@ -55,7 +55,7 @@ export const resolveODataAttribute = (tableMetadata: ShkoOnline.EntityMetadata, 
  */
 export const getWhereClauseFromODataFilter = (
     filter: FilterOperator,
-    tableMetadata: ShkoOnline.EntityMetadata,
+    tableMetadata: EntityMetadata,
     params: unknown[],
 ): string => {
     switch (filter.operator) {
@@ -100,7 +100,7 @@ export const getWhereClauseFromODataFilter = (
  */
 export const getOrderByFromOData = (
     orderBy: { column: string; asc: boolean }[] | undefined,
-    tableMetadata: ShkoOnline.EntityMetadata,
+    tableMetadata: EntityMetadata,
 ) => {
     if (!orderBy || orderBy.length === 0) {
         return '';

@@ -3,7 +3,7 @@ Copyright (c) 2022 Betim Beja and Shko Online LLC
 Licensed under the MIT license.
 */
 
-import type { ShkoOnline } from '../../../ShkoOnline';
+import type { EntityMetadata } from '../Metadata.types';
 import type { LookupReference, WebApiEntity, WireFormatter } from './Wire.types';
 import { AttributeType } from '../AttributeType';
 import { ODataAnnotation } from './Wire.types';
@@ -44,7 +44,7 @@ const defaultFormatter: WireFormatter = {
  */
 export const toWebApiEntity = (
     row: WebApiEntity,
-    tableMetadata: ShkoOnline.EntityMetadata,
+    tableMetadata: EntityMetadata,
     formatter: WireFormatter = defaultFormatter,
 ): WebApiEntity => {
     const entity: WebApiEntity = { ...row };

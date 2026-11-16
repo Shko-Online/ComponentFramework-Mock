@@ -3,7 +3,7 @@ Copyright (c) 2022 Betim Beja and Shko Online LLC
 Licensed under the MIT license.
 */
 
-import type { ShkoOnline } from '../../../ShkoOnline';
+import type { EntityMetadata } from '../Metadata.types';
 import { coerceValueForAttribute, compareColumnToParameter, sqlIdentifier } from '../SqlHelpers';
 import { invalidRequestError } from '../Errors';
 
@@ -24,7 +24,7 @@ const childElements = (node: Element, tagName: string) =>
  * Resolves a FetchXML attribute name to its metadata.
  * @throws when the attribute doesn't exist, the same way Dataverse does.
  */
-export const resolveFetchAttribute = (tableMetadata: ShkoOnline.EntityMetadata, name: string | null) => {
+export const resolveFetchAttribute = (tableMetadata: EntityMetadata, name: string | null) => {
     const attribute = tableMetadata.Attributes?.find((attr) => attr.LogicalName === name);
     if (!attribute) {
         throw invalidRequestError(
@@ -34,7 +34,7 @@ export const resolveFetchAttribute = (tableMetadata: ShkoOnline.EntityMetadata, 
     return attribute;
 };
 
-const getConditionClause = (condition: Element, tableMetadata: ShkoOnline.EntityMetadata, params: unknown[]) => {
+const getConditionClause = (condition: Element, tableMetadata: EntityMetadata, params: unknown[]) => {
     const attribute = resolveFetchAttribute(tableMetadata, condition.getAttribute('attribute'));
     const column = sqlIdentifier(attribute.LogicalName);
     const operator = condition.getAttribute('operator') ?? 'eq';
@@ -86,7 +86,7 @@ const getConditionClause = (condition: Element, tableMetadata: ShkoOnline.Entity
  */
 export const getWhereClauseFromFetchFilter = (
     filter: Element,
-    tableMetadata: ShkoOnline.EntityMetadata,
+    tableMetadata: EntityMetadata,
     params: unknown[],
 ): string => {
     const joiner = filter.getAttribute('type') === 'or' ? ' OR ' : ' AND ';
@@ -104,7 +104,7 @@ export const getWhereClauseFromFetchFilter = (
 /**
  * Translates the `<order>` elements of a FetchXML `<entity>` to a SQL `ORDER BY` clause.
  */
-export const getOrderByFromFetch = (entityNode: Element, tableMetadata: ShkoOnline.EntityMetadata) => {
+export const getOrderByFromFetch = (entityNode: Element, tableMetadata: EntityMetadata) => {
     const orders = childElements(entityNode, 'order');
     if (orders.length === 0) {
         return '';

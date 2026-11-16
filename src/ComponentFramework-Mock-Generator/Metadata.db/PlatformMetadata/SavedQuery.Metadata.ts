@@ -4,7 +4,7 @@
 */
 
 import { AttributeType } from '../AttributeType';
-import { ShkoOnline } from '../../../ShkoOnline';
+import type { EntityMetadata } from '../Metadata.types';
 
 export const SavedQueryMetadata = {
     LogicalName: 'savedquery',
@@ -33,4 +33,4 @@ export const SavedQueryMetadata = {
             SchemaName: 'FetchXML',
         },
     ],
-} as ShkoOnline.EntityMetadata;
+} as EntityMetadata;

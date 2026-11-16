@@ -3,7 +3,7 @@ Copyright (c) 2022 Betim Beja and Shko Online LLC
 Licensed under the MIT license.
 */
 
-import type { ShkoOnline } from '../../ShkoOnline';
+import type { AttributeMetadata, AttributeTypeCode, EntityMetadata } from './Metadata.types';
 import { AttributeType } from './AttributeType';
 import { invalidRequestError } from './Errors';
 
@@ -27,7 +27,7 @@ export const sqlIdentifier = (name: string) => {
 /**
  * Column types that have a companion `<logicalname>name` virtual column holding the formatted value / lookup name.
  */
-const NAME_COLUMN_TYPES = new Set<ShkoOnline.AttributeType>([
+const NAME_COLUMN_TYPES = new Set<AttributeTypeCode>([
     AttributeType.Boolean,
     AttributeType.Lookup,
     AttributeType.Picklist,
@@ -38,24 +38,21 @@ const NAME_COLUMN_TYPES = new Set<ShkoOnline.AttributeType>([
 /**
  * Column types whose `<logicalname>name` companion holds a formatted label (as opposed to a lookup name).
  */
-const LABEL_COLUMN_TYPES = new Set<ShkoOnline.AttributeType>([
+const LABEL_COLUMN_TYPES = new Set<AttributeTypeCode>([
     AttributeType.Boolean,
     AttributeType.Picklist,
     AttributeType.State,
     AttributeType.Status,
 ]);
 
-export const hasNameColumn = (attributeType: ShkoOnline.AttributeType) => NAME_COLUMN_TYPES.has(attributeType);
+export const hasNameColumn = (attributeType: AttributeTypeCode) => NAME_COLUMN_TYPES.has(attributeType);
 
-export const hasLabelColumn = (attributeType: ShkoOnline.AttributeType) => LABEL_COLUMN_TYPES.has(attributeType);
+export const hasLabelColumn = (attributeType: AttributeTypeCode) => LABEL_COLUMN_TYPES.has(attributeType);
 
 /**
  * Finds the virtual attribute that stores the name / formatted value of `attribute`.
  */
-export const getNameAttribute = (
-    tableMetadata: ShkoOnline.EntityMetadata,
-    attribute: ShkoOnline.AttributeMetadata,
-): string | undefined =>
+export const getNameAttribute = (tableMetadata: EntityMetadata, attribute: AttributeMetadata): string | undefined =>
     tableMetadata.Attributes?.find(
         (attr) => attr.AttributeOf === attribute.LogicalName && attr.LogicalName !== attribute.LogicalName + 'yominame',
     )?.LogicalName;
@@ -63,7 +60,7 @@ export const getNameAttribute = (
 /**
  * Converts a raw query value (from OData or FetchXML) to the type stored in the in-memory table.
  */
-export const coerceValueForAttribute = (attribute: ShkoOnline.AttributeMetadata | undefined, value: unknown) => {
+export const coerceValueForAttribute = (attribute: AttributeMetadata | undefined, value: unknown) => {
     if (value === null || value === undefined || !attribute) {
         return value;
     }
@@ -94,7 +91,7 @@ export const coerceValueForAttribute = (attribute: ShkoOnline.AttributeMetadata 
 const isDate = (value: unknown): value is Date => Object.prototype.toString.call(value) === '[object Date]';
 
 export const compareColumnToParameter = (
-    attribute: ShkoOnline.AttributeMetadata | undefined,
+    attribute: AttributeMetadata | undefined,
     column: string,
     sqlOperator: string,
     value: unknown,
@@ -130,4 +127,4 @@ const cloneValue = <T>(value: T): T => {
 /**
  * Deep clones metadata so callers can't corrupt the metadata cache.
  */
-export const cloneEntityMetadata = (metadata: ShkoOnline.EntityMetadata) => cloneValue(metadata);
+export const cloneEntityMetadata = (metadata: EntityMetadata) => cloneValue(metadata);

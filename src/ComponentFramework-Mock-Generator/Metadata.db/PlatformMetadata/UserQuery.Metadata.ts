@@ -4,7 +4,7 @@
 */
 
 import { AttributeType } from '../AttributeType';
-import { ShkoOnline } from '../../../ShkoOnline';
+import type { EntityMetadata } from '../Metadata.types';
 
 export const UserQueryMetadata = {
     LogicalName: 'userquery',
@@ -33,4 +33,4 @@ export const UserQueryMetadata = {
             SchemaName: 'FetchXML',
         },
     ],
-} as ShkoOnline.EntityMetadata;
+} as EntityMetadata;

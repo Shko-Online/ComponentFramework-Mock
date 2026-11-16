@@ -4,7 +4,12 @@ Licensed under the MIT license.
 */
 
 import type { ODataQuery } from '@shko.online/dataverse-odata';
-import type { ShkoOnline } from '../../ShkoOnline';
+import type {
+    AttributeMetadata,
+    BooleanAttributeMetadata,
+    EntityMetadata,
+    PickListAttributeMetadata,
+} from './Metadata.types';
 import type { AttributeDB } from './SQLQueries';
 
 import alasql from 'alasql';
@@ -61,7 +66,7 @@ export class MetadataStore {
     EntityMetadataSQL: EntityMetadataSQL;
     OptionSetMetadataSQL: OptionSetMetadataSQL;
     AttributeMetadataSQL: AttributeMetadataSQL;
-    private _metadataCache: Map<string, ShkoOnline.EntityMetadata>;
+    private _metadataCache: Map<string, EntityMetadata>;
 
     private _generateId: () => string;
 
@@ -96,12 +101,12 @@ export class MetadataStore {
         }
     }
 
-    createAttribute(entityId: string, attribute: ShkoOnline.AttributeMetadata) {
+    createAttribute(entityId: string, attribute: AttributeMetadata) {
         this.invalidateMetadataCache();
         if (!attribute.MetadataId) attribute.MetadataId = this.newId();
         let OptionSetId: string | undefined = undefined;
         if (attribute.AttributeType === AttributeType.Picklist) {
-            const optionsetAttribute = attribute as ShkoOnline.PickListAttributeMetadata;
+            const optionsetAttribute = attribute as PickListAttributeMetadata;
             if (!optionsetAttribute.OptionSet) {
                 optionsetAttribute.OptionSet = {
                     MetadataId: '',
@@ -132,7 +137,7 @@ export class MetadataStore {
                 });
             }
         } else if (attribute.AttributeType === AttributeType.Boolean) {
-            const booleanAttribute = attribute as ShkoOnline.BooleanAttributeMetadata;
+            const booleanAttribute = attribute as BooleanAttributeMetadata;
             if (!booleanAttribute.OptionSet) {
                 booleanAttribute.OptionSet = {
                     MetadataId: '',
@@ -176,7 +181,7 @@ export class MetadataStore {
             AttributeId: attribute.MetadataId,
             LogicalName: attribute.LogicalName,
             AttributeType: attribute.AttributeType,
-            DefaultFormValue: (attribute as ShkoOnline.PickListAttributeMetadata).DefaultFormValue,
+            DefaultFormValue: (attribute as PickListAttributeMetadata).DefaultFormValue,
             OptionSetId,
             AttributeOf: attribute.AttributeOf,
             AttributeTypeName: attribute.AttributeTypeName?.value || '',
@@ -187,11 +192,11 @@ export class MetadataStore {
      * Use this method to initialize the metadata
      * @param metadatas
      */
-    initMetadata(metadatas: ShkoOnline.EntityMetadata[]) {
+    initMetadata(metadatas: EntityMetadata[]) {
         metadatas.forEach((metadata) => this.initSingleTable(metadata));
     }
 
-    private initSingleTable(metadata: ShkoOnline.EntityMetadata) {
+    private initSingleTable(metadata: EntityMetadata) {
         this.invalidateMetadataCache();
         const entityId = this.newId();
         const safeTableName = toSqlTableName(metadata.LogicalName);
@@ -227,10 +232,10 @@ export class MetadataStore {
                 AttributeType: AttributeType.Uniqueidentifier,
                 LogicalName: metadata.PrimaryIdAttribute,
                 IsPrimaryId: true,
-            } as ShkoOnline.AttributeMetadata);
+            } as AttributeMetadata);
         }
 
-        const virtualAttributes: ShkoOnline.AttributeMetadata[] = [];
+        const virtualAttributes: AttributeMetadata[] = [];
         attributes.forEach((attr) => {
             const virtualAttribute = attr.LogicalName + 'name';
             if (
@@ -244,7 +249,7 @@ export class MetadataStore {
                 AttributeType: AttributeType.Virtual,
                 LogicalName: virtualAttribute,
                 SchemaName: (attr.SchemaName || attr.LogicalName) + 'Name',
-            } as ShkoOnline.AttributeMetadata);
+            } as AttributeMetadata);
         });
 
         metadata.Attributes = attributes.concat(virtualAttributes);
@@ -351,7 +356,7 @@ export class MetadataStore {
             DisplayCollectionName: tableMetadataDB[0].DisplayCollectionName,
             LogicalCollectionName: tableMetadataDB[0].LogicalCollectionName,
             Description: tableMetadataDB[0].Description,
-        } as ShkoOnline.EntityMetadata;
+        } as EntityMetadata;
 
         const attributesDB = this.AttributeMetadataSQL.SelectAttributeMetadataForTable(entity);
         attributesDB.forEach((attributeDB) => {
@@ -361,7 +366,7 @@ export class MetadataStore {
         return tableMetadata;
     }
 
-    private mapAttributeFromAttributeDB(tableMetadata: ShkoOnline.EntityMetadata, attributeDB: AttributeDB) {
+    private mapAttributeFromAttributeDB(tableMetadata: EntityMetadata, attributeDB: AttributeDB) {
         const attribute = {
             AttributeType: attributeDB.AttributeType,
             EntityLogicalName: tableMetadata.LogicalName,
@@ -373,20 +378,20 @@ export class MetadataStore {
             },
             IsPrimaryId: attributeDB.LogicalName === tableMetadata.PrimaryIdAttribute,
             IsPrimaryName: attributeDB.LogicalName === tableMetadata.PrimaryNameAttribute,
-        } as ShkoOnline.AttributeMetadata;
+        } as AttributeMetadata;
 
         const optionsetDB = attributeDB.OptionSetId
             ? this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId)[0]
             : undefined;
 
         if (attribute.AttributeType === AttributeType.Picklist && optionsetDB) {
-            const picklistAttribute = attribute as ShkoOnline.PickListAttributeMetadata;
+            const picklistAttribute = attribute as PickListAttributeMetadata;
             picklistAttribute.DefaultFormValue = attributeDB.DefaultFormValue as number;
             picklistAttribute.OptionSet = {
                 IsCustomOptionSet: optionsetDB.IsCustomOptionSet,
                 MetadataId: optionsetDB.OptionSetId,
                 Name: optionsetDB.LogicalName,
-                OptionSetType: optionsetDB.OptionSetType,
+                OptionSetType: OptionSetType.Picklist,
                 Options: {},
             };
             this.OptionSetMetadataSQL.SelectOptionSetOptionMetadata(optionsetDB.OptionSetId).forEach((option) => {
@@ -397,12 +402,12 @@ export class MetadataStore {
                 };
             });
         } else if (attribute.AttributeType === AttributeType.Boolean && optionsetDB) {
-            const booleanAttribute = attribute as ShkoOnline.BooleanAttributeMetadata;
+            const booleanAttribute = attribute as BooleanAttributeMetadata;
             booleanAttribute.OptionSet = {
                 IsCustomOptionSet: optionsetDB.IsCustomOptionSet,
                 MetadataId: optionsetDB.OptionSetId,
                 Name: optionsetDB.LogicalName,
-                OptionSetType: optionsetDB.OptionSetType,
+                OptionSetType: OptionSetType.Boolean,
                 DisplayName: '',
                 FalseOption: defaultFalseOption(),
                 TrueOption: defaultTrueOption(),
@@ -441,7 +446,7 @@ export class MetadataStore {
      * @param attributeMetadata The target column
      * @returns
      */
-    upsertAttributeMetadata(entity: string, attributeMetadata: ShkoOnline.AttributeMetadata) {
+    upsertAttributeMetadata(entity: string, attributeMetadata: AttributeMetadata) {
         const tableDB = this.EntityMetadataSQL.SelectTableMetadata(entity);
         if (!tableDB || tableDB.length === 0) {
             console.warn(`Could not find metadata for ${entity}`);
@@ -470,7 +475,7 @@ export class MetadataStore {
             attributeMetadata.AttributeType === AttributeType.Boolean ||
             attributeMetadata.AttributeType === AttributeType.Picklist
         ) {
-            const optionSetId = (attributeMetadata as ShkoOnline.PickListAttributeMetadata).OptionSet?.MetadataId;
+            const optionSetId = (attributeMetadata as PickListAttributeMetadata).OptionSet?.MetadataId;
             if (optionSetId) {
                 this.OptionSetMetadataSQL.DeleteOptionSetMetadata(optionSetId);
             }
@@ -495,7 +500,7 @@ export class MetadataStore {
                     AttributeType: AttributeType.Virtual,
                     LogicalName: virtualAttribute,
                     SchemaName: (attributeMetadata.SchemaName || attributeMetadata.LogicalName) + 'Name',
-                } as ShkoOnline.AttributeMetadata);
+                } as AttributeMetadata);
             }
             this.ensureColumn(safeTableName, virtualAttribute, 'string');
         }
@@ -562,16 +567,16 @@ export class MetadataStore {
     /**
      * Computes the formatted value (label) of a Yes/No or Choice(s) column.
      */
-    getFormattedValue(attribute: ShkoOnline.AttributeMetadata | undefined, value: unknown): string | undefined {
+    getFormattedValue(attribute: AttributeMetadata | undefined, value: unknown): string | undefined {
         if (!attribute || value === null || value === undefined) {
             return undefined;
         }
         if (attribute.AttributeType === AttributeType.Boolean) {
-            const optionSet = (attribute as ShkoOnline.BooleanAttributeMetadata).OptionSet;
+            const optionSet = (attribute as BooleanAttributeMetadata).OptionSet;
             return (value ? optionSet?.TrueOption : optionSet?.FalseOption)?.Label;
         }
         if (attribute.AttributeType === AttributeType.Picklist) {
-            const options = (attribute as ShkoOnline.PickListAttributeMetadata).OptionSet?.Options ?? {};
+            const options = (attribute as PickListAttributeMetadata).OptionSet?.Options ?? {};
             if (Array.isArray(value)) {
                 return value.map((v) => options[v]?.Label ?? v).join('; ');
             }
@@ -587,7 +592,7 @@ export class MetadataStore {
      * @param tableMetadata The table metadata
      * @returns The id of the new row
      */
-    AddRow(entity: string, item: any, tableMetadata?: ShkoOnline.EntityMetadata) {
+    AddRow(entity: string, item: any, tableMetadata?: EntityMetadata) {
         if (!tableMetadata) {
             tableMetadata = this.getTableMetadata(entity);
         }
@@ -599,7 +604,7 @@ export class MetadataStore {
                 return;
             }
             this.initMetadata([cloneEntityMetadata(platformMetadata)]);
-            tableMetadata = this.getTableMetadata(entity) as ShkoOnline.EntityMetadata;
+            tableMetadata = this.getTableMetadata(entity) as EntityMetadata;
         }
         const metadata = tableMetadata;
 
@@ -727,7 +732,7 @@ export class MetadataStore {
      * @param rowid The target row
      * @returns
      */
-    GetValueAndMetadata<TAttribute extends ShkoOnline.AttributeMetadata, TValue = any>(
+    GetValueAndMetadata<TAttribute extends AttributeMetadata, TValue = any>(
         entity: string,
         attributeName: string,
         rowid?: string,
@@ -811,7 +816,7 @@ export class MetadataStore {
 
         let updateSql = `UPDATE ${toSqlTableName(tableMetadata.LogicalName)} SET ${assignments.join(', ')}`;
         if (rowId) {
-            updateSql += ` WHERE ${sqlIdentifier(tableMetadata.PrimaryIdAttribute)} = ?`;
+            updateSql += ` WHERE ${sqlIdentifier(tableMetadata.PrimaryIdAttribute || 'id')} = ?`;
             params.push(rowId);
         }
 
@@ -824,7 +829,7 @@ export class MetadataStore {
      * choices bring their formatted value column along.
      * @param requested The logical names of the columns to select. `undefined` selects all the columns.
      */
-    private getSelectColumns(tableMetadata: ShkoOnline.EntityMetadata, requested?: string[]) {
+    private getSelectColumns(tableMetadata: EntityMetadata, requested?: string[]) {
         if (!requested) {
             return ['*'];
         }
@@ -859,7 +864,7 @@ export class MetadataStore {
      * dropping the helper `type` and `name` columns, and multi-select choices become arrays.
      * The `navigation` column is kept for the Web API serializer.
      */
-    private toStoreRow(row: Row, tableMetadata: ShkoOnline.EntityMetadata) {
+    private toStoreRow(row: Row, tableMetadata: EntityMetadata) {
         tableMetadata.Attributes?.forEach((attribute) => {
             const key = attribute.LogicalName;
             if (!(key in row)) {
@@ -975,7 +980,7 @@ export class MetadataStore {
      * Rows are returned in the store shape, use `toWebApiEntity` to convert them to the Web API shape.
      * @throws when `$filter` or `$orderby` reference a column that doesn't exist or an operator isn't supported
      */
-    SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
+    SelectUsingOData(tableMetadata: EntityMetadata, query: ODataQuery) {
         const requested = query.$select
             ?.map((property) => {
                 try {

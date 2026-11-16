@@ -43,6 +43,7 @@ export {
 } from './Metadata.db';
 export type { DataverseError, DataverseWebApiOptions, RecordReference } from './Metadata.db';
 export type {
+    DataverseMetadata,
     LookupReference,
     MetadataDBOptions,
     MetadataStoreOptions,

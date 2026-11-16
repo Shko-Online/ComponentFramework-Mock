@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-import type { ShkoOnline } from '../../../ShkoOnline';
+import type { AttributeTypeCode } from '../Metadata.types';
 import alasql from 'alasql';
 
 export const CREATE_TABLE_METADATA_ATTRIBUTE = `
@@ -89,7 +89,7 @@ export interface AttributeDB {
     EntityLogicalName?: string;
     AttributeId: string;
     LogicalName: string;
-    AttributeType: ShkoOnline.AttributeType;
+    AttributeType: AttributeTypeCode;
     AttributeTypeName: string;
     DefaultFormValue?: number;
     OptionSetId?: string;

@@ -104,6 +104,7 @@ export {
 } from './ComponentFramework-Mock-Generator';
 
 export type {
+    DataverseMetadata,
     LookupReference,
     MetadataDBOptions,
     MetadataStoreOptions,

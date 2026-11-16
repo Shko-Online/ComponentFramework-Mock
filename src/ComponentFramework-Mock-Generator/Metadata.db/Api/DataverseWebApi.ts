@@ -4,7 +4,7 @@ Licensed under the MIT license.
 */
 
 import type { ODataQuery } from '@shko.online/dataverse-odata';
-import type { ShkoOnline } from '../../../ShkoOnline';
+import type { EntityMetadata } from '../Metadata.types';
 import type { MetadataStore } from '../MetadataStore';
 import type { WebApiEntity, WebApiPage, WireFormatter } from '../Wire';
 
@@ -34,7 +34,7 @@ export interface DataverseWebApiOptions {
     /** Formats the `@OData.Community.Display.V1.FormattedValue` annotations */
     formatter?: WireFormatter;
     /** Converts a row of the store to the Web API shape. Defaults to `toWebApiEntity` */
-    serialize?: (row: WebApiEntity, tableMetadata: ShkoOnline.EntityMetadata) => WebApiEntity;
+    serialize?: (row: WebApiEntity, tableMetadata: EntityMetadata) => WebApiEntity;
     /** Used to build `nextLink` */
     baseUrl?: string;
 }
@@ -122,7 +122,7 @@ export class DataverseWebApi {
         return tableMetadata;
     }
 
-    private serialize(row: WebApiEntity, tableMetadata: ShkoOnline.EntityMetadata) {
+    private serialize(row: WebApiEntity, tableMetadata: EntityMetadata) {
         return this.options.serialize
             ? this.options.serialize(row, tableMetadata)
             : toWebApiEntity(row, tableMetadata, this.options.formatter);
