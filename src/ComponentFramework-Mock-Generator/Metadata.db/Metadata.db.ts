@@ -25,6 +25,8 @@ import {
     getWhereClauseFromFetchFilter,
     resolveFetchAttribute,
 } from './Query/FetchXmlToSql';
+import type { LookupReference } from './Wire';
+import { parseODataBind, readFormattedValue, readLookupFromItem, readMultiSelectValue } from './Wire';
 
 export interface MetadataDBOptions {
     /**
@@ -36,13 +38,9 @@ export interface MetadataDBOptions {
 /**
  * A lookup value together with the navigation property used to set it.
  */
-export type LookupValueWithNavigation = ComponentFramework.LookupValue & { navigation?: string };
+export type LookupValueWithNavigation = LookupReference;
 
 type Row = { [attribute: string]: any };
-
-const FORMATTED_VALUE = '@OData.Community.Display.V1.FormattedValue';
-const LOOKUP_LOGICAL_NAME = '@Microsoft.Dynamics.CRM.lookuplogicalname';
-const NAVIGATION_PROPERTY = '@Microsoft.Dynamics.CRM.associatednavigationproperty';
 
 const defaultFalseOption = () => ({ Color: '', Label: 'No', Value: 0 });
 const defaultTrueOption = () => ({ Color: '', Label: 'Yes', Value: 1 });
@@ -540,15 +538,14 @@ export class MetadataDB {
         if (bind === null || bind === undefined) {
             return null;
         }
-        const match = /([A-Za-z_][A-Za-z0-9_]*)\(([^)]+)\)\s*$/.exec(bind);
-        if (!match) {
-            throw new Error(`Invalid @odata.bind value '${bind}'`);
-        }
-        const entitySetName = match[1];
-        const id = match[2].replace(/^\{|\}$/g, '');
+        const { entitySetName, id } = parseODataBind(bind);
+        return this.resolveRowReference(entitySetName, id);
+    }
+
+    private resolveRowReference(entitySetName: string, id: string): LookupValueWithNavigation {
         const targetMetadata = this.getTableMetadataByEntitySet(entitySetName);
         if (!targetMetadata) {
-            console.warn(`@odata.bind '${bind}' references the entity set '${entitySetName}' that was not initialized`);
+            console.warn(`@odata.bind references the entity set '${entitySetName}' that was not initialized`);
             return { id, entityType: undefined as unknown as string };
         }
         const target = this.GetRow(targetMetadata.LogicalName, id).row;
@@ -567,30 +564,9 @@ export class MetadataDB {
      * @returns `undefined` when the item doesn't contain the lookup
      */
     getLookupFromItem(item: Row, logicalName: string): LookupValueWithNavigation | null | undefined {
-        if (logicalName in item && typeof item[logicalName] === 'object') {
-            return item[logicalName];
-        }
-
-        const bindKey = Object.keys(item).find(
-            (key) => key.toLowerCase() === `${logicalName.toLowerCase()}@odata.bind`,
+        return readLookupFromItem(item, logicalName, (entitySetName, id) =>
+            this.resolveRowReference(entitySetName, id),
         );
-        if (bindKey) {
-            return this.resolveODataBind(item[bindKey]);
-        }
-
-        const valueKey = `_${logicalName}_value`;
-        if (valueKey in item) {
-            const value = item[valueKey];
-            if (value === null || value === undefined) return null;
-            if (typeof value === 'object') return value;
-            return {
-                id: value,
-                entityType: item[valueKey + LOOKUP_LOGICAL_NAME],
-                name: item[valueKey + FORMATTED_VALUE],
-                navigation: item[valueKey + NAVIGATION_PROPERTY],
-            };
-        }
-        return undefined;
     }
 
     /**
@@ -674,8 +650,13 @@ export class MetadataDB {
                     return; // handled together with the lookup
                 }
                 const formattedValue =
-                    item[attribute.AttributeOf + FORMATTED_VALUE] ??
-                    this.getFormattedValue(parentAttribute, item[attribute.AttributeOf]);
+                    readFormattedValue(item, attribute.AttributeOf) ??
+                    this.getFormattedValue(
+                        parentAttribute,
+                        parentAttribute?.AttributeType === AttributeType.Picklist
+                            ? readMultiSelectValue(item[attribute.AttributeOf])
+                            : item[attribute.AttributeOf],
+                    );
                 if (formattedValue === undefined) {
                     return;
                 }
@@ -684,7 +665,9 @@ export class MetadataDB {
                 const value =
                     attribute.AttributeType === AttributeType.DateTime && typeof item[key] === 'string'
                         ? new Date(item[key])
-                        : item[key];
+                        : attribute.AttributeType === AttributeType.Picklist
+                          ? readMultiSelectValue(item[key])
+                          : item[key];
                 if (value === null || value === undefined) {
                     return;
                 }
@@ -741,25 +724,7 @@ export class MetadataDB {
             return { row: null, entityMetadata };
         }
 
-        const row = rowDB[0];
-        entityMetadata.Attributes?.forEach((attr) => {
-            if (attr.AttributeType === AttributeType.Lookup) {
-                if (row[attr.LogicalName]) {
-                    const nameAttribute = getNameAttribute(entityMetadata, attr) || attr.LogicalName + 'name';
-                    row[attr.LogicalName] = {
-                        id: row[attr.LogicalName],
-                        entityType: row[attr.LogicalName + 'type'],
-                        name: row[nameAttribute],
-                    } as ComponentFramework.LookupValue;
-                    delete row[attr.LogicalName + 'type'];
-                    delete row[nameAttribute];
-                }
-            } else if (attr.AttributeType === AttributeType.Picklist) {
-                if (typeof row[attr.LogicalName] === 'string') {
-                    row[attr.LogicalName] = JSON.parse(row[attr.LogicalName]);
-                }
-            }
-        });
+        const row = this.toStoreRow(rowDB[0], entityMetadata);
         return { row, entityMetadata };
     }
 
@@ -777,6 +742,7 @@ export class MetadataDB {
     }
 
     /**
+     * @deprecated Use {@link GetRow} and `toWebApiEntity` from `Metadata.db/Wire`.
      * Gets a row from a table and the associated  metadata
      * @param entity The target table
      * @param id The target row
@@ -934,26 +900,35 @@ export class MetadataDB {
     }
 
     /**
-     * Converts the lookup columns of a query result to the shape returned by {@link GetRowForAPI}:
-     * `_<logicalname>_value` holding a `ComponentFramework.LookupValue`.
+     * Converts a row read from a physical table to the shape used by the store:
+     * lookups become a `ComponentFramework.LookupValue` (or `null`) in `<logicalname>`,
+     * dropping the helper `type` and `name` columns, and multi-select choices become arrays.
+     * The `navigation` column is kept for the Web API serializer.
      */
-    private shapeLookupsForAPI(row: Row, tableMetadata: ShkoOnline.EntityMetadata) {
+    private toStoreRow(row: Row, tableMetadata: ShkoOnline.EntityMetadata) {
         tableMetadata.Attributes?.forEach((attribute) => {
             const key = attribute.LogicalName;
-            if (attribute.AttributeType !== AttributeType.Lookup || !(key in row)) {
+            if (!(key in row)) {
                 return;
             }
-            const nameAttribute = getNameAttribute(tableMetadata, attribute);
-            row[`_${key}_value`] = row[key]
-                ? ({
-                      id: row[key],
-                      entityType: row[key + 'type'],
-                      name: nameAttribute ? row[nameAttribute] : undefined,
-                  } as ComponentFramework.LookupValue)
-                : null;
-            delete row[key];
-            delete row[key + 'type'];
-            if (nameAttribute) delete row[nameAttribute];
+            if (attribute.AttributeType === AttributeType.Lookup) {
+                const nameAttribute = getNameAttribute(tableMetadata, attribute);
+                row[key] = row[key]
+                    ? ({
+                          id: row[key],
+                          entityType: row[key + 'type'],
+                          name: nameAttribute ? row[nameAttribute] : undefined,
+                      } as ComponentFramework.LookupValue)
+                    : null;
+                delete row[key + 'type'];
+                if (nameAttribute) delete row[nameAttribute];
+            } else if (attribute.AttributeType === AttributeType.Picklist && typeof row[key] === 'string') {
+                try {
+                    row[key] = JSON.parse(row[key]);
+                } catch {
+                    row[key] = readMultiSelectValue(row[key]);
+                }
+            }
         });
         return row;
     }
@@ -964,7 +939,7 @@ export class MetadataDB {
      * `link-entity` is not supported yet and is ignored.
      * @throws when the table or one of the attributes doesn't exist or an operator isn't supported
      */
-    SelectUsingFetchXml(fetchXml: XMLDocument): ComponentFramework.WebApi.Entity[] {
+    SelectUsingFetchXml(fetchXml: XMLDocument): Row[] {
         const fetchNode = fetchXml.documentElement;
         const entityNode = getFetchChildElements(fetchNode, 'entity')[0];
         if (!entityNode) {
@@ -1038,12 +1013,12 @@ export class MetadataDB {
             )}${where}${groupBy}${orderBy}${limit}`,
             params,
         );
-        return isAggregate ? rows : rows.map((row) => this.shapeLookupsForAPI(row, tableMetadata));
+        return isAggregate ? rows : rows.map((row) => this.toStoreRow(row, tableMetadata));
     }
 
     /**
      * Executes a parsed OData query (`$select`, `$filter`, `$orderby`, `$top`) against the in-memory database.
-     * Lookups are returned as `_<logicalname>_value` holding a `ComponentFramework.LookupValue`.
+     * Rows are returned in the store shape, use `toWebApiEntity` to convert them to the Web API shape.
      * @throws when `$filter` or `$orderby` reference a column that doesn't exist or an operator isn't supported
      */
     SelectUsingOData(tableMetadata: ShkoOnline.EntityMetadata, query: ODataQuery) {
@@ -1070,6 +1045,6 @@ export class MetadataDB {
             `SELECT ${columns.join(',')} FROM ${toSqlTableName(tableMetadata.LogicalName)}${where}${orderBy}${limit}`,
             params,
         );
-        return rows.map((row) => this.shapeLookupsForAPI(row, tableMetadata));
+        return rows.map((row) => this.toStoreRow(row, tableMetadata));
     }
 }

@@ -4,7 +4,12 @@ Licensed under the MIT license.
 */
 
 export type { MockToRaw, PropertyMap, PropertyToMock } from './ComponentFramework-Mock';
-export type { MockGenerator, MockGeneratorOverrides, OrchestratorInput, OrchestratorGenerators } from './ComponentFramework-Mock-Generator';
+export type {
+    MockGenerator,
+    MockGeneratorOverrides,
+    OrchestratorInput,
+    OrchestratorGenerators,
+} from './ComponentFramework-Mock-Generator';
 export type { ShkoOnline } from './ShkoOnline';
 
 export {
@@ -79,12 +84,26 @@ export {
     SELECT_METADATA_OPTIONSET_OPTION,
     getAttributeTypeFromString,
     getSqlTypeForAttribute,
+    getPage,
+    ODataAnnotation,
+    parseODataBind,
+    pickWebApiProperties,
+    readLookupFromItem,
+    toWebApiEntity,
     ReactResizeObserver,
     mockGetEntityMetadata,
     mockRefreshDatasets,
     mockRefreshParameters,
     mockSetControlResource,
     mockSetControlState,
+} from './ComponentFramework-Mock-Generator';
+
+export type {
+    LookupReference,
+    MetadataDBOptions,
+    WebApiEntity,
+    WebApiPage,
+    WireFormatter,
 } from './ComponentFramework-Mock-Generator';
 
 export { arrayEqual, AttributeMetadataGenerator, itemEqual, showBanner } from './utils';

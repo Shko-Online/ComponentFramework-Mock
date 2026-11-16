@@ -28,3 +28,12 @@ export { getAttributeTypeFromString } from './getAttributeTypeFromString';
 export { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
 export { MetadataDB } from './Metadata.db';
 export type { LookupValueWithNavigation, MetadataDBOptions } from './Metadata.db';
+export type { LookupReference, WebApiEntity, WebApiPage, WireFormatter } from './Wire';
+export {
+    getPage,
+    ODataAnnotation,
+    parseODataBind,
+    pickWebApiProperties,
+    readLookupFromItem,
+    toWebApiEntity,
+} from './Wire';

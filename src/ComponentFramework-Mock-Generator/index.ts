@@ -29,7 +29,14 @@ export {
     SELECT_METADATA_OPTIONSET_OPTION,
     getAttributeTypeFromString,
     getSqlTypeForAttribute,
+    getPage,
+    ODataAnnotation,
+    parseODataBind,
+    pickWebApiProperties,
+    readLookupFromItem,
+    toWebApiEntity,
 } from './Metadata.db';
+export type { LookupReference, MetadataDBOptions, WebApiEntity, WebApiPage, WireFormatter } from './Metadata.db';
 export type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
 export { mockGetEntityMetadata } from './mockGetEntityMetadata';
 export { mockRefreshDatasets } from './mockRefreshDatasets';
