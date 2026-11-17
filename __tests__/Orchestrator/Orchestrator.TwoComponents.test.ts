@@ -137,7 +137,7 @@ describe('Orchestrator', () => {
             expect(document.body).toMatchSnapshot();
         });
 
-        it('should not have updatedProperties if platform posts same values', ()=>{
+        it('should not have updatedProperties if platform posts same values', () => {
             orchestrator.ExecuteInit();
             orchestrator.mockGenerators[0].ExecuteUpdateView();
             orchestrator.mockGenerators[1].ExecuteUpdateView();
@@ -171,7 +171,7 @@ describe('Orchestrator', () => {
             expect(orchestrator.mockGenerators[1].context._parameters.value.raw).toEqual(new Date(2023, 0, 1));
 
             expect(document.body).toMatchSnapshot();
-        })
+        });
 
         afterEach(() => {
             document.body.innerHTML = null;

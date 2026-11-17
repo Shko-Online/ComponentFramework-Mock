@@ -9,6 +9,11 @@ export { ComponentFrameworkMockOrchestrator } from './ComponentFramework-Mock-Or
 export type { OrchestratorGenerators, OrchestratorInput } from './ComponentFramework-Mock-Orchestrator.types';
 export {
     MetadataDB,
+    MetadataStore,
+    DataverseWebApi,
+    toDataverseError,
+    getDataverseErrorCode,
+    DataverseErrorCode,
     AttributeMetadataSQL,
     CREATE_TABLE_METADATA_ATTRIBUTE,
     CREATE_TABLE_METADATA_ENTITY,
@@ -29,6 +34,31 @@ export {
     SELECT_METADATA_OPTIONSET_OPTION,
     getAttributeTypeFromString,
     getSqlTypeForAttribute,
+    getPage,
+    ODataAnnotation,
+    parseODataBind,
+    pickWebApiProperties,
+    readLookupFromItem,
+    toWebApiAttributeDefinition,
+    toWebApiEntity,
+    toWebApiEntityDefinition,
+    toWebApiKeyDefinition,
+    toWebApiLabel,
+    toWebApiPrivilege,
+    toWebApiRelationshipDefinition,
+} from './Metadata.db';
+export type { DataverseError, DataverseWebApiOptions, RecordReference, WebApiCollection } from './Metadata.db';
+export type {
+    DataverseMetadata,
+    LookupReference,
+    MetadataDBOptions,
+    MetadataStoreOptions,
+    RelationshipMetadata,
+    WebApiEntity,
+    WebApiLabel,
+    WebApiMetadata,
+    WebApiPage,
+    WireFormatter,
 } from './Metadata.db';
 export type { MockGenerator, MockGeneratorOverrides } from './MockGenerator';
 export { mockGetEntityMetadata } from './mockGetEntityMetadata';

@@ -16,7 +16,7 @@ export const mockRefreshParameters = <
     mockGenerator.RefreshParameters = stub();
     mockGenerator.RefreshParameters.callsFake(() => {
         if (mockGenerator._PendingUpdates.length !== 0) {
-            mockGenerator._PendingUpdates.forEach(update=>{
+            mockGenerator._PendingUpdates.forEach((update) => {
                 mockGenerator.metadata.UpdateValue(update.value, update.table, update.column, update.row);
             });
             mockGenerator._PendingUpdates = [];

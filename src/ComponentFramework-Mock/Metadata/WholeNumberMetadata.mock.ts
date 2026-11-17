@@ -10,8 +10,8 @@ export class WholeNumberMetadataMock
     implements ComponentFramework.PropertyHelper.FieldPropertyMetadata.WholeNumberMetadata
 {
     Format: string;
-    LanguageByCode?: ComponentFramework.Dictionary | undefined;
-    TimeZoneByCode?: ComponentFramework.Dictionary | undefined;
+    LanguageByCode?: ComponentFramework.Dictionary;
+    TimeZoneByCode?: ComponentFramework.Dictionary;
     constructor() {
         super();
         this.Format = '#';

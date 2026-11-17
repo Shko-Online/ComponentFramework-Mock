@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-import type { ShkoOnline } from '../../../ShkoOnline';
+import type { AttributeTypeCode } from '../Metadata.types';
 import alasql from 'alasql';
 
 export const CREATE_TABLE_METADATA_ATTRIBUTE = `
@@ -15,12 +15,16 @@ export const CREATE_TABLE_METADATA_ATTRIBUTE = `
         DefaultFormValue int NULL,
         OptionSetId UniqueIdentifier,
         AttributeOf string NULL,
-        AttributeTypeName string
+        AttributeTypeName string,
+        [SchemaName] string NULL,
+        DisplayName string NULL
     )
 `;
 
 export const INSERT_METADATA_ATTRIBUTE = `
     INSERT INTO Metadata__Attribute VALUES (
+        ?,
+        ?,
         ?,
         ?,
         ?,
@@ -41,7 +45,9 @@ export const SELECT_METADATA_ATTRIBUTE = `
         DefaultFormValue,
         OptionSetId,
         AttributeOf,
-        AttributeTypeName
+        AttributeTypeName,
+        A.[SchemaName] as [SchemaName],
+        A.DisplayName as DisplayName
     FROM 
         Metadata__Attribute A 
             INNER JOIN
@@ -58,7 +64,9 @@ export const SELECT_METADATA_ATTRIBUTE_BY_ID = `
         DefaultFormValue,
         OptionSetId,
         AttributeOf,
-        AttributeTypeName
+        AttributeTypeName,
+        A.[SchemaName] as [SchemaName],
+        A.DisplayName as DisplayName
     FROM 
         Metadata__Attribute A 
             INNER JOIN
@@ -75,7 +83,9 @@ export const SELECT_METADATA_ATTRIBUTES = `
         DefaultFormValue,
         OptionSetId,
         AttributeOf,
-        AttributeTypeName
+        AttributeTypeName,
+        A.[SchemaName] as [SchemaName],
+        A.DisplayName as DisplayName
     FROM 
         Metadata__Attribute AS A 
             INNER JOIN
@@ -85,13 +95,17 @@ export const SELECT_METADATA_ATTRIBUTES = `
 
 export interface AttributeDB {
     EntityId: string;
+    /** Only populated by the SELECT queries */
+    EntityLogicalName?: string;
     AttributeId: string;
     LogicalName: string;
-    AttributeType: ShkoOnline.AttributeType;
+    AttributeType: AttributeTypeCode;
     AttributeTypeName: string;
     DefaultFormValue?: number;
     OptionSetId?: string;
     AttributeOf?: string;
+    SchemaName?: string;
+    DisplayName?: string;
 }
 
 export class AttributeMetadataSQL {
@@ -110,15 +124,20 @@ export class AttributeMetadataSQL {
             metadata.OptionSetId,
             metadata.AttributeOf,
             metadata.AttributeTypeName,
+            metadata.SchemaName ?? null,
+            metadata.DisplayName ?? null,
         ]);
     }
     SelectAttributeMetadata(AttributeLogicalName: string, EntityLogicalName: string) {
         return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeLogicalName, EntityLogicalName]) as AttributeDB[];
     }
     SelectAttributeMetadataById(AttributeId: string) {
-        return this.sql(SELECT_METADATA_ATTRIBUTE, [AttributeId]) as AttributeDB[];
+        return this.sql(SELECT_METADATA_ATTRIBUTE_BY_ID, [AttributeId]) as AttributeDB[];
     }
     SelectAttributeMetadataForTable(EntityLogicalName: string) {
         return this.sql(SELECT_METADATA_ATTRIBUTES, [EntityLogicalName]) as AttributeDB[];
+    }
+    DeleteAttributeMetadata(AttributeId: string) {
+        this.sql('DELETE FROM Metadata__Attribute WHERE AttributeId = ?', [AttributeId]);
     }
 }

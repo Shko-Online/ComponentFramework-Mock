@@ -3,10 +3,10 @@
     Licensed under the MIT license.
 */
 
-import type { ShkoOnline } from '../../ShkoOnline';
-import { AttributeType } from '../../ComponentFramework-Mock';
+import type { AttributeTypeCode } from './Metadata.types';
+import { AttributeType } from './AttributeType';
 
-export const getSqlTypeForAttribute = (attributeType: ShkoOnline.AttributeType) => {
+export const getSqlTypeForAttribute = (attributeType: AttributeTypeCode) => {
     switch (attributeType) {
         case AttributeType.Boolean:
             return 'bit';

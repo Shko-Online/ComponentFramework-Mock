@@ -3,6 +3,17 @@
     Licensed under the MIT license.
 */
 
+/**
+ * A typography style made of the Fluent design tokens,
+ * e.g. `typography('Base300', 'Regular', 'Base300')` for `var(--fontSizeBase300)`...
+ */
+const typography = (fontSize: string, fontWeight: string, lineHeight: string, fontFamily = 'Base') => ({
+    fontFamily: `var(--fontFamily${fontFamily})`,
+    fontSize: `var(--fontSize${fontSize})`,
+    fontWeight: `var(--fontWeight${fontWeight})`,
+    lineHeight: `var(--lineHeight${lineHeight})`,
+});
+
 export class FluentDesignStateMock implements ComponentFramework.FluentDesignState {
     brand: ComponentFramework.BrandVariants;
     isDarkTheme?: boolean;
@@ -420,108 +431,23 @@ export class FluentDesignStateMock implements ComponentFramework.FluentDesignSta
             shadow64Brand: '0 0 8px rgba(0,0,0,0.30), 0 32px 64px rgba(0,0,0,0.25)',
         };
         this.typographyTokens = {
-            body1: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase300)',
-                fontWeight: 'var(--fontWeightRegular)',
-                lineHeight: 'var(--lineHeightBase300)',
-            },
-            body1Strong: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase300)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightBase300)',
-            },
-            body1Stronger: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase300)',
-                fontWeight: 'var(--fontWeightBold)',
-                lineHeight: 'var(--lineHeightBase300)',
-            },
-            body2: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase400)',
-                fontWeight: 'var(--fontWeightRegular)',
-                lineHeight: 'var(--lineHeightBase400)',
-            },
-            caption1: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase200)',
-                fontWeight: 'var(--fontWeightRegular)',
-                lineHeight: 'var(--lineHeightBase200)',
-            },
-            caption1Strong: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase200)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightBase200)',
-            },
-            caption1Stronger: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase200)',
-                fontWeight: 'var(--fontWeightBold)',
-                lineHeight: 'var(--lineHeightBase200)',
-            },
-            caption2: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase100)',
-                fontWeight: 'var(--fontWeightRegular)',
-                lineHeight: 'var(--lineHeightBase100)',
-            },
-            caption2Strong: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase100)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightBase100)',
-            },
-            subtitle1: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase500)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightBase500)',
-            },
-            subtitle2: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase400)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightBase400)',
-            },
-            subtitle2Stronger: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase400)',
-                fontWeight: 'var(--fontWeightBold)',
-                lineHeight: 'var(--lineHeightBase400)',
-            },
-            title1: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeHero800)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightHero800)',
-            },
-            title2: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeHero700)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightHero700)',
-            },
-            title3: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeBase600)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightBase600)',
-            },
-            largeTitle: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeHero900)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightHero900)',
-            },
-            display: {
-                fontFamily: 'var(--fontFamilyBase)',
-                fontSize: 'var(--fontSizeHero1000)',
-                fontWeight: 'var(--fontWeightSemibold)',
-                lineHeight: 'var(--lineHeightHero1000)',
-            },
+            body1: typography('Base300', 'Regular', 'Base300'),
+            body1Strong: typography('Base300', 'Semibold', 'Base300'),
+            body1Stronger: typography('Base300', 'Bold', 'Base300'),
+            body2: typography('Base400', 'Regular', 'Base400'),
+            caption1: typography('Base200', 'Regular', 'Base200'),
+            caption1Strong: typography('Base200', 'Semibold', 'Base200'),
+            caption1Stronger: typography('Base200', 'Bold', 'Base200'),
+            caption2: typography('Base100', 'Regular', 'Base100'),
+            caption2Strong: typography('Base100', 'Semibold', 'Base100'),
+            subtitle1: typography('Base500', 'Semibold', 'Base500'),
+            subtitle2: typography('Base400', 'Semibold', 'Base400'),
+            subtitle2Stronger: typography('Base400', 'Bold', 'Base400'),
+            title1: typography('Hero800', 'Semibold', 'Hero800'),
+            title2: typography('Hero700', 'Semibold', 'Hero700'),
+            title3: typography('Base600', 'Semibold', 'Base600'),
+            largeTitle: typography('Hero900', 'Semibold', 'Hero900'),
+            display: typography('Hero1000', 'Semibold', 'Hero1000'),
         };
     }
 }

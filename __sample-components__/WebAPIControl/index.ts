@@ -406,11 +406,11 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
                     const value: number = entity[WebAPIControl._currencyAttributeName];
 
                     // Check the value of _currencyAttributeName field and increment the correct counter
-                    if (value == 100) {
+                    if (value === 100) {
                         count1++;
-                    } else if (value == 200) {
+                    } else if (value === 200) {
                         count2++;
-                    } else if (value == 300) {
+                    } else if (value === 300) {
                         count3++;
                     }
                 }

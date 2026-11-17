@@ -52,6 +52,10 @@ export const SELECT_METADATA_ENTITY = `
     WHERE LogicalName = ?
 `;
 
+export const SELECT_METADATA_ENTITY_LOGICAL_NAMES = `
+    SELECT LogicalName FROM Metadata__Entity ORDER BY LogicalName
+`;
+
 export const SELECT_METADATA_ENTITY_BY_ENTITYSET = `
     SELECT 
         EntityId, 
@@ -99,7 +103,7 @@ export class EntityMetadataSQL {
             metadata.DisplayName,
             metadata.DisplayCollectionName,
             metadata.LogicalCollectionName,
-            metadata.Description
+            metadata.Description,
         ]);
     }
     SelectTableMetadata(LogicalName: string) {
@@ -107,5 +111,10 @@ export class EntityMetadataSQL {
     }
     SelectTableMetadataByEntitySet(EntitySetName: string) {
         return this.sql(SELECT_METADATA_ENTITY_BY_ENTITYSET, [EntitySetName]) as EntityMetadata[];
+    }
+    SelectTableLogicalNames() {
+        return (this.sql(SELECT_METADATA_ENTITY_LOGICAL_NAMES) as { LogicalName: string }[]).map(
+            (table) => table.LogicalName,
+        );
     }
 }

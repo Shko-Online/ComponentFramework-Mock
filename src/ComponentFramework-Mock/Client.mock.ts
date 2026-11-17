@@ -7,7 +7,7 @@ import type { SinonStub } from 'sinon';
 import { stub } from 'sinon';
 
 export class ClientMock implements ComponentFramework.Client {
-    disableScroll: boolean = false;
+    disableScroll = false;
     getClient: SinonStub<[], string>;
     getFormFactor: SinonStub<[], number>;
     isNetworkAvailable: SinonStub<[], boolean>;

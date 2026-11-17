@@ -4,7 +4,12 @@ Licensed under the MIT license.
 */
 
 export type { MockToRaw, PropertyMap, PropertyToMock } from './ComponentFramework-Mock';
-export type { MockGenerator, MockGeneratorOverrides, OrchestratorInput, OrchestratorGenerators } from './ComponentFramework-Mock-Generator';
+export type {
+    MockGenerator,
+    MockGeneratorOverrides,
+    OrchestratorInput,
+    OrchestratorGenerators,
+} from './ComponentFramework-Mock-Generator';
 export type { ShkoOnline } from './ShkoOnline';
 
 export {
@@ -59,6 +64,11 @@ export {
     ComponentFrameworkMockGenerator,
     ComponentFrameworkMockOrchestrator,
     MetadataDB,
+    MetadataStore,
+    DataverseWebApi,
+    toDataverseError,
+    getDataverseErrorCode,
+    DataverseErrorCode,
     AttributeMetadataSQL,
     CREATE_TABLE_METADATA_ATTRIBUTE,
     CREATE_TABLE_METADATA_ENTITY,
@@ -79,6 +89,18 @@ export {
     SELECT_METADATA_OPTIONSET_OPTION,
     getAttributeTypeFromString,
     getSqlTypeForAttribute,
+    getPage,
+    ODataAnnotation,
+    parseODataBind,
+    pickWebApiProperties,
+    readLookupFromItem,
+    toWebApiAttributeDefinition,
+    toWebApiEntity,
+    toWebApiEntityDefinition,
+    toWebApiKeyDefinition,
+    toWebApiLabel,
+    toWebApiPrivilege,
+    toWebApiRelationshipDefinition,
     ReactResizeObserver,
     mockGetEntityMetadata,
     mockRefreshDatasets,
@@ -86,5 +108,35 @@ export {
     mockSetControlResource,
     mockSetControlState,
 } from './ComponentFramework-Mock-Generator';
+
+export type {
+    DataverseMetadata,
+    LookupReference,
+    MetadataDBOptions,
+    MetadataStoreOptions,
+    RelationshipMetadata,
+    DataverseError,
+    DataverseWebApiOptions,
+    RecordReference,
+    WebApiCollection,
+    WebApiEntity,
+    WebApiLabel,
+    WebApiMetadata,
+    WebApiPage,
+    WireFormatter,
+} from './ComponentFramework-Mock-Generator';
+
+export { toXrmError, XrmWebApiMock } from './Xrm-Mock';
+export type { XrmError, XrmRecordReference, XrmRetrieveMultipleResult, XrmWebApiOnlineMock } from './Xrm-Mock';
+
+export { PPTB_UNSUPPORTED_METHODS, PptbDataverseApiMock, toPptbError } from './PPTB-Mock';
+export type {
+    PptbConnectionTarget,
+    PptbEntityMetadata,
+    PptbFetchXmlResult,
+    PptbLabel,
+    PptbLocalizedLabel,
+    PptbUnsupportedMethod,
+} from './PPTB-Mock';
 
 export { arrayEqual, AttributeMetadataGenerator, itemEqual, showBanner } from './utils';

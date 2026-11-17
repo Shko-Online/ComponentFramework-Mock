@@ -45,17 +45,17 @@ export class UtilityMock implements ComponentFramework.Utility {
                             id: '00000000-0000-0000-0000-000000000001',
                             name: 'Fake Lookup Result',
                         },
-                    ])
+                    ]),
                 );
             });
         });
         this.loadDependency = stub();
         this.loadDependency.callsFake((dependencyName: string) => {
             return new Promise((resolve) => {
-                setTimeout(() =>
-                    resolve({}) // the platform returns the control class when found or undefined when not found.
+                setTimeout(
+                    () => resolve({}), // the platform returns the control class when found or undefined when not found.
                 );
             });
-        })
+        });
     }
 }

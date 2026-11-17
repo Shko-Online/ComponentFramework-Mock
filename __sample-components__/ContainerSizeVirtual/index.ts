@@ -11,11 +11,6 @@ export class ContainerSize implements ComponentFramework.ReactControl<IInputs, I
     private trackContainer: boolean;
 
     /**
-     * Empty constructor.
-     */
-    constructor() {}
-
-    /**
      * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
      * Data-set values are not initialized here, use updateView.
      * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to property names defined in the manifest, as well as utility functions.
@@ -38,13 +33,11 @@ export class ContainerSize implements ComponentFramework.ReactControl<IInputs, I
      * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to names defined in the manifest, as well as utility functions
      */
     public updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
-        var component = createElement('div', null, `${context.mode.allocatedWidth}x${context.mode.allocatedHeight}`);
-        if (this.trackContainer === context.parameters.trackContainer.raw) {
-            return component;
+        if (this.trackContainer !== context.parameters.trackContainer.raw) {
+            this.trackContainer = context.parameters.trackContainer.raw;
+            context.mode.trackContainerResize(this.trackContainer);
         }
-        this.trackContainer = context.parameters.trackContainer.raw;
-        context.mode.trackContainerResize(this.trackContainer);
-        return component;
+        return createElement('div', null, `${context.mode.allocatedWidth}x${context.mode.allocatedHeight}`);
     }
 
     /**

@@ -10,11 +10,6 @@ export class ContainerSize implements ComponentFramework.StandardControl<IInputs
     private selection: number[];
 
     /**
-     * Empty constructor.
-     */
-    constructor() {}
-
-    /**
      * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
      * Data-set values are not initialized here, use updateView.
      * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to property names defined in the manifest, as well as utility functions.

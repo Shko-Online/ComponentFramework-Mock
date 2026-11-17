@@ -120,29 +120,29 @@ export type PropertyMap<T extends ShkoOnline.PropertyTypes<T>> = {
                             db: MetadataDB,
                             entityMetadata: ShkoOnline.EntityMetadata,
                         ) => StringPropertyMock
-                        : T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+                      : T[P] extends ComponentFramework.PropertyTypes.TwoOptionsProperty
+                        ? new (
+                              propertyName: string,
+                              db: MetadataDB,
+                              entityMetadata: ShkoOnline.EntityMetadata,
+                          ) => TwoOptionsPropertyMock
+                        : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
                           ? new (
                                 propertyName: string,
                                 db: MetadataDB,
                                 entityMetadata: ShkoOnline.EntityMetadata,
-                            ) => TwoOptionsPropertyMock
-                          : T[P] extends ComponentFramework.PropertyTypes.WholeNumberProperty
+                            ) => WholeNumberPropertyMock
+                          : T[P] extends ComponentFramework.PropertyTypes.Property
                             ? new (
                                   propertyName: string,
                                   db: MetadataDB,
                                   entityMetadata: ShkoOnline.EntityMetadata,
-                              ) => WholeNumberPropertyMock
-                              : T[P] extends ComponentFramework.PropertyTypes.Property
+                              ) => PropertyMock
+                            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
                               ? new (
                                     propertyName: string,
                                     db: MetadataDB,
                                     entityMetadata: ShkoOnline.EntityMetadata,
-                                ) => PropertyMock
-                                : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<string>
-                                ? new (
-                                      propertyName: string,
-                                      db: MetadataDB,
-                                      entityMetadata: ShkoOnline.EntityMetadata,
-                                  ) => EnumPropertyMock<ShkoOnline.EnumType<T[P]>>
+                                ) => EnumPropertyMock<ShkoOnline.EnumType<T[P]>>
                               : never;
 };

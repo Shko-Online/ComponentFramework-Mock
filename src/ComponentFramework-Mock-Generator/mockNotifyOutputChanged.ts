@@ -11,10 +11,43 @@ import {
     DateTimePropertyMock,
     LookupPropertyMock,
     MultiSelectOptionSetPropertyMock,
-    PropertyMock,
     PropertyToMock,
 } from '../ComponentFramework-Mock/PropertyTypes';
 import { arrayEqual } from '../utils';
+
+/**
+ * Compares the value of an update with the current value of a bound property.
+ * @returns Whether the value changed, and whether it is a lookup (the first item of the array is stored)
+ */
+const compareWithProperty = (property: unknown, value: unknown): { changed: boolean; isLookup: boolean } => {
+    if (Array.isArray(value)) {
+        const arrayUpdate = value as number[];
+        return {
+            changed: !arrayEqual(arrayUpdate, (property as MultiSelectOptionSetPropertyMock).raw),
+            isLookup: typeof arrayUpdate[0] === 'object',
+        };
+    }
+    if (value instanceof Date) {
+        return {
+            changed: (property as DateTimePropertyMock).raw?.getTime() !== value.getTime(),
+            isLookup: false,
+        };
+    }
+    if (typeof value === 'object') {
+        const lookup = value as ComponentFramework.LookupValue;
+        const raw = (property as LookupPropertyMock).raw;
+        return {
+            changed:
+                raw === null ||
+                raw.length === 0 ||
+                raw[0].entityType !== lookup.entityType ||
+                raw[0].id !== lookup.id ||
+                raw[0].name !== lookup.name,
+            isLookup: true,
+        };
+    }
+    return { changed: (property as MultiSelectOptionSetPropertyMock).raw !== value, isLookup: false };
+};
 
 /**
  * Mocks the following APIs
@@ -39,7 +72,7 @@ export const mockNotifyOutputChanged = <
 
     mockGenerator.context.mode.setFullScreen.callsFake((value) => {
         mockGenerator.context.updatedProperties = [];
-        if (mockGenerator.context.mode._FullScreen != value) {
+        if (mockGenerator.context.mode._FullScreen !== value) {
             mockGenerator.context.updatedProperties.push(value ? 'fullscreen_open' : 'fullscreen_close');
         }
         mockGenerator.context.mode._FullScreen = value;
@@ -49,61 +82,18 @@ export const mockNotifyOutputChanged = <
     mockGenerator.UpdateValues.callsFake((items) => {
         mockGenerator.context.updatedProperties = [];
         for (const k in items) {
-            if (k in mockGenerator.context._parameters) {
-                let isLookup = false;
-                const property = mockGenerator.context._parameters[k as keyof PropertyToMock<TInputs>];
+            if (!(k in mockGenerator.context._parameters)) continue;
+            const property = mockGenerator.context._parameters[k as keyof PropertyToMock<TInputs>];
+            const { changed, isLookup } = compareWithProperty(property, items[k]);
+            if (!changed) continue;
 
-                if (Array.isArray(items[k])) {
-                    const arrayUpdate = items[k] as number[];
-                    if (arrayUpdate && typeof arrayUpdate[0] === 'object') {
-                        isLookup = true;
-                    }
-                    const property = mockGenerator.context._parameters[k] as MultiSelectOptionSetPropertyMock;
-                    if (!arrayEqual(arrayUpdate, property.raw)) {
-                        mockGenerator.context.updatedProperties.push(k);
-                    } else {
-                        continue;
-                    }
-                } else if (items[k] instanceof Date) {
-                    if (
-                        (mockGenerator.context._parameters[k] as unknown as DateTimePropertyMock).raw?.getTime() !==
-                        (items[k] as Date)?.getTime()
-                    ) {
-                        mockGenerator.context.updatedProperties.push(k);
-                    } else {
-                        continue;
-                    }
-                } else if (typeof items[k] === 'object') {
-                    isLookup = true;
-                    const lookup = items[k] as ComponentFramework.LookupValue;
-                    const property = mockGenerator.context._parameters[k] as LookupPropertyMock;
-                    if (
-                        property.raw === null ||
-                        property.raw.length === 0 ||
-                        property.raw[0].entityType !== lookup.entityType ||
-                        property.raw[0].id !== lookup.id ||
-                        property.raw[0].name !== lookup.name
-                    ) {
-                        mockGenerator.context.updatedProperties.push(k);
-                    } else {
-                        continue;
-                    }
-                } else if (
-                    (mockGenerator.context._parameters[k] as unknown as MultiSelectOptionSetPropertyMock).raw !==
-                    items[k]
-                ) {
-                    mockGenerator.context.updatedProperties.push(k);
-                } else {
-                    continue;
-                }
-
-                mockGenerator._PendingUpdates.push({
-                    column: property._boundColumn,
-                    row: property._boundRow,
-                    table: property._boundTable,
-                    value: isLookup ? (items[k] as ComponentFramework.LookupValue[])[0] : items[k],
-                });
-            }
+            mockGenerator.context.updatedProperties.push(k);
+            mockGenerator._PendingUpdates.push({
+                column: property._boundColumn,
+                row: property._boundRow,
+                table: property._boundTable,
+                value: isLookup ? (items[k] as ComponentFramework.LookupValue[])[0] : items[k],
+            });
         }
         if (mockGenerator.context.updatedProperties.length > 0) {
             mockGenerator.context.updatedProperties.push('parameters');
@@ -117,65 +107,13 @@ export const mockNotifyOutputChanged = <
         mockGenerator.context.updatedProperties = [];
         for (const k in updates) {
             if (k in mockGenerator.context._parameters) {
-                let isLookup = false;
                 const property = mockGenerator.context._parameters[k];
+                const { changed, isLookup } = compareWithProperty(property, updates[k]);
+                if (!changed) continue;
 
-                if (Array.isArray(updates[k])) {
-                    const arrayUpdate = updates[k] as number[];
-                    if (arrayUpdate && typeof arrayUpdate[0] === 'object') {
-                        isLookup = true;
-                    }
-                    const property = mockGenerator.context._parameters[k] as MultiSelectOptionSetPropertyMock;
-                    if (!arrayEqual(arrayUpdate, property.raw)) {
-                        mockGenerator.context.updatedProperties.push(k);
-                    } else {
-                        continue;
-                    }
-                } else if (updates[k] instanceof Date) {
-                    if (
-                        (mockGenerator.context._parameters[k] as unknown as DateTimePropertyMock).raw?.getTime() !==
-                        (updates[k] as Date)?.getTime()
-                    ) {
-                        mockGenerator.context.updatedProperties.push(k);
-                    } else {
-                        continue;
-                    }
-                } else if (typeof updates[k] === 'object') {
-                    isLookup = true;
-                    const lookup = updates[k] as ComponentFramework.LookupValue;
-                    const property = mockGenerator.context._parameters[k] as LookupPropertyMock;
-                    if (
-                        property.raw === null ||
-                        property.raw.length === 0 ||
-                        property.raw[0].entityType !== lookup.entityType ||
-                        property.raw[0].id !== lookup.id ||
-                        property.raw[0].name !== lookup.name
-                    ) {
-                        mockGenerator.context.updatedProperties.push(k);
-                    } else {
-                        continue;
-                    }
-                } else if (
-                    (mockGenerator.context._parameters[k] as unknown as MultiSelectOptionSetPropertyMock).raw !==
-                    updates[k]
-                ) {
-                    mockGenerator.context.updatedProperties.push(k);
-                } else {
-                    continue;
-                }
-
-                if (isLookup) {
-                    mockGenerator.metadata.UpdateValue(
-                        (updates[k] as ComponentFramework.LookupValue[])[0],
-                        property._boundTable,
-                        property._boundColumn,
-                        property._boundRow,
-                    );
-                    continue;
-                }
-
+                mockGenerator.context.updatedProperties.push(k);
                 mockGenerator.metadata.UpdateValue(
-                    updates[k],
+                    isLookup ? (updates[k] as ComponentFramework.LookupValue[])[0] : updates[k],
                     property._boundTable,
                     property._boundColumn,
                     property._boundRow,

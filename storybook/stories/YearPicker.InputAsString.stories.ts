@@ -54,7 +54,7 @@ const renderGenerator = () => {
                 mockGenerator.context._parameters.value._Refresh();
                 console.log(value);
                 updateArgs({
-                    value
+                    value,
                 });
             });
 

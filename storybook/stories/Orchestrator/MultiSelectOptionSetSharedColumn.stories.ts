@@ -125,9 +125,9 @@ const renderGenerator = () => {
             orchestrator.mockGenerators[1].context.mode.isVisible = args.isVisible;
             orchestrator.mockGenerators[1].context.mode.isControlDisabled = args.isDisabled;
             orchestrator.mockGenerators[1].UpdateValues({
-                selection: args.selection
+                selection: args.selection,
             });
-          
+
             orchestrator.mockGenerators[0].ExecuteUpdateView();
             orchestrator.mockGenerators[1].ExecuteUpdateView();
         }

@@ -10,10 +10,6 @@ export class OwnerLookup implements ComponentFramework.StandardControl<IInputs, 
     private notifyOutputChanged: () => void;
     private myself: ComponentFramework.LookupValue[];
     private value?: ComponentFramework.LookupValue[];
-    /**
-     * Empty constructor.
-     */
-    constructor() {}
 
     /**
      * Used to initialize the control instance. Controls can kick off remote server calls and other initialization actions here.
@@ -31,7 +27,9 @@ export class OwnerLookup implements ComponentFramework.StandardControl<IInputs, 
     ): void {
         // Add control initialization code
         this.container = container;
-        this.myself = [{ entityType: 'systemuser', id: context.userSettings.userId, name: context.userSettings.userName }];
+        this.myself = [
+            { entityType: 'systemuser', id: context.userSettings.userId, name: context.userSettings.userName },
+        ];
         const name = document.createElement('p');
         this.updateName(context, name);
         container.appendChild(name);

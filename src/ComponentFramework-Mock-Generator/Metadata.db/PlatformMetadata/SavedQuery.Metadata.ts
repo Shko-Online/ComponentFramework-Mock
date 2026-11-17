@@ -3,8 +3,8 @@
     Licensed under the MIT license.
 */
 
-import { AttributeType } from '../../../ComponentFramework-Mock/PropertyTypes';
-import { ShkoOnline } from '../../../ShkoOnline';
+import { AttributeType } from '../AttributeType';
+import type { EntityMetadata } from '../Metadata.types';
 
 export const SavedQueryMetadata = {
     LogicalName: 'savedquery',
@@ -33,4 +33,4 @@ export const SavedQueryMetadata = {
             SchemaName: 'FetchXML',
         },
     ],
-} as ShkoOnline.EntityMetadata;
+} as EntityMetadata;

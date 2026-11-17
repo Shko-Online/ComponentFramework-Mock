@@ -13,7 +13,7 @@ import { EntityRecordMock } from './DataSetApi/EntityRecord.mock';
 import { FilteringMock } from './DataSetApi/Filtering.mock';
 import { LinkingMock } from './DataSetApi/Linking.mock';
 import { PagingMock } from './DataSetApi/Paging.mock';
-import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db/Metadata.db';
+import { MetadataDB } from '../../ComponentFramework-Mock-Generator/Metadata.db';
 import { AttributeMetadataGenerator } from '../../utils/AttributeMetadataGenerator';
 
 type Column = ComponentFramework.PropertyHelper.DataSetApi.Column;
@@ -111,7 +111,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             }
 
             let i = 0;
-            let columns: { [key: string]: number } = {};
+            const columns: { [key: string]: number } = {};
             items.forEach((item) => {
                 Object.getOwnPropertyNames(item).forEach((key) => {
                     if (!(key in columns)) {
@@ -163,15 +163,15 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             const rows = this._db.GetAllRows(this._boundTable);
             const records: EntityRecordMock[] = this._loading
                 ? []
-                : rows.rows.map((item) => {
-                      const row = new EntityRecordMock(
-                          db,
-                          this._boundTable,
-                          item[rows.entityMetadata?.PrimaryIdAttribute || 'id'],
-                          this._updateView,
-                      );
-                      return row;
-                  });
+                : rows.rows.map(
+                      (item) =>
+                          new EntityRecordMock(
+                              db,
+                              this._boundTable,
+                              item[rows.entityMetadata?.PrimaryIdAttribute || 'id'],
+                              this._updateView,
+                          ),
+                  );
             this.records = {};
             this.loading = this._loading;
             records.forEach((record) => {
@@ -182,7 +182,8 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
             this.paging.totalResultCount = records.length;
             if (this.sorting.length > 0) {
                 const sort = this.sorting[0];
-                this.sortedRecordIds = records.map(x=>x)
+                this.sortedRecordIds = records
+                    .map((x) => x)
                     .sort((record1, record2) =>
                         sort.sortDirection === 0
                             ? record1.getFormattedValue(sort.name)?.localeCompare(record2.getFormattedValue(sort.name))
@@ -190,7 +191,8 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                     )
                     .map((record) => record.getRecordId());
             } else {
-                this.sortedRecordIds = records.map(x=>x)
+                this.sortedRecordIds = records
+                    .map((x) => x)
                     .sort((record1, record2) =>
                         record1.getNamedReference()?.name?.localeCompare(record2.getNamedReference()?.name),
                     )
@@ -232,8 +234,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
                 throw new Error('Please initialize the metadata for this functionality');
             }
 
-            const row = new EntityRecordMock(db, this._boundTable, 'Guid.NewGuid?', this._updateView);
-            return row;
+            return new EntityRecordMock(db, this._boundTable, 'Guid.NewGuid?', this._updateView);
         });
         this.openDatasetItem = stub();
         this.refresh = stub();
@@ -255,7 +256,7 @@ export class DataSetMock implements ComponentFramework.PropertyTypes.DataSet {
     }
 }
 
-declare global{
+declare global {
     namespace ComponentFramework {
         namespace PropertyTypes {
             /**
@@ -268,20 +269,20 @@ declare global{
                  * @todo Overloaded by Shko Online
                  */
                 delete: (ids: string[]) => Promise<void>;
-    
+
                 /**
                  * The capabilities for the dataset.
                  * @todo Overloaded by Shko Online
                  */
                 getDataSetCapabilities: () => DataProviderCapabilities;
-    
+
                 /**
                  * Initialize a local record object for control to set the value. The control needs to invoke the {@link ComponentFramework.PropertyHelper.DataSetApi.EntityRecord.save save()} method on the newly created record to persist the change.
                  * @todo Overloaded by Shko Online
                  */
                 newRecord: () => ComponentFramework.PropertyHelper.DataSetApi.EntityRecord;
             }
-    
+
             /**
              * Provides access to all the properties of a file.
              * @todo Overloaded by Shko Online
@@ -328,20 +329,20 @@ declare global{
                      * @todo Overloaded by Shko Online
                      */
                     isDirty(): boolean;
-    
+
                     /**
                      * Whether this record is valid. Only applicable if the dataset is editable and this record has invalid values.
                      * @todo Overloaded by Shko Online
                      */
                     isValid(): boolean;
-    
+
                     /**
                      * Saves the record
                      * @throws You can get an error saying `Invalid snapshot with id undefined` when the incorrect column name parameter was used with {@link ComponentFramework.PropertyHelper.DataSetApi.EntityRecord.setValue setValue}. Make sure to use the logical name of the column.
                      * @todo Overloaded by Shko Online
                      */
                     save(): Promise<void>;
-    
+
                     /**
                      * Set value for the column.
                      * @param columnName The logical name of the column.
@@ -364,5 +365,5 @@ declare global{
                 }
             }
         }
-    }    
+    }
 }

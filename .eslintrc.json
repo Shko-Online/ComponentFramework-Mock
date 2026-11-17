@@ -7,9 +7,8 @@
       "eslint:recommended",
       "plugin:react/recommended",
       "plugin:@typescript-eslint/recommended",
-      "plugin:prettier/recommended",
-      "prettier",
-      "plugin:sonarjs/recommended"
+      "plugin:sonarjs/recommended-legacy",
+      "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -38,23 +37,8 @@
       "react-hooks/rules-of-hooks": "error", 
       "react-hooks/exhaustive-deps": "warn",
       "prettier/prettier": "error",
+      "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": true }],
       "arrow-body-style": "off",
-      "prefer-arrow-callback": "off",
-      "linebreak-style": [
-          "error",
-          "windows"
-      ],
-      "quotes": [
-          "error",
-          "single",
-          {
-            "avoidEscape": true,
-            "allowTemplateLiterals": true
-          }
-      ],
-      "semi": [
-          "error",
-          "always"
-      ]
+      "prefer-arrow-callback": "off"
   }
 }

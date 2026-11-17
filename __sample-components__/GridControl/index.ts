@@ -30,11 +30,9 @@ export class GridControl implements ComponentFramework.StandardControl<IInputs, 
     public updateView(context: ComponentFramework.Context<IInputs>): void {
         const dataset = context.parameters.records;
         const datasetChanged = context.updatedProperties.indexOf('dataset') > -1;
-        if (datasetChanged) {
-            if (this.filteredRecordCount !== dataset.sortedRecordIds.length) {
-                this.filteredRecordCount = dataset.sortedRecordIds.length;
-                this.notifyOutputChanged();
-            }
+        if (datasetChanged && this.filteredRecordCount !== dataset.sortedRecordIds.length) {
+            this.filteredRecordCount = dataset.sortedRecordIds.length;
+            this.notifyOutputChanged();
         }
         this.container.innerHTML = `${this.filteredRecordCount}`;
     }
@@ -53,5 +51,7 @@ export class GridControl implements ComponentFramework.StandardControl<IInputs, 
      * Called when the control is to be removed from the DOM tree. Controls should use this call for cleanup.
      * i.e. cancelling any pending remote calls, removing listeners, etc.
      */
-    destroy(): void {}
+    destroy(): void {
+        // Nothing to clean up
+    }
 }
