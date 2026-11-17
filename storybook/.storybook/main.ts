@@ -102,12 +102,17 @@ const config = {
         config.resolve.alias = config.resolve.alias || {};
         config.resolve.alias['react'] = path.resolve('./node_modules/react');
         config.resolve.alias['react-dom'] = path.resolve('./node_modules/react-dom');
+        // Shared sources in ../src and ../__sample-components__ get core-js polyfill imports injected by babel;
+        // let them resolve packages installed in the storybook folder.
+        config.resolve.modules = [...(config.resolve.modules || ['node_modules']), path.resolve('./node_modules')];
         config.resolve.fallback = config.resolve.fallback || {};
         config.resolve.fallback['react/jsx-dev-runtime'] = path.resolve(
             './.storybook/react-jsx-dev-runtime.development.js',
         );
         config.resolve.fallback['react/jsx-runtime'] = path.resolve('./.storybook/react-jsx-runtime.production.min.js');
 
+        // Source maps are emitted by the plugin below; disable `devtool` so both don't write the same .map files.
+        config.devtool = false;
         config.plugins.push(
             new webpack.SourceMapDevToolPlugin({
                 append: '\n//# sourceMappingURL=[url]',
@@ -118,7 +123,9 @@ const config = {
         for (var i = 0; i < config.module.rules.length; i++) {
             if (config.module.rules[i].test && 'a.ts'.match(config.module.rules[i].test)) {
                 // Ensure shared component of stories are transpiled.
-                config.module.rules[i].include = config.module.rules[i].include || [];
+                // Newer @storybook/addon-webpack5-compiler-babel no longer sets `include`; seed it with the
+                // storybook folder so .storybook/ and stories/ keep being transpiled alongside the shared sources.
+                config.module.rules[i].include = config.module.rules[i].include || [path.resolve('.')];
                 config.module.rules[i].include.push(path.resolve('../src'));
                 config.module.rules[i].include.push(path.resolve('../__sample-components__'));
                 config.module.rules[i].use[0].options.presets = [
