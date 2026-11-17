@@ -1,3 +1,14 @@
+# [0.12.0](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.11.2...v0.12.0) (2026-11-17)
+
+
+### Features
+
+* add alternate keys, relationships and privileges to Metadata.db ([3e8e26b](https://github.com/Shko-Online/ComponentFramework-Mock/commit/3e8e26bea50360a28067c46c74c214bb6f5c3188))
+* add Power Platform ToolBox dataverseAPI mock ([2b0e467](https://github.com/Shko-Online/ComponentFramework-Mock/commit/2b0e467c58439d7a0eebfdd3c8d477e79929ffaa))
+* add Xrm.WebApi mock on a PCF-free MetadataStore core ([e1cd865](https://github.com/Shko-Online/ComponentFramework-Mock/commit/e1cd865731ab4ef315ce0b03840b783f81b3b406))
+* improve Metadata.db query fidelity and fix WebApi mock bugs ([fe59f03](https://github.com/Shko-Online/ComponentFramework-Mock/commit/fe59f03840fbdeec79903a5396b8f69d4db44d06))
+* move the Dataverse metadata types into the Metadata.db core ([38d83ed](https://github.com/Shko-Online/ComponentFramework-Mock/commit/38d83ed64b8446d49900973cc38bf2efb5cc9d6f))
+
 ## [0.11.2](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.11.1...v0.11.2) (2026-06-13)
 
 
