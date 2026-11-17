@@ -18,6 +18,8 @@ import {
 } from '../ComponentFramework-Mock-Generator/Metadata.db/Api/DataverseWebApi';
 import { DEFAULT_LANGUAGE_CODE } from '../ComponentFramework-Mock-Generator/Metadata.db/Wire';
 
+const GUID = /^\{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}?$/i;
+
 /**
  * Selects the connection of a multi-connection tool: `'primary'` (slot 0), `'secondary'` (slot 1)
  * or a zero-based slot index.
@@ -37,15 +39,18 @@ export interface PptbEntityMetadata extends WebApiMetadata {
     LogicalName: string;
 }
 
-export interface PptbLocalizedLabel {
-    '@odata.type': 'Microsoft.Dynamics.CRM.LocalizedLabel';
+/** A Web API complex type, with its `@odata.type` annotation */
+export interface PptbODataTyped<TODataType extends string> {
+    '@odata.type': TODataType;
+}
+
+export interface PptbLocalizedLabel extends PptbODataTyped<'Microsoft.Dynamics.CRM.LocalizedLabel'> {
     Label: string;
     LanguageCode: number;
     IsManaged: boolean;
 }
 
-export interface PptbLabel {
-    '@odata.type': 'Microsoft.Dynamics.CRM.Label';
+export interface PptbLabel extends PptbODataTyped<'Microsoft.Dynamics.CRM.Label'> {
     LocalizedLabels: PptbLocalizedLabel[];
     UserLocalizedLabel: PptbLocalizedLabel;
 }
@@ -124,7 +129,7 @@ const withoutAnnotations = (entity: WebApiEntity) => {
  * Object.assign(window, { dataverseAPI });
  */
 export class PptbDataverseApiMock {
-    _Delay: number = 200;
+    _Delay = 200;
 
     create: SinonStub<
         [entityLogicalName: string, record: Row, connectionTarget?: PptbConnectionTarget, additionalHeaders?: Headers],
@@ -299,7 +304,8 @@ export class PptbDataverseApiMock {
                 withoutAnnotations(
                     api.retrieveRecord(
                         entityLogicalName,
-                        id,
+                        // The id is put in the URL, so alternate keys such as accountnumber='A1' work too
+                        GUID.test(id) ? id : api.findRecordIdByAlternateKey(entityLogicalName, id),
                         columns && columns.length > 0 ? `?$select=${columns.join(',')}` : undefined,
                     ),
                 ),

@@ -7,14 +7,25 @@ import type { ODataQuery } from '@shko.online/dataverse-odata';
 import type {
     AttributeMetadata,
     BooleanAttributeMetadata,
+    EntityKeyMetadata,
     EntityMetadata,
+    ManyToManyRelationshipMetadata,
+    OneToManyRelationshipMetadata,
     PickListAttributeMetadata,
+    Privileges,
 } from './Metadata.types';
-import type { AttributeDB } from './SQLQueries';
+import type { AttributeDB, RelationshipDB } from './SQLQueries';
 
 import alasql from 'alasql';
 
-import { AttributeMetadataSQL, EntityMetadataSQL, OptionSetMetadataSQL } from './SQLQueries';
+import {
+    AttributeMetadataSQL,
+    EntityMetadataSQL,
+    KeyMetadataSQL,
+    OptionSetMetadataSQL,
+    PrivilegeMetadataSQL,
+    RelationshipMetadataSQL,
+} from './SQLQueries';
 import { getAttributeTypeFromString } from './getAttributeTypeFromString';
 import { getSqlTypeForAttribute } from './getSQLTypeForAttribute';
 import { AttributeType, OptionSetType } from './AttributeType';
@@ -46,6 +57,14 @@ export type LookupValueWithNavigation = LookupReference;
 
 type Row = { [attribute: string]: any };
 
+/** A one-to-many or many-to-many relationship */
+export type RelationshipMetadata = OneToManyRelationshipMetadata | ManyToManyRelationshipMetadata;
+
+const isManyToMany = (relationship: RelationshipMetadata): relationship is ManyToManyRelationshipMetadata =>
+    relationship.RelationshipType
+        ? relationship.RelationshipType === 'ManyToManyRelationship'
+        : 'IntersectEntityName' in relationship || 'Entity2LogicalName' in relationship;
+
 const defaultFalseOption = () => ({ Color: '', Label: 'No', Value: 0 });
 const defaultTrueOption = () => ({ Color: '', Label: 'Yes', Value: 1 });
 
@@ -66,6 +85,9 @@ export class MetadataStore {
     EntityMetadataSQL: EntityMetadataSQL;
     OptionSetMetadataSQL: OptionSetMetadataSQL;
     AttributeMetadataSQL: AttributeMetadataSQL;
+    KeyMetadataSQL: KeyMetadataSQL;
+    PrivilegeMetadataSQL: PrivilegeMetadataSQL;
+    RelationshipMetadataSQL: RelationshipMetadataSQL;
     private _metadataCache: Map<string, EntityMetadata>;
 
     private _generateId: () => string;
@@ -77,6 +99,9 @@ export class MetadataStore {
         this.AttributeMetadataSQL = new AttributeMetadataSQL(this.db.exec.bind(this.db));
         this.EntityMetadataSQL = new EntityMetadataSQL(this.db.exec.bind(this.db));
         this.OptionSetMetadataSQL = new OptionSetMetadataSQL(this.db.exec.bind(this.db));
+        this.KeyMetadataSQL = new KeyMetadataSQL(this.db.exec.bind(this.db));
+        this.PrivilegeMetadataSQL = new PrivilegeMetadataSQL(this.db.exec.bind(this.db));
+        this.RelationshipMetadataSQL = new RelationshipMetadataSQL(this.db.exec.bind(this.db));
 
         this._generateId = options?.newId ?? (() => this.db.exec<{ ID: string }[]>('SELECT NEWID() as ID')[0]['ID']);
     }
@@ -126,7 +151,7 @@ export class MetadataStore {
                 OptionSetId,
                 OptionSetType: optionsetAttribute.OptionSet.OptionSetType,
             });
-            for (let optionValue in optionsetAttribute.OptionSet.Options) {
+            for (const optionValue in optionsetAttribute.OptionSet.Options) {
                 const option = optionsetAttribute.OptionSet.Options[optionValue];
                 this.OptionSetMetadataSQL.AddOptionMetadata({
                     OptionId: this.newId(),
@@ -212,7 +237,7 @@ export class MetadataStore {
         });
 
         if (!metadata.PrimaryIdAttribute) {
-            let primaryAttribute = attributes.find((attr) => attr.AttributeType === AttributeType.Uniqueidentifier);
+            const primaryAttribute = attributes.find((attr) => attr.AttributeType === AttributeType.Uniqueidentifier);
             if (primaryAttribute) {
                 metadata.PrimaryIdAttribute = primaryAttribute.LogicalName;
             } else {
@@ -221,7 +246,7 @@ export class MetadataStore {
         }
 
         if (!metadata.PrimaryNameAttribute) {
-            let primaryAttribute = attributes.find((attr) => attr.AttributeType === AttributeType.EntityName);
+            const primaryAttribute = attributes.find((attr) => attr.AttributeType === AttributeType.EntityName);
             if (primaryAttribute) {
                 metadata.PrimaryNameAttribute = primaryAttribute.LogicalName;
             } else {
@@ -256,7 +281,7 @@ export class MetadataStore {
 
         metadata.Attributes = attributes.concat(virtualAttributes);
         attributes = metadata.Attributes;
-        if (this.EntityMetadataSQL.SelectTableMetadata(metadata.LogicalName).length == 0) {
+        if (this.EntityMetadataSQL.SelectTableMetadata(metadata.LogicalName).length === 0) {
             this.EntityMetadataSQL.AddEntityMetadata({
                 EntityId: entityId,
                 EntitySetName: metadata.EntitySetName,
@@ -289,6 +314,159 @@ export class MetadataStore {
                 this.upsertAttributeMetadata(metadata.LogicalName, attribute);
             });
         }
+
+        metadata.Keys?.forEach((key) => this.upsertKeyMetadata(metadata.LogicalName, key));
+        metadata.Privileges?.forEach((privilege) => this.upsertPrivilegeMetadata(metadata.LogicalName, privilege));
+        metadata.OneToManyRelationships?.forEach((relationship) =>
+            this.upsertRelationshipMetadata({
+                ...relationship,
+                RelationshipType: 'OneToManyRelationship',
+                ReferencedEntity: relationship.ReferencedEntity || metadata.LogicalName,
+            }),
+        );
+        metadata.ManyToOneRelationships?.forEach((relationship) =>
+            this.upsertRelationshipMetadata({
+                ...relationship,
+                RelationshipType: 'OneToManyRelationship',
+                ReferencingEntity: relationship.ReferencingEntity || metadata.LogicalName,
+            }),
+        );
+        metadata.ManyToManyRelationships?.forEach((relationship) =>
+            this.upsertRelationshipMetadata({
+                ...relationship,
+                RelationshipType: 'ManyToManyRelationship',
+                Entity1LogicalName: relationship.Entity1LogicalName || metadata.LogicalName,
+            }),
+        );
+    }
+
+    private getEntityId(entity: string) {
+        const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadata(entity);
+        if (!tableMetadataDB || tableMetadataDB.length === 0) {
+            throw invalidRequestError(`Entity ${entity} does not exist.`);
+        }
+        return tableMetadataDB[0].EntityId;
+    }
+
+    /**
+     * Adds an alternate key to a table, replacing the key with the same `LogicalName`.
+     * @param entity The logical name of the table
+     */
+    upsertKeyMetadata(entity: string, key: EntityKeyMetadata) {
+        const entityId = this.getEntityId(entity);
+        if (!key.LogicalName || !key.KeyAttributes || key.KeyAttributes.length === 0) {
+            throw invalidRequestError(`The key of ${entity} must have a LogicalName and KeyAttributes.`);
+        }
+        this.invalidateMetadataCache();
+        const definition: EntityKeyMetadata = {
+            ...key,
+            MetadataId: key.MetadataId || this.newId(),
+            EntityLogicalName: entity,
+            KeyAttributes: [...key.KeyAttributes],
+        };
+        this.KeyMetadataSQL.DeleteKeyMetadata(entityId, key.LogicalName);
+        this.KeyMetadataSQL.AddKeyMetadata({
+            KeyId: definition.MetadataId as string,
+            EntityId: entityId,
+            LogicalName: key.LogicalName,
+            Definition: JSON.stringify(definition),
+        });
+    }
+
+    /**
+     * Adds a privilege to a table, replacing the privilege with the same `Name`.
+     * @param entity The logical name of the table
+     */
+    upsertPrivilegeMetadata(entity: string, privilege: Privileges) {
+        const entityId = this.getEntityId(entity);
+        if (!privilege.Name) {
+            throw invalidRequestError(`The privilege of ${entity} must have a Name.`);
+        }
+        this.invalidateMetadataCache();
+        const definition: Privileges = { ...privilege, PrivilegeId: privilege.PrivilegeId || this.newId() };
+        this.PrivilegeMetadataSQL.DeletePrivilegeMetadata(entityId, privilege.Name);
+        this.PrivilegeMetadataSQL.AddPrivilegeMetadata({
+            PrivilegeId: definition.PrivilegeId,
+            EntityId: entityId,
+            Name: definition.Name,
+            PrivilegeType: definition.PrivilegeType,
+            Definition: JSON.stringify(definition),
+        });
+    }
+
+    /**
+     * Adds a relationship, replacing the relationship with the same `SchemaName`.
+     * A one-to-many relationship is returned by the `OneToManyRelationships` of the referenced table and
+     * the `ManyToOneRelationships` of the referencing table, a many-to-many relationship by the
+     * `ManyToManyRelationships` of both tables. The tables don't need to exist yet.
+     */
+    upsertRelationshipMetadata(relationship: RelationshipMetadata) {
+        if (!relationship.SchemaName) {
+            throw invalidRequestError('The relationship must have a SchemaName.');
+        }
+        const manyToMany = isManyToMany(relationship);
+        const definition = {
+            ...relationship,
+            MetadataId: relationship.MetadataId || this.newId(),
+            RelationshipType: manyToMany ? 'ManyToManyRelationship' : 'OneToManyRelationship',
+        } as RelationshipMetadata;
+        const relationshipDB: RelationshipDB = {
+            RelationshipId: definition.MetadataId as string,
+            SchemaName: definition.SchemaName,
+            RelationshipType: definition.RelationshipType as RelationshipDB['RelationshipType'],
+            ReferencedEntity: null,
+            ReferencingEntity: null,
+            Entity1LogicalName: null,
+            Entity2LogicalName: null,
+            Definition: JSON.stringify(definition),
+        };
+        if (isManyToMany(definition)) {
+            if (!definition.Entity1LogicalName || !definition.Entity2LogicalName) {
+                throw invalidRequestError(
+                    `The relationship ${definition.SchemaName} must have Entity1LogicalName and Entity2LogicalName.`,
+                );
+            }
+            relationshipDB.Entity1LogicalName = definition.Entity1LogicalName;
+            relationshipDB.Entity2LogicalName = definition.Entity2LogicalName;
+        } else {
+            if (!definition.ReferencedEntity || !definition.ReferencingEntity) {
+                throw invalidRequestError(
+                    `The relationship ${definition.SchemaName} must have ReferencedEntity and ReferencingEntity.`,
+                );
+            }
+            relationshipDB.ReferencedEntity = definition.ReferencedEntity;
+            relationshipDB.ReferencingEntity = definition.ReferencingEntity;
+        }
+        this.invalidateMetadataCache();
+        this.RelationshipMetadataSQL.DeleteRelationshipMetadata(definition.SchemaName);
+        this.RelationshipMetadataSQL.AddRelationshipMetadata(relationshipDB);
+    }
+
+    private mapRelationshipFromRelationshipDB(relationshipDB: RelationshipDB): RelationshipMetadata {
+        const relationship = JSON.parse(relationshipDB.Definition) as RelationshipMetadata;
+        if (!isManyToMany(relationship) && !relationship.ReferencedAttribute && relationship.ReferencedEntity) {
+            const referenced = this.EntityMetadataSQL.SelectTableMetadata(relationship.ReferencedEntity)[0];
+            if (referenced?.PrimaryIdAttribute) relationship.ReferencedAttribute = referenced.PrimaryIdAttribute;
+        }
+        return relationship;
+    }
+
+    /**
+     * Get the definition of a relationship
+     * @param schemaName The schema name of the relationship
+     */
+    getRelationshipMetadata(schemaName: string): RelationshipMetadata | undefined {
+        const relationshipDB = this.RelationshipMetadataSQL.SelectRelationshipMetadata(schemaName)[0];
+        return relationshipDB ? this.mapRelationshipFromRelationshipDB(relationshipDB) : undefined;
+    }
+
+    /**
+     * Get the definitions of all the relationships, sorted by schema name
+     */
+    getAllRelationshipMetadata(): RelationshipMetadata[] {
+        return this.RelationshipMetadataSQL.SelectAllRelationshipMetadata().map((relationshipDB) =>
+            this.mapRelationshipFromRelationshipDB(relationshipDB),
+        );
     }
 
     /**
@@ -372,6 +550,29 @@ export class MetadataStore {
         attributesDB.forEach((attributeDB) => {
             const attribute = this.mapAttributeFromAttributeDB(tableMetadata, attributeDB);
             tableMetadata.Attributes?.push(attribute);
+        });
+
+        // Only set when present, so tables without them keep their shape
+        const entityId = tableMetadataDB[0].EntityId;
+        const privileges = this.PrivilegeMetadataSQL.SelectPrivilegeMetadataForTable(entityId).map(
+            (privilegeDB) => JSON.parse(privilegeDB.Definition) as Privileges,
+        );
+        if (privileges.length > 0) tableMetadata.Privileges = privileges;
+        const keys = this.KeyMetadataSQL.SelectKeyMetadataForTable(entityId).map(
+            (keyDB) => JSON.parse(keyDB.Definition) as EntityKeyMetadata,
+        );
+        if (keys.length > 0) tableMetadata.Keys = keys;
+        const relationships = {
+            OneToManyRelationships: this.RelationshipMetadataSQL.SelectOneToManyRelationshipMetadata(entity),
+            ManyToOneRelationships: this.RelationshipMetadataSQL.SelectManyToOneRelationshipMetadata(entity),
+            ManyToManyRelationships: this.RelationshipMetadataSQL.SelectManyToManyRelationshipMetadata(entity),
+        };
+        (Object.keys(relationships) as (keyof typeof relationships)[]).forEach((property) => {
+            if (relationships[property].length > 0) {
+                tableMetadata[property] = relationships[property].map((relationshipDB) =>
+                    this.mapRelationshipFromRelationshipDB(relationshipDB),
+                ) as any;
+            }
         });
         return tableMetadata;
     }
@@ -523,7 +724,8 @@ export class MetadataStore {
      * @param items Object as returned from the Dataverse OData API
      */
     initItems(items: { '@odata.context': string; value: any[] }) {
-        const entitySetName = items['@odata.context']?.substring(items['@odata.context'].indexOf('#') + 1);
+        const context = items['@odata.context'];
+        const entitySetName = context?.substring(context.indexOf('#') + 1);
         const tableMetadataDB = this.EntityMetadataSQL.SelectTableMetadataByEntitySet(entitySetName);
         if (!tableMetadataDB || tableMetadataDB.length === 0) {
             this.warn(`Missing init for entitySet ${entitySetName}`);
@@ -715,7 +917,7 @@ export class MetadataStore {
 
         const rowDB = this.db.exec<Row[]>(selectQuery, [id]);
 
-        if (!rowDB || rowDB.length == 0) {
+        if (!rowDB || rowDB.length === 0) {
             this.warn(`Could not find row '${id}' in table '${entity}'`);
             return { row: null, entityMetadata };
         }

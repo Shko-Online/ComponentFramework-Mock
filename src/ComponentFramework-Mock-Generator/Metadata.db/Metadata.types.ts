@@ -103,6 +103,14 @@ export interface EntityMetadata {
     Privileges?: Privileges[];
     /** A collection of column definitions objects. The object returned depends on the type of column definitions. */
     Attributes?: AttributeMetadata[];
+    /** The alternate keys of the table. */
+    Keys?: EntityKeyMetadata[];
+    /** The one-to-many relationships where this table is the referenced (primary) table. */
+    OneToManyRelationships?: OneToManyRelationshipMetadata[];
+    /** The many-to-one relationships: the one-to-many relationships where this table is the referencing (related) table. */
+    ManyToOneRelationships?: OneToManyRelationshipMetadata[];
+    /** The many-to-many relationships this table takes part in. */
+    ManyToManyRelationships?: ManyToManyRelationshipMetadata[];
 }
 
 export interface AttributeMetadataCollection {
@@ -132,6 +140,8 @@ export interface Privileges {
     CanBeParentEntityReference: boolean;
     /**The name of the privilege*/
     Name: string;
+    /**Whether the privilege can be RecordFilter based access level.*/
+    CanBeRecordFilter?: boolean;
     /**The ID of the privilege.*/
     PrivilegeId: string;
     /**
@@ -147,6 +157,123 @@ export interface Privileges {
      8: AppendTo
   */
     PrivilegeType: PrivilegeType;
+}
+
+/** https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/entitykeyindexstatus */
+export type EntityKeyIndexStatus = 'Pending' | 'InProgress' | 'Active' | 'Failed';
+
+/**
+ * An alternate key of a table.
+ * https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/entitykeymetadata
+ */
+export interface EntityKeyMetadata {
+    /** The unique identifier of the key definition. Generated when missing. */
+    MetadataId?: string;
+    /** The logical name of the key. */
+    LogicalName: string;
+    /** The schema name of the key. */
+    SchemaName?: string;
+    /** The display name of the key. */
+    DisplayName?: string;
+    /** The logical name of the table. Set to the table the key is defined on. */
+    EntityLogicalName?: string;
+    /** The logical names of the columns of the key. Lookup columns use their logical name, e.g. `primarycontactid`. */
+    KeyAttributes: string[];
+    /** The status of the index of the key, `Active` when missing. Numbers are converted to the names. */
+    EntityKeyIndexStatus?: EntityKeyIndexStatus | 0 | 1 | 2 | 3;
+    /** Whether the key is part of a managed solution. */
+    IsManaged?: boolean;
+    /** Whether the key is customizable. */
+    IsCustomizable?: BooleanManagedProperty;
+    /** The solution version that added the key. */
+    IntroducedVersion?: string;
+}
+
+/** https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/cascadetype */
+export type CascadeType = 'NoCascade' | 'Cascade' | 'Active' | 'UserOwned' | 'RemoveLink' | 'Restrict';
+
+/**
+ * The cascading behaviors of a one-to-many relationship. Numbers are converted to the {@link CascadeType} names.
+ * https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/cascadeconfiguration
+ */
+export interface CascadeConfiguration {
+    Archive?: CascadeType | number;
+    Assign?: CascadeType | number;
+    Delete?: CascadeType | number;
+    Merge?: CascadeType | number;
+    Reparent?: CascadeType | number;
+    RollupView?: CascadeType | number;
+    Share?: CascadeType | number;
+    Unshare?: CascadeType | number;
+}
+
+/** https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/relationshiptype */
+export type RelationshipType = 'OneToManyRelationship' | 'ManyToManyRelationship';
+
+/** https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/securitytypes */
+export type SecurityTypes = 'None' | 'Append' | 'ParentChild' | 'Pointer' | 'Inheritance';
+
+/**
+ * The properties shared by the relationships.
+ * https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/relationshipmetadatabase
+ */
+export interface RelationshipMetadataBase {
+    /** The unique identifier of the relationship definition. Generated when missing. */
+    MetadataId?: string;
+    /** The schema name of the relationship. Identifies the relationship across the tables. */
+    SchemaName: string;
+    /** Set from the property the relationship is defined in. */
+    RelationshipType?: RelationshipType;
+    /** The security type of the relationship. Numbers are converted to the names. */
+    SecurityTypes?: SecurityTypes | number;
+    IsCustomRelationship?: boolean;
+    IsCustomizable?: BooleanManagedProperty;
+    IsManaged?: boolean;
+    IsValidForAdvancedFind?: boolean;
+    IntroducedVersion?: string;
+}
+
+/**
+ * A one-to-many relationship. The same definition is returned by
+ * `OneToManyRelationships` of the referenced table and `ManyToOneRelationships` of the referencing table.
+ * https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/onetomanyrelationshipmetadata
+ */
+export interface OneToManyRelationshipMetadata extends RelationshipMetadataBase {
+    /** The referenced (primary) table. Defaults to the table, when defined in `OneToManyRelationships`. */
+    ReferencedEntity?: string;
+    /** The primary key of the referenced table. Defaults to its `PrimaryIdAttribute`. */
+    ReferencedAttribute?: string;
+    /** The referencing (related) table. Defaults to the table, when defined in `ManyToOneRelationships`. */
+    ReferencingEntity?: string;
+    /** The lookup column of the referencing table. */
+    ReferencingAttribute: string;
+    /** The collection-valued navigation property of the referenced table. */
+    ReferencedEntityNavigationPropertyName?: string;
+    /** The single-valued navigation property of the referencing table. */
+    ReferencingEntityNavigationPropertyName?: string;
+    CascadeConfiguration?: CascadeConfiguration;
+    AssociatedMenuConfiguration?: { [property: string]: unknown };
+    IsHierarchical?: boolean;
+    RelationshipBehavior?: number;
+}
+
+/**
+ * A many-to-many relationship.
+ * https://learn.microsoft.com/power-apps/developer/data-platform/webapi/reference/manytomanyrelationshipmetadata
+ */
+export interface ManyToManyRelationshipMetadata extends RelationshipMetadataBase {
+    /** The first table. Defaults to the table the relationship is defined on. */
+    Entity1LogicalName?: string;
+    /** The second table. */
+    Entity2LogicalName: string;
+    /** The intersect table. */
+    IntersectEntityName: string;
+    Entity1IntersectAttribute?: string;
+    Entity2IntersectAttribute?: string;
+    Entity1NavigationPropertyName?: string;
+    Entity2NavigationPropertyName?: string;
+    Entity1AssociatedMenuConfiguration?: { [property: string]: unknown };
+    Entity2AssociatedMenuConfiguration?: { [property: string]: unknown };
 }
 
 export interface AttributeMetadata {

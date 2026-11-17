@@ -4,6 +4,9 @@
 */
 
 export type { AttributeDB } from './Metadata.Attribute';
+export type { KeyDB } from './Metadata.Key';
+export type { PrivilegeDB } from './Metadata.Privilege';
+export type { RelationshipDB } from './Metadata.Relationship';
 
 export {
     EntityMetadataSQL,
@@ -30,3 +33,6 @@ export {
     SELECT_METADATA_OPTIONSET,
     SELECT_METADATA_OPTIONSET_OPTION,
 } from './Metadata.Optionset';
+export { CREATE_TABLE_METADATA_KEY, KeyMetadataSQL } from './Metadata.Key';
+export { CREATE_TABLE_METADATA_PRIVILEGE, PrivilegeMetadataSQL } from './Metadata.Privilege';
+export { CREATE_TABLE_METADATA_RELATIONSHIP, RelationshipMetadataSQL } from './Metadata.Relationship';

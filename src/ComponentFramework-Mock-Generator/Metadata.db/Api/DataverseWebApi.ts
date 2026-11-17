@@ -5,6 +5,7 @@ Licensed under the MIT license.
 
 import type { ODataQuery } from '@shko.online/dataverse-odata';
 import type { EntityMetadata } from '../Metadata.types';
+import type { RelationshipMetadata } from '../MetadataStore';
 import type { MetadataStore } from '../MetadataStore';
 import type { WebApiEntity, WebApiMetadata, WebApiPage, WireFormatter } from '../Wire';
 
@@ -12,6 +13,7 @@ import { parseOData } from '@shko.online/dataverse-odata';
 import { AttributeType } from '../AttributeType';
 import { DataverseErrorCode } from '../Errors';
 import {
+    ENTITY_NAVIGATION_PROPERTIES,
     getPage,
     MOCK_WEB_API_URL,
     pickMetadataProperties,
@@ -19,6 +21,9 @@ import {
     toWebApiAttributeDefinition,
     toWebApiEntity,
     toWebApiEntityDefinition,
+    toWebApiKeyDefinition,
+    toWebApiPrivilege,
+    toWebApiRelationshipDefinition,
 } from '../Wire';
 
 /**
@@ -80,22 +85,99 @@ const notSupported = (feature: string) =>
 const GUID = /^\{?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\}?$/i;
 const ODATA_TYPE_PREFIX = 'Microsoft.Dynamics.CRM.';
 
-/** Splits `Segment(key)/rest` */
+/** Splits `Segment(key)/rest`. The key can contain quoted values with parentheses and slashes. */
 const splitSegment = (path: string) => {
-    const match = /^([^/()]+)(?:\(([^)]*)\))?(?:\/(.*))?$/.exec(path);
-    if (!match) {
-        throw dataverseError(`Invalid path '${path}'.`, DataverseErrorCode.InvalidRequest, '0x80060888');
+    const invalidPath = () =>
+        dataverseError(`Invalid path '${path}'.`, DataverseErrorCode.InvalidRequest, '0x80060888');
+    const segment = /^[^/()]+/.exec(path)?.[0];
+    if (!segment) throw invalidPath();
+    let position = segment.length;
+    let key: string | undefined;
+    if (path.charAt(position) === '(') {
+        let quoted = false;
+        let end = position + 1;
+        while (end < path.length && (quoted || path.charAt(end) !== ')')) {
+            if (path.charAt(end) === "'") quoted = !quoted;
+            end++;
+        }
+        if (end >= path.length) throw invalidPath();
+        key = path.substring(position + 1, end);
+        position = end + 1;
     }
-    return { segment: match[1], key: match[2] as string | undefined, rest: match[3] as string | undefined };
+    if (position === path.length) return { segment, key, rest: undefined as string | undefined };
+    if (path.charAt(position) !== '/') throw invalidPath();
+    return { segment, key, rest: path.substring(position + 1) as string | undefined };
 };
 
-/** Reads `LogicalName='x'` or a GUID key */
-const parseMetadataKey = (key: string) => {
-    const logicalName = /^LogicalName='([^']*)'$/.exec(key);
-    if (logicalName) return { logicalName: logicalName[1] };
+/** Reads `<nameProperty>='x'` or a GUID key */
+const parseMetadataKey = (key: string, nameProperty = 'LogicalName') => {
+    const name = new RegExp(`^${nameProperty}='([^']*)'$`).exec(key);
+    if (name) return { name: name[1] };
     if (GUID.test(key)) return { metadataId: key.replace(/[{}]/g, '').toLowerCase() };
     throw dataverseError(`Invalid key '${key}'.`, DataverseErrorCode.InvalidRequest, '0x80060888');
 };
+
+type AlternateKeyValue = string | number | boolean | null;
+
+/** Reads the values of an alternate key: `name='Contoso',_primarycontactid_value=<guid>` */
+const parseAlternateKey = (key: string) => {
+    const invalidKey = () => dataverseError(`Invalid key '${key}'.`, DataverseErrorCode.InvalidRequest, '0x80060888');
+    // Split on the commas outside the quoted values
+    const pairs: string[] = [];
+    let current = '';
+    let quoted = false;
+    for (let i = 0; i < key.length; i++) {
+        const char = key.charAt(i);
+        if (char === "'") quoted = !quoted;
+        if (char === ',' && !quoted) {
+            pairs.push(current);
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    if (quoted) throw invalidKey();
+    pairs.push(current);
+
+    const values: { [attribute: string]: AlternateKeyValue } = {};
+    pairs.forEach((pair) => {
+        const match = /^\s*([A-Za-z_]\w*)\s*=\s*(.*?)\s*$/.exec(pair);
+        if (!match || match[2] === '') throw invalidKey();
+        const raw = match[2];
+        // Lookups are referenced with their lookup property, the key definitions use the column
+        const attribute = match[1].replace(/^_(.+)_value$/, '$1');
+        if (/^'.*'$/.test(raw)) {
+            values[attribute] = raw.slice(1, -1).replace(/''/g, "'");
+        } else if (raw === 'null') {
+            values[attribute] = null;
+        } else if (raw === 'true' || raw === 'false') {
+            values[attribute] = raw === 'true';
+        } else if (GUID.test(raw)) {
+            values[attribute] = raw.replace(/[{}]/g, '');
+        } else if (!isNaN(Number(raw))) {
+            values[attribute] = Number(raw);
+        } else {
+            throw invalidKey();
+        }
+    });
+    return values;
+};
+
+const sameKeyValue = (stored: unknown, value: AlternateKeyValue) => {
+    if (value === null) return stored === null || stored === undefined;
+    if (typeof value === 'string' && GUID.test(value) && typeof stored === 'string') {
+        return stored.replace(/[{}]/g, '').toLowerCase() === value.toLowerCase();
+    }
+    return stored === value || (stored instanceof Date && typeof value === 'string' && stored.toISOString() === value);
+};
+
+/** Whether a definition is of the derived type `Microsoft.Dynamics.CRM.<type>` */
+const hasODataType = (definition: WebApiMetadata, qualifiedType: string) =>
+    definition['@odata.type'] === '#' + qualifiedType;
+
+/** Describes how a metadata item was looked up, for the not found errors */
+const describeMetadataKey = (nameProperty: string, name: string | undefined, metadataId: string | undefined) =>
+    name !== undefined ? `${nameProperty} = '${name}'` : `MetadataId = '${metadataId}'`;
 
 const sameId = (a: string | undefined, b: string) => !!a && a.replace(/[{}]/g, '').toLowerCase() === b;
 
@@ -342,6 +424,9 @@ export class DataverseWebApi {
             if (segment === 'EntityDefinitions') {
                 return this.getMetadata(key, rest, query);
             }
+            if (segment === 'RelationshipDefinitions') {
+                return this.getRelationshipMetadata(key, rest, query);
+            }
 
             const tableMetadata = this.store.getTableMetadataByEntitySet(segment);
             if (!tableMetadata) {
@@ -354,42 +439,152 @@ export class DataverseWebApi {
                 if (page.nextLink) collection['@odata.nextLink'] = page.nextLink;
                 return collection;
             }
-            if (!GUID.test(key)) throw notSupported(`The key '${key}'`);
             if (rest !== undefined) throw notSupported(`The navigation '${rest}'`);
-            return this.retrieveRecord(tableMetadata.LogicalName, key.replace(/[{}]/g, ''), query || undefined);
+            const id = GUID.test(key)
+                ? key.replace(/[{}]/g, '')
+                : this.findRecordIdByAlternateKey(tableMetadata.LogicalName, key);
+            return this.retrieveRecord(tableMetadata.LogicalName, id, query || undefined);
         });
     }
 
-    private getMetadata(key: string | undefined, rest: string | undefined, query: string) {
+    /**
+     * Returns the id of the row identified by the values of an alternate key of the table.
+     * @param key The values as in a Web API URL, `accountnumber='A1'` or `name='Contoso',_primarycontactid_value=<guid>`,
+     * or as an object `{ accountnumber: 'A1' }`
+     */
+    findRecordIdByAlternateKey(entityType: string, key: string | { [attribute: string]: AlternateKeyValue }): string {
+        return this.execute(() => {
+            const tableMetadata = this.getTableMetadata(entityType);
+            const values = typeof key === 'string' ? parseAlternateKey(key) : key;
+            const attributes = Object.keys(values);
+            const isKey = (tableMetadata.Keys ?? []).some(
+                (entityKey) =>
+                    entityKey.KeyAttributes.length === attributes.length &&
+                    entityKey.KeyAttributes.every((attribute) => attributes.indexOf(attribute) !== -1),
+            );
+            if (!isKey) {
+                throw dataverseError(
+                    `The specified key attributes are not a defined key for the ${entityType} entity`,
+                    DataverseErrorCode.EntityKeyNotDefined,
+                    '0x80060890',
+                );
+            }
+            const primaryKey = tableMetadata.PrimaryIdAttribute || 'id';
+            const row = this.store
+                .GetAllRows(entityType)
+                .rows.find((candidate) =>
+                    attributes.every((attribute) => sameKeyValue(candidate[attribute], values[attribute])),
+                );
+            if (!row) {
+                throw dataverseError(
+                    `A record with the specified key values does not exist in ${entityType} entity`,
+                    DataverseErrorCode.RecordNotFoundByEntityKey,
+                    '0x80060891',
+                );
+            }
+            return row[primaryKey] as string;
+        });
+    }
+
+    /** Reads `$select` and `$expand`, the only query options supported on the metadata entity sets */
+    private readMetadataQuery(query: string, entitySet: string) {
         const params = new URLSearchParams(query);
         const unsupported: string[] = [];
         params.forEach((_value, name) => {
             if (name !== '$select' && name !== '$expand') unsupported.push(name);
         });
         if (unsupported.length > 0) {
-            throw notSupported(`${unsupported.join(', ')} on EntityDefinitions`);
+            throw notSupported(`${unsupported.join(', ')} on ${entitySet}`);
         }
         const select = params.get('$select')?.split(',');
-        // $expand=Attributes and $expand=OptionSet are always honored: keep them when selecting
-        const expand = params.get('$expand')?.split(',') ?? [];
-        const selectWithExpand = select ? [...select, ...expand.map((e) => e.split('(')[0])] : undefined;
+        // Nested options such as Attributes($select=LogicalName) are ignored
+        const expand = (params.get('$expand')?.split(',') ?? []).map((e) => e.split('(')[0].trim());
+        // The expanded properties are kept when selecting
+        const selectWithExpand = select ? [...select, ...expand] : undefined;
+        return { select: selectWithExpand, expand };
+    }
+
+    private getMetadata(key: string | undefined, rest: string | undefined, query: string) {
+        const { select, expand } = this.readMetadataQuery(query, 'EntityDefinitions');
+        const toDefinition = (tableMetadata: EntityMetadata) => {
+            const definition = pickMetadataProperties(toWebApiEntityDefinition(tableMetadata), select);
+            expand.forEach((property) => {
+                if ((ENTITY_NAVIGATION_PROPERTIES as readonly string[]).indexOf(property) === -1) {
+                    throw resourceNotFound(property);
+                }
+                definition[property] = this.getNavigationItems(tableMetadata, property);
+            });
+            return definition;
+        };
 
         if (key === undefined) {
             if (rest !== undefined) throw resourceNotFound(rest);
-            return { value: this.getEntityDefinitions(selectWithExpand) };
+            return {
+                value: this.store.getTableNames().map((name) => toDefinition(this.findTableMetadata(name, true))),
+            };
         }
-        const { logicalName, metadataId } = parseMetadataKey(key);
-        const tableMetadata = this.findTableMetadata((logicalName ?? metadataId) as string, logicalName !== undefined);
+        const { name, metadataId } = parseMetadataKey(key);
+        const tableMetadata = this.findTableMetadata((name ?? metadataId) as string, name !== undefined);
         if (rest !== undefined) {
-            return this.getRelatedMetadata(tableMetadata.LogicalName, rest, selectWithExpand);
+            // $expand=OptionSet on a column is always honored
+            return this.getRelatedMetadata(tableMetadata.LogicalName, rest, select);
         }
-        const definition = pickMetadataProperties(toWebApiEntityDefinition(tableMetadata), selectWithExpand);
-        if (expand.some((e) => e.split('(')[0] === 'Attributes')) {
-            definition['Attributes'] = (
-                this.getRelatedMetadata(tableMetadata.LogicalName, 'Attributes') as WebApiCollection<WebApiMetadata>
-            ).value;
+        return toDefinition(tableMetadata);
+    }
+
+    /** The definitions of a navigation property of a table definition, in the Web API shape */
+    private getNavigationItems(tableMetadata: EntityMetadata, property: string): WebApiMetadata[] {
+        switch (property) {
+            case 'Attributes':
+                return (tableMetadata.Attributes ?? []).map((attribute) =>
+                    toWebApiAttributeDefinition(attribute, tableMetadata.LogicalName),
+                );
+            case 'Keys':
+                return (tableMetadata.Keys ?? []).map((key) => toWebApiKeyDefinition(key, tableMetadata.LogicalName));
+            case 'OneToManyRelationships':
+            case 'ManyToOneRelationships':
+            case 'ManyToManyRelationships':
+                return ((tableMetadata[property] ?? []) as RelationshipMetadata[]).map((relationship) =>
+                    toWebApiRelationshipDefinition(relationship),
+                );
+            default:
+                throw resourceNotFound(property);
         }
-        return definition;
+    }
+
+    private getRelationshipMetadata(key: string | undefined, rest: string | undefined, query: string) {
+        const { select, expand } = this.readMetadataQuery(query, 'RelationshipDefinitions');
+        if (expand.length > 0) throw resourceNotFound(expand[0]);
+        const casts = rest ? rest.split('/') : [];
+        const definitions = this.store
+            .getAllRelationshipMetadata()
+            .map((relationship) => toWebApiRelationshipDefinition(relationship, true));
+        const applyCasts = (value: WebApiMetadata[]) =>
+            casts.reduce((filtered, cast) => {
+                if (!cast.startsWith(ODATA_TYPE_PREFIX)) throw resourceNotFound(cast);
+                return cast === `${ODATA_TYPE_PREFIX}RelationshipMetadataBase`
+                    ? filtered
+                    : filtered.filter((definition) => hasODataType(definition, cast));
+            }, value);
+
+        if (key === undefined) {
+            return { value: applyCasts(definitions).map((definition) => pickMetadataProperties(definition, select)) };
+        }
+        const { name, metadataId } = parseMetadataKey(key, 'SchemaName');
+        const definition = definitions.find((candidate) =>
+            name !== undefined
+                ? candidate['SchemaName'] === name
+                : sameId(candidate['MetadataId'], metadataId as string),
+        );
+        if (!definition) {
+            throw dataverseError(
+                `Could not find relationship with ${describeMetadataKey('SchemaName', name, metadataId)}.`,
+                DataverseErrorCode.ObjectDoesNotExist,
+                '0x80040217',
+            );
+        }
+        if (applyCasts([definition]).length === 0) throw resourceNotFound(casts.join('/'));
+        return pickMetadataProperties(definition, select);
     }
 
     private findTableMetadata(nameOrId: string, byLogicalName: boolean) {
@@ -433,9 +628,12 @@ export class DataverseWebApi {
 
     /**
      * Retrieves metadata related to a table: the path after `EntityDefinitions(LogicalName='<table>')/`.
-     * Supports `Attributes`, `Attributes(LogicalName='<column>')` or `Attributes(<MetadataId>)`,
-     * casts such as `Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata` and `/OptionSet`.
-     * @returns A collection for `Attributes`, a definition otherwise
+     * Supports the navigation properties `Attributes`, `Keys`, `OneToManyRelationships`, `ManyToOneRelationships`
+     * and `ManyToManyRelationships`, and the `Privileges` property.
+     * Items are addressed by `MetadataId`, by `LogicalName='<name>'` (columns and keys) or by `SchemaName='<name>'`
+     * (relationships). Columns support casts such as `Attributes/Microsoft.Dynamics.CRM.PicklistAttributeMetadata`
+     * and `/OptionSet`.
+     * @returns A collection for a navigation property, a definition for an item
      */
     getRelatedMetadata(
         entityType: string,
@@ -445,40 +643,44 @@ export class DataverseWebApi {
         return this.execute(() => {
             const tableMetadata = this.findTableMetadata(entityType, true);
             const { segment, key, rest } = splitSegment(relatedPath);
-            if (segment !== 'Attributes') {
-                throw notSupported(`EntityDefinitions/${segment}`);
+            if (segment === 'Privileges') {
+                if (key !== undefined || rest !== undefined) throw resourceNotFound(relatedPath);
+                return {
+                    value: (tableMetadata.Privileges ?? []).map((privilege) =>
+                        pickMetadataProperties(toWebApiPrivilege(privilege), select),
+                    ),
+                };
             }
+            const items = this.getNavigationItems(tableMetadata, segment);
+            const isAttributes = segment === 'Attributes';
             const segments = rest ? rest.split('/') : [];
-            const attributes = (tableMetadata.Attributes ?? []).map((attribute) =>
-                toWebApiAttributeDefinition(attribute, tableMetadata.LogicalName),
-            );
 
             if (key === undefined) {
-                let value = attributes;
+                let value = items;
                 segments.forEach((cast) => {
-                    if (!cast.startsWith(ODATA_TYPE_PREFIX)) throw resourceNotFound(cast);
-                    value = value.filter((attribute) => attribute['@odata.type'] === '#' + cast);
+                    if (!isAttributes || !cast.startsWith(ODATA_TYPE_PREFIX)) throw resourceNotFound(cast);
+                    value = value.filter((attribute) => hasODataType(attribute, cast));
                 });
-                return { value: value.map((attribute) => pickMetadataProperties(attribute, select)) };
+                return { value: value.map((item) => pickMetadataProperties(item, select)) };
             }
 
-            const { logicalName, metadataId } = parseMetadataKey(key);
-            let result: WebApiMetadata | undefined = attributes.find((attribute) =>
-                logicalName !== undefined
-                    ? attribute['LogicalName'] === logicalName
-                    : sameId(attribute['MetadataId'], metadataId as string),
+            const nameProperty = segment === 'Attributes' || segment === 'Keys' ? 'LogicalName' : 'SchemaName';
+            const { name, metadataId } = parseMetadataKey(key, nameProperty);
+            let result: WebApiMetadata | undefined = items.find((item) =>
+                name !== undefined ? item[nameProperty] === name : sameId(item['MetadataId'], metadataId as string),
             );
             if (!result) {
+                const kind = isAttributes ? 'attribute' : segment === 'Keys' ? 'key' : 'relationship';
                 throw dataverseError(
-                    `Could not find attribute with ${logicalName !== undefined ? `LogicalName = '${logicalName}'` : `MetadataId = '${metadataId}'`} on entity '${tableMetadata.LogicalName}'.`,
+                    `Could not find ${kind} with ${describeMetadataKey(nameProperty, name, metadataId)} on entity '${tableMetadata.LogicalName}'.`,
                     DataverseErrorCode.ObjectDoesNotExist,
                     '0x80040217',
                 );
             }
             for (const part of segments) {
-                if (part.startsWith(ODATA_TYPE_PREFIX)) {
-                    if (result['@odata.type'] !== '#' + part) throw resourceNotFound(part);
-                } else if (part === 'OptionSet' && result['OptionSet']) {
+                if (isAttributes && part.startsWith(ODATA_TYPE_PREFIX)) {
+                    if (!hasODataType(result, part)) throw resourceNotFound(part);
+                } else if (isAttributes && part === 'OptionSet' && result['OptionSet']) {
                     result = result['OptionSet'] as WebApiMetadata;
                 } else {
                     throw resourceNotFound(part);

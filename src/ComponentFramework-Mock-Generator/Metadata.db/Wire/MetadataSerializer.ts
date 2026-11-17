@@ -3,7 +3,15 @@ Copyright (c) 2022 Betim Beja and Shko Online LLC
 Licensed under the MIT license.
 */
 
-import type { AttributeMetadata, AttributeTypeCode, EntityMetadata } from '../Metadata.types';
+import type {
+    AttributeMetadata,
+    AttributeTypeCode,
+    EntityKeyMetadata,
+    EntityMetadata,
+    ManyToManyRelationshipMetadata,
+    OneToManyRelationshipMetadata,
+    Privileges,
+} from '../Metadata.types';
 
 import { AttributeType, OptionSetType } from '../AttributeType';
 
@@ -40,6 +48,31 @@ const attributeTypeNames = new Map<number, string>(
 const optionSetTypeNames = new Map<number, string>(
     Object.entries(OptionSetType).map(([name, value]) => [value as number, name]),
 );
+
+// The Web API returns the enumerations by name
+const PRIVILEGE_TYPES = ['None', 'Create', 'Read', 'Write', 'Delete', 'Assign', 'Share', 'Append', 'AppendTo'];
+const KEY_INDEX_STATUSES = ['Pending', 'InProgress', 'Active', 'Failed'];
+const CASCADE_TYPES = ['NoCascade', 'Cascade', 'Active', 'UserOwned', 'RemoveLink', 'Restrict'];
+const SECURITY_TYPES: { [value: number]: string } = {
+    0: 'None',
+    1: 'Append',
+    2: 'ParentChild',
+    4: 'Pointer',
+    8: 'Inheritance',
+};
+
+/** Returns the name of an enumeration value, leaving names and unknown values as they are */
+const toEnumName = (value: unknown, names: { [value: number]: string }) =>
+    typeof value === 'number' && names[value] !== undefined ? names[value] : value;
+
+/** The navigation properties of a table definition, only returned when expanded */
+export const ENTITY_NAVIGATION_PROPERTIES = [
+    'Attributes',
+    'Keys',
+    'OneToManyRelationships',
+    'ManyToOneRelationships',
+    'ManyToManyRelationships',
+] as const;
 
 /** The derived `AttributeMetadata` type of each attribute type, when it has one */
 const attributeODataTypes: { [name: string]: string } = {
@@ -169,10 +202,66 @@ export const toWebApiAttributeDefinition = (
  * Does not change `tableMetadata`.
  */
 export const toWebApiEntityDefinition = (tableMetadata: EntityMetadata): WebApiMetadata => {
-    const { Attributes: _attributes, ...definition } = tableMetadata;
-    const converted: WebApiMetadata = { ...definition };
+    const converted: WebApiMetadata = { ...tableMetadata };
+    ENTITY_NAVIGATION_PROPERTIES.forEach((property) => delete converted[property]);
     convertLabels(converted, ENTITY_LABELS);
+    if (Array.isArray(tableMetadata.Privileges)) {
+        converted['Privileges'] = tableMetadata.Privileges.map(toWebApiPrivilege);
+    }
     return converted;
+};
+
+/**
+ * Converts a privilege of the store to the shape of the `Privileges` of a table definition:
+ * `PrivilegeType` becomes its name.
+ */
+export const toWebApiPrivilege = (privilege: Privileges): WebApiMetadata => ({
+    ...privilege,
+    PrivilegeType: toEnumName(privilege.PrivilegeType, PRIVILEGE_TYPES),
+});
+
+/**
+ * Converts an alternate key of the store to the shape returned by `EntityDefinitions(LogicalName='<table>')/Keys`.
+ */
+export const toWebApiKeyDefinition = (key: EntityKeyMetadata, entityLogicalName: string): WebApiMetadata => {
+    const definition: WebApiMetadata = {
+        ...key,
+        KeyAttributes: [...key.KeyAttributes],
+        EntityLogicalName: key.EntityLogicalName ?? entityLogicalName,
+        EntityKeyIndexStatus: toEnumName(key.EntityKeyIndexStatus ?? 'Active', KEY_INDEX_STATUSES),
+    };
+    convertLabels(definition, ['DisplayName']);
+    return definition;
+};
+
+/**
+ * Converts a relationship of the store to the shape returned by
+ * `EntityDefinitions(LogicalName='<table>')/OneToManyRelationships` and the other relationship navigation properties.
+ * @param withODataType Adds the `@odata.type` of the derived type, as `RelationshipDefinitions` does
+ */
+export const toWebApiRelationshipDefinition = (
+    relationship: OneToManyRelationshipMetadata | ManyToManyRelationshipMetadata,
+    withODataType = false,
+): WebApiMetadata => {
+    const definition: WebApiMetadata = { ...relationship };
+    if (withODataType) {
+        definition['@odata.type'] =
+            relationship.RelationshipType === 'ManyToManyRelationship'
+                ? '#Microsoft.Dynamics.CRM.ManyToManyRelationshipMetadata'
+                : '#Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata';
+    }
+    if (relationship.SecurityTypes !== undefined) {
+        definition['SecurityTypes'] = toEnumName(relationship.SecurityTypes, SECURITY_TYPES);
+    }
+    const cascade = (relationship as OneToManyRelationshipMetadata).CascadeConfiguration;
+    if (cascade) {
+        const converted: WebApiMetadata = {};
+        Object.keys(cascade).forEach((action) => {
+            converted[action] = toEnumName(cascade[action as keyof typeof cascade], CASCADE_TYPES);
+        });
+        definition['CascadeConfiguration'] = converted;
+    }
+    return definition;
 };
 
 /**

@@ -282,9 +282,47 @@ describe('PptbDataverseApiMock', () => {
                 DisplayName: { UserLocalizedLabel: { Label: 'Account Name' } },
             });
 
-            await expect(dataverseAPI.getEntityRelatedMetadata('account', 'Keys')).rejects.toThrow(
-                '0x80040216: EntityDefinitions/Keys is not supported by the mock.',
+            await expect(dataverseAPI.getEntityRelatedMetadata('account', 'Unknown')).rejects.toThrow(
+                "0x80060888: Resource not found for the segment 'Unknown'.",
             );
+        });
+
+        it('Should return the keys and relationships, and retrieve by alternate key', async () => {
+            store.upsertKeyMetadata('account', { LogicalName: 'name_key', KeyAttributes: ['name'] });
+            store.upsertRelationshipMetadata({
+                SchemaName: 'account_primary_contact',
+                ReferencedEntity: 'contact',
+                ReferencingEntity: 'account',
+                ReferencingAttribute: 'primarycontactid',
+            });
+            await expect(
+                dataverseAPI.getEntityRelatedMetadata('account', 'Keys', ['LogicalName', 'KeyAttributes']),
+            ).resolves.toEqual({
+                value: [{ MetadataId: expect.any(String), LogicalName: 'name_key', KeyAttributes: ['name'] }],
+            });
+            const relationships = await dataverseAPI.getEntityRelatedMetadata('contact', 'OneToManyRelationships', [
+                'SchemaName',
+                'ReferencedAttribute',
+            ]);
+            expect(relationships.value).toEqual([
+                {
+                    MetadataId: expect.any(String),
+                    SchemaName: 'account_primary_contact',
+                    ReferencedAttribute: 'contactid',
+                },
+            ]);
+
+            const { id } = await dataverseAPI.create('account', { name: 'Contoso' });
+            await expect(dataverseAPI.retrieve('account', "name='Contoso'", ['name'])).resolves.toEqual({
+                accountid: id,
+                name: 'Contoso',
+            });
+            await expect(dataverseAPI.retrieve('account', "name='Fabrikam'")).rejects.toThrow(
+                '0x80060891: A record with the specified key values does not exist in account entity',
+            );
+            await expect(dataverseAPI.queryData("accounts(name='Contoso')?$select=name")).resolves.toMatchObject({
+                name: 'Contoso',
+            });
         });
 
         it('Should return the entity set names', async () => {

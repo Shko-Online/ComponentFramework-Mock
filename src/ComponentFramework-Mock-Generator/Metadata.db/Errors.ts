@@ -12,6 +12,10 @@ export const DataverseErrorCode = {
     ObjectDoesNotExist: 0x80040217,
     /** The request is not valid: unknown table or column, unsupported operator, malformed query or reference */
     InvalidRequest: 0x80060888,
+    /** No row has the values of the alternate key */
+    RecordNotFoundByEntityKey: 0x80060891,
+    /** The columns of an alternate key reference are not a key of the table */
+    EntityKeyNotDefined: 0x80060890,
     /** Any other failure */
     Unexpected: 0x80040216,
 } as const;

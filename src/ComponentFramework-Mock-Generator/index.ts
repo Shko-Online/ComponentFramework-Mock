@@ -42,7 +42,10 @@ export {
     toWebApiAttributeDefinition,
     toWebApiEntity,
     toWebApiEntityDefinition,
+    toWebApiKeyDefinition,
     toWebApiLabel,
+    toWebApiPrivilege,
+    toWebApiRelationshipDefinition,
 } from './Metadata.db';
 export type { DataverseError, DataverseWebApiOptions, RecordReference, WebApiCollection } from './Metadata.db';
 export type {
@@ -50,6 +53,7 @@ export type {
     LookupReference,
     MetadataDBOptions,
     MetadataStoreOptions,
+    RelationshipMetadata,
     WebApiEntity,
     WebApiLabel,
     WebApiMetadata,

@@ -11,10 +11,14 @@ export { DEFAULT_PAGE_SIZE, getPage, MOCK_WEB_API_URL } from './Paging';
 export type { WebApiLabel, WebApiLocalizedLabel, WebApiMetadata } from './MetadataSerializer';
 export {
     DEFAULT_LANGUAGE_CODE,
+    ENTITY_NAVIGATION_PROPERTIES,
     getAttributeTypeName,
     pickMetadataProperties,
     toWebApiAttributeDefinition,
     toWebApiEntityDefinition,
+    toWebApiKeyDefinition,
     toWebApiLabel,
     toWebApiOptionSet,
+    toWebApiPrivilege,
+    toWebApiRelationshipDefinition,
 } from './MetadataSerializer';
