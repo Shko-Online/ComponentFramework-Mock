@@ -71,9 +71,15 @@ namespace Standard_Control_Input_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
-        updateView(context: ComponentFramework.Context<IInputs>): void {}
-        destroy(): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        updateView(context: ComponentFramework.Context<IInputs>): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs {
             return {};
         }
@@ -113,11 +119,15 @@ namespace React_Control_Input_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         updateView(context: ComponentFramework.Context<IInputs>): React.ReactElement {
             return React.createElement('div');
         }
-        destroy(): void {}
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs {
             return {};
         }
@@ -156,9 +166,15 @@ namespace Two_Controls_Input_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
-        updateView(context: ComponentFramework.Context<IInputs1>): void {}
-        destroy(): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        updateView(context: ComponentFramework.Context<IInputs1>): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs1 {
             return {};
         }
@@ -178,11 +194,15 @@ namespace Two_Controls_Input_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         updateView(context: ComponentFramework.Context<IInputs2>): React.ReactElement {
             return React.createElement('div');
         }
-        destroy(): void {}
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs2 {
             return {};
         }
@@ -233,9 +253,15 @@ namespace Three_Controls_Input_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
-        updateView(context: ComponentFramework.Context<IInputs1>): void {}
-        destroy(): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        updateView(context: ComponentFramework.Context<IInputs1>): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs1 {
             return {};
         }
@@ -255,11 +281,15 @@ namespace Three_Controls_Input_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         updateView(context: ComponentFramework.Context<IInputs2>): React.ReactElement {
             return React.createElement('div');
         }
-        destroy(): void {}
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs2 {
             return {};
         }
@@ -279,11 +309,15 @@ namespace Three_Controls_Input_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         updateView(context: ComponentFramework.Context<IInputs3>): React.ReactElement {
             return React.createElement('div');
         }
-        destroy(): void {}
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs3 {
             return {};
         }
@@ -341,9 +375,15 @@ namespace EnumPropertyMock_Tests {
             notifyOutputChanged?: () => void,
             state?: ComponentFramework.Dictionary,
             container?: HTMLDivElement,
-        ): void {}
-        updateView(context: ComponentFramework.Context<IInputs>): void {}
-        destroy(): void {}
+        ): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        updateView(context: ComponentFramework.Context<IInputs>): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
+        destroy(): void {
+            // Intentionally empty: only the control's type shape matters in type tests.
+        }
         getOutputs?(): IOutputs {
             return {};
         }

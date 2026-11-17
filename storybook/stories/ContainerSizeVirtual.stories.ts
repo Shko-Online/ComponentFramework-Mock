@@ -32,7 +32,7 @@ const renderGenerator = () => {
     let mockGenerator: ComponentFrameworkMockGeneratorReact<IInputs, IOutputs>;
 
     return function () {
-        const [args, updateArgs] = useArgs<StoryArgs>();
+        const [args] = useArgs<StoryArgs>();
         useEffect(
             () => () => {
                 container = null;

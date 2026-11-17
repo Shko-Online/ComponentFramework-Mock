@@ -19,10 +19,9 @@ export const mockSetControlResource = <
         const xmlResource = new DOMParser().parseFromString(resource, 'text/xml');
         const elements = xmlResource.getElementsByTagNameNS('', 'data');
         mockGenerator.context.resources.getString.callsFake((id) => {
-            for (let i = 0; i < elements.length; i++) {
-                if (elements[i].getAttribute('name') === id) {
-                    return elements[i].getElementsByTagName('value')[0].innerHTML;
-                }
+            const element = Array.from(elements).find((data) => data.getAttribute('name') === id);
+            if (element) {
+                return element.getElementsByTagName('value')[0].innerHTML;
             }
             throw new Error(`Could not find string with id '${id}'`);
         });

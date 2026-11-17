@@ -54,7 +54,7 @@ export class OwnerLookup implements ComponentFramework.StandardControl<IInputs, 
     private updateName(context: ComponentFramework.Context<IInputs>, name: HTMLParagraphElement) {
         const value = context.parameters.value.raw;
         this.value = value;
-        name.innerHTML = value && value.length ? `[${value[0].entityType}-${value[0].id}] ${value[0].name}` : '---';
+        name.innerHTML = value?.length ? `[${value[0].entityType}-${value[0].id}] ${value[0].name}` : '---';
     }
 
     private assignToMyself() {

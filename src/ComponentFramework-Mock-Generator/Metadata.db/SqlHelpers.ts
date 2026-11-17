@@ -75,7 +75,9 @@ export const coerceValueForAttribute = (attribute: AttributeMetadata | undefined
         case AttributeType.Picklist:
         case AttributeType.State:
         case AttributeType.Status:
-            return typeof value === 'string' && value.trim() !== '' && !isNaN(Number(value)) ? Number(value) : value;
+            return typeof value === 'string' && value.trim() !== '' && !Number.isNaN(Number(value))
+                ? Number(value)
+                : value;
         case AttributeType.DateTime:
             return typeof value === 'string' ? new Date(value) : value;
         default:
@@ -112,7 +114,7 @@ const cloneValue = <T>(value: T): T => {
         return value.map(cloneValue) as unknown as T;
     }
     if (isDate(value)) {
-        return new Date(value.getTime()) as unknown as T;
+        return new Date(value) as unknown as T;
     }
     if (value && typeof value === 'object') {
         const result: { [key: string]: unknown } = {};

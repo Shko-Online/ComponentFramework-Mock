@@ -49,6 +49,16 @@
     box-shadow: rgba(0, 0, 0, 0.08) 0 3px 10px 0;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .link-item {
+      transition: none;
+    }
+
+    .link-item:hover {
+      transform: none;
+    }
+  }
+
   .link-item:active {
     border-color: #1EA7FD;
     transform: translate3d(0, 0, 0);
@@ -79,7 +89,7 @@
     line-height: 12px;
     font-weight: 700;
     background: #E7FDD8;
-    color: #66BF3C;
+    color: #2E7D32;
     padding: 4px 12px;
     margin-right: 10px;
     vertical-align: top;

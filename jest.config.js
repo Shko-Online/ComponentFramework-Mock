@@ -3,7 +3,7 @@
     Licensed under the MIT license.
 */
 
-const path = require('path');
+const path = require('node:path');
 
 /**  @type {import('ts-jest').JestConfigWithTsJest}  */
 module.exports = {

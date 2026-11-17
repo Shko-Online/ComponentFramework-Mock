@@ -8,7 +8,7 @@ export class ComplexControl implements ComponentFramework.StandardControl<IInput
     private container: HTMLDivElement;
 
     public async getOutputSchema(context: ComponentFramework.Context<IInputs>): Promise<Record<string, unknown>> {
-        return Promise.resolve({
+        return {
             outputProperty: {
                 $schema: 'http://json-schema.org/draft-04/schema#',
                 type: 'object',
@@ -21,7 +21,7 @@ export class ComplexControl implements ComponentFramework.StandardControl<IInput
                     },
                 },
             },
-        });
+        };
     }
 
     /**

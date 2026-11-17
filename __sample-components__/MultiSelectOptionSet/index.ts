@@ -42,7 +42,7 @@ export class ContainerSize implements ComponentFramework.StandardControl<IInputs
                 const selection = [];
                 this.list.querySelectorAll('input').forEach((e: HTMLInputElement) => {
                     if (e.checked) {
-                        selection.push(parseInt(e.dataset['optionValue']));
+                        selection.push(Number.parseInt(e.dataset['optionValue']));
                     }
                 });
                 this.selection = selection;
@@ -64,7 +64,7 @@ export class ContainerSize implements ComponentFramework.StandardControl<IInputs
     public updateView(context: ComponentFramework.Context<IInputs>): void {
         this.selection = context.parameters.selection.raw || [];
         this.list.querySelectorAll('input').forEach((e: HTMLInputElement) => {
-            e.checked = this.selection.includes(parseInt(e.dataset['optionValue']));
+            e.checked = this.selection.includes(Number.parseInt(e.dataset['optionValue']));
         });
     }
 

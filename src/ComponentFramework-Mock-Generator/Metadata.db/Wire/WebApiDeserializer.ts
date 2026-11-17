@@ -12,12 +12,23 @@ import { invalidRequestError } from '../Errors';
  * @throws when the value is not a reference to a row
  */
 export const parseODataBind = (bind: string) => {
-    const match = /([A-Za-z_][A-Za-z0-9_]*)\(([^)]+)\)\s*$/.exec(bind);
-    if (!match) {
+    // Parsed without a regular expression to avoid super-linear backtracking on long values
+    const value = bind.trimEnd();
+    const open = value.lastIndexOf('(');
+    const id = open >= 0 && value.endsWith(')') ? value.slice(open + 1, -1) : '';
+    let start = open;
+    while (start > 0 && isWordCharacter(value[start - 1])) start--;
+    while (start < open && isDigit(value[start])) start++;
+    if (id === '' || id.includes(')') || start === open) {
         throw invalidRequestError(`Invalid @odata.bind value '${bind}'`);
     }
-    return { entitySetName: match[1], id: match[2].replace(/^\{|\}$/g, '') };
+    return { entitySetName: value.slice(start, open), id: id.replace(/^\{|\}$/g, '') };
 };
+
+const isDigit = (char: string) => char >= '0' && char <= '9';
+
+const isWordCharacter = (char: string) =>
+    isDigit(char) || char === '_' || (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z');
 
 /**
  * Reads the value of a lookup column from a Web API payload. Supported formats:
@@ -73,6 +84,4 @@ export const readFormattedValue = (item: WebApiEntity, property: string): string
  * @returns the values as numbers, or the input when it is not a multi-select value
  */
 export const readMultiSelectValue = (value: unknown) =>
-    typeof value === 'string' && /^\s*-?\d+(\s*,\s*-?\d+)*\s*$/.test(value)
-        ? value.split(',').map((v) => Number(v))
-        : value;
+    typeof value === 'string' && /^\s*-?\d+(\s*,\s*-?\d+)*\s*$/.test(value) ? value.split(',').map(Number) : value;

@@ -65,6 +65,20 @@ const isManyToMany = (relationship: RelationshipMetadata): relationship is ManyT
         ? relationship.RelationshipType === 'ManyToManyRelationship'
         : 'IntersectEntityName' in relationship || 'Entity2LogicalName' in relationship;
 
+/**
+ * Reads the value of a column from the data of a row:
+ * date strings become dates, choices are read as single or multi-select values.
+ */
+const readColumnValue = (attribute: AttributeMetadata | undefined, value: unknown) => {
+    if (attribute?.AttributeType === AttributeType.DateTime && typeof value === 'string') {
+        return new Date(value);
+    }
+    if (attribute?.AttributeType === AttributeType.Picklist) {
+        return readMultiSelectValue(value);
+    }
+    return value;
+};
+
 const defaultFalseOption = () => ({ Color: '', Label: 'No', Value: 0 });
 const defaultTrueOption = () => ({ Color: '', Label: 'Yes', Value: 1 });
 
@@ -88,9 +102,9 @@ export class MetadataStore {
     KeyMetadataSQL: KeyMetadataSQL;
     PrivilegeMetadataSQL: PrivilegeMetadataSQL;
     RelationshipMetadataSQL: RelationshipMetadataSQL;
-    private _metadataCache: Map<string, EntityMetadata>;
+    private readonly _metadataCache: Map<string, EntityMetadata>;
 
-    private _generateId: () => string;
+    private readonly _generateId: () => string;
 
     constructor(options?: MetadataStoreOptions) {
         this._warnMissingInit = false;
@@ -131,74 +145,9 @@ export class MetadataStore {
         if (!attribute.MetadataId) attribute.MetadataId = this.newId();
         let OptionSetId: string | undefined = undefined;
         if (attribute.AttributeType === AttributeType.Picklist) {
-            const optionsetAttribute = attribute as PickListAttributeMetadata;
-            if (!optionsetAttribute.OptionSet) {
-                optionsetAttribute.OptionSet = {
-                    MetadataId: '',
-                    IsCustomOptionSet: false,
-                    Name: optionsetAttribute.LogicalName,
-                    Options: {},
-                    OptionSetType: OptionSetType.Picklist,
-                };
-            }
-            if (!optionsetAttribute.OptionSet.MetadataId) {
-                optionsetAttribute.OptionSet.MetadataId = this.newId();
-            }
-            OptionSetId = optionsetAttribute.OptionSet.MetadataId;
-            this.OptionSetMetadataSQL.AddOptionSetMetadata({
-                IsCustomOptionSet: optionsetAttribute.OptionSet.IsCustomOptionSet,
-                LogicalName: optionsetAttribute.OptionSet.Name,
-                OptionSetId,
-                OptionSetType: optionsetAttribute.OptionSet.OptionSetType,
-            });
-            for (const optionValue in optionsetAttribute.OptionSet.Options) {
-                const option = optionsetAttribute.OptionSet.Options[optionValue];
-                this.OptionSetMetadataSQL.AddOptionMetadata({
-                    OptionId: this.newId(),
-                    OptionSetId,
-                    Color: option.Color,
-                    Label: option.Label,
-                    Value: option.Value,
-                });
-            }
+            OptionSetId = this.createPicklistOptionSet(attribute as PickListAttributeMetadata);
         } else if (attribute.AttributeType === AttributeType.Boolean) {
-            const booleanAttribute = attribute as BooleanAttributeMetadata;
-            if (!booleanAttribute.OptionSet) {
-                booleanAttribute.OptionSet = {
-                    MetadataId: '',
-                    IsCustomOptionSet: false,
-                    Name: booleanAttribute.LogicalName,
-                    OptionSetType: OptionSetType.Boolean,
-                    DisplayName: '',
-                    FalseOption: defaultFalseOption(),
-                    TrueOption: defaultTrueOption(),
-                };
-            }
-            if (!booleanAttribute.OptionSet.FalseOption) {
-                booleanAttribute.OptionSet.FalseOption = defaultFalseOption();
-            }
-            if (!booleanAttribute.OptionSet.TrueOption) {
-                booleanAttribute.OptionSet.TrueOption = defaultTrueOption();
-            }
-            if (!booleanAttribute.OptionSet.MetadataId) {
-                booleanAttribute.OptionSet.MetadataId = this.newId();
-            }
-            OptionSetId = booleanAttribute.OptionSet.MetadataId;
-            this.OptionSetMetadataSQL.AddOptionSetMetadata({
-                IsCustomOptionSet: booleanAttribute.OptionSet.IsCustomOptionSet,
-                LogicalName: booleanAttribute.OptionSet.Name,
-                OptionSetId,
-                OptionSetType: booleanAttribute.OptionSet.OptionSetType,
-            });
-            [booleanAttribute.OptionSet.FalseOption, booleanAttribute.OptionSet.TrueOption].forEach((option) => {
-                this.OptionSetMetadataSQL.AddOptionMetadata({
-                    OptionId: this.newId(),
-                    OptionSetId: OptionSetId as string,
-                    Color: option.Color,
-                    Label: option.Label,
-                    Value: option.Value,
-                });
-            });
+            OptionSetId = this.createBooleanOptionSet(attribute as BooleanAttributeMetadata);
         }
 
         this.AttributeMetadataSQL.AddAttributeMetadata({
@@ -213,6 +162,87 @@ export class MetadataStore {
             SchemaName: attribute.SchemaName,
             DisplayName: attribute.DisplayName,
         });
+    }
+
+    /**
+     * Stores the option set of a choice column, creating a default one when missing.
+     * @returns The id of the option set
+     */
+    private createPicklistOptionSet(optionsetAttribute: PickListAttributeMetadata) {
+        if (!optionsetAttribute.OptionSet) {
+            optionsetAttribute.OptionSet = {
+                MetadataId: '',
+                IsCustomOptionSet: false,
+                Name: optionsetAttribute.LogicalName,
+                Options: {},
+                OptionSetType: OptionSetType.Picklist,
+            };
+        }
+        if (!optionsetAttribute.OptionSet.MetadataId) {
+            optionsetAttribute.OptionSet.MetadataId = this.newId();
+        }
+        const OptionSetId = optionsetAttribute.OptionSet.MetadataId;
+        this.OptionSetMetadataSQL.AddOptionSetMetadata({
+            IsCustomOptionSet: optionsetAttribute.OptionSet.IsCustomOptionSet,
+            LogicalName: optionsetAttribute.OptionSet.Name,
+            OptionSetId,
+            OptionSetType: optionsetAttribute.OptionSet.OptionSetType,
+        });
+        for (const optionValue in optionsetAttribute.OptionSet.Options) {
+            const option = optionsetAttribute.OptionSet.Options[optionValue];
+            this.OptionSetMetadataSQL.AddOptionMetadata({
+                OptionId: this.newId(),
+                OptionSetId,
+                Color: option.Color,
+                Label: option.Label,
+                Value: option.Value,
+            });
+        }
+        return OptionSetId;
+    }
+
+    /**
+     * Stores the option set of a yes/no column, creating the default options when missing.
+     * @returns The id of the option set
+     */
+    private createBooleanOptionSet(booleanAttribute: BooleanAttributeMetadata) {
+        if (!booleanAttribute.OptionSet) {
+            booleanAttribute.OptionSet = {
+                MetadataId: '',
+                IsCustomOptionSet: false,
+                Name: booleanAttribute.LogicalName,
+                OptionSetType: OptionSetType.Boolean,
+                DisplayName: '',
+                FalseOption: defaultFalseOption(),
+                TrueOption: defaultTrueOption(),
+            };
+        }
+        if (!booleanAttribute.OptionSet.FalseOption) {
+            booleanAttribute.OptionSet.FalseOption = defaultFalseOption();
+        }
+        if (!booleanAttribute.OptionSet.TrueOption) {
+            booleanAttribute.OptionSet.TrueOption = defaultTrueOption();
+        }
+        if (!booleanAttribute.OptionSet.MetadataId) {
+            booleanAttribute.OptionSet.MetadataId = this.newId();
+        }
+        const OptionSetId = booleanAttribute.OptionSet.MetadataId;
+        this.OptionSetMetadataSQL.AddOptionSetMetadata({
+            IsCustomOptionSet: booleanAttribute.OptionSet.IsCustomOptionSet,
+            LogicalName: booleanAttribute.OptionSet.Name,
+            OptionSetId,
+            OptionSetType: booleanAttribute.OptionSet.OptionSetType,
+        });
+        [booleanAttribute.OptionSet.FalseOption, booleanAttribute.OptionSet.TrueOption].forEach((option) => {
+            this.OptionSetMetadataSQL.AddOptionMetadata({
+                OptionId: this.newId(),
+                OptionSetId,
+                Color: option.Color,
+                Label: option.Label,
+                Value: option.Value,
+            });
+        });
+        return OptionSetId;
     }
 
     /**
@@ -254,7 +284,7 @@ export class MetadataStore {
             }
         }
 
-        if (!attributes.find((attr) => attr.LogicalName === metadata.PrimaryIdAttribute)) {
+        if (!attributes.some((attr) => attr.LogicalName === metadata.PrimaryIdAttribute)) {
             attributes.push({
                 AttributeType: AttributeType.Uniqueidentifier,
                 LogicalName: metadata.PrimaryIdAttribute,
@@ -302,8 +332,10 @@ export class MetadataStore {
                     `${sqlIdentifier(attribute.LogicalName)} ${getSqlTypeForAttribute(attribute.AttributeType)}`,
                 );
                 if (attribute.AttributeType === AttributeType.Lookup) {
-                    columns.push(`${sqlIdentifier(attribute.LogicalName + 'type')} string`);
-                    columns.push(`${sqlIdentifier(attribute.LogicalName + 'navigation')} string`);
+                    columns.push(
+                        `${sqlIdentifier(attribute.LogicalName + 'type')} string`,
+                        `${sqlIdentifier(attribute.LogicalName + 'navigation')} string`,
+                    );
                 }
             });
 
@@ -807,20 +839,10 @@ export class MetadataStore {
      * @returns The id of the new row
      */
     AddRow(entity: string, item: any, tableMetadata?: EntityMetadata) {
-        if (!tableMetadata) {
-            tableMetadata = this.getTableMetadata(entity);
+        const metadata = tableMetadata ?? this.getOrInitTableMetadata(entity);
+        if (!metadata) {
+            return;
         }
-        if (!tableMetadata) {
-            const platformMetadata =
-                entity === 'savedquery' ? SavedQueryMetadata : entity === 'userquery' ? UserQueryMetadata : undefined;
-            if (!platformMetadata) {
-                this.warn(`Missing init for entitySet ${entity}`);
-                return;
-            }
-            this.initMetadata([cloneEntityMetadata(platformMetadata)]);
-            tableMetadata = this.getTableMetadata(entity) as EntityMetadata;
-        }
-        const metadata = tableMetadata;
 
         const params: unknown[] = [];
         const columns: string[] = [];
@@ -831,56 +853,15 @@ export class MetadataStore {
         let newID = null;
         metadata.Attributes?.forEach((attribute) => {
             const key = attribute.LogicalName;
-
             if (attribute.AttributeType === AttributeType.Uniqueidentifier) {
-                let value = item[key];
-                if (!value && metadata.PrimaryIdAttribute === key) {
-                    value = this.newId();
-                }
-                if (metadata.PrimaryIdAttribute === key) {
+                const isPrimaryId = metadata.PrimaryIdAttribute === key;
+                const value = !item[key] && isPrimaryId ? this.newId() : item[key];
+                if (isPrimaryId) {
                     newID = value;
                 }
                 addColumn(key, value);
-            } else if (attribute.AttributeType === AttributeType.Lookup) {
-                const lookup = this.getLookupFromItem(item, key);
-                if (lookup === undefined) {
-                    return;
-                }
-                const nameAttribute = getNameAttribute(metadata, attribute);
-                if (nameAttribute) {
-                    addColumn(nameAttribute, lookup?.name ?? null);
-                }
-                addColumn(key + 'type', lookup?.entityType ?? null);
-                addColumn(key + 'navigation', lookup?.navigation ?? null);
-                addColumn(key, lookup?.id ?? null);
-            } else if (attribute.AttributeOf && key === attribute.AttributeOf + 'name') {
-                const parentAttribute = metadata.Attributes?.find((attr) => attr.LogicalName === attribute.AttributeOf);
-                if (parentAttribute?.AttributeType === AttributeType.Lookup) {
-                    return; // handled together with the lookup
-                }
-                const formattedValue =
-                    readFormattedValue(item, attribute.AttributeOf) ??
-                    this.getFormattedValue(
-                        parentAttribute,
-                        parentAttribute?.AttributeType === AttributeType.Picklist
-                            ? readMultiSelectValue(item[attribute.AttributeOf])
-                            : item[attribute.AttributeOf],
-                    );
-                if (formattedValue === undefined) {
-                    return;
-                }
-                addColumn(key, formattedValue);
-            } else if (key in item) {
-                const value =
-                    attribute.AttributeType === AttributeType.DateTime && typeof item[key] === 'string'
-                        ? new Date(item[key])
-                        : attribute.AttributeType === AttributeType.Picklist
-                          ? readMultiSelectValue(item[key])
-                          : item[key];
-                if (value === null || value === undefined) {
-                    return;
-                }
-                addColumn(key, value);
+            } else {
+                this.addRowColumns(metadata, attribute, item, addColumn);
             }
         });
 
@@ -889,6 +870,74 @@ export class MetadataStore {
             .join(',')})`;
         this.db.exec(insertSql, params);
         return newID;
+    }
+
+    /**
+     * Gets the metadata of a table, initializing the platform tables (`savedquery`, `userquery`) on first use.
+     */
+    private getOrInitTableMetadata(entity: string) {
+        const tableMetadata = this.getTableMetadata(entity);
+        if (tableMetadata) {
+            return tableMetadata;
+        }
+        let platformMetadata: EntityMetadata | undefined;
+        if (entity === 'savedquery') {
+            platformMetadata = SavedQueryMetadata;
+        } else if (entity === 'userquery') {
+            platformMetadata = UserQueryMetadata;
+        }
+        if (!platformMetadata) {
+            this.warn(`Missing init for entitySet ${entity}`);
+            return undefined;
+        }
+        this.initMetadata([cloneEntityMetadata(platformMetadata)]);
+        return this.getTableMetadata(entity) as EntityMetadata;
+    }
+
+    /**
+     * Adds the columns of a non primary key attribute to an INSERT statement.
+     */
+    private addRowColumns(
+        metadata: EntityMetadata,
+        attribute: AttributeMetadata,
+        item: Row,
+        addColumn: (column: string, value: unknown) => void,
+    ) {
+        const key = attribute.LogicalName;
+        if (attribute.AttributeType === AttributeType.Lookup) {
+            const lookup = this.getLookupFromItem(item, key);
+            if (lookup === undefined) {
+                return;
+            }
+            const nameAttribute = getNameAttribute(metadata, attribute);
+            if (nameAttribute) {
+                addColumn(nameAttribute, lookup?.name ?? null);
+            }
+            addColumn(key + 'type', lookup?.entityType ?? null);
+            addColumn(key + 'navigation', lookup?.navigation ?? null);
+            addColumn(key, lookup?.id ?? null);
+        } else if (attribute.AttributeOf && key === attribute.AttributeOf + 'name') {
+            const parentAttribute = metadata.Attributes?.find((attr) => attr.LogicalName === attribute.AttributeOf);
+            if (parentAttribute?.AttributeType === AttributeType.Lookup) {
+                return; // handled together with the lookup
+            }
+            const formattedValue =
+                readFormattedValue(item, attribute.AttributeOf) ??
+                this.getFormattedValue(
+                    parentAttribute,
+                    parentAttribute?.AttributeType === AttributeType.Picklist
+                        ? readMultiSelectValue(item[attribute.AttributeOf])
+                        : item[attribute.AttributeOf],
+                );
+            if (formattedValue !== undefined) {
+                addColumn(key, formattedValue);
+            }
+        } else if (key in item) {
+            const value = readColumnValue(attribute, item[key]);
+            if (value !== null && value !== undefined) {
+                addColumn(key, value);
+            }
+        }
     }
 
     /**
@@ -997,33 +1046,12 @@ export class MetadataStore {
         };
 
         if (attributeMetadata.AttributeType === AttributeType.Lookup) {
-            const lookupValue = value as unknown as LookupReference | null;
-            const hasValue = !!lookupValue?.id;
-            set(attributeMetadata.LogicalName, hasValue ? lookupValue?.id : null);
-            set(attributeMetadata.LogicalName + 'type', hasValue ? lookupValue?.entityType : null);
-            set(
-                getNameAttribute(tableMetadata, attributeMetadata) || attributeMetadata.LogicalName + 'name',
-                hasValue ? lookupValue?.name : null,
-            );
+            this.setLookupColumns(tableMetadata, attributeMetadata, value as unknown as LookupReference | null, set);
         } else if (
             attributeMetadata.AttributeType === AttributeType.Picklist ||
             attributeMetadata.AttributeType === AttributeType.Boolean
         ) {
-            set(attributeMetadata.LogicalName, Array.isArray(value) ? JSON.stringify(value) : value);
-            const label = this.getFormattedValue(attributeMetadata, value);
-            if (
-                attributeMetadata.AttributeType === AttributeType.Picklist &&
-                value !== null &&
-                value !== undefined &&
-                !Array.isArray(value) &&
-                label === undefined
-            ) {
-                console.warn(`Picklist column ${attributeMetadata.LogicalName} is missing option ${value}`);
-            }
-            const nameAttribute = getNameAttribute(tableMetadata, attributeMetadata);
-            if (nameAttribute) {
-                set(nameAttribute, label ?? null);
-            }
+            this.setChoiceColumns(tableMetadata, attributeMetadata, value, set);
         } else {
             set(attributeMetadata.LogicalName, value);
         }
@@ -1035,6 +1063,50 @@ export class MetadataStore {
         }
 
         this.db.exec(updateSql, params);
+    }
+
+    /**
+     * Sets the id, type and name columns of a lookup in an UPDATE statement.
+     */
+    private setLookupColumns(
+        tableMetadata: EntityMetadata,
+        attributeMetadata: AttributeMetadata,
+        lookupValue: LookupReference | null,
+        set: (column: string, columnValue: unknown) => void,
+    ) {
+        const hasValue = !!lookupValue?.id;
+        set(attributeMetadata.LogicalName, hasValue ? lookupValue?.id : null);
+        set(attributeMetadata.LogicalName + 'type', hasValue ? lookupValue?.entityType : null);
+        set(
+            getNameAttribute(tableMetadata, attributeMetadata) || attributeMetadata.LogicalName + 'name',
+            hasValue ? lookupValue?.name : null,
+        );
+    }
+
+    /**
+     * Sets the value and formatted value columns of a choice or yes/no column in an UPDATE statement.
+     */
+    private setChoiceColumns(
+        tableMetadata: EntityMetadata,
+        attributeMetadata: AttributeMetadata,
+        value: unknown,
+        set: (column: string, columnValue: unknown) => void,
+    ) {
+        set(attributeMetadata.LogicalName, Array.isArray(value) ? JSON.stringify(value) : value);
+        const label = this.getFormattedValue(attributeMetadata, value);
+        if (
+            attributeMetadata.AttributeType === AttributeType.Picklist &&
+            value !== null &&
+            value !== undefined &&
+            !Array.isArray(value) &&
+            label === undefined
+        ) {
+            console.warn(`Picklist column ${attributeMetadata.LogicalName} is missing option ${value}`);
+        }
+        const nameAttribute = getNameAttribute(tableMetadata, attributeMetadata);
+        if (nameAttribute) {
+            set(nameAttribute, label ?? null);
+        }
     }
 
     /**
@@ -1176,7 +1248,7 @@ export class MetadataStore {
             .filter((condition) => condition !== '');
         const where = conditions.length > 0 ? ' WHERE ' + conditions.map((c) => `(${c})`).join(' AND ') : '';
         const orderBy = getOrderByFromFetch(entityNode, tableMetadata);
-        const top = parseInt(fetchNode.getAttribute('top') ?? fetchNode.getAttribute('count') ?? '', 10);
+        const top = Number.parseInt(fetchNode.getAttribute('top') ?? fetchNode.getAttribute('count') ?? '', 10);
         const limit = top > 0 ? ` LIMIT ${top}` : '';
         const distinct = fetchNode.getAttribute('distinct') === 'true' ? 'DISTINCT ' : '';
 

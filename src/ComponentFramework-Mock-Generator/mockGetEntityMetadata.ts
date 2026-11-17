@@ -16,7 +16,7 @@ export const mockGetEntityMetadata = <
         return new Promise<ShkoOnline.EntityMetadata>((resolve, reject) => {
             const result = mockGenerator.metadata.getTableMetadata(entityName);
             if (!result) {
-                reject(`Could not find entity metadata for '${entityName}'`);
+                reject(new Error(`Could not find entity metadata for '${entityName}'`));
                 return;
             }
             if (attributes) {

@@ -7,7 +7,6 @@ import { IInputs, IOutputs } from './generated/ManifestTypes';
 
 export class ContainerSize implements ComponentFramework.StandardControl<IInputs, IOutputs> {
     private container: HTMLDivElement;
-    private notifyOutputChanged: () => void;
     private trackContainer: boolean;
 
     /**

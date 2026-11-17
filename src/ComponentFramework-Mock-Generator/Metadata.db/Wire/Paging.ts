@@ -22,7 +22,7 @@ export const getPage = (
     baseUrl = MOCK_WEB_API_URL,
 ): WebApiPage => {
     const params = new URLSearchParams(options ?? '');
-    const skip = Math.max(parseInt(params.get('$skiptoken') ?? '0', 10) || 0, 0);
+    const skip = Math.max(Number.parseInt(params.get('$skiptoken') ?? '0', 10) || 0, 0);
     const pageSize = maxPageSize && maxPageSize > 0 ? maxPageSize : DEFAULT_PAGE_SIZE;
     const page: WebApiPage = { entities: entities.slice(skip, skip + pageSize) };
     if (skip + pageSize < entities.length) {

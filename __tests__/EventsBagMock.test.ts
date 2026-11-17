@@ -5,13 +5,13 @@ describe('EventsBagMock', () => {
     it('warns when raising unconfigured event without args', () => {
         const eventsBag = new EventsBagMock();
         eventsBag.Test();
-        expect(eventsBag.Test.calledOnce);
+        expect(eventsBag.Test.calledOnce).toBe(true);
     });
 
     it('warns when raising unconfigured event with args', () => {
         const eventsBag = new EventsBagMock();
         eventsBag.Test('myEventArgs');
-        expect(eventsBag.Test.calledOnce);
+        expect(eventsBag.Test.calledOnce).toBe(true);
     });
 
     it('can mock event', () => {
@@ -20,6 +20,6 @@ describe('EventsBagMock', () => {
             console.log(a, b);
         });
         eventsBag.Test('myEventArgs', 'and more args');
-        expect(eventsBag.Test.calledOnce);
+        expect(eventsBag.Test.calledOnce).toBe(true);
     });
 });

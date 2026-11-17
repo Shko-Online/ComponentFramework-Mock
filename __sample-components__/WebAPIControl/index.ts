@@ -21,21 +21,21 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
     private _context: ComponentFramework.Context<IInputs>;
 
     // Name of entity to use for example Web API calls performed by this control
-    private static _entityName = 'account';
+    private static readonly _entityName = 'account';
 
     // Required field on _entityName of type 'single line of text'
     // Example Web API calls performed by example custom control will set this field for new record creation examples
-    private static _requiredAttributeName = 'name';
+    private static readonly _requiredAttributeName = 'name';
 
     // Value the _requiredAttributeName field will be set to for new created records
-    private static _requiredAttributeValue = 'Web API Custom Control (Sample)';
+    private static readonly _requiredAttributeValue = 'Web API Custom Control (Sample)';
 
     // Name of currency field on _entityName to populate during record create
     // Example Web API calls performed by example custom control will set and read this field
-    private static _currencyAttributeName = 'revenue';
+    private static readonly _currencyAttributeName = 'revenue';
 
     // Friendly name of currency field (only used for control UI - no functional impact)
-    private static _currencyAttributeNameFriendlyName = 'annual revenue';
+    private static readonly _currencyAttributeNameFriendlyName = 'annual revenue';
 
     // Flag if control view has been rendered
     private _controlViewRendered: boolean;
@@ -191,7 +191,7 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
             true,
             'Click to refresh record count',
         );
-        this._odataStatusContainerDiv = this.createHTMLDivElement(containerClassName, false, undefined);
+        this._odataStatusContainerDiv = this.createHTMLDivElement(containerClassName, false);
 
         // Create button to invoke OData RetrieveMultiple Example
         this._fetchXmlRefreshButton = this.createHTMLButtonElement(
@@ -219,7 +219,7 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
             true,
             `Click to calculate average value of ${WebAPIControl._currencyAttributeNameFriendlyName}`,
         );
-        const statusDiv: HTMLDivElement = this.createHTMLDivElement(containerName, false, undefined);
+        const statusDiv: HTMLDivElement = this.createHTMLDivElement(containerName, false);
 
         // Create button to invoke Fetch XML RetrieveMultiple Web API example
         this._oDataRefreshButton = this.createHTMLButtonElement(
@@ -248,7 +248,7 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
         this._container.appendChild(resultDivHeader);
 
         // Div elements to populate with the result text
-        this._resultContainerDiv = this.createHTMLDivElement('result_container', false, undefined);
+        this._resultContainerDiv = this.createHTMLDivElement('result_container', false);
         this._container.appendChild(this._resultContainerDiv);
 
         // Init the result container with a notification the control was loaded
@@ -261,7 +261,7 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
      */
     private createButtonOnClickHandler(event: Event): void {
         // Retrieve the value to set the currency field to from the button's attribute
-        const currencyAttributeValue: number = parseInt(
+        const currencyAttributeValue: number = Number.parseInt(
             (event.target as Element)?.attributes?.getNamedItem('buttonvalue')?.value ?? '0',
         );
 
@@ -296,9 +296,9 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
 
                 this.updateResultContainerText(resultHtml);
             },
-            (errorResponse) => {
+            (error_) => {
                 // Error handling code here - record failed to be created
-                this.updateResultContainerTextWithErrorResponse(errorResponse);
+                this.updateResultContainerTextWithErrorResponse(error_);
             },
         );
     }
@@ -315,39 +315,28 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
 
         const lookUpPromise = this._context.utils.lookupObjects(lookUpOptions);
 
-        lookUpPromise.then(
+        lookUpPromise
             // Callback method - invoked after user has selected an item from the lookup dialog
             // Data parameter is the item selected in the lookup dialog
-            (data: ComponentFramework.LookupValue[]) => {
-                if (data && data[0]) {
-                    // Get the ID and entityType of the record selected by the lookup
-                    const id: string = data[0].id;
-                    const entityType: string = data[0].entityType;
-
-                    // Invoke the deleteRecord method of the WebAPI to delete the selected record
-                    this._context.webAPI.deleteRecord(entityType, id).then(
-                        (response: ComponentFramework.LookupValue) => {
-                            // Record was deleted successfully
-                            const responseId: string = response.id;
-                            const responseEntityType: string = response.entityType;
-
-                            // Generate HTML to inject into the result div to showcase the deleted record
-                            this.updateResultContainerText(
-                                `Deleted ${responseEntityType} record with ID: ${responseId}`,
-                            );
-                        },
-                        (errorResponse) => {
-                            // Error handling code here
-                            this.updateResultContainerTextWithErrorResponse(errorResponse);
-                        },
-                    );
+            .then((data: ComponentFramework.LookupValue[]) => {
+                const selected = data?.[0];
+                if (!selected) {
+                    return undefined;
                 }
-            },
-            (error) => {
+
+                // Invoke the deleteRecord method of the WebAPI to delete the record selected by the lookup
+                return this._context.webAPI.deleteRecord(selected.entityType, selected.id);
+            })
+            .then((response?: ComponentFramework.LookupValue) => {
+                if (response) {
+                    // Record was deleted successfully; inject the deleted record into the result div
+                    this.updateResultContainerText(`Deleted ${response.entityType} record with ID: ${response.id}`);
+                }
+            })
+            .catch((error) => {
                 // Error handling code here
                 this.updateResultContainerTextWithErrorResponse(error);
-            },
-        );
+            });
     }
 
     /**
@@ -376,9 +365,9 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
                 const resultHTML = `Average value of ${WebAPIControl._currencyAttributeNameFriendlyName} attribute for all ${WebAPIControl._entityName} records: ${averageVal}`;
                 this.updateResultContainerText(resultHTML);
             },
-            (errorResponse) => {
+            (error_) => {
                 // Error handling code here
-                this.updateResultContainerTextWithErrorResponse(errorResponse);
+                this.updateResultContainerTextWithErrorResponse(error_);
             },
         );
     }
@@ -433,9 +422,9 @@ export class WebAPIControl implements ComponentFramework.StandardControl<IInputs
                 // Inject a success message into the result div
                 this.updateResultContainerText('Record count refreshed');
             },
-            (errorResponse) => {
+            (error_) => {
                 // Error handling code here
-                this.updateResultContainerTextWithErrorResponse(errorResponse);
+                this.updateResultContainerTextWithErrorResponse(error_);
             },
         );
     }

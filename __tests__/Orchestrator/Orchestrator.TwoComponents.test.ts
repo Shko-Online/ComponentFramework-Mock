@@ -128,8 +128,8 @@ describe('Orchestrator', () => {
                 'parameters',
             ]);
 
-            expect(orchestrator.mockGenerators[0]._PendingUpdates.length).toEqual(0);
-            expect(orchestrator.mockGenerators[1]._PendingUpdates.length).toEqual(0);
+            expect(orchestrator.mockGenerators[0]._PendingUpdates).toHaveLength(0);
+            expect(orchestrator.mockGenerators[1]._PendingUpdates).toHaveLength(0);
 
             expect(orchestrator.mockGenerators[1].onOutputChanged.called).toBeFalsy();
             expect(orchestrator.mockGenerators[1].context._parameters.value.raw).toEqual(new Date(2022, 0, 1));
@@ -164,8 +164,8 @@ describe('Orchestrator', () => {
 
             expect(orchestrator.mockGenerators[1].context.updatedProperties).toStrictEqual([]);
 
-            expect(orchestrator.mockGenerators[0]._PendingUpdates.length).toEqual(0);
-            expect(orchestrator.mockGenerators[1]._PendingUpdates.length).toEqual(0);
+            expect(orchestrator.mockGenerators[0]._PendingUpdates).toHaveLength(0);
+            expect(orchestrator.mockGenerators[1]._PendingUpdates).toHaveLength(0);
 
             expect(orchestrator.mockGenerators[1].onOutputChanged.called).toBeFalsy();
             expect(orchestrator.mockGenerators[1].context._parameters.value.raw).toEqual(new Date(2023, 0, 1));
