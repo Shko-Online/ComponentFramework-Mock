@@ -1,3 +1,10 @@
+## [0.12.1](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.12.0...v0.12.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* address SonarCloud findings ([7ee0d46](https://github.com/Shko-Online/ComponentFramework-Mock/commit/7ee0d46aaf88faa056886c35e21586518c8921ca))
+
 # [0.12.0](https://github.com/Shko-Online/ComponentFramework-Mock/compare/v0.11.2...v0.12.0) (2026-11-17)
 
 
