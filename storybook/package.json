@@ -49,6 +49,7 @@
     "@types/xlsx": "^0.0.35",
     "alasql": "^4.6.6",
     "chromatic": "^6.17.3",
+    "core-js": "^3.51.0",
     "eslint-plugin-storybook": "^0.11.6",
     "sinon": "^22.0.0",
     "storybook": "^8.6.7",
@@ -61,6 +62,12 @@
     "@storybook/test": "^8.6.15",
     "react": "16.8.6",
     "react-dom": "16.8.6"
+  },
+  "overrides": {
+    "glob@>=10 <14": "^14.0.6",
+    "minimatch@>=7 <11": "^11.0.9",
+    "webpack-dev-middleware": "^7.4.6",
+    "uuid": "^11.1.1"
   },
   "allowScripts": {
     "esbuild@0.25.12": true,
