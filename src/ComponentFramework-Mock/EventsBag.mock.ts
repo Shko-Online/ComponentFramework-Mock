@@ -6,24 +6,23 @@
 import type { SinonStub } from 'sinon';
 import { stub } from 'sinon';
 
-
 export class EventsBagMock implements ComponentFramework.IEventBag {
-    [x: string]: SinonStub<[...params:unknown[]],void>;
-    
+    [x: string]: SinonStub<[...params: unknown[]], void>;
+
     private static indexedHandler: ProxyHandler<EventsBagMock> = {
-        get(target, property){
+        get(target, property) {
             let targetProperty = target[property as string];
-            if(targetProperty===undefined){
+            if (targetProperty === undefined) {
                 targetProperty = stub();
                 target[property as string] = targetProperty;
-                targetProperty.callsFake(function(){
-                    console.warn(`Event '${property as string}' was raised!`,arguments);
+                targetProperty.callsFake((...args: unknown[]) => {
+                    console.warn(`Event '${property as string}' was raised!`, args);
                 });
             }
             return targetProperty;
-        }
-    }
-    constructor(){
+        },
+    };
+    constructor() {
         return new Proxy(this, EventsBagMock.indexedHandler);
     }
 }

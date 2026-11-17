@@ -23,9 +23,10 @@ import { UtilityMock } from './Utility.mock';
 import { WebApiMock } from './WebApi.mock';
 import { EventsBagMock } from './EventsBag.mock';
 
-export class ContextMock<IInputs extends ShkoOnline.PropertyTypes<IInputs>,TEvents = ComponentFramework.IEventBag>
-    implements ComponentFramework.Context<IInputs, TEvents>
-{
+export class ContextMock<
+    IInputs extends ShkoOnline.PropertyTypes<IInputs>,
+    TEvents = ComponentFramework.IEventBag,
+> implements ComponentFramework.Context<IInputs, TEvents> {
     client: ClientMock;
     copilot: CopilotMock;
     device: DeviceMock;

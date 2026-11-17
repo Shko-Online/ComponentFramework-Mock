@@ -78,9 +78,9 @@ const renderGenerator = () => {
             mockGenerator.context.mode.isControlDisabled = args.isDisabled;
             mockGenerator.UpdateValues({
                 boundProperty: args.boundProperty,
-                inputProperty: args.inputProperty
+                inputProperty: args.inputProperty,
             });
-            
+
             mockGenerator.ExecuteUpdateView();
         }
         return container;

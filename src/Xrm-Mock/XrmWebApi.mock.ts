@@ -84,7 +84,7 @@ export interface XrmWebApiOnlineMock {
  * All methods are sinon stubs, so they can be inspected or overridden.
  */
 export class XrmWebApiMock {
-    _Delay: number = 200;
+    _Delay = 200;
     createRecord: CreateRecord;
     deleteRecord: DeleteRecord;
     retrieveRecord: RetrieveRecord;

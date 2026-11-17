@@ -19,14 +19,13 @@ import { ContextMock, DataSetMock } from '../ComponentFramework-Mock';
 import { showBanner } from '../utils';
 import { mockRefreshDatasets } from './mockRefreshDatasets';
 
-/** 
+/**
  * This class mocks the standard version of the PowerApps Component Framework control.
  */
 export class ComponentFrameworkMockGenerator<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
-> implements MockGenerator<TInputs, TOutputs>
-{
+> implements MockGenerator<TInputs, TOutputs> {
     _PendingUpdates: {
         value: ComponentFramework.LookupValue | ComponentValues<TInputs>;
         table: string;
@@ -51,7 +50,7 @@ export class ComponentFrameworkMockGenerator<
         control: new () => ComponentFramework.StandardControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
         container?: HTMLDivElement,
-        outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
+        outputs?: ShkoOnline.OutputOnlyTypes<Record<never, never>, TOutputs>,
         overrides?: MockGeneratorOverrides,
     ) {
         showBanner(control.name);

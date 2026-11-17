@@ -20,14 +20,13 @@ import { mockSetControlState } from './mockSetControlState';
 import { mockSetControlResource } from './mockSetControlResource';
 import { mockRefreshParameters } from './mockRefreshParameters';
 
-/** 
+/**
  * This class mocks the React version of the PowerApps Component Framework control.
  */
 export class ComponentFrameworkMockGeneratorReact<
     TInputs extends ShkoOnline.PropertyTypes<TInputs>,
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
-> implements MockGenerator<TInputs, TOutputs>
-{
+> implements MockGenerator<TInputs, TOutputs> {
     _PendingUpdates: {
         value: ComponentFramework.LookupValue | ComponentValues<TInputs>;
         table: string;
@@ -40,7 +39,7 @@ export class ComponentFrameworkMockGeneratorReact<
     context: ContextMock<TInputs>;
     control: SinonSpiedInstance<ComponentFramework.ReactControl<TInputs, TOutputs>>;
     notifyOutputChanged: SinonStub<[], void>;
-    onOutputChanged: SinonStub<[updates:Partial<TOutputs>], void>;
+    onOutputChanged: SinonStub<[updates: Partial<TOutputs>], void>;
     outputOnlyProperties: ShkoOnline.OutputOnlyTypes<TInputs, TOutputs>;
     resizeObserver: ResizeObserver;
     state: ComponentFramework.Dictionary;
@@ -50,8 +49,8 @@ export class ComponentFrameworkMockGeneratorReact<
     constructor(
         control: new () => ComponentFramework.ReactControl<TInputs, TOutputs>,
         inputs: PropertyMap<TInputs>,
-        outputs?: ShkoOnline.OutputOnlyTypes<{}, TOutputs>,
-        overrides?: MockGeneratorOverrides
+        outputs?: ShkoOnline.OutputOnlyTypes<Record<never, never>, TOutputs>,
+        overrides?: MockGeneratorOverrides,
     ) {
         showBanner(control.name);
         this._PendingUpdates = [];

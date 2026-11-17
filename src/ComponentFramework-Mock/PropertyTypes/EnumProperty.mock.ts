@@ -10,9 +10,8 @@ import { stub } from 'sinon';
 import { MetadataDB } from '../../ComponentFramework-Mock-Generator';
 import { AttributeType } from './AttributeType';
 
-export class EnumPropertyMock<EnumType extends string>
-    implements ComponentFramework.PropertyTypes.EnumProperty<EnumType>
-{
+export class EnumPropertyMock<EnumType extends string> implements ComponentFramework.PropertyTypes
+    .EnumProperty<EnumType> {
     _boundColumn: string;
     _boundTable: string;
     _boundRow?: string;

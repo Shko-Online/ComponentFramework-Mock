@@ -14,8 +14,8 @@ export class YearPicker implements ComponentFramework.StandardControl<IInputs, I
     private _updateValue: () => void;
 
     constructor() {
-        var head = document.head;
-        var style = document.createElement('style');
+        const head = document.head;
+        const style = document.createElement('style');
 
         style.type = 'text/css';
         style.appendChild(
@@ -74,10 +74,10 @@ export class YearPicker implements ComponentFramework.StandardControl<IInputs, I
             return;
         }
 
-        if(this._value instanceof Date){
+        if (this._value instanceof Date) {
             this._input.setAttribute('value', this._value.getFullYear().toString());
-        }else{
-            this._input.setAttribute('value', this._value);    
+        } else {
+            this._input.setAttribute('value', this._value);
         }
     }
 
@@ -89,19 +89,19 @@ export class YearPicker implements ComponentFramework.StandardControl<IInputs, I
             return;
         }
 
-        let rawNumber = this._input.value as any as number;
+        const rawNumber = this._input.value as any as number;
         if (rawNumber < 1000) return;
 
-        let newValue = new Date(rawNumber, 0);
+        const newValue = new Date(rawNumber, 0);
         if (newValue < new Date(1753, 0)) {
             alert('Minimum year in CDS is 1753');
             this._updateValue();
             return;
         }
 
-        if(this._inputType == 'SingleLine.Text'){
+        if (this._inputType === 'SingleLine.Text') {
             this._value = newValue.getFullYear().toString();
-        }else{
+        } else {
             this._value = newValue;
         }
         this._notifyOutputChanged();

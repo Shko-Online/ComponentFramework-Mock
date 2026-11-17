@@ -17,7 +17,7 @@ import { toWebApiEntity } from '../ComponentFramework-Mock-Generator/Metadata.db
  * Mock of the PCF `context.webAPI`, backed by the in-memory {@link MetadataDB}.
  */
 export class WebApiMock implements ComponentFramework.WebApi {
-    _Delay: number = 200;
+    _Delay = 200;
     /**
      * Converts a row of the database to the Web API shape, in place.
      */

@@ -1,0 +1,12 @@
+# Build output
+lib
+coverage
+storybook/storybook-static
+
+# Generated files
+CHANGELOG.md
+package-lock.json
+**/generated/
+
+# Test data exported from Dataverse
+__tests__/data

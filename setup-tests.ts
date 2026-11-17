@@ -3,4 +3,4 @@
     Licensed under the MIT license.
 */
 
-global.ResizeObserver = require('resize-observer-polyfill')
+global.ResizeObserver = require('resize-observer-polyfill');

@@ -25,7 +25,7 @@ export class AttributeMetadataGenerator {
                             EntityLogicalName: entityLogicalName,
                             LogicalName: logicalName,
                             AttributeType: AttributeType.String,
-                        } as ShkoOnline.StringAttributeMetadata),
+                        }) as ShkoOnline.StringAttributeMetadata,
                 ),
             );
             return this;
@@ -39,7 +39,7 @@ export class AttributeMetadataGenerator {
                             EntityLogicalName: entityLogicalName,
                             LogicalName: logicalName,
                             AttributeType: AttributeType.Boolean,
-                        } as ShkoOnline.BooleanAttributeMetadata),
+                        }) as ShkoOnline.BooleanAttributeMetadata,
                 ),
             );
             return this;
@@ -53,7 +53,7 @@ export class AttributeMetadataGenerator {
                             EntityLogicalName: entityLogicalName,
                             LogicalName: logicalName,
                             AttributeType: AttributeType.Integer,
-                        } as ShkoOnline.IntegerNumberAttributeMetadata),
+                        }) as ShkoOnline.IntegerNumberAttributeMetadata,
                 ),
             );
             return this;

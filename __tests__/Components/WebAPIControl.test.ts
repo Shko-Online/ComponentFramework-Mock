@@ -17,28 +17,34 @@ describe('WebAPIControl', () => {
         mockGenerator = new ComponentFrameworkMockGenerator(
             Control,
             {
-                stringProperty: StringPropertyMock
+                stringProperty: StringPropertyMock,
             },
             container,
         );
         mockGenerator.metadata.initMetadata([
-            { LogicalName: 'account', EntitySetName: 'accounts', PrimaryIdAttribute: 'accountid', PrimaryNameAttribute: 'name', Attributes: [
-                {
-                    AttributeType: AttributeType.Uniqueidentifier,
-                    LogicalName: 'accountid',
-                    SchemaName: 'AccountId'
-                } as ShkoOnline.AttributeMetadata,
-                {
-                    AttributeType: AttributeType.String,
-                    LogicalName: 'name',
-                    SchemaName: 'Name'
-                } as ShkoOnline.StringAttributeMetadata,
-                {
-                    AttributeType: AttributeType.Money,
-                    LogicalName: 'revenue',
-                    SchemaName: 'revenue'
-                } as ShkoOnline.AttributeMetadata
-            ] },
+            {
+                LogicalName: 'account',
+                EntitySetName: 'accounts',
+                PrimaryIdAttribute: 'accountid',
+                PrimaryNameAttribute: 'name',
+                Attributes: [
+                    {
+                        AttributeType: AttributeType.Uniqueidentifier,
+                        LogicalName: 'accountid',
+                        SchemaName: 'AccountId',
+                    } as ShkoOnline.AttributeMetadata,
+                    {
+                        AttributeType: AttributeType.String,
+                        LogicalName: 'name',
+                        SchemaName: 'Name',
+                    } as ShkoOnline.StringAttributeMetadata,
+                    {
+                        AttributeType: AttributeType.Money,
+                        LogicalName: 'revenue',
+                        SchemaName: 'revenue',
+                    } as ShkoOnline.AttributeMetadata,
+                ],
+            },
         ]);
 
         mockGenerator.context._SetCanvasItems({
@@ -73,6 +79,4 @@ describe('WebAPIControl', () => {
         expect(result_container.innerHTML).toContain('Created new account record with below values:');
         // expect(document.body).toMatchSnapshot();
     });
-
-  
 });

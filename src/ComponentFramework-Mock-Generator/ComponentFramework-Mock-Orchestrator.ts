@@ -12,8 +12,8 @@ import { ComponentFrameworkMockGeneratorReact } from './ComponentFramework-Mock-
 import { MetadataDB } from './Metadata.db';
 
 type IInputs = { [key: string]: any };
-type IOutputs = IInputs;
-type IOutputOnly = ShkoOnline.OutputOnlyTypes<{}, IOutputs>;
+type IOutputs = { [key: string]: any };
+type IOutputOnly = ShkoOnline.OutputOnlyTypes<Record<never, never>, IOutputs>;
 type StandardMock = [
     control: new () => ComponentFramework.StandardControl<IInputs, IOutputs>,
     inputs: PropertyMap<IInputs>,
@@ -62,7 +62,7 @@ export class ComponentFrameworkMockOrchestrator<T> {
                     ),
                 );
             }
-        });       
+        });
     }
 
     controls: OrchestratorInput<T>;

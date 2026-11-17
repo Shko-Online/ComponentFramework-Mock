@@ -6,10 +6,6 @@ export class ComplexControl implements ComponentFramework.StandardControl<IInput
     private notifyOutputChanged: () => void;
     private updateCount = 0;
     private container: HTMLDivElement;
-    /**
-     * Empty constructor.
-     */
-    constructor() {}
 
     public async getOutputSchema(context: ComponentFramework.Context<IInputs>): Promise<Record<string, unknown>> {
         return Promise.resolve({
@@ -64,7 +60,7 @@ export class ComplexControl implements ComponentFramework.StandardControl<IInput
             this.notifyOutputChanged();
         }
     }
-    
+
     /**
      * It is called by the framework prior to a control receiving new data.
      * @returns an object based on nomenclature defined in manifest, expecting object[s] for property marked as “bound” or “output”

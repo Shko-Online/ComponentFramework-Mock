@@ -45,7 +45,8 @@ export class MetadataDB extends MetadataStore {
      * @param items Object as returned from the Dataverse OData API
      */
     initItems(items: { '@odata.context': string; value: any[] }) {
-        const entitySetName = items['@odata.context']?.substring(items['@odata.context'].indexOf('#') + 1);
+        const context = items['@odata.context'];
+        const entitySetName = context?.substring(context.indexOf('#') + 1);
         const table = this.EntityMetadataSQL.SelectTableMetadataByEntitySet(entitySetName)[0];
         if (table?.LogicalName !== MetadataDB.CanvasLogicalName) {
             super.initItems(items);

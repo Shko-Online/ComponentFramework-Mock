@@ -10,12 +10,12 @@ declare namespace ShkoOnline {
 
     export type PropertyTypes<T extends { [key: string]: any }> = {
         [P in keyof T]: T[P] extends ComponentFramework.PropertyTypes.Property
-        ? T[P]
-        : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<EnumType<T[P]>>
-        ? T[P]
-        : T[P] extends ComponentFramework.PropertyTypes.DataSet
-        ? T[P]
-        : never;
+            ? T[P]
+            : T[P] extends ComponentFramework.PropertyTypes.EnumProperty<EnumType<T[P]>>
+              ? T[P]
+              : T[P] extends ComponentFramework.PropertyTypes.DataSet
+                ? T[P]
+                : never;
     };
 
     /**
@@ -27,40 +27,40 @@ declare namespace ShkoOnline {
 
     export type KnownTypes<TOutput> = {
         [P in keyof TOutput]: TOutput[P] extends string | undefined
-        ? TOutput[P]
-        : TOutput[P] extends number | undefined
-        ? TOutput[P]
-        : TOutput[P] extends Date | undefined
-        ? TOutput[P]
-        : TOutput[P] extends boolean | undefined
-        ? TOutput[P]
-        : TOutput[P] extends ComponentFramework.LookupValue[] | undefined
-        ? TOutput[P]
-        : TOutput[P] extends number[] | undefined
-        ? TOutput[P]
-        : 0 extends 1 & TOutput[P] // any trick copied from here https://stackoverflow.com/a/55541672
-        ? any
-        : never;
+            ? TOutput[P]
+            : TOutput[P] extends number | undefined
+              ? TOutput[P]
+              : TOutput[P] extends Date | undefined
+                ? TOutput[P]
+                : TOutput[P] extends boolean | undefined
+                  ? TOutput[P]
+                  : TOutput[P] extends ComponentFramework.LookupValue[] | undefined
+                    ? TOutput[P]
+                    : TOutput[P] extends number[] | undefined
+                      ? TOutput[P]
+                      : 0 extends 1 & TOutput[P] // any trick copied from here https://stackoverflow.com/a/55541672
+                        ? any
+                        : never;
     };
 
     export type OutputOnlyTypes<TInput extends PropertyTypes<TInput>, TOutput extends KnownTypes<TOutput>> = {
         [P in keyof TOutput]: P extends keyof TInput
-        ? never
-        : 0 extends 1 & TOutput[P] // any trick copied from here https://stackoverflow.com/a/55541672
-        ? 'any'
-        : TOutput[P] extends string | undefined
-        ? 'string'
-        : TOutput[P] extends number | undefined
-        ? 'number'
-        : TOutput[P] extends Date | undefined
-        ? 'Date'
-        : TOutput[P] extends boolean | undefined
-        ? 'boolean'
-        : TOutput[P] extends ComponentFramework.LookupValue[] | undefined
-        ? 'Lookup'
-        : TOutput[P] extends number[] | undefined
-        ? 'number'
-        : never;
+            ? never
+            : 0 extends 1 & TOutput[P] // any trick copied from here https://stackoverflow.com/a/55541672
+              ? 'any'
+              : TOutput[P] extends string | undefined
+                ? 'string'
+                : TOutput[P] extends number | undefined
+                  ? 'number'
+                  : TOutput[P] extends Date | undefined
+                    ? 'Date'
+                    : TOutput[P] extends boolean | undefined
+                      ? 'boolean'
+                      : TOutput[P] extends ComponentFramework.LookupValue[] | undefined
+                        ? 'Lookup'
+                        : TOutput[P] extends number[] | undefined
+                          ? 'number'
+                          : never;
     };
 
     // The Dataverse metadata types live in the Metadata.db core, which does not depend on PCF.

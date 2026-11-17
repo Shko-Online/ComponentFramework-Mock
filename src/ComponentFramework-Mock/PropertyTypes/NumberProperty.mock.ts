@@ -16,8 +16,10 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
     _SetValue: SinonStub<[value: number | null], void>;
     attributes?: NumberMetadataMock;
     raw: number | null;
-    constructor(db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata, propertyName: string, skipMetadata: boolean = false) {
-        const existingAttribute = entityMetadata.Attributes?.find(attribute => attribute.LogicalName === propertyName);
+    constructor(db: MetadataDB, entityMetadata: ShkoOnline.EntityMetadata, propertyName: string, skipMetadata = false) {
+        const existingAttribute = entityMetadata.Attributes?.find(
+            (attribute) => attribute.LogicalName === propertyName,
+        );
         if (!skipMetadata && existingAttribute && existingAttribute.AttributeType !== AttributeType.Decimal) {
             super(db, entityMetadata.LogicalName, `${propertyName}___${++MetadataDB.Collisions}`);
         } else {
@@ -34,14 +36,12 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
                 this._boundColumn,
                 this._boundRow,
             );
-            if (
-                !(
-                    attributeMetadata.AttributeType === AttributeType.Integer ||
-                    attributeMetadata.AttributeType === AttributeType.BigInt ||
-                    attributeMetadata.AttributeType === AttributeType.Decimal ||
-                    attributeMetadata.AttributeType === AttributeType.Double
-                )
-            ) {
+            if (!(
+                attributeMetadata.AttributeType === AttributeType.Integer ||
+                attributeMetadata.AttributeType === AttributeType.BigInt ||
+                attributeMetadata.AttributeType === AttributeType.Decimal ||
+                attributeMetadata.AttributeType === AttributeType.Double
+            )) {
                 throw new Error('Type Error');
             }
             this.attributes = new NumberMetadataMock();
@@ -53,7 +53,7 @@ export class NumberPropertyMock extends PropertyMock implements ComponentFramewo
             this.formatted = value === null || value === undefined ? '' : '' + value;
         });
 
-        if (!skipMetadata && (existingAttribute?.AttributeType !== AttributeType.Decimal)) {
+        if (!skipMetadata && existingAttribute?.AttributeType !== AttributeType.Decimal) {
             const attribute = {
                 AttributeType: AttributeType.Decimal,
                 EntityLogicalName: entityMetadata.LogicalName,

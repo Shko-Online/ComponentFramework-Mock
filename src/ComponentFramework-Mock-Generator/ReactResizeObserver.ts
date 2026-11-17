@@ -17,7 +17,7 @@ export interface ReactResizeObserverProps<
     TOutputs extends ShkoOnline.KnownTypes<TOutputs>,
 > {
     componentFrameworkMockGeneratorReact: ComponentFrameworkMockGeneratorReact<TInputs, TOutputs>;
-    circuitBreaker: {};
+    circuitBreaker: boolean;
 }
 
 export const ReactResizeObserver = <
@@ -38,7 +38,7 @@ export const ReactResizeObserver = <
     }, [setComponent, componentFrameworkMockGeneratorReact]);
     useEffect(() => {
         Object.getOwnPropertyNames(componentFrameworkMockGeneratorReact.context._parameters).forEach((p) => {
-            var parameter = componentFrameworkMockGeneratorReact.context._parameters[p];
+            const parameter = componentFrameworkMockGeneratorReact.context._parameters[p];
             if (parameter instanceof DataSetMock) {
                 parameter._updateView = updateView;
             }

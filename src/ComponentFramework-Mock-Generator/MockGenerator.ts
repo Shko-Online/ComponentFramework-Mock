@@ -9,7 +9,9 @@ import type { ShkoOnline } from '../ShkoOnline';
 import type { ContextMock, MockToRaw, PropertyToMock } from '../ComponentFramework-Mock';
 import type { MetadataDB } from './Metadata.db';
 
-export type ComponentValues< TInputs extends ShkoOnline.PropertyTypes<TInputs>> = Partial<MockToRaw<TInputs, PropertyToMock<TInputs>>>[Extract<keyof MockToRaw<TInputs, PropertyToMock<TInputs>>, string>]; 
+export type ComponentValues<TInputs extends ShkoOnline.PropertyTypes<TInputs>> = Partial<
+    MockToRaw<TInputs, PropertyToMock<TInputs>>
+>[Extract<keyof MockToRaw<TInputs, PropertyToMock<TInputs>>, string>];
 
 export interface MockGeneratorOverrides {
     metadata?: MetadataDB;

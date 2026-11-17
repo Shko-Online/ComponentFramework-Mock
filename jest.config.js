@@ -15,13 +15,11 @@ module.exports = {
     testEnvironment: 'jsdom',
     transform: {
         // transform files with ts-jest
-        '^.+\\.(jsx?|tsx?)$': [
-            'ts-jest'
-        ],
+        '^.+\\.(jsx?|tsx?)$': ['ts-jest'],
     },
     coveragePathIgnorePatterns: ['/node_modules/'],
     testMatch: ['<rootDir>/__tests__/**/*.[jt]s?(x)', '<rootDir>/?(*.)+(spec|test).[jt]s?(x)'],
     setupFiles: [path.resolve(path.join(__dirname, 'setup-tests.ts'))],
     coverageReporters: ['cobertura', 'lcov', 'text', 'html'],
-    transformIgnorePatterns: ["node_modules/(?!(sinon))"]
+    transformIgnorePatterns: ['node_modules/(?!(sinon))'],
 };
