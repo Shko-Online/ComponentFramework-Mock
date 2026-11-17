@@ -39,15 +39,20 @@ export {
     parseODataBind,
     pickWebApiProperties,
     readLookupFromItem,
+    toWebApiAttributeDefinition,
     toWebApiEntity,
+    toWebApiEntityDefinition,
+    toWebApiLabel,
 } from './Metadata.db';
-export type { DataverseError, DataverseWebApiOptions, RecordReference } from './Metadata.db';
+export type { DataverseError, DataverseWebApiOptions, RecordReference, WebApiCollection } from './Metadata.db';
 export type {
     DataverseMetadata,
     LookupReference,
     MetadataDBOptions,
     MetadataStoreOptions,
     WebApiEntity,
+    WebApiLabel,
+    WebApiMetadata,
     WebApiPage,
     WireFormatter,
 } from './Metadata.db';

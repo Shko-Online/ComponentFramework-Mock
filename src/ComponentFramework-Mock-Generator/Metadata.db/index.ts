@@ -33,15 +33,26 @@ export { MetadataStore } from './MetadataStore';
 export type { LookupValueWithNavigation, MetadataStoreOptions } from './MetadataStore';
 export { MetadataDB } from './Metadata.db';
 export type { MetadataDBOptions } from './Metadata.db';
-export type { LookupReference, WebApiEntity, WebApiPage, WireFormatter } from './Wire';
+export type {
+    LookupReference,
+    WebApiEntity,
+    WebApiLabel,
+    WebApiLocalizedLabel,
+    WebApiMetadata,
+    WebApiPage,
+    WireFormatter,
+} from './Wire';
 export {
     getPage,
     ODataAnnotation,
     parseODataBind,
     pickWebApiProperties,
     readLookupFromItem,
+    toWebApiAttributeDefinition,
     toWebApiEntity,
+    toWebApiEntityDefinition,
+    toWebApiLabel,
 } from './Wire';
 export { DataverseWebApi, getDataverseErrorCode, toDataverseError } from './Api/DataverseWebApi';
 export { DataverseErrorCode } from './Errors';
-export type { DataverseError, DataverseWebApiOptions, RecordReference } from './Api/DataverseWebApi';
+export type { DataverseError, DataverseWebApiOptions, RecordReference, WebApiCollection } from './Api/DataverseWebApi';

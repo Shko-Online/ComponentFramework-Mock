@@ -91,6 +91,8 @@ export interface EntityMetadata {
     EntitySetName?: string;
     /** The logical name for the table. */
     LogicalName: string;
+    /** The unique identifier of the table definition. Generated when missing. */
+    MetadataId?: string;
     /**The name of the column that is the primary id for the table.*/
     PrimaryIdAttribute?: string;
     /**The name of the primary image column for a table.*/

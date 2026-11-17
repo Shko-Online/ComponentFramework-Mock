@@ -15,12 +15,16 @@ export const CREATE_TABLE_METADATA_ATTRIBUTE = `
         DefaultFormValue int NULL,
         OptionSetId UniqueIdentifier,
         AttributeOf string NULL,
-        AttributeTypeName string
+        AttributeTypeName string,
+        [SchemaName] string NULL,
+        DisplayName string NULL
     )
 `;
 
 export const INSERT_METADATA_ATTRIBUTE = `
     INSERT INTO Metadata__Attribute VALUES (
+        ?,
+        ?,
         ?,
         ?,
         ?,
@@ -41,7 +45,9 @@ export const SELECT_METADATA_ATTRIBUTE = `
         DefaultFormValue,
         OptionSetId,
         AttributeOf,
-        AttributeTypeName
+        AttributeTypeName,
+        A.[SchemaName] as [SchemaName],
+        A.DisplayName as DisplayName
     FROM 
         Metadata__Attribute A 
             INNER JOIN
@@ -58,7 +64,9 @@ export const SELECT_METADATA_ATTRIBUTE_BY_ID = `
         DefaultFormValue,
         OptionSetId,
         AttributeOf,
-        AttributeTypeName
+        AttributeTypeName,
+        A.[SchemaName] as [SchemaName],
+        A.DisplayName as DisplayName
     FROM 
         Metadata__Attribute A 
             INNER JOIN
@@ -75,7 +83,9 @@ export const SELECT_METADATA_ATTRIBUTES = `
         DefaultFormValue,
         OptionSetId,
         AttributeOf,
-        AttributeTypeName
+        AttributeTypeName,
+        A.[SchemaName] as [SchemaName],
+        A.DisplayName as DisplayName
     FROM 
         Metadata__Attribute AS A 
             INNER JOIN
@@ -94,6 +104,8 @@ export interface AttributeDB {
     DefaultFormValue?: number;
     OptionSetId?: string;
     AttributeOf?: string;
+    SchemaName?: string;
+    DisplayName?: string;
 }
 
 export class AttributeMetadataSQL {
@@ -112,6 +124,8 @@ export class AttributeMetadataSQL {
             metadata.OptionSetId,
             metadata.AttributeOf,
             metadata.AttributeTypeName,
+            metadata.SchemaName ?? null,
+            metadata.DisplayName ?? null,
         ]);
     }
     SelectAttributeMetadata(AttributeLogicalName: string, EntityLogicalName: string) {

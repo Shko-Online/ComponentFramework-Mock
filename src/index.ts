@@ -94,7 +94,10 @@ export {
     parseODataBind,
     pickWebApiProperties,
     readLookupFromItem,
+    toWebApiAttributeDefinition,
     toWebApiEntity,
+    toWebApiEntityDefinition,
+    toWebApiLabel,
     ReactResizeObserver,
     mockGetEntityMetadata,
     mockRefreshDatasets,
@@ -111,12 +114,25 @@ export type {
     DataverseError,
     DataverseWebApiOptions,
     RecordReference,
+    WebApiCollection,
     WebApiEntity,
+    WebApiLabel,
+    WebApiMetadata,
     WebApiPage,
     WireFormatter,
 } from './ComponentFramework-Mock-Generator';
 
 export { toXrmError, XrmWebApiMock } from './Xrm-Mock';
 export type { XrmError, XrmRecordReference, XrmRetrieveMultipleResult, XrmWebApiOnlineMock } from './Xrm-Mock';
+
+export { PPTB_UNSUPPORTED_METHODS, PptbDataverseApiMock, toPptbError } from './PPTB-Mock';
+export type {
+    PptbConnectionTarget,
+    PptbEntityMetadata,
+    PptbFetchXmlResult,
+    PptbLabel,
+    PptbLocalizedLabel,
+    PptbUnsupportedMethod,
+} from './PPTB-Mock';
 
 export { arrayEqual, AttributeMetadataGenerator, itemEqual, showBanner } from './utils';

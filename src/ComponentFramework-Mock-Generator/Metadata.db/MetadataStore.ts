@@ -185,6 +185,8 @@ export class MetadataStore {
             OptionSetId,
             AttributeOf: attribute.AttributeOf,
             AttributeTypeName: attribute.AttributeTypeName?.value || '',
+            SchemaName: attribute.SchemaName,
+            DisplayName: attribute.DisplayName,
         });
     }
 
@@ -198,7 +200,7 @@ export class MetadataStore {
 
     private initSingleTable(metadata: EntityMetadata) {
         this.invalidateMetadataCache();
-        const entityId = this.newId();
+        const entityId = metadata.MetadataId || this.newId();
         const safeTableName = toSqlTableName(metadata.LogicalName);
 
         if (!metadata.Attributes) {
@@ -323,6 +325,13 @@ export class MetadataStore {
     }
 
     /**
+     * The logical names of the tables in the store, sorted alphabetically.
+     */
+    getTableNames(): string[] {
+        return this.EntityMetadataSQL.SelectTableLogicalNames();
+    }
+
+    /**
      * Get the metadata for a table.
      * The result is a copy: changing it does not change the metadata stored in the database.
      * @param entity The target table
@@ -347,6 +356,7 @@ export class MetadataStore {
         }
         const tableMetadata = {
             LogicalName: tableMetadataDB[0].LogicalName,
+            MetadataId: (tableMetadataDB[0] as EntityMetadata & { EntityId: string }).EntityId,
             EntitySetName: tableMetadataDB[0].EntitySetName,
             Attributes: [],
             PrimaryIdAttribute: tableMetadataDB[0].PrimaryIdAttribute,
@@ -379,6 +389,8 @@ export class MetadataStore {
             IsPrimaryId: attributeDB.LogicalName === tableMetadata.PrimaryIdAttribute,
             IsPrimaryName: attributeDB.LogicalName === tableMetadata.PrimaryNameAttribute,
         } as AttributeMetadata;
+        if (attributeDB.SchemaName != null) attribute.SchemaName = attributeDB.SchemaName;
+        if (attributeDB.DisplayName != null) attribute.DisplayName = attributeDB.DisplayName;
 
         const optionsetDB = attributeDB.OptionSetId
             ? this.OptionSetMetadataSQL.SelectOptionSetMetadata(attributeDB.OptionSetId)[0]
